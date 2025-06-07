@@ -46,6 +46,20 @@ from validation import validate_input  # ✅ Importation de la fonction
 from climate_analysis import generate_climate_trends, analyze_climate_risk  # ✅ Fonction maintenant existante
 import disease_detector  # ✅ Importation correcte
 import database
+from flask import Flask
+from flask_jwt_extended import JWTManager
+from flask import Flask, request, jsonify
+from disease_detector import detect_disease  # 🔥 Importation de la fonction de détection
+
+# Initialisation de l'application Flask
+app = Flask(__name__)
+
+# Configuration de JWT
+app.config["JWT_SECRET_KEY"] = "ton_secret_super_securisé"  # 🔑 Clé secrète pour signer les tokens
+
+# Initialisation de JWTManager
+jwt = JWTManager(app)
+
 print("🔍 Vérification : `generate_yield_trends()` est bien importé")  # ✅ Ajout temporaire
 yield_trend_df = generate_yield_trends()
 print(f"✅ Debugging `app.py`: yield_trend_df = {yield_trend_df}")  # ✅ Vérifie si un DataFrame est retourné
