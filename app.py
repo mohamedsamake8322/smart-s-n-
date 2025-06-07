@@ -51,7 +51,7 @@ yield_trend_df = generate_yield_trends()
 print(f"✅ Debugging `app.py`: yield_trend_df = {yield_trend_df}")  # ✅ Vérifie si un DataFrame est retourné
 
 model = train_model.model  # ✅ Accès correct au modèle
-disease_manager.load_model(r"C:\Boua\model\plant_disease_model.h5")  # ✅ Chemin corrigé
+disease_manager.load_model(r"C:\Mah fah\model\plant_disease_model.h5")  # ✅ Chemin corrigé
   # Charge le modèle au démarrage
 load_model = tf.keras.models.load_model  # ✅ Solution sans dépendance externe
 df = generate_data()
@@ -63,7 +63,7 @@ database.init_db()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # 🚀 Chargement du modèle CNN (plant_disease_model.h5)
-model_path = r"C:\Boua\model\plant_disease_model.h5"  # 🔥 Chemin absolu ajouté
+model_path = r"C:\Mah fah\model\plant_disease_model.h5"  # 🔥 Chemin absolu ajouté
 if os.path.exists(model_path):
     model_cnn = tf.keras.models.load_model(model_path)
     print("✅ Modèle CNN chargé avec succès !")

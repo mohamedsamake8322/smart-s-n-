@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class DiseaseManager:
-    def __init__(self, model_path="C:/Boua/model/plant_disease_model.h5"  # 📌 Ensure the path is correct
+    def __init__(self, model_path="C:/Mah fah/model/plant_disease_model.h5"  # 📌 Ensure the path is correct
 ):
         """Initializes the disease manager and loads the CNN model."""
         self.diseases = {}

@@ -17,9 +17,9 @@ import xgboost as xgb
 from sklearn.linear_model import LinearRegression  # 📌 Ajout pour régression climatique
 
 # 📂 Vérification des chemins du dataset CNN
-CNN_TRAIN_DIR = r"C:\Boua\plant_disease_dataset\train"
-CNN_VAL_DIR = r"C:\Boua\plant_disease_dataset\val"
-MODEL_PATH = "C:/Boua/model/plant_disease_model.h5"  # 📌 Uniformisation du format `.h5`
+CNN_TRAIN_DIR = r"C:\Mah fah\plant_disease_dataset\train"
+CNN_VAL_DIR = r"C:\Mah fah\plant_disease_dataset\val"
+MODEL_PATH = "C:/Mah fah/model/plant_disease_model.h5"  # 📌 Uniformisation du format `.h5`
 
 if not os.path.exists(CNN_TRAIN_DIR) or not os.path.exists(CNN_VAL_DIR):
     raise FileNotFoundError("🛑 Dataset folder not found. Check paths!")
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     joblib.dump(climate_model, 'model/climate_prediction.pkl')
     print("✅ Modèle de prédiction climatique sauvegardé avec succès !")
 # 📥 Encodage des variables catégoriques pour la fertilisation
-fertilization_data = pd.read_csv(r"C:\Boua\fertilization_data.csv")  # ✅ Chargement correct
+fertilization_data = pd.read_csv(r"C:\Mah fah\fertilization_data.csv")  # ✅ Chargement correct
 categorical_cols = ["soil_type", "crop_type"]  # ✅ Définition des colonnes catégoriques
 label_encoders = {}  # ✅ Initialisation du dictionnaire pour stocker les encodeurs
 for col in categorical_cols:
@@ -214,5 +214,5 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     logging.info("🚀 Entraînement du modèle en cours...")
     cnn_model.fit(train_data, validation_data=val_data, epochs=30)
-    cnn_model.save(r"C:\Boua\model\plant_disease_model.h5")  # ✅ Sauvegarde du modèle mis à jour
+    cnn_model.save(r"C:\Mah fah\model\plant_disease_model.h5")  # ✅ Sauvegarde du modèle mis à jour
     logging.info("✅ Modèle entraîné et sauvegardé avec succès !")

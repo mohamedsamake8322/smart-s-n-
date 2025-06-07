@@ -14,7 +14,7 @@ def extract_images_from_pdf(image, drawable):
     single_image_width = width // num_images  # Division automatique
     single_image_height = height  # Hauteur constante
 
-    save_directory = "C:\Boua\images"  # 📌 Modifie selon ton projet
+    save_directory = "C:\Mah fah\images"  # 📌 Modifie selon ton projet
     os.makedirs(save_directory, exist_ok=True)
 
     for i in range(num_images):

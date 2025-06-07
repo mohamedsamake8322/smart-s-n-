@@ -4,7 +4,7 @@ import torchvision.transforms as transforms
 from PIL import Image
 import torch.nn as nn
 # Charger le modèle entraîné
-MODEL_PATH = "C:/Boua/plant_disease_model.pth"
+MODEL_PATH = "C:/Mah fah/plant_disease_model.pth"
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 num_classes = 4  # Ajuste selon ton dataset
 
@@ -32,6 +32,6 @@ def predict_image(image_path):
     return predicted.item()
 
 # Test avec une image
-image_path = "C:/Boua/IMG_20240720_103446_512.jpg"
+image_path = "C:/Mah fah/IMG_20240720_103446_512.jpg"
 prediction = predict_image(image_path)
 print(f"🌱 Maladie détectée : {prediction}")

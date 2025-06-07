@@ -21,7 +21,7 @@ def load_disease_model(model_path):
         return None
 
 # 📌 Load the correct model (adaptable for `.h5` or `.keras`)
-MODEL_PATH = "C:/Boua/model/plant_disease_model.h5"  # 🔹 Modify as needed
+MODEL_PATH = "C:/Mah fah/model/plant_disease_model.h5"  # 🔹 Modify as needed
 disease_model = load_disease_model(MODEL_PATH)
 
 def predict_disease(image):

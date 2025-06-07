@@ -22,7 +22,7 @@ import streamlit as st
 import train_model  # ✅ Importation correcte
 
 PyTorchModel = train_model.PyTorchModel  # 📌 Accès à la classe
-MODEL_PATH = getattr(train_model, "MODEL_PATH", "C:/Boua/model/default_model.pth")  # ✅ Sécurise l'accès
+MODEL_PATH = getattr(train_model, "MODEL_PATH", "C:/Mah fah/model/default_model.pth")  # ✅ Sécurise l'accès
 
 # ✅ Configuration du logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
