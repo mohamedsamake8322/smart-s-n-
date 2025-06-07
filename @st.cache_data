@@ -1,0 +1,5 @@
+import streamlit as st
+
+@st.cache_data
+def get_fertilization_advice_cached(crop, pH, soil_type, growth_stage, temperature, humidity):
+    return get_fertilization_advice(crop, pH, soil_type, growth_stage, temperature, humidity)

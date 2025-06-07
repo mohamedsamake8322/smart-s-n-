@@ -1,0 +1,50 @@
+# 🔒 Security files (API keys, secrets, and config files)
+.env
+.env.*
+config.json
+settings.yaml
+secrets.toml
+private_key.pem
+.streamlit/secrets.toml
+create_credentials.py
+
+# 🔹 Dependencies and virtual environments
+venv/
+smartyield-env/
+.idea/
+.vscode/
+
+# 🔹 Temporary files and caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+temp/
+cache/
+
+# 🔹 Logs and local databases
+logs/
+*.log
+*.sqlite
+
+# 🔹 Machine Learning models
+model/
+*.pkl
+*.h5
+*.pt
+*.joblib
+*.onnx
+
+# 🔹 CSV or Excel data files (Sensitive Data)
+data/
+*.csv
+*.xlsx
+
+# 🔹 Jupyter Notebook metadata
+*.ipynb_checkpoints/
+
+# 🔹 Streamlit session files
+.streamlit/
+script.py
+!model/plant_disease_model.h5
