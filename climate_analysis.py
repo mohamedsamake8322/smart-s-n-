@@ -13,6 +13,7 @@ import matplotlib
 
 # ✅ Adaptation du backend Matplotlib pour éviter les conflits
 matplotlib.use("TkAgg")  # 🖼️ Active le mode interactif si en local
+matplotlib.rcParams["font.family"] = "DejaVu Sans"  # ✅ Ajout d'une police supportant les emojis et glyphes
 
 # 🌍 API pour récupérer les données climatiques en temps réel
 WEATHER_API = "https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&hourly=temperature_2m"
@@ -50,7 +51,7 @@ def generate_climate_trends():
         if "humidity" in df.columns:
             sns.lineplot(x=df.index, y=df["humidity"], label="Humidité", linestyle="dashed")
 
-        plt.title("📊 Tendances climatiques historiques")
+        plt.title("Tendances climatiques historiques")  # ✅ Suppression des emojis pour éviter les erreurs de rendu
         plt.xlabel("Date")
         plt.ylabel("Valeurs normalisées")
         plt.legend()
@@ -81,7 +82,7 @@ def generate_climate_soil_correlation():
 
         plt.figure(figsize=(10, 8))
         sns.heatmap(correlation, annot=True, cmap="coolwarm", fmt=".2f")
-        plt.title("📊 Matrice de corrélation Climat-Sol")
+        plt.title("Matrice de corrélation Climat-Sol")
         plt.savefig("climate_soil_correlation.png")  # ✅ Enregistrement au lieu d'affichage
         plt.close()
 
@@ -105,8 +106,11 @@ def predict_future_climate(features):
 
         # 🔍 Vérification des caractéristiques utilisées dans le modèle
         expected_features = model.feature_names_in_
-        if not set(expected_features).issubset(set(input_data.columns)):
-            raise ValueError(f"🚨 Mismatch des features: Modèle attend {expected_features}, mais {input_data.columns} ont été fournis.")
+        print(f"Modèle entraîné avec features: {expected_features}")
+        print(f"Features fournis en prédiction: {input_data.columns}")
+
+        # ✅ Ajustement des features pour correspondre à celles du modèle
+        input_data = input_data[expected_features]
 
         prediction = model.predict(input_data)
 
@@ -150,6 +154,8 @@ if __name__ == "__main__":
         future_climate = predict_future_climate({"temperature": 25, "humidity": 60, "pH": 6.5, "rainfall": 100})
         if future_climate is not None:
             print(f"🌡️ Climat futur prédit: {future_climate:.2f}")
+        else:
+            print("🚨 Aucune prédiction disponible.")
 
         print("\n⚠️ Analyse des risques climatiques...")
         climate_risk = analyze_climate_risk(temperature=30, humidity=85, soil_type="Clay")
