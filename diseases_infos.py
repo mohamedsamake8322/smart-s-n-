@@ -92,10 +92,20 @@ class DiseaseManager:
 
         return detected_disease
 
-    def decode_prediction(self, prediction):
-        """Transforms model prediction into a comprehensible label."""
-        disease_labels = list(self.diseases.keys())
-        return disease_labels[prediction.argmax()] if prediction is not None else "Unknown"
+def decode_prediction(self, prediction):
+    """Transforms model prediction into a comprehensible label."""
+    disease_labels = list(self.diseases.keys())  # ✅ Récupère la liste des classes connues
+
+    # 🔍 Vérification
+    print(f"🔎 Liste des classes détectables : {disease_labels}")
+    print(f"🧩 Index prédiction : {prediction.argmax()}")
+
+    # ✅ Vérifie que l'index est valide
+    if prediction.argmax() >= len(disease_labels):
+        return "⚠ Erreur: Classe prédite hors limites"
+
+    return disease_labels[prediction.argmax()] if prediction is not None else "Unknown"
+
 
     def export_to_pdf(self, disease_name, user_name="Unknown", save_path="reports/"):
         """Generates a PDF report with disease information."""
