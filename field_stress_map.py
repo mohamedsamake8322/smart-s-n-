@@ -9,6 +9,11 @@ import sqlite3
 import requests
 import logging
 from folium.plugins import HeatMap
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # 🔄 Chargement des variables d’environnement
+API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 # 🚀 Logger Configuration
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
