@@ -110,6 +110,15 @@ X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_st
 
 # 🔹 Définition et entraînement du modèle XGBoost
 fertilization_model = xgb.XGBRegressor(n_estimators=100, learning_rate=0.05, max_depth=6)
+# 📌 Vérifier et convertir les colonnes catégoriques
+categorical_cols = ["fertilizer_type", "yield_prediction"]  # ✅ Ajout des colonnes problématiques
+
+for col in categorical_cols:
+    if X_train[col].dtype == "object":
+        X_train[col] = X_train[col].astype("category")
+
+# ✅ Activer la prise en charge des catégories
+fertilization_model.fit(X_train, y_train, enable_categorical=True)
 fertilization_model.fit(X_train, y_train)
 
 y_pred = fertilization_model.predict(X_val)
