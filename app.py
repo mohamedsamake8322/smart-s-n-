@@ -51,6 +51,11 @@ from flask_jwt_extended import JWTManager
 from flask import Flask, request, jsonify
 from disease_detector import detect_disease  # 🔥 Importation de la fonction de détection
 from diseases_infos import DiseaseManager
+from dotenv import load_dotenv
+
+load_dotenv()  # 🔄 Chargement des variables d’environnement
+API_KEY = os.getenv("OPENWEATHER_API_KEY")
+
 disease_manager = DiseaseManager()  # 🔥 Maintenant toutes les maladies seront disponibles dès le lancement
 
 # 🔍 Vérification rapide
@@ -576,6 +581,28 @@ if choice == "📊 Performance":
 # 🌍 Field Map & Agricultural Stress Analysis
 if choice == "🌍 Field Map":
     st.subheader("🌍 Field Map & Agricultural Stress Analysis")
+# 🚀 Vérification de la clé API
+if not API_KEY:
+    raise RuntimeError("🚨 ERREUR : La clé API OpenWeather est manquante ou invalide !")
+
+# 🌍 Définition des champs agricoles
+FIELDS = [
+    {"name": "Field A", "lat": 12.64, "lon": -8.0},
+    {"name": "Field B", "lat": 12.66, "lon": -7.98},
+    {"name": "Field C", "lat": 12.63, "lon": -8.02},
+]
+
+# 🌍 Prédiction du stress basé sur la météo
+def predict_stress(temp, wind_speed):
+    """Calcule le niveau de stress basé sur la température et la vitesse du vent."""
+    base_stress = np.random.uniform(0.2, 0.8)
+    temp_factor = -0.1 if temp < 15 else 0.1 if temp > 30 else 0
+    wind_factor = 0.05 if wind_speed > 10 else 0
+    stress_level = min(1, max(0.2, base_stress + temp_factor + wind_factor))
+    return round(stress_level, 2)
+
+if choice == "🌍 Field Map":
+    st.subheader("🌍 Field Map & Agricultural Stress Analysis")
 
     # ✅ Récupération des données climatiques en temps réel
     st.info("🌦 Fetching live weather data...")
@@ -588,7 +615,35 @@ if choice == "🌍 Field Map":
 
     # 🗺️ Génération de la carte interactive avec Folium
     st.subheader("🗺 Interactive Field Map")
-    map_object = generate_map()
+
+    def generate_map(fields):
+        """Génère une carte Folium interactive avec les niveaux de stress des champs."""
+        m = folium.Map(location=[fields[0]["lat"], fields[0]["lon"]], zoom_start=12, control_scale=True)
+
+        for field in fields:
+            weather_data = get_weather_data(API_KEY, field["lat"], field["lon"])
+            if weather_data:
+                temp = weather_data["main"]["temp"]
+                wind_speed = weather_data["wind"]["speed"]
+                stress = predict_stress(temp, wind_speed)
+            else:
+                temp, wind_speed, stress = "N/A", "N/A", 0.5  
+
+            popup_text = f"""<b>{field['name']}</b><br>
+                             🌡 Température: {temp}°C<br>
+                             🌬 Vent: {wind_speed} m/s<br>
+                             🔥 Stress Level: {stress:.2f}"""
+
+            folium.Marker(
+                location=[field["lat"], field["lon"]],
+                popup=folium.Popup(popup_text, max_width=300),
+                icon=folium.Icon(color="red" if stress > 0.5 else "green", icon="info-sign")
+            ).add_to(m)
+
+        return m
+
+    # 🎯 Affichage de la carte dans Streamlit
+    map_object = generate_map(FIELDS)
     st_folium(map_object, width=800, height=500)
 
     # 📊 Ajout d’une légende dynamique pour les zones du champ
@@ -612,12 +667,10 @@ if choice == "🌍 Field Map":
     # 🔍 Filtrage avancé par période
     st.subheader("📅 Filter Stress Data by Time Range")
 
-    # ✅ Sélection des dates dynamiquement en fonction des données existantes
     min_date, max_date = stress_trend_df["Date"].min(), stress_trend_df["Date"].max()
     start_date = st.date_input("Start Date", min_date, min_value=min_date, max_value=max_date)
     end_date = st.date_input("End Date", max_date, min_value=min_date, max_value=max_date)
 
-    # 🚨 Vérification avant d'appliquer le filtrage
     if start_date > end_date:
         st.error("🚨 Invalid date range! Start date must be before end date.")
     else:
@@ -641,6 +694,7 @@ if choice == "🌍 Field Map":
             labels={"Temperature": "🌡️ Temperature (°C)", "Soil Moisture": "💧 Soil Moisture Level"}
         )
         st.plotly_chart(fig_correlation)
+
 
         
 # 📌 Compute SHAP values
