@@ -50,7 +50,11 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask import Flask, request, jsonify
 from disease_detector import detect_disease  # 🔥 Importation de la fonction de détection
+from diseases_infos import DiseaseManager
+disease_manager = DiseaseManager()  # 🔥 Maintenant toutes les maladies seront disponibles dès le lancement
 
+# 🔍 Vérification rapide
+print(f"🔎 Maladies disponibles au démarrage : {list(disease_manager.diseases.keys())}")  
 # Initialisation de l'application Flask
 app = Flask(__name__)
 
@@ -274,30 +278,38 @@ if comparison_df is not None:
 else:
     st.warning("🚨 No model comparison data available!")
 
-# Interface pour l'importation et la prédiction des maladies
-st.subheader("🔍 Détection des maladies")
-image_file = st.file_uploader("Télécharge une image", type=["jpg", "jpeg", "png", "bmp", "gif", "tiff"])
+# ✅ Définition de la fonction avant toute utilisation
+def handle_disease_detection(image_file, disease_manager, model):
+    """Gère l'analyse et l'affichage des informations de la maladie."""
+    if image_file:
+        image_path = upload_image(image_file)
+        image = preprocess_image(image_path)
+        detected_disease = disease_detector.detect_disease(image, model, disease_manager)
 
-if image_file is not None:
-    image_path = upload_image(image_file)
-    image = preprocess_image(image_path)
-    detected_disease = disease_detector.detect_disease(image, model, disease_manager)  # ✅ Appel correct
-    st.write(f"🔍 Maladie détectée : {detected_disease}")
+        st.write(f"🔍 Maladie détectée : {detected_disease}")
 
-    # 📌 Afficher les infos détaillées si la maladie est connue
-    if detected_disease in disease_manager.diseases:
-        disease_info = disease_manager.diseases[detected_disease]
-        st.write("🌱 **Informations sur la maladie :**")
-        st.write(f"**Hôtes :** {', '.join(disease_info['hosts'])}")
-        st.write(f"**Description :** {disease_info['overview']}")
-        st.write(f"**Symptômes :** {disease_info['symptoms']}")
-        st.write(f"**Gestion :** {disease_info['management']}")
-        st.write(f"**Traitements disponibles :** {', '.join(disease_info['insecticides'])}")
+        # 📌 Affichage des détails si la maladie est connue
+        disease_info = disease_manager.get_disease_info(detected_disease)
+        if disease_info:
+            st.write("🌱 **Informations sur la maladie :**")
+            st.write(f"**Hôtes :** {', '.join(disease_info['hosts'])}")
+            st.write(f"**Description :** {disease_info['overview']}")
+            st.write(f"**Symptômes :** {disease_info['symptoms']}")
+            st.write(f"**Gestion :** {disease_info['management']}")
+            st.write(f"**Traitements disponibles :** {', '.join(disease_info['insecticides'])}")
 
-        # 📌 Génération de PDF pour la maladie détectée
-        pdf_path = disease_manager.export_to_pdf(detected_disease)
-        st.write(f"📜 [Télécharger le rapport PDF]({pdf_path})")
-        
+            # 📜 Génération du rapport PDF
+            pdf_path = disease_manager.export_to_pdf(detected_disease)
+            st.write(f"📜 [Télécharger le rapport PDF]({pdf_path})")
+
+# ✅ Utilisation de la fonction après sa définition
+if choice == "🔍 Détection des maladies":
+    st.subheader("🔍 Détection des maladies")
+    image_file = st.file_uploader("📤 Télécharge une image", type=["jpg", "jpeg", "png", "bmp", "gif", "tiff"])
+
+    if image_file:
+        handle_disease_detection(image_file, disease_manager, model)  # ✅ Fonction bien définie avant son appel
+
 # ☁ Suivi des conditions climatiques📌 API météo OpenWeatherMap (Remplace "YOUR_API_KEY" par ta clé)
 WEATHER_API_KEY = "YOUR_API_KEY"
 WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
@@ -374,35 +386,8 @@ else:
 if st.button("📜 View All Diseases"):
     st.table(disease_manager.diseases)  # ✅ Accès correct à la liste des maladies
 
-# 📷 Détection automatique avec image
-if choice == "🔍 Disease Detection":
-    st.subheader("🔍 Disease Detection")
-uploaded_image = st.file_uploader("📤 Upload a plant image", type=["png", "jpg", "jpeg"])
-
-if uploaded_image:
-    # ✅ Conversion automatique pour tout format d'image
-    image = Image.open(uploaded_image).convert("RGB").resize((224, 224))
-    img_array = np.array(image) / 255.0  # ✅ Normalisation
-    img_array = np.expand_dims(img_array, axis=0)  # ✅ Format prêt pour TensorFlow
-
-    # 📌 Correction : on passe maintenant une image prétraitée
-    disease_prediction = disease_detector.detect_disease(image=img_array)  # ✅ Appel correct
-
-    st.success(f"✅ Predicted Disease: {disease_prediction}")
-
-    # ✅ Gestion des informations sur la maladie
-    disease_info = disease_manager.get_disease_info(disease_prediction)
-    if disease_info and isinstance(disease_info, dict):
-        st.write(f"📝 **Disease:** {disease_prediction}")
-        st.write(f"🛡 **Management Tips:** {disease_info.get('management', 'No management tips available.')}")
-        if "image" in disease_info:
-            st.image(disease_info["image"], caption=f"Example of {disease_prediction}")
-
 elif choice == "📊 Dashboard interactif":
     st.subheader("📊 Agricultural Performance Dashboard")
-
-
-
     # 📊 Affichage des tendances du rendement
     st.subheader("🌾 Yield Trends")
     yield_data = generate_yield_trends()  # 🔄 Fonction pour récupérer les tendances

@@ -64,11 +64,22 @@ class DiseaseManager:
         if image is None:
             return "🚨 Erreur : Image invalide"
 
+        # ✅ Prétraitement de l'image
         processed_image = cv2.resize(image, (224, 224))
         processed_image = np.expand_dims(processed_image, axis=0) / 255.0
 
-        prediction = self.model.predict(processed_image)  
-        return self.decode_prediction(prediction)  
+        # 🔎 Vérification des classes enregistrées et du modèle
+        print(f"📢 Classes du modèle CNN : {self.model.output_shape}")  
+        print(f"🔎 Maladies enregistrées dans DiseaseManager : {list(self.diseases.keys())}")
+
+        # ✅ Prédiction avec le modèle
+        prediction = self.model.predict(processed_image)
+
+        # 🔢 Affichage des scores de confiance
+        confidence_scores = prediction[0]
+        print(f"🔢 Scores de confiance : {confidence_scores}")
+
+        return self.decode_prediction(prediction)
 
     def add_disease(self, name, hosts, overview, symptoms, management, insecticides):
         """Ajoute une maladie avec ses détails."""
@@ -114,6 +125,7 @@ class DiseaseManager:
         c.showPage()
         c.save()
         return buffer
+
 disease_manager = DiseaseManager()
 disease_manager.add_disease(
     "Aphids on Vegetables",
@@ -421,8 +433,3 @@ disease_manager.add_disease(
     "Sow high-quality seed, remove infected plants, rotate crops, mulch and furrow irrigate to reduce pathogen spread...",
     ["Protectant fungicide sprays recommended"]
 )
-print(f"🔎 Maladies disponibles : {list(disease_manager.diseases.keys())}")
-image_path = "C:/Mah fah/TKB2E6H3IVCBJA4KNHD6LLTB5U.jpg"
-print(f"🔎 Vérification finale - Maladies enregistrées : {list(disease_manager.diseases.keys())}")
-result = disease_manager.analyze_image(image_path)
-print(f"🔎 Résultat de la prédiction : {result}")
