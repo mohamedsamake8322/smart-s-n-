@@ -50,3 +50,4 @@ def preprocess_image(image_path):
     except Exception as e:
         logger.error(f"🚨 Error preprocessing the image: {e}")
         raise RuntimeError(f"🚨 Unable to process the image: {e}")
+print("✅ Script exécuté avec succès !")

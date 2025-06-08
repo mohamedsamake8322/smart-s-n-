@@ -52,3 +52,4 @@ def get_climate_yield_correlation():
         "yield": np.random.uniform(3, 10, 50),
     }
     return pd.DataFrame(data)
+print("✅ Script exécuté avec succès !")
