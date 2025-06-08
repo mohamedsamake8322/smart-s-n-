@@ -31,7 +31,7 @@ from climate_analysis import generate_climate_trends, analyze_climate_risk
 from diseases_infos import disease_manager  # ✅ Import du gestionnaire de maladies
 from database import save_prediction, get_user_predictions, save_observation, save_location
 from extract_images import extract_images_from_pdf
-from field_stress_map import display_stress_trend, display_stress_heatmap, display_weather_prediction
+from field_stress_map import display_stress_trend, generate_stress_heatmap, display_weather_prediction
 from generate_data import generate_data
 from predictor_fertilizer import predict_rendement, get_fertilization_advice
 from climate_analysis import fetch_weather_data, generate_climate_soil_correlation
