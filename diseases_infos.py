@@ -13,33 +13,33 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class DiseaseManager:
-    def __init__(self, model_path="C:/Mah fah/model/plant_disease_model.h5"  # 📌 Ensure the path is correct
-):
+    def __init__(self, model_path="C:/Mah fah/model/plant_disease_model.h5"):
         """Initializes the disease manager and loads the CNN model."""
         self.diseases = {}
         self.model = None
-        self.load_model(model_path)
+        self.load_model(model_path)  # ✅ Correctly calls the instance method
 
-def load_model(self, model_path):
-    """Loads the CNN model and attaches it to the instance."""
-    if not os.path.exists(model_path):
-        logger.error(f"🚨 Error: Model file {model_path} not found.")
-        raise FileNotFoundError(f"🚨 Model not found: {model_path}")
-    
-    try:
-        self.model = tf.keras.models.load_model(model_path)
-        self.model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])  # ✅ Correction
+    def load_model(self, model_path):
+        """Loads the CNN model and attaches it to the instance."""
+        if not os.path.exists(model_path):
+            logger.error(f"🚨 Error: Model file {model_path} not found.")
+            raise FileNotFoundError(f"🚨 Model not found: {model_path}")
 
-        # ✅ Effectuer une évaluation rapide pour activer les métriques
-        dummy_data = np.random.rand(1, 224, 224, 3)  # Simule une image d’entrée (taille adaptée au modèle)
-        dummy_labels = np.zeros((1, 45))  # Crée un label fictif avec 45 catégories
-        dummy_labels[0, np.random.randint(0, 45)] = 1  # Active une classe au hasard
-        self.model.evaluate(dummy_data, dummy_labels)  # Évaluation pour construire les métriques
+        try:
+            self.model = tf.keras.models.load_model(model_path)
+            self.model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
-        logger.info(f"✅ Model successfully loaded and compiled: {model_path}")
-    except Exception as e:
-        logger.error(f"🚨 Failed to load model: {e}")
-        raise RuntimeError(f"🚨 Model loading failed: {e}")
+            # ✅ Effectuer une évaluation rapide pour activer les métriques
+            dummy_data = np.random.rand(1, 224, 224, 3)  # Simule une image d’entrée (taille adaptée au modèle)
+            dummy_labels = np.zeros((1, 45))  # Crée un label fictif avec 45 catégories
+            dummy_labels[0, np.random.randint(0, 45)] = 1  # Active une classe au hasard
+            self.model.evaluate(dummy_data, dummy_labels)  # Évaluation pour construire les métriques
+
+            logger.info(f"✅ Model successfully loaded and compiled: {model_path}")
+        except Exception as e:
+            logger.error(f"🚨 Failed to load model: {e}")
+            raise RuntimeError(f"🚨 Model loading failed: {e}")
+
 
 
     def add_disease(self, name, hosts, overview, symptoms, management, insecticides):
