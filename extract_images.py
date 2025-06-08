@@ -2,40 +2,41 @@ import os
 import fitz  # 🚀 PyMuPDF for extracting images
 
 def extract_images_from_pdf(pdf_path, output_folder="extracted_images/"):
-    """Extracts all images from a PDF and saves them in a folder."""
+    """Extracts all images from a user-selected PDF and saves them in a folder."""
     
-    # 🔹 Check if the PDF file exists
+    # 🔹 Vérifier si le fichier PDF existe
     if not os.path.exists(pdf_path):
-        print(f"⚠️ Warning: The file {pdf_path} was not found. Skipping extraction.")
-        return  # Quitte proprement la fonction sans erreur
+        print(f"⚠️ Erreur : Le fichier {pdf_path} est introuvable. Veuillez sélectionner un PDF valide.")
+        return  
 
-    # 🔹 Create the folder for storing extracted images
+    # 🔹 Créer le dossier pour les images extraites s'il n'existe pas
     os.makedirs(output_folder, exist_ok=True)
 
-    # 🔹 Open the PDF
+    # 🔹 Ouvrir le PDF
     doc = fitz.open(pdf_path)
     
-    image_count = 0  # ✅ Counter for extracted images
+    image_count = 0  # ✅ Compteur d'images extraites
 
-    # 🔹 Extract images from each page
+    # 🔹 Extraire les images de chaque page
     for i, page in enumerate(doc):
         images = page.get_images(full=True)
         
         for img_index, img in enumerate(images):
-            xref = img[0]  # Unique image ID
+            xref = img[0]  # ID unique de l’image
             pix = fitz.Pixmap(doc, xref)
             
-            # 🔹 Save the extracted image
+            # 🔹 Sauvegarder l’image extraite
             image_path = os.path.join(output_folder, f"image_{i+1}_{img_index+1}.png")
             pix.save(image_path)
             
             image_count += 1
-            print(f"✅ Image extracted and saved: {image_path}")
+            print(f"✅ Image extraite et sauvegardée : {image_path}")
 
     doc.close()
     
-    print(f"🚀 Extraction complete! {image_count} images extracted.")
+    print(f"🚀 Extraction terminée ! {image_count} images extraites.")
 
-# 🔹 Test the function
+# 🔹 Exécution dynamique sans exemple statique
 if __name__ == "__main__":
-    extract_images_from_pdf("example.pdf")
+    pdf_path = input("📂 Entrez le chemin du fichier PDF à analyser : ")
+    extract_images_from_pdf(pdf_path)
