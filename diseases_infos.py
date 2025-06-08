@@ -135,6 +135,14 @@ class DiseaseManager:
 
 # ✅ Ajout des maladies
 disease_manager = DiseaseManager()
+# ✅ Définition du chemin de l'image
+image_path = "C:/Mah fah/uploads/TKB2E6H3IVCBJA4KNHD6LLTB5U.jpg"  # Vérifie l'extension exacte
+
+# ✅ Analyse l'image avec le modèle
+result = disease_manager.analyze_image(image_path)
+
+# ✅ Affichage du résultat
+print(f"🔎 Résultat de la prédiction : {result}")
 disease_manager.add_disease(
     "Aphids on Vegetables",
     ["Asparagus", "Brassicas", "Legumes", "Corn", "Solanaceae", "Leafy Greens", "Cucurbits", "Potato", "Root Crops"],
