@@ -28,6 +28,7 @@ class DiseaseManager:
         
         try:
             self.model = tf.keras.models.load_model(model_path)
+            self.model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])  # ✅ Correction
             logger.info(f"✅ Model successfully loaded: {model_path}")
         except Exception as e:
             logger.error(f"🚨 Failed to load model: {e}")
