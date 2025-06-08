@@ -118,7 +118,7 @@ else:
 
 # 📌 Sidebar avec le menu restructuré
 menu = [
-    "🏠 Accueil",
+    "🏠 Welcome",
     "🚀 Retrain Model",
     "🌾 Prédiction & Fertilisation Optimisée",
     "🔍 Détection des maladies",
@@ -128,12 +128,13 @@ menu = [
     "🛡️ Analyse des risques",
     "📊 Performance",
     "🌍 Field Map",
-    "History"
+    "History",
+    "extracted_images"
 ]
 choice = st.sidebar.selectbox("Menu", menu)
 
 # 🏠 Accueil
-if choice == "🏠 Accueil":
+if choice == "🏠 Welcome":
     st.subheader("👋 Welcome to Smart Sènè Yield Predictor")
     st.subheader("📈 Agricultural Yield Prediction")
 
@@ -677,3 +678,42 @@ def compute_shap_values(df, model_path, sample_size=100):
 
     except Exception as e:
         raise RuntimeError(f"🛑 SHAP computation error: {e}")
+# 📁 Dossier des images extraites
+IMAGE_FOLDER = "extracted_images/"
+
+def show_extracted_images():
+    """Affiche toutes les images extraites du PDF."""
+    if os.path.exists(IMAGE_FOLDER):
+        image_files = [f for f in os.listdir(IMAGE_FOLDER) if f.endswith((".png", ".jpg", ".jpeg"))]
+
+        if image_files:
+            st.subheader("📷 Images extraites du PDF")
+            for image_file in image_files:
+                st.image(os.path.join(IMAGE_FOLDER, image_file), caption=image_file)
+        else:
+            st.warning("⚠️ Aucune image trouvée dans le dossier.")
+    else:
+        st.error("🚨 Le dossier d'images extraites n'existe pas.")
+
+# 🔥 Ajouter un menu dans Streamlit
+menu_option = st.sidebar.selectbox("📂 Menu", ["🏠 Accueil", "📷 Extraire images PDF"])
+if menu_option == "📷 Extraire images PDF":
+    st.subheader("📂 Téléverser un PDF et extraire les images")
+    
+    uploaded_pdf = st.file_uploader("📤 Télécharge un fichier PDF", type=["pdf"])
+    
+    if uploaded_pdf:
+        # ✅ Enregistrer le PDF dans un dossier temporaire
+        pdf_path = os.path.join("temp_pdfs", uploaded_pdf.name)
+        os.makedirs("temp_pdfs", exist_ok=True)
+
+        with open(pdf_path, "wb") as f:
+            f.write(uploaded_pdf.getbuffer())
+        
+        st.success(f"✅ Fichier PDF enregistré : {uploaded_pdf.name}")
+        
+        # 🚀 Lancer l’extraction des images
+        extract_images_from_pdf(pdf_path, IMAGE_FOLDER)
+        
+        # 📂 Afficher les images extraites
+        show_extracted_images()
