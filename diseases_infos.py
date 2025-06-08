@@ -136,7 +136,7 @@ class DiseaseManager:
 # ✅ Ajout des maladies
 disease_manager = DiseaseManager()
 # ✅ Définition du chemin de l'image
-image_path = "C:/Mah fah/uploads/TKB2E6H3IVCBJA4KNHD6LLTB5U.jpg"  # Vérifie l'extension exacte
+image_path = "C:/Mah fah/TKB2E6H3IVCBJA4KNHD6LLTB5U.jpg"  # Vérifie l'extension exacte
 
 # ✅ Analyse l'image avec le modèle
 result = disease_manager.analyze_image(image_path)
