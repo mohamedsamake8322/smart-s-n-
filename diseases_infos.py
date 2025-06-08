@@ -20,24 +20,27 @@ class DiseaseManager:
         self.model = None
         self.load_model(model_path)
 
-    def load_model(self, model_path):
-        """Loads the CNN model and attaches it to the instance."""
-        if not os.path.exists(model_path):
-            logger.error(f"🚨 Error: Model file {model_path} not found.")
-            raise FileNotFoundError(f"🚨 Model not found: {model_path}")
-        
-        try:
-            self.model = tf.keras.models.load_model(model_path)
-            self.model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])  # ✅ Correction
-            # Effectuer une évaluation rapide pour activer les métriques
-            dummy_data = np.random.rand(1, 224, 224, 3)  # Simule une image d’entrée
-            dummy_labels = np.array([[0, 1, 0]])  # Exemple de label (adapte selon tes classes)
-            self.model.evaluate(dummy_data, dummy_labels)
+def load_model(self, model_path):
+    """Loads the CNN model and attaches it to the instance."""
+    if not os.path.exists(model_path):
+        logger.error(f"🚨 Error: Model file {model_path} not found.")
+        raise FileNotFoundError(f"🚨 Model not found: {model_path}")
+    
+    try:
+        self.model = tf.keras.models.load_model(model_path)
+        self.model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])  # ✅ Correction
 
-            logger.info(f"✅ Model successfully loaded: {model_path}")
-        except Exception as e:
-            logger.error(f"🚨 Failed to load model: {e}")
-            raise RuntimeError(f"🚨 Model loading failed: {e}")
+        # ✅ Effectuer une évaluation rapide pour activer les métriques
+        dummy_data = np.random.rand(1, 224, 224, 3)  # Simule une image d’entrée (taille adaptée au modèle)
+        dummy_labels = np.zeros((1, 45))  # Crée un label fictif avec 45 catégories
+        dummy_labels[0, np.random.randint(0, 45)] = 1  # Active une classe au hasard
+        self.model.evaluate(dummy_data, dummy_labels)  # Évaluation pour construire les métriques
+
+        logger.info(f"✅ Model successfully loaded and compiled: {model_path}")
+    except Exception as e:
+        logger.error(f"🚨 Failed to load model: {e}")
+        raise RuntimeError(f"🚨 Model loading failed: {e}")
+
 
     def add_disease(self, name, hosts, overview, symptoms, management, insecticides):
         """Adds a disease with its details."""
