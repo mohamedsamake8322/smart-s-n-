@@ -29,6 +29,11 @@ class DiseaseManager:
         try:
             self.model = tf.keras.models.load_model(model_path)
             self.model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])  # ✅ Correction
+            # Effectuer une évaluation rapide pour activer les métriques
+            dummy_data = np.random.rand(1, 224, 224, 3)  # Simule une image d’entrée
+            dummy_labels = np.array([[0, 1, 0]])  # Exemple de label (adapte selon tes classes)
+            self.model.evaluate(dummy_data, dummy_labels)
+
             logger.info(f"✅ Model successfully loaded: {model_path}")
         except Exception as e:
             logger.error(f"🚨 Failed to load model: {e}")
