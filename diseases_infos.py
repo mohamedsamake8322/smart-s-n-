@@ -3,47 +3,75 @@ import numpy as np
 import streamlit as st
 import tensorflow as tf
 import logging
-import cv2  # 🚀 Added OpenCV import
+import cv2  
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-DISEASE_DATABASE = {}  # ✅ Global disease database
-print("✅ Script `diseases_infos.py` executed successfully!")
-# 🚀 Logger Configuration
+
+# ✅ Configuration du logger
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+# ✅ Base de données globale des maladies
+DISEASE_DATABASE = {}
+
 class DiseaseManager:
     def __init__(self, model_path="C:/Mah fah/model/plant_disease_model.h5"):
-        """Initializes the disease manager and loads the CNN model."""
+        """Initialisation du gestionnaire de maladies et chargement du modèle CNN."""
         self.diseases = {}
         self.model = None
-        self.load_model(model_path)  # ✅ Correctly calls the instance method
+        self.load_model(model_path)
 
     def load_model(self, model_path):
-        """Loads the CNN model and attaches it to the instance."""
+        """Charge le modèle CNN et l'attache à l'instance."""
         if not os.path.exists(model_path):
-            logger.error(f"🚨 Error: Model file {model_path} not found.")
-            raise FileNotFoundError(f"🚨 Model not found: {model_path}")
+            logger.error(f"🚨 Erreur : fichier modèle {model_path} introuvable.")
+            raise FileNotFoundError(f"🚨 Modèle non trouvé : {model_path}")
 
         try:
             self.model = tf.keras.models.load_model(model_path)
             self.model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
-            # ✅ Effectuer une évaluation rapide pour activer les métriques
-            dummy_data = np.random.rand(1, 224, 224, 3)  # Simule une image d’entrée (taille adaptée au modèle)
-            dummy_labels = np.zeros((1, 45))  # Crée un label fictif avec 45 catégories
-            dummy_labels[0, np.random.randint(0, 45)] = 1  # Active une classe au hasard
-            self.model.evaluate(dummy_data, dummy_labels)  # Évaluation pour construire les métriques
+            # ✅ Activation des métriques
+            dummy_data = np.random.rand(1, 224, 224, 3)  
+            dummy_labels = np.zeros((1, 45))  
+            dummy_labels[0, np.random.randint(0, 45)] = 1  
+            self.model.evaluate(dummy_data, dummy_labels)  
 
-            logger.info(f"✅ Model successfully loaded and compiled: {model_path}")
+            logger.info(f"✅ Modèle chargé et compilé avec succès : {model_path}")
         except Exception as e:
-            logger.error(f"🚨 Failed to load model: {e}")
-            raise RuntimeError(f"🚨 Model loading failed: {e}")
+            logger.error(f"🚨 Échec du chargement du modèle : {e}")
+            raise RuntimeError(f"🚨 Chargement du modèle échoué : {e}")
 
+    def decode_prediction(self, prediction):
+        """Transforme la prédiction du modèle en label compréhensible."""
+        disease_labels = list(self.diseases.keys())  
 
+        # 🔍 Vérification
+        print(f"🔎 Classes détectables : {disease_labels}")
+        print(f"🧩 Index prédiction : {prediction.argmax()}")
+
+        if prediction.argmax() >= len(disease_labels):
+            return "⚠ Erreur : Classe prédite hors limites"
+
+        return disease_labels[prediction.argmax()] if prediction is not None else "Inconnu"
+
+    def analyze_image(self, image_path):
+        """Analyse une image pour détecter une maladie via le modèle CNN."""
+        if not os.path.exists(image_path):
+            return "🚨 Erreur : Image introuvable"
+
+        image = cv2.imread(image_path)
+        if image is None:
+            return "🚨 Erreur : Image invalide"
+
+        processed_image = cv2.resize(image, (224, 224))
+        processed_image = np.expand_dims(processed_image, axis=0) / 255.0
+
+        prediction = self.model.predict(processed_image)  
+        return self.decode_prediction(prediction)  
 
     def add_disease(self, name, hosts, overview, symptoms, management, insecticides):
-        """Adds a disease with its details."""
+        """Ajoute une maladie avec ses détails."""
         self.diseases[name] = {
             "hosts": hosts,
             "overview": overview,
@@ -51,97 +79,42 @@ class DiseaseManager:
             "management": management,
             "insecticides": insecticides
         }
-        DISEASE_DATABASE[name] = self.diseases[name]  # ✅ Global registration
-
-    def get_disease_info(self, disease_name):
-        """Returns complete information about a disease based on its name."""
-        return self.diseases.get(disease_name, "🚨 No information found for this disease.")
-
-    def upload_image(self, image_file, save_path="uploads/"):
-        """Allows image upload and local storage, supporting multiple formats."""
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-
-        allowed_extensions = {"jpg", "jpeg", "png", "bmp", "gif", "tiff"}
-        file_extension = image_file.name.split(".")[-1].lower()
-
-        if file_extension not in allowed_extensions:
-            return "🚨 Unsupported image format."
-
-        file_path = os.path.join(save_path, image_file.name)
-
-        with open(file_path, "wb") as f:
-            f.write(image_file.getbuffer())
-
-        return file_path
-
-    def analyze_image(self, image_path):
-        """Analyzes an image to detect disease using the CNN model."""
-        if not os.path.exists(image_path):
-            return "🚨 Error: Image not found"
-
-        image = cv2.imread(image_path)
-        if image is None:
-            return "🚨 Error: Invalid image"
-
-        processed_image = cv2.resize(image, (224, 224))
-        processed_image = np.expand_dims(processed_image, axis=0) / 255.0
-
-        prediction = self.model.predict(processed_image)  # CNN-based prediction
-        detected_disease = self.decode_prediction(prediction)  # 📌 AI label translation
-
-        return detected_disease
-
-def decode_prediction(self, prediction):
-    """Transforms model prediction into a comprehensible label."""
-    disease_labels = list(self.diseases.keys())  # ✅ Récupère la liste des classes connues
-
-    # 🔍 Vérification
-    print(f"🔎 Liste des classes détectables : {disease_labels}")
-    print(f"🧩 Index prédiction : {prediction.argmax()}")
-
-    # ✅ Vérifie que l'index est valide
-    if prediction.argmax() >= len(disease_labels):
-        return "⚠ Erreur: Classe prédite hors limites"
-
-    return disease_labels[prediction.argmax()] if prediction is not None else "Unknown"
-
+        DISEASE_DATABASE[name] = self.diseases[name]  
 
     def export_to_pdf(self, disease_name, user_name="Unknown", save_path="reports/"):
-        """Generates a PDF report with disease information."""
+        """Génère un rapport PDF avec les informations sur une maladie."""
         if disease_name not in self.diseases:
-            return "🚨 Disease not found"
+            return "🚨 Maladie introuvable"
 
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
         disease = self.diseases[disease_name]
         buffer = self._generate_pdf_report(user_name, disease_name, disease, save_path)
-
         return buffer
 
     def _generate_pdf_report(self, user_name, disease_name, disease, save_path):
-        """Creates a PDF with disease details."""
+        """Crée un PDF contenant les détails sur la maladie."""
         buffer = os.path.join(save_path, f"{disease_name}_report.pdf")
         c = canvas.Canvas(buffer, pagesize=A4)
         width, height = A4
 
         c.setFont("Helvetica-Bold", 16)
-        c.drawString(50, height - 50, "Smart Disease Detection Report")
+        c.drawString(50, height - 50, "Rapport de Détection des Maladies")
 
         c.setFont("Helvetica", 12)
-        c.drawString(50, height - 80, f"User: {user_name}")
-        c.drawString(50, height - 100, f"Disease Detected: {disease_name}")
+        c.drawString(50, height - 80, f"Utilisateur : {user_name}")
+        c.drawString(50, height - 100, f"Maladie détectée : {disease_name}")
 
-        # 📌 Adding disease information
         y = height - 140
         for key, value in disease.items():
-            c.drawString(70, y, f"{key}: {value}")
+            c.drawString(70, y, f"{key} : {value}")
             y -= 20
 
         c.showPage()
         c.save()
         return buffer
+
 
 # ✅ Ajout des maladies
 disease_manager = DiseaseManager()
