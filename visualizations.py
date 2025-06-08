@@ -125,7 +125,8 @@ def plot_yield_distribution(df):
     ax.set_xlabel("Yield (tons/ha)")
     ax.set_ylabel("Frequency")
     fig.tight_layout()
-    return fig
+    st.pyplot(fig)  # ✅ Affichage dans Streamlit sans bloquer le script
+
 
 def plot_yield_pie(df):
     if "PredictedYield" not in df.columns:
@@ -142,7 +143,8 @@ def plot_yield_pie(df):
     ax.pie(counts, labels=counts.index, autopct="%1.1f%%", startangle=90, colors=colors)
     ax.set_title("🎂 Predicted Yield Distribution (Pie Chart)")
     fig.tight_layout()
-    return fig
+    st.pyplot(fig)  # ✅ Affichage dans Streamlit sans bloquer le script
+
 
 def plot_yield_over_time(df):
     if "timestamp" not in df.columns or "PredictedYield" not in df.columns:
@@ -159,7 +161,8 @@ def plot_yield_over_time(df):
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     fig.autofmt_xdate()
     fig.tight_layout()
-    return fig
+    st.pyplot(fig)  # ✅ Affichage dans Streamlit sans bloquer le script
+
 
 # 🔥 Run all functionalities
 if __name__ == "__main__":
