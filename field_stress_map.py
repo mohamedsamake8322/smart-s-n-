@@ -74,6 +74,16 @@ def predict_stress(temp, wind_speed):
     wind_factor = 0.05 if wind_speed > 10 else 0
     stress_level = min(1, max(0.2, base_stress + temp_factor + wind_factor))
     return round(stress_level, 2)
+def display_weather_prediction():
+    """Affiche la prédiction météo pour chaque champ."""
+    for field in FIELDS:
+        weather_data = get_weather_data(API_KEY, field["lat"], field["lon"])
+        if weather_data:
+            temp = weather_data["main"]["temp"]
+            humidity = weather_data["main"]["humidity"]
+            logging.info(f"🌍 {field['name']}: Température: {temp}°C, Humidité: {humidity}%")
+        else:
+            logging.warning(f"🚨 Données météo indisponibles pour {field['name']}")
 
 # 🗺️ Génération de la carte Folium
 def generate_map(fields):

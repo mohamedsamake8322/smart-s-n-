@@ -57,6 +57,7 @@ from field_stress_map import generate_map, FIELDS
 
 # 📌 Affichage du graphique de stress
 display_stress_trend()
+display_weather_prediction()
 
 map_object = generate_map(FIELDS)
 st_folium(map_object, width=800, height=500)
