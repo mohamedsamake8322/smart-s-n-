@@ -114,18 +114,7 @@ class DiseaseManager:
         c.showPage()
         c.save()
         return buffer
-
-
-# ✅ Ajout des maladies
 disease_manager = DiseaseManager()
-# ✅ Définition du chemin de l'image
-image_path = "C:/Mah fah/TKB2E6H3IVCBJA4KNHD6LLTB5U.jpg"  # Vérifie l'extension exacte
-
-# ✅ Analyse l'image avec le modèle
-result = disease_manager.analyze_image(image_path)
-
-# ✅ Affichage du résultat
-print(f"🔎 Résultat de la prédiction : {result}")
 disease_manager.add_disease(
     "Aphids on Vegetables",
     ["Asparagus", "Brassicas", "Legumes", "Corn", "Solanaceae", "Leafy Greens", "Cucurbits", "Potato", "Root Crops"],
@@ -134,9 +123,6 @@ disease_manager.add_disease(
     "Thoroughly scout crops and weeds for signs or symptoms of aphids...",
     ["carbaryl", "methomyl", "malathion", "alpha-cypermethrin", "bifenthrin", "cyfluthrin", "fenpropathrin", "lambda-cyhalothrin", "deltamethrin", "permethrin"]
 )
-
-print("🚀 Disease Manager is fully operational!")
-
 disease_manager.add_disease(
     "Armyworms on Vegetables",
     ["Asparagus", "Brassicas", "Cucurbits", "Corn", "Leafy Greens", "Legumes", "Onions", "Potato", "Solanaceae Crops", "Root Crops"],
@@ -145,7 +131,6 @@ disease_manager.add_disease(
     "Keep crop area weed-free, till residues and control weeds...",
     ["bifenthrin", "zeta-cypermethrin", "lambda-cyhalothrin", "permethrin", "deltamethrin", "cyfluthrin", "pyrethrins + neem oil", "imiclacloprid", "sulfur"]
 )
-
 disease_manager.add_disease(
     "Blister Beetle",
     ["Alfalfa", "Legumes", "Solanaceae", "Potatoes"],
@@ -154,7 +139,6 @@ disease_manager.add_disease(
     "Blister beetle populations are influenced by grasshopper populations...",
     []  # Ajout de la liste vide pour éviter l'erreur
 )
-
 disease_manager.add_disease(
     "Beet Leafhopper",
     ["Beans", "Beets", "Cucurbits", "Leafy Greens", "Tomato"],
@@ -163,7 +147,6 @@ disease_manager.add_disease(
     "Exclude leafhoppers with floating row covers, shade tomato and pepper plants, remove plant debris...",
     ["bifenthrin", "zeta-cypermethrin", "lambda-cyhalothrin", "permethrin", "deltamethrin", "cyfluthrin", "pyrethrins + neem oil", "imiclacloprid", "sulfur", "methomyl", "fenpropathrin", "permethrin"]
 )
-
 disease_manager.add_disease(
     "Colorado Potato Beetle",
     ["Eggplant", "Pepper", "Potato", "Tomato"],
@@ -181,7 +164,6 @@ disease_manager.add_disease(
     "Hand-pick cucumber beetles, plant resistant varieties, use row covers and mulches...",
     ["bifenthrin", "zeta-cypermethrin", "lambda-cyhalothrin", "permethrin", "deltamethrin", "cyfluthrin", "pyrethrins + neem oil", "imiclacloprid", "sulfur", "methomyl", "fenpropathrin"]
 )
-
 disease_manager.add_disease(
     "Spotted Cucumber Beetle",
     ["Hemp", "Beans", "Corn", "Cucurbits", "Potato", "Tomato", "Small grains", "Ornamentals", "Grasses", "Weeds"],
@@ -190,13 +172,6 @@ disease_manager.add_disease(
     "Keep crop area weed-free, use plastic or organic mulches, destroy crop residues after harvest...",
     ["azadirachtin", "potassium laurate", "mineral oil", "diatomaceous earth", "pyrethrins", "rosemary oil", "neem oil", "kaolin"]
 )
-
-
-
-
-
-
-
 disease_manager.add_disease(
     "Cutworms on Vegetables",
     ["Artichoke", "Asparagus", "Brassicas", "Cucurbits", "Corn", "Legumes", "Leafy Greens", "Onion", "Potato", "Root Crops", "Solanaceae Crops"],
@@ -446,3 +421,8 @@ disease_manager.add_disease(
     "Sow high-quality seed, remove infected plants, rotate crops, mulch and furrow irrigate to reduce pathogen spread...",
     ["Protectant fungicide sprays recommended"]
 )
+print(f"🔎 Maladies disponibles : {list(disease_manager.diseases.keys())}")
+image_path = "C:/Mah fah/TKB2E6H3IVCBJA4KNHD6LLTB5U.jpg"
+print(f"🔎 Vérification finale - Maladies enregistrées : {list(disease_manager.diseases.keys())}")
+result = disease_manager.analyze_image(image_path)
+print(f"🔎 Résultat de la prédiction : {result}")
