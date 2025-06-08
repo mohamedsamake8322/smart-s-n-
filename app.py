@@ -52,6 +52,10 @@ from flask import Flask, request, jsonify
 from disease_detector import detect_disease  # 🔥 Importation de la fonction de détection
 from diseases_infos import DiseaseManager
 from dotenv import load_dotenv
+from field_stress_map import generate_map, FIELDS
+
+map_object = generate_map(FIELDS)
+st_folium(map_object, width=800, height=500)
 
 load_dotenv()  # 🔄 Chargement des variables d’environnement
 API_KEY = os.getenv("OPENWEATHER_API_KEY")
