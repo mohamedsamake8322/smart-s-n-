@@ -54,6 +54,10 @@ from diseases_infos import DiseaseManager
 from dotenv import load_dotenv
 from field_stress_map import generate_map, FIELDS
 
+
+# 📌 Affichage du graphique de stress
+display_stress_trend()
+
 map_object = generate_map(FIELDS)
 st_folium(map_object, width=800, height=500)
 

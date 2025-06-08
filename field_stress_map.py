@@ -45,6 +45,18 @@ def generate_stress_trend():
     dates = pd.date_range(start="2025-01-01", periods=30, freq="D")
     stress_values = np.random.uniform(0.2, 0.8, size=30)
     return pd.DataFrame({"Date": dates, "Stress Level": stress_values})
+def display_stress_trend():
+    """Affiche la tendance du stress sous forme de graphique."""
+    import matplotlib.pyplot as plt
+    
+    df = generate_stress_trend()  # Récupère les données de tendance
+    plt.figure(figsize=(10, 5))
+    plt.plot(df["Date"], df["Stress Level"], marker="o", linestyle="-", color="blue")
+    plt.xlabel("Date")
+    plt.ylabel("Stress Level")
+    plt.title("Évolution du stress sur 30 jours")
+    plt.grid(True)
+    plt.show()
 
 # 🔥 Génération des données de heatmap mensuelle
 def generate_stress_heatmap(fields):
