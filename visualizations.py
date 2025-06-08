@@ -11,7 +11,7 @@ import numpy as np
 from streamlit_folium import st_folium
 from folium.plugins import HeatMap
 
-print("🚀 Script visualizations.py started...")
+st.write("🚀 Script visualizations.py started...")
 
 # 🌍 Definition of agricultural fields
 FIELDS = [
@@ -47,7 +47,7 @@ def create_database():
 
     conn.commit()
     conn.close()
-    print("✅ Data saved in SQLite!")
+    st.write("✅ Data saved in SQLite!")
 
 # 🌦️ Retrieve weather data
 import requests
@@ -73,9 +73,9 @@ for field in FIELDS:
     if "main" in weather_data:
         temperature = weather_data["main"]["temp"]
         humidity = weather_data["main"]["humidity"]
-        print(f"🌍 {field['name']} ({field['country']}): {temperature}°C, Humidité: {humidity}%")
+        st.write(f"🌍 {field['name']} ({field['country']}): {temperature}°C, Humidité: {humidity}%")
     else:
-        print(f"⚠️ Erreur météo pour {field['name']} : {weather_data}")
+        st.write(f"⚠️ Erreur météo pour {field['name']} : {weather_data}")
 
 
 # 🌦️ Update database with weather data
@@ -91,7 +91,7 @@ def update_weather():
             humidity = weather["main"]["humidity"]
         else:
             temperature, humidity = None, None  # ✅ Default values if API fails
-            print(f"⚠️ Weather data error for {field['name']} : {weather}")
+            st.write(f"⚠️ Weather data error for {field['name']} : {weather}")
 
         stress_level = min(1, max(0, 0.5 + (temperature - 25) * 0.02))
 
@@ -100,7 +100,7 @@ def update_weather():
 
     conn.commit()
     conn.close()
-    print("✅ Weather data updated!")
+    st.write("✅ Weather data updated!")
 
 # 🌍 Generate Folium map
 def generate_map():
@@ -125,7 +125,8 @@ def plot_yield_distribution(df):
     ax.set_xlabel("Yield (tons/ha)")
     ax.set_ylabel("Frequency")
     fig.tight_layout()
-    st.pyplot(fig)  # ✅ Affichage dans Streamlit sans bloquer le script
+    st.pyplot(fig, clear_figure=True)
+
 
 
 def plot_yield_pie(df):
@@ -143,7 +144,8 @@ def plot_yield_pie(df):
     ax.pie(counts, labels=counts.index, autopct="%1.1f%%", startangle=90, colors=colors)
     ax.set_title("🎂 Predicted Yield Distribution (Pie Chart)")
     fig.tight_layout()
-    st.pyplot(fig)  # ✅ Affichage dans Streamlit sans bloquer le script
+    st.pyplot(fig, clear_figure=True)
+
 
 
 def plot_yield_over_time(df):
@@ -161,7 +163,8 @@ def plot_yield_over_time(df):
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     fig.autofmt_xdate()
     fig.tight_layout()
-    st.pyplot(fig)  # ✅ Affichage dans Streamlit sans bloquer le script
+    st.pyplot(fig, clear_figure=True)
+
 
 
 # 🔥 Run all functionalities
@@ -186,4 +189,4 @@ if __name__ == "__main__":
     map_object = generate_map()
     st_folium(map_object, width=700, height=500)
 
-print("🚀 Visualizations and data updates completed successfully!")
+st.write("🚀 Visualizations and data updates completed successfully!")
