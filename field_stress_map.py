@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 
 load_dotenv()  
 API_KEY = os.getenv("OPENWEATHER_API_KEY")
+print(f"🔎 Clé API récupérée : {API_KEY}")
 
 if not API_KEY:
     raise RuntimeError("🚨 ERREUR : La clé API OpenWeather est manquante ou invalide !")
