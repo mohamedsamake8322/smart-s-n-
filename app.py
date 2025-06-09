@@ -794,3 +794,4 @@ if menu_option == "📷 Extraire images PDF":
         
         # 📂 Afficher les images extraites
         show_extracted_images()
+print(f"✅ Clé API utilisée : {WEATHER_API_KEY[:10]}******")

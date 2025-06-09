@@ -200,3 +200,4 @@ if __name__ == "__main__":
     st_folium(map_object, width=700, height=500)
 
 print("🚀 Visualizations and data updates completed successfully!")
+print(f"✅ Clé API utilisée : {WEATHER_API_KEY[:10]}******")
