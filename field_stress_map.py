@@ -21,7 +21,8 @@ WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 
 if not WEATHER_API_KEY:
     raise RuntimeError("🚨 ERREUR : La clé API OpenWeather est manquante ou invalide ! Vérifie ton fichier .env.")
-
+else:
+    print(f"✅ Clé API bien chargée : {WEATHER_API_KEY[:10]}******")  # 🔎 Vérification
 # 📝 Configuration des logs
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logging.info("🔄 Clé API chargée avec succès.")
