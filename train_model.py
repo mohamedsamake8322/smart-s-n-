@@ -15,6 +15,10 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator  # type: ign
 import joblib
 import xgboost as xgb
 from sklearn.linear_model import LinearRegression  # 📌 Ajout pour régression climatique
+@tf.function(reduce_retracing=True)  # ✅ Empêche TensorFlow de recréer la fonction à chaque appel
+def train_step(model, train_data, val_data, epochs=30):
+    model.fit(train_data, validation_data=val_data, epochs=epochs)
+    return model
 
 # 📂 Vérification des chemins du dataset CNN
 CNN_TRAIN_DIR = r"C:\Mah fah\plant_disease_dataset\train"
@@ -57,8 +61,16 @@ cnn_model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
 model = cnn_model  # ✅ Rend `model` accessible à l'importation
 # ✅ Entraînement du modèle uniquement si `train_model.py` est exécuté directement
 if __name__ == "__main__":
-    print("🚀 `train_model.py` est exécuté seul. Entraînement en cours...")
+    logging.info("🚀 `train_model.py` est exécuté seul. Entraînement en cours...")
+    
+    # ✅ Entraînement du modèle
     cnn_model.fit(train_data, validation_data=val_data, epochs=30)
+    
+    # ✅ Sauvegarde du modèle après l'entraînement
+    cnn_model.save(r"C:\Mah fah\model\plant_disease_model.h5")
+    
+    logging.info("✅ Modèle entraîné et sauvegardé avec succès !")
+
 
     # ✅ Création du dossier `model`
     os.makedirs("model", exist_ok=True)
@@ -223,8 +235,4 @@ def train_yield_model():
 if __name__ == "__main__":
     logging.info("🚀 Exécution du script `train_model.py`...")
     train_yield_model()
-if __name__ == "__main__":
-    logging.info("🚀 Entraînement du modèle en cours...")
-    cnn_model.fit(train_data, validation_data=val_data, epochs=30)
-    cnn_model.save(r"C:\Mah fah\model\plant_disease_model.h5")  # ✅ Sauvegarde du modèle mis à jour
     logging.info("✅ Modèle entraîné et sauvegardé avec succès !")

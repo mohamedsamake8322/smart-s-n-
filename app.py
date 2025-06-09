@@ -5,12 +5,14 @@ import logging
 import requests
 import numpy as np
 import streamlit as st
+st.set_page_config(page_title="Smart Sènè Yield Predictor", layout="wide")
 import shap
 import folium
 import xgboost as xgb
 import plotly.express as px
 import pandas as pd
 import tensorflow as tf  # ✅ Ajout de TensorFlow pour charger le modèle
+import matplotlib.pyplot as plt  # ✅ Assure l'importation correcte de Matplotlib
 import plotly.express as px
 import visualizations
 import train_model
@@ -111,7 +113,7 @@ except Exception as e:
     print("🚨 Erreur lors de la prédiction :", e)
 
 # 🌍 Initialisation de Streamlit
-st.set_page_config(page_title="Smart Sènè Yield Predictor", layout="wide")
+
 st.title("🌱 Welcome to Smart Sènè!")
 st.write("🌾 Smart Sènè helps you predict plant diseases and optimize crops using artificial intelligence. 🌍✨")
 
@@ -252,24 +254,32 @@ if choice == "🌾 Prédiction & Fertilisation Optimisée":
         else:
             advice = get_fertilization_advice(crop, pH, soil_type, growth_stage, temperature, humidity)
             st.success(f"✅ Recommended Fertilizer: {advice}")
-    # 🌾 Ajout des visualisations dynamiques avec les prédictions
-    if uploaded_file:
-        df = pd.read_csv(uploaded_file)  # 📌 Chargement des données
-        if "PredictedYield" in df.columns:
-           st.subheader("📊 Yield Distribution") 
-           fig1 = visualizations.plot_yield_distribution(df)
-           st.pyplot(fig1)
-           st.subheader("🎂 Yield Frequency (Pie Chart)")
-           fig2 = visualizations.plot_yield_pie(df)
-           st.pyplot(fig2)
-           st.subheader("📈 Yield Trend Over Time")
-           if "timestamp" in df.columns:
-              fig3 = visualizations.plot_yield_over_time(df)
-              st.pyplot(fig3) 
-           else:
-               st.warning("⚠️ Column 'timestamp' not found in data!")
+# 🌾 Ajout des visualisations dynamiques avec les prédictions
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)  # 📌 Chargement des données
+    
+    if "PredictedYield" in df.columns:
+        st.subheader("📊 Yield Distribution") 
+        plt.close('all')  # ✅ Nettoie les figures précédentes
+        fig1 = visualizations.plot_yield_distribution(df)
+        st.pyplot(fig1, clear_figure=True)  # ✅ Affichage propre sans accumulation
+        
+        st.subheader("🎂 Yield Frequency (Pie Chart)")
+        plt.close('all')  # ✅ Nettoie les figures précédentes
+        fig2 = visualizations.plot_yield_pie(df)
+        st.pyplot(fig2, clear_figure=True) 
+        
+        st.subheader("📈 Yield Trend Over Time")
+        if "timestamp" in df.columns:
+            plt.close('all')  # ✅ Nettoie les figures précédentes
+            fig3 = visualizations.plot_yield_over_time(df)
+            st.pyplot(fig3, clear_figure=True) 
+        else:
+            st.warning("⚠️ Column 'timestamp' not found in data!")
     else:
-        st.warning("⚠️ Column 'PredictedYield' not found in uploaded file!")              
+        st.warning("⚠️ Column 'PredictedYield' not found in uploaded file!")
+
+                      
 # 🌾 Tendances du rendement agricole
 if choice == "📊 Yield Trends":
     st.subheader("📊 Yield Trends Over Time")

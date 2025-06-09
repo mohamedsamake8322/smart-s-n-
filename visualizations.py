@@ -1,4 +1,7 @@
 # === visualizations.py ===
+import matplotlib
+matplotlib.use('Agg')  # ✅ Désactive l'interface graphique interactive
+import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -10,6 +13,16 @@ import requests
 import numpy as np
 from streamlit_folium import st_folium
 from folium.plugins import HeatMap
+from dotenv import load_dotenv
+import os
+
+# 🔄 Chargement sécurisé de l’API Key
+load_dotenv()  
+API_KEY = os.getenv("API_KEY")
+
+# 🚨 Vérification que la clé est bien chargée
+if not API_KEY:
+    raise ValueError("🚨 API_KEY is missing! Please add it to .env")
 
 print("🚀 Script visualizations.py started...")
 
@@ -51,8 +64,6 @@ def create_database():
 
 # 🌦️ Retrieve weather data
 import requests
-
-API_KEY = "2746334b2f4cc68fe6c1e8bd86b4922e"
 
 FIELDS = [
     {"name": "Field A", "lat": 12.64, "lon": -8.0, "country": "Mali"},
