@@ -15,14 +15,12 @@ from streamlit_folium import st_folium
 from folium.plugins import HeatMap
 from dotenv import load_dotenv
 import os
-
-# 🔄 Chargement sécurisé de l’API Key
-load_dotenv()  
+load_dotenv()  # 🔄 Recharge `.env`
 API_KEY = os.getenv("API_KEY")
 
-# 🚨 Vérification que la clé est bien chargée
 if not API_KEY:
-    raise ValueError("🚨 API_KEY is missing! Please add it to .env")
+    raise ValueError("🚨 API_KEY is missing! Please add it to .env or set it manually.")
+
 
 print("🚀 Script visualizations.py started...")
 

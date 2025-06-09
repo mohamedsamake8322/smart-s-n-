@@ -63,9 +63,12 @@ display_weather_prediction()
 
 map_object = generate_map(FIELDS)
 st_folium(map_object, width=800, height=500)
+load_dotenv()  # 🔄 Recharge `.env`
+API_KEY = os.getenv("API_KEY")
 
-load_dotenv()  # 🔄 Chargement des variables d’environnement
-API_KEY = os.getenv("OPENWEATHER_API_KEY")
+if not API_KEY:
+    raise ValueError("🚨 API_KEY is missing! Please add it to .env or set it manually.")
+
 
 disease_manager = DiseaseManager()  # 🔥 Maintenant toutes les maladies seront disponibles dès le lancement
 
