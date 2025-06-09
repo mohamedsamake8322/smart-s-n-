@@ -339,7 +339,9 @@ if choice == "🔍 Détection des maladies":
         handle_disease_detection(image_file, disease_manager, model)  # ✅ Fonction bien définie avant son appel
 
 # ☁ Suivi des conditions climatiques📌 API météo OpenWeatherMap (Remplace "YOUR_API_KEY" par ta clé)
-WEATHER_API_KEY = "YOUR_API_KEY"
+# ✅ Récupération sécurisée de la clé API
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY").strip()
+
 WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
 
 def get_weather_data(location):
@@ -349,13 +351,12 @@ def get_weather_data(location):
         response = requests.get(WEATHER_URL, params=params)
         data = response.json()
         if response.status_code == 200:
-            weather_info = {
+            return {
                 "temperature": data["main"]["temp"],
                 "humidity": data["main"]["humidity"],
                 "wind_speed": data["wind"]["speed"],
                 "description": data["weather"][0]["description"]
             }
-            return weather_info
         else:
             return {"error": f"🚨 API Error: {data.get('message', 'Unknown error')}"}
     except requests.exceptions.RequestException as e:

@@ -71,10 +71,17 @@ FIELDS = [
     {"name": "Field E", "lat": 35.68, "lon": 139.76, "country": "Japan"},
 ]
 
+
+import requests
+
+# 🔄 Chargement des variables d’environnement
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY").strip()
+
 def get_weather_data(lat, lon):
-    url = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}&units=metric"
+    url = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={WEATHER_API_KEY}&units=metric"
     response = requests.get(url)
     return response.json()
+
 
 # Récupération météo pour tous les champs
 for field in FIELDS:
