@@ -121,3 +121,4 @@ def generate_map(fields):
         ).add_to(m)
 
     return m  # ✅ Retourne la carte pour être utilisée dans app.py
+print(f"✅ Vérification API_KEY utilisée : {WEATHER_API_KEY[:10]}******")
