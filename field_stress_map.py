@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 load_dotenv()
 
 # 🔹 Récupération de l’API_KEY OpenWeather
-WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY").strip()
 
 if not WEATHER_API_KEY:
     raise RuntimeError("🚨 ERREUR : La clé API OpenWeather est manquante ou invalide ! Vérifie ton fichier .env.")
