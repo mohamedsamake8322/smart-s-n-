@@ -63,11 +63,20 @@ display_weather_prediction()
 
 map_object = generate_map(FIELDS)
 st_folium(map_object, width=800, height=500)
-load_dotenv()  # 🔄 Recharge `.env`
-API_KEY = os.getenv("API_KEY")
+from dotenv import load_dotenv
+import os
 
-if not API_KEY:
-    raise ValueError("🚨 API_KEY is missing! Please add it to .env or set it manually.")
+# 🔄 Recharge les variables d’environnement
+load_dotenv()
+
+# ✅ Récupération correcte de la clé API météo
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+
+if not WEATHER_API_KEY:
+    raise ValueError("🚨 WEATHER_API_KEY is missing! Please add it to .env or set it manually.")
+else:
+    print(f"✅ Clé API récupérée : {WEATHER_API_KEY[:10]}******")
+
 
 
 disease_manager = DiseaseManager()  # 🔥 Maintenant toutes les maladies seront disponibles dès le lancement
@@ -615,7 +624,8 @@ if choice == "📊 Performance":
 if choice == "🌍 Field Map":
     st.subheader("🌍 Field Map & Agricultural Stress Analysis")
 # 🚀 Vérification de la clé API
-if not API_KEY:
+# 🚀 Vérification de la clé API météo
+if not WEATHER_API_KEY:
     raise RuntimeError("🚨 ERREUR : La clé API OpenWeather est manquante ou invalide !")
 
 # 🌍 Définition des champs agricoles
@@ -654,7 +664,7 @@ if choice == "🌍 Field Map":
         m = folium.Map(location=[fields[0]["lat"], fields[0]["lon"]], zoom_start=12, control_scale=True)
 
         for field in fields:
-            weather_data = get_weather_data(API_KEY, field["lat"], field["lon"])
+            weather_data = get_weather_data(WEATHER_API_KEY, field["lat"], field["lon"])
             if weather_data:
                 temp = weather_data["main"]["temp"]
                 wind_speed = weather_data["wind"]["speed"]
