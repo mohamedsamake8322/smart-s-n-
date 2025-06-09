@@ -4,20 +4,27 @@ import pandas as pd
 import requests
 import logging
 import os
+import matplotlib
+
 from dotenv import load_dotenv
 from folium.plugins import HeatMap
 
+# ✅ Désactivation de l'interface graphique interactive pour éviter les erreurs de thread
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 # 🔄 Chargement des variables d’environnement
 load_dotenv()
-API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
-# 🚀 Vérification de la clé API
-if not API_KEY:
-    raise RuntimeError("🚨 ERREUR : La clé API OpenWeather est manquante ou invalide !")
+# 🔹 Récupération de l’API_KEY OpenWeather
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+
+if not WEATHER_API_KEY:
+    raise RuntimeError("🚨 ERREUR : La clé API OpenWeather est manquante ou invalide ! Vérifie ton fichier .env.")
 
 # 📝 Configuration des logs
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logging.info(f"🔄 Clé API chargée avec succès.")
+logging.info("🔄 Clé API chargée avec succès.")
 
 # 🌍 Définition des champs agricoles
 FIELDS = [
@@ -27,16 +34,16 @@ FIELDS = [
 ]
 
 # 🌦️ Récupération des données météo
-def get_weather_data(api_key, lat, lon):
+def get_weather_data(lat, lon):
     """Récupère les données météo via OpenWeather API."""
-    url = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"
+    url = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={WEATHER_API_KEY}&units=metric"
 
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)  # ✅ Ajout d'un timeout pour éviter les blocages
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        logging.error(f"🚨 Erreur API météo : {e}")
+        logging.error(f"🚨 Erreur API météo pour {lat}, {lon} : {e}")
         return None
 
 # 🔥 Génération des tendances de stress
@@ -45,18 +52,19 @@ def generate_stress_trend():
     dates = pd.date_range(start="2025-01-01", periods=30, freq="D")
     stress_values = np.random.uniform(0.2, 0.8, size=30)
     return pd.DataFrame({"Date": dates, "Stress Level": stress_values})
+
 def display_stress_trend():
     """Affiche la tendance du stress sous forme de graphique."""
-    import matplotlib.pyplot as plt
-    
-    df = generate_stress_trend()  # Récupère les données de tendance
-    plt.figure(figsize=(10, 5))
-    plt.plot(df["Date"], df["Stress Level"], marker="o", linestyle="-", color="blue")
-    plt.xlabel("Date")
-    plt.ylabel("Stress Level")
-    plt.title("Évolution du stress sur 30 jours")
-    plt.grid(True)
-    plt.show()
+    plt.close('all')  # ✅ Nettoyage des graphiques précédents
+    df = generate_stress_trend()
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(df["Date"], df["Stress Level"], marker="o", linestyle="-", color="blue")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Stress Level")
+    ax.set_title("Évolution du stress sur 30 jours")
+    ax.grid(True)
+    plt.savefig("stress_trend.png")  # ✅ Sauvegarde pour éviter les erreurs GUI
+    return fig
 
 # 🔥 Génération des données de heatmap mensuelle
 def generate_stress_heatmap(fields):
@@ -74,10 +82,11 @@ def predict_stress(temp, wind_speed):
     wind_factor = 0.05 if wind_speed > 10 else 0
     stress_level = min(1, max(0.2, base_stress + temp_factor + wind_factor))
     return round(stress_level, 2)
+
 def display_weather_prediction():
     """Affiche la prédiction météo pour chaque champ."""
     for field in FIELDS:
-        weather_data = get_weather_data(API_KEY, field["lat"], field["lon"])
+        weather_data = get_weather_data(field["lat"], field["lon"])
         if weather_data:
             temp = weather_data["main"]["temp"]
             humidity = weather_data["main"]["humidity"]
@@ -91,7 +100,7 @@ def generate_map(fields):
     m = folium.Map(location=[fields[0]["lat"], fields[0]["lon"]], zoom_start=12, control_scale=True)
 
     for field in fields:
-        weather_data = get_weather_data(API_KEY, field["lat"], field["lon"])
+        weather_data = get_weather_data(field["lat"], field["lon"])
         if weather_data:
             temp = weather_data["main"]["temp"]
             wind_speed = weather_data["wind"]["speed"]
