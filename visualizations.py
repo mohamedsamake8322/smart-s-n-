@@ -15,11 +15,18 @@ from streamlit_folium import st_folium
 from folium.plugins import HeatMap
 from dotenv import load_dotenv
 import os
-load_dotenv()  # 🔄 Recharge `.env`
-API_KEY = os.getenv("API_KEY")
 
-if not API_KEY:
-    raise ValueError("🚨 API_KEY is missing! Please add it to .env or set it manually.")
+# 🔄 Chargement des variables d’environnement
+load_dotenv()
+
+# ✅ Récupération de la clé API
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+
+if not WEATHER_API_KEY:
+    raise ValueError("🚨 WEATHER_API_KEY is missing! Please add it to .env or set it manually.")
+else:
+    print(f"✅ Clé API récupérée : {WEATHER_API_KEY[:10]}******")
+
 
 
 print("🚀 Script visualizations.py started...")
