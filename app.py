@@ -231,8 +231,6 @@ if choice == "🚀 Retrain Model":
 
                 except Exception as e:
                     st.error(f"🛑 Error during model retraining: {e}")
-
-                
 # 🔄 Prédiction & Fertilisation Optimisée (Fusionnée)
 if choice == "🌾 Prédiction & Fertilisation Optimisée":
     st.subheader("🌾 Smart Agriculture Optimizer")
@@ -243,44 +241,56 @@ if choice == "🌾 Prédiction & Fertilisation Optimisée":
     growth_stage = st.selectbox("🌱 Growth Stage", ["Germination", "Vegetative", "Flowering", "Maturity"])
     temperature = st.number_input("🌡️ Temperature (°C)")
     humidity = st.number_input("💧 Humidity (%)")
-    uploaded_file = st.file_uploader("📤 Upload your yield dataset (CSV format)", type=["csv"])
-
-    if st.button("🔍 Predict Yield"):
-        if uploaded_file:
-            predictions = predict_rendement(uploaded_file)
-            st.success(f"✅ Predicted Yield: {predictions[:5]}")
-
-    if st.button("🧮 Get Fertilization Advice"):
-        valid, error_message = validate_input(crop, pH, soil_type, growth_stage, temperature, humidity)
-        if not valid:
-            st.error(error_message)
-        else:
-            advice = get_fertilization_advice(crop, pH, soil_type, growth_stage, temperature, humidity)
-            st.success(f"✅ Recommended Fertilizer: {advice}")
-# 🌾 Ajout des visualisations dynamiques avec les prédictions
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)  # 📌 Chargement des données
     
-    if "PredictedYield" in df.columns:
+    # 📂 Gestion du fichier uploadé avec vérification
+    uploaded_file = st.file_uploader("📤 Upload your yield dataset (CSV format)", type=["csv"])
+    
+    if uploaded_file is not None:
+        try:
+            df = pd.read_csv(uploaded_file)
+            st.write("🔍 Data Preview:", df.head())
+
+            if st.button("🔍 Predict Yield"):
+                predictions = predict_rendement(df)  # ✅ Utilisation correcte du DataFrame
+                st.success(f"✅ Predicted Yield: {predictions[:5]}")
+
+            if st.button("🧮 Get Fertilization Advice"):
+                valid, error_message = validate_input(crop, pH, soil_type, growth_stage, temperature, humidity)
+                if not valid:
+                    st.error(error_message)
+                else:
+                    advice = get_fertilization_advice(crop, pH, soil_type, growth_stage, temperature, humidity)
+                    st.success(f"✅ Recommended Fertilizer: {advice}")
+                    
+        except Exception as e:
+            st.error(f"🚨 Erreur lors du chargement du fichier : {e}")
+
+    else:
+        st.warning("⚠️ Aucun fichier uploadé. Veuillez fournir un fichier CSV pour les prédictions.")
+
+    # 🌾 Ajout des visualisations dynamiques avec les prédictions
+    if uploaded_file is not None and "PredictedYield" in df.columns:
         st.subheader("📊 Yield Distribution") 
-        plt.close('all')  # ✅ Nettoie les figures précédentes
+        plt.close('all')  # ✅ Nettoyage avant affichage
         fig1 = visualizations.plot_yield_distribution(df)
-        st.pyplot(fig1, clear_figure=True)  # ✅ Affichage propre sans accumulation
-        
+        st.pyplot(fig1)
+
         st.subheader("🎂 Yield Frequency (Pie Chart)")
-        plt.close('all')  # ✅ Nettoie les figures précédentes
+        plt.close('all')  
         fig2 = visualizations.plot_yield_pie(df)
-        st.pyplot(fig2, clear_figure=True) 
-        
+        st.pyplot(fig2)
+
         st.subheader("📈 Yield Trend Over Time")
         if "timestamp" in df.columns:
-            plt.close('all')  # ✅ Nettoie les figures précédentes
+            plt.close('all')  
             fig3 = visualizations.plot_yield_over_time(df)
-            st.pyplot(fig3, clear_figure=True) 
+            st.pyplot(fig3)
         else:
             st.warning("⚠️ Column 'timestamp' not found in data!")
-    else:
+
+    elif uploaded_file is not None:
         st.warning("⚠️ Column 'PredictedYield' not found in uploaded file!")
+
 
                       
 # 🌾 Tendances du rendement agricole
