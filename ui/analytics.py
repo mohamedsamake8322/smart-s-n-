@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
 import sys
 import os
-from services.analysis_service import analysis_service, AnalysisRequest
+import services.analysis_service
 from services.prediction_service import prediction_service
 from core.database import db_manager
 from utils.visualization import viz_engine
@@ -124,13 +124,14 @@ def render_executive_analytics():
         st.markdown("### 📈 Performance Trends")
         
         # Get farm performance analysis
-        performance_request = AnalysisRequest(
+        performance_request = services.analysis_service.AnalysisRequest(
             analysis_type='farm_performance_analysis',
             parameters={},
             user_id=1  # TODO: Get from session
         )
         
-        performance_analysis = analysis_service.analyze_farm_performance(performance_request)
+        performance_analysis = services.analysis_service.analysis_service.analyze_farm_performance(performance_request)
+
         
         if performance_analysis.get('success'):
             metrics = performance_analysis.get('metrics', {})
@@ -150,7 +151,7 @@ def render_executive_analytics():
         st.markdown("### 💰 Revenue Impact Analysis")
         
         # ROI analysis
-        roi_request = AnalysisRequest(
+        roi_request = services.analysis_service.AnalysisRequest(
             analysis_type='roi_analysis',
             parameters={
                 'fertilizer_cost': 500,
@@ -161,7 +162,8 @@ def render_executive_analytics():
             user_id=1
         )
         
-        roi_analysis = analysis_service.analyze_roi(roi_request)
+        roi_analysis = services.analysis_service.analysis_service.analyze_roi(roi_request)
+
         
         if roi_analysis.get('success'):
             roi_data = roi_analysis.get('data', {})
@@ -256,13 +258,13 @@ def render_yield_performance_analysis():
     
     # Get yield trend analysis
     try:
-        yield_request = AnalysisRequest(
+        yield_request = services.analysis_service.AnalysisRequest(
             analysis_type='yield_trend_analysis',
             parameters={},
             user_id=1
         )
         
-        yield_analysis = analysis_service.analyze_yield_trends(yield_request)
+        yield_analysis = services.analysis_service.analysis_service.analyze_yield_trends(yield_request)
         
         if yield_analysis.get('success'):
             trend_data = yield_analysis.get('data', {})
@@ -493,13 +495,14 @@ def render_weather_impact_analysis():
     st.markdown("#### 🌤️ Weather Impact Analysis")
     
     try:
-        weather_request = AnalysisRequest(
+        weather_request = services.analysis_service.AnalysisRequest(
             analysis_type='weather_impact_analysis',
             parameters={},
             user_id=1
         )
         
-        weather_analysis = analysis_service.analyze_weather_impact(weather_request)
+        weather_analysis = services.analysis_service.analysis_service.analyze_weather_impact(weather_request)
+
         
         if weather_analysis.get('success'):
             weather_data = weather_analysis.get('data', {})
@@ -904,7 +907,7 @@ def render_predictive_insights():
         with st.spinner("🤖 Generating predictive insights..."):
             try:
                 # Get predictive analytics
-                predictive_request = AnalysisRequest(
+                predictive_request = services.analysis_service.AnalysisRequest(
                     analysis_type='predictive_analytics',
                     parameters={
                         'category': prediction_category,
@@ -913,8 +916,9 @@ def render_predictive_insights():
                     },
                     user_id=1
                 )
-                
-                predictive_analysis = analysis_service.generate_predictive_analytics(predictive_request)
+              
+ 
+                predictive_analysis = services.analysis_service. analysis_service.analyze_predictive_insights(predictive_request)
                 
                 if predictive_analysis.get('success'):
                     st.success("✅ Predictive analysis completed!")
