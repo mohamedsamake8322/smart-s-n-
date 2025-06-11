@@ -2,6 +2,7 @@
 Advanced Plant Disease Detection System
 """
 import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 import numpy as np
 import logging
 from typing import Dict, Any, List, Tuple, Optional
@@ -16,7 +17,8 @@ except ImportError as e:
     logging.warning(f"Some libraries not available for disease detection: {e}")
 
 logger = logging.getLogger(__name__)
-
+logging.basicConfig(filename="execution.log", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.info("✅ Script exécuté avec succès !")
 class DiseaseDetector:
     """Advanced plant disease detection with confidence scoring and treatment recommendations"""
     
