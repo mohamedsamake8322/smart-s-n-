@@ -10,6 +10,8 @@ import numpy as np
 from typing import Dict, Any, List, Optional, Tuple
 import logging
 from datetime import datetime, timedelta
+import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 logger = logging.getLogger(__name__)
 

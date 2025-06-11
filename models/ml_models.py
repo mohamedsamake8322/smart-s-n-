@@ -21,6 +21,7 @@ try:
     from sklearn.preprocessing import StandardScaler, LabelEncoder
 except ImportError as e:
     logging.warning(f"Some ML libraries not available: {e}")
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 logger = logging.getLogger(__name__)
 

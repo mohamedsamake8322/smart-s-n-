@@ -15,6 +15,7 @@ try:
     import cv2
 except ImportError as e:
     logging.warning(f"Some libraries not available for disease detection: {e}")
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="execution.log", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

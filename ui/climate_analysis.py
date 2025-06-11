@@ -14,6 +14,8 @@ from services.weather_service import weather_service
 from services.analysis_service import analysis_service, AnalysisRequest
 from utils.visualization import viz_engine
 from core.database import db_manager
+import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 def render_climate_analysis():
     """Render the climate analysis interface"""
