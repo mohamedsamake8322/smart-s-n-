@@ -1,288 +1,144 @@
 import streamlit as st
-import os
-import sys
-from pathlib import Path
-
-# Add current directory to Python path
-current_dir = Path(__file__).parent
-sys.path.append(str(current_dir))
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import plotly.express as px
+import plotly.graph_objects as go
+from utils.weather_api import WeatherAPI
+from utils.visualization import create_overview_charts
 
 # Page configuration
 st.set_page_config(
-    page_title="Smart Sènè Yield Predictor",
+    page_title="Agricultural Analytics Platform",
     page_icon="🌾",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for enterprise styling
-st.markdown("""
-<style>
-    /* Main container styling */
-    .main > div {
-        padding-top: 2rem;
-    }
-    
-    /* Header styling */
-    .enterprise-header {
-        background: linear-gradient(135deg, #1f77b4 0%, #2e8b57 100%);
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        color: white;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .enterprise-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-    
-    .enterprise-subtitle {
-        font-size: 1.2rem;
-        margin: 0.5rem 0 0 0;
-        opacity: 0.9;
-    }
-    
-    /* Sidebar styling */
-    .css-1d391kg {
-        background-color: #f8f9fa;
-    }
-    
-    /* Metric cards */
-    .metric-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 8px;
-        border-left: 4px solid #1f77b4;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 1rem;
-    }
-    
-    .metric-title {
-        font-size: 0.9rem;
-        color: #666;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-    }
-    
-    .metric-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1f77b4;
-    }
-    
-    /* Navigation styling */
-    .nav-section {
-        background: #f8f9fa;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        border: 1px solid #e9ecef;
-    }
-    
-    .nav-title {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    /* Status indicators */
-    .status-online {
-        color: #28a745;
-    }
-    
-    .status-warning {
-        color: #ffc107;
-    }
-    
-    .status-error {
-        color: #dc3545;
-    }
-    
-    /* Dashboard cards */
-    .dashboard-card {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        border: 1px solid #e9ecef;
-        margin-bottom: 2rem;
-        transition: transform 0.2s;
-    }
-    
-    .dashboard-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    }
-    
-    .card-title {
-        font-size: 1.3rem;
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    /* Footer */
-    .enterprise-footer {
-        margin-top: 3rem;
-        padding: 2rem;
-        background: #f8f9fa;
-        border-radius: 10px;
-        text-align: center;
-        color: #6c757d;
-        border-top: 3px solid #1f77b4;
-    }
-</style>
-""", unsafe_allow_html=True)
+# Main page content
+st.title("🌾 Agricultural Analytics Platform")
+st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
 
-# Initialize session state
-if 'authenticated' not in st.session_state:
-    st.session_state.authenticated = False
-if 'current_user' not in st.session_state:
-    st.session_state.current_user = None
-if 'navigation_state' not in st.session_state:
-    st.session_state.navigation_state = {}
+# Sidebar information
+st.sidebar.title("Navigation")
+st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
+st.sidebar.markdown("- **Dashboard**: Overview of your agricultural data")
+st.sidebar.markdown("- **Yield Prediction**: ML-powered crop yield forecasting")
+st.sidebar.markdown("- **Weather Data**: Real-time and historical weather information")
+st.sidebar.markdown("- **Soil Monitoring**: Soil condition analysis")
+st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 
-# Import modules
-try:
-    from core.database import init_db
-    from core.auth import authenticate_user, get_user_role
-    from ui.dashboard import render_dashboard
-    from ui.yield_prediction import render_yield_prediction
-    from ui.disease_detection import render_disease_detection
-    from ui.climate_analysis import render_climate_analysis
-    from ui.model_training import render_model_training
-    from ui.analytics import render_analytics
-    from config.settings import APP_CONFIG
-    # Initialize database
-    init_db()
-    
-except ImportError as e:
-    st.error(f"❌ Module import error: {e}")
-    st.stop()
+# Main dashboard overview
+col1, col2, col3, col4 = st.columns(4)
 
-# Header
-st.markdown("""
-<div class="enterprise-header">
-    <h1 class="enterprise-title">🌾 Smart Sènè Enterprise</h1>
-    <p class="enterprise-subtitle">Advanced Agricultural Intelligence Platform</p>
-</div>
-""", unsafe_allow_html=True)
-
-# Sidebar navigation
-with st.sidebar:
-    st.markdown("""
-    <div class="nav-section">
-        <div class="nav-title">🏢 Enterprise Platform</div>
-        <p style="margin: 0; color: #6c757d; font-size: 0.85rem;">
-            Professional Agricultural Intelligence
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # System Status
-    st.markdown("""
-    <div class="nav-section">
-        <div class="nav-title">System Status</div>
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
-            <span class="status-online">●</span> 
-            <span style="font-size: 0.85rem;">ML Models Online</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
-            <span class="status-online">●</span> 
-            <span style="font-size: 0.85rem;">Weather API Active</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span class="status-online">●</span> 
-            <span style="font-size: 0.85rem;">Database Connected</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Navigation Menu
-    st.markdown('<div class="nav-title">📊 Executive Dashboard</div>', unsafe_allow_html=True)
-    executive_menu = [
-        "🏠 Executive Overview",
-        "📈 Business Intelligence", 
-        "🎯 Performance KPIs"
-    ]
-    
-    st.markdown('<div class="nav-title">🔬 Technical Operations</div>', unsafe_allow_html=True)
-    technical_menu = [
-        "🌾 Yield Prediction",
-        "🔍 Disease Detection",
-        "☁️ Climate Analysis",
-        "🚀 Model Training",
-        "📊 Advanced Analytics"
-    ]
-    
-    st.markdown('<div class="nav-title">⚙️ System Management</div>', unsafe_allow_html=True)
-    system_menu = [
-        "📋 Data Management",
-        "🔧 System Settings",
-        "📚 Documentation"
-    ]
-    
-    # Combined menu
-    all_menu_items = executive_menu + technical_menu + system_menu
-    
-    selected_option = st.selectbox(
-        "Navigate to:",
-        all_menu_items,
-        index=0,
-        key="main_navigation"
+with col1:
+    st.metric(
+        label="Active Farms",
+        value="--",
+        help="Number of farms being monitored"
     )
 
-# Main content area
-if selected_option == "🏠 Executive Overview":
-    render_dashboard()
-elif selected_option == "🌾 Yield Prediction":
-    render_yield_prediction()
-elif selected_option == "🔍 Disease Detection":
-    render_disease_detection()
-elif selected_option == "☁️ Climate Analysis":
-    render_climate_analysis()
-elif selected_option == "🚀 Model Training":
-    render_model_training()
-elif selected_option == "📊 Advanced Analytics":
-    render_analytics()
-elif selected_option == "📈 Business Intelligence":
-    render_analytics()
-elif selected_option == "🎯 Performance KPIs":
-    render_dashboard()
-else:
-    st.info(f"🚧 {selected_option} module is under development")
+with col2:
+    st.metric(
+        label="Current Season",
+        value=datetime.now().strftime("%B %Y"),
+        help="Current agricultural season"
+    )
+
+with col3:
+    st.metric(
+        label="Weather Status",
+        value="--",
+        help="Current weather conditions"
+    )
+
+with col4:
+    st.metric(
+        label="Predictions Made",
+        value="--",
+        help="Total number of yield predictions generated"
+    )
+
+# Quick overview section
+st.markdown("---")
+st.subheader("Platform Overview")
+
+tab1, tab2, tab3 = st.tabs(["Features", "Getting Started", "Recent Activity"])
+
+with tab1:
+    st.markdown("""
+    **🔬 Advanced Analytics**
+    - Machine learning-powered yield predictions
+    - Statistical analysis of agricultural metrics
+    - Trend analysis and forecasting
+    
+    **🌤️ Weather Intelligence**
+    - Real-time weather data integration
+    - Historical weather pattern analysis
+    - Weather-based risk assessment
+    
+    **📊 Data Visualization**
+    - Interactive charts and graphs
+    - Customizable dashboards
+    - Export capabilities for reports
+    
+    **🌱 Soil Monitoring**
+    - Soil condition analysis
+    - Nutrient level tracking
+    - pH and moisture monitoring
+    """)
+
+with tab2:
+    st.markdown("""
+    **Step 1: Upload Your Data**
+    - Go to the Data Upload page
+    - Upload your CSV/Excel files with agricultural data
+    - Ensure data includes fields like crop type, yield, weather conditions
+    
+    **Step 2: Configure Weather Monitoring**
+    - Visit the Weather Data page
+    - Set your location for weather tracking
+    - Review current and historical weather data
+    
+    **Step 3: Generate Predictions**
+    - Use the Yield Prediction page
+    - Input your crop and field parameters
+    - Get ML-powered yield forecasts
+    
+    **Step 4: Monitor and Analyze**
+    - Use the Dashboard for comprehensive overview
+    - Track soil conditions on the Soil Monitoring page
+    - Generate reports and insights
+    """)
+
+with tab3:
+    st.info("No recent activity to display. Start by uploading data or making predictions.")
+
+# Quick actions
+st.markdown("---")
+st.subheader("Quick Actions")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button("🔮 Make Yield Prediction", use_container_width=True):
+        st.switch_page("pages/2_Yield_Prediction.py")
+
+with col2:
+    if st.button("📊 View Dashboard", use_container_width=True):
+        st.switch_page("pages/1_Dashboard.py")
+
+with col3:
+    if st.button("📁 Upload Data", use_container_width=True):
+        st.switch_page("pages/5_Data_Upload.py")
 
 # Footer
-st.markdown("""
-<div class="enterprise-footer">
-    <p><strong>Smart Sènè Enterprise Platform</strong> | Version 2.0</p>
-    <p>Powered by Advanced ML & AI | © 2024 Smart Agriculture Solutions</p>
-    <p style="font-size: 0.8rem; margin-top: 1rem;">
-        🌍 Serving agricultural communities worldwide | 
-        🔒 Enterprise-grade security | 
-        📞 24/7 Support available
-    </p>
-</div>
-""", unsafe_allow_html=True)
-import logging
-
-# Configuration du logger
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-
-# Ton code principal ici
-def main():
-    print("✅ Script exécuté avec succès !")
-    logging.info("Le script a été exécuté sans erreur.")
-
-if __name__ == "__main__":
-    main()
+st.markdown("---")
+st.markdown(
+    """
+    <div style='text-align: center; color: #666666; padding: 20px;'>
+    Agricultural Analytics Platform - Empowering farmers with data-driven insights
+    </div>
+    """,
+    unsafe_allow_html=True
+)

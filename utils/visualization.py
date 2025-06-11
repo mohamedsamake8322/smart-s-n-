@@ -1,578 +1,631 @@
-"""
-Enterprise Visualization Utilities
-Professional charts and graphs for agricultural data
-"""
-import plotly.graph_objects as go
-import plotly.express as px
-from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
-from typing import Dict, Any, List, Optional, Tuple
-import logging
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
-import os
-os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+from typing import Dict, List, Optional, Tuple, Any
 
-logger = logging.getLogger(__name__)
-
-class VisualizationEngine:
-    """Enterprise visualization engine with professional styling"""
+def create_overview_charts(data: pd.DataFrame) -> Dict[str, go.Figure]:
+    """
+    Create overview charts for agricultural data dashboard.
     
-    def __init__(self):
-        # Professional color schemes
-        self.color_schemes = {
-            'primary': ['#1f77b4', '#2ca02c', '#ff7f0e', '#d62728', '#9467bd', '#8c564b'],
-            'agricultural': ['#2e8b57', '#228b22', '#32cd32', '#9acd32', '#adff2f', '#7cfc00'],
-            'enterprise': ['#003f5c', '#2f4b7c', '#665191', '#a05195', '#d45087', '#f95d6a'],
-            'status': ['#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6c757d'],
-            'performance': ['#0d6efd', '#198754', '#ffc107', '#dc3545']
-        }
+    Args:
+        data: Agricultural data DataFrame
         
-        # Professional layout template
-        self.layout_template = {
-            'plot_bgcolor': 'white',
-            'paper_bgcolor': 'white',
-            'font': {'family': 'Arial, sans-serif', 'size': 12, 'color': '#2c3e50'},
-            'title': {'font': {'size': 18, 'color': '#2c3e50'}, 'x': 0.5, 'xanchor': 'center'},
-            'xaxis': {
-                'showgrid': True,
-                'gridcolor': '#e9ecef',
-                'gridwidth': 1,
-                'zeroline': False,
-                'showline': True,
-                'linecolor': '#dee2e6',
-                'tickfont': {'size': 10}
-            },
-            'yaxis': {
-                'showgrid': True,
-                'gridcolor': '#e9ecef',
-                'gridwidth': 1,
-                'zeroline': False,
-                'showline': True,
-                'linecolor': '#dee2e6',
-                'tickfont': {'size': 10}
-            },
-            'legend': {
-                'orientation': 'h',
-                'yanchor': 'bottom',
-                'y': -0.2,
-                'xanchor': 'center',
-                'x': 0.5,
-                'font': {'size': 10}
-            },
-            'margin': {'l': 60, 'r': 30, 't': 80, 'b': 80}
-        }
+    Returns:
+        Dictionary of plotly figures
+    """
+    charts = {}
     
-    def create_yield_trend_chart(self, data: pd.DataFrame, 
-                                title: str = "Yield Trends Over Time") -> go.Figure:
-        """Create professional yield trend visualization"""
-        try:
-            fig = go.Figure()
-            
-            # Ensure we have the required columns
-            if 'date' not in data.columns or 'yield' not in data.columns:
-                # Create sample structure if missing
-                if 'created_at' in data.columns:
-                    data['date'] = pd.to_datetime(data['created_at']).dt.date
-                if 'yield_value' in data.columns:
-                    data['yield'] = data['yield_value']
-            
-            # Group by date for trend line
-            if len(data) > 0:
-                daily_avg = data.groupby('date')['yield'].mean().reset_index()
-                
-                # Main trend line
-                fig.add_trace(go.Scatter(
-                    x=daily_avg['date'],
-                    y=daily_avg['yield'],
-                    mode='lines+markers',
-                    name='Average Yield',
-                    line=dict(color=self.color_schemes['primary'][0], width=3),
-                    marker=dict(size=8, symbol='circle'),
-                    hovertemplate='<b>Date:</b> %{x}<br><b>Yield:</b> %{y:.1f} kg/ha<extra></extra>'
-                ))
-                
-                # Add trend line
-                if len(daily_avg) > 1:
-                    z = np.polyfit(range(len(daily_avg)), daily_avg['yield'], 1)
-                    trend_line = np.poly1d(z)(range(len(daily_avg)))
-                    
-                    fig.add_trace(go.Scatter(
-                        x=daily_avg['date'],
-                        y=trend_line,
-                        mode='lines',
-                        name='Trend',
-                        line=dict(color=self.color_schemes['enterprise'][3], width=2, dash='dash'),
-                        hovertemplate='<b>Trend:</b> %{y:.1f} kg/ha<extra></extra>'
-                    ))
-                
-                # Add confidence band if we have enough data
-                if len(daily_avg) > 5:
-                    std_dev = data.groupby('date')['yield'].std().fillna(0)
-                    upper_bound = daily_avg['yield'] + std_dev
-                    lower_bound = daily_avg['yield'] - std_dev
-                    
-                    fig.add_trace(go.Scatter(
-                        x=daily_avg['date'].tolist() + daily_avg['date'].tolist()[::-1],
-                        y=upper_bound.tolist() + lower_bound.tolist()[::-1],
-                        fill='toself',
-                        fillcolor='rgba(31, 119, 180, 0.2)',
-                        line=dict(color='rgba(255,255,255,0)'),
-                        name='Confidence Band',
-                        showlegend=False,
-                        hoverinfo='skip'
-                    ))
-            
-            # Apply professional styling
-            fig.update_layout(
-                title=title,
-                xaxis_title="Date",
-                yaxis_title="Yield (kg/ha)",
-                **self.layout_template
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"Error creating yield trend chart: {e}")
-            return self._create_error_chart("Error creating yield trend chart")
+    if data.empty:
+        # Return empty charts if no data
+        empty_fig = go.Figure()
+        empty_fig.add_annotation(
+            text="No data available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, xanchor='center', yanchor='middle',
+            showarrow=False, font=dict(size=16)
+        )
+        return {'empty': empty_fig}
     
-    def create_performance_dashboard(self, metrics: Dict[str, float]) -> go.Figure:
-        """Create executive performance dashboard"""
-        try:
-            # Create subplots
+    # Yield distribution chart
+    if 'yield' in data.columns:
+        charts['yield_distribution'] = px.histogram(
+            data, 
+            x='yield',
+            nbins=20,
+            title="Yield Distribution",
+            labels={'yield': 'Yield (tons/ha)', 'count': 'Frequency'}
+        )
+        charts['yield_distribution'].update_layout(
+            showlegend=False,
+            height=400
+        )
+    
+    # Crop type distribution
+    if 'crop_type' in data.columns:
+        crop_counts = data['crop_type'].value_counts()
+        charts['crop_distribution'] = px.pie(
+            values=crop_counts.values,
+            names=crop_counts.index,
+            title="Crop Type Distribution"
+        )
+        charts['crop_distribution'].update_layout(height=400)
+    
+    # Yield by crop type
+    if 'crop_type' in data.columns and 'yield' in data.columns:
+        charts['yield_by_crop'] = px.box(
+            data,
+            x='crop_type',
+            y='yield',
+            title="Yield Distribution by Crop Type",
+            labels={'yield': 'Yield (tons/ha)', 'crop_type': 'Crop Type'}
+        )
+        charts['yield_by_crop'].update_layout(height=400)
+    
+    # Area vs Yield scatter plot
+    if 'area' in data.columns and 'yield' in data.columns:
+        charts['area_yield_scatter'] = px.scatter(
+            data,
+            x='area',
+            y='yield',
+            color='crop_type' if 'crop_type' in data.columns else None,
+            title="Area vs Yield Relationship",
+            labels={'area': 'Area (hectares)', 'yield': 'Yield (tons/ha)'}
+        )
+        charts['area_yield_scatter'].update_layout(height=400)
+    
+    return charts
+
+
+def create_trend_analysis(data: pd.DataFrame, date_column: str = 'date', 
+                         value_column: str = 'yield') -> go.Figure:
+    """
+    Create trend analysis chart for time series data.
+    
+    Args:
+        data: DataFrame with time series data
+        date_column: Name of date column
+        value_column: Name of value column to analyze
+        
+    Returns:
+        Plotly figure with trend analysis
+    """
+    if data.empty or date_column not in data.columns or value_column not in data.columns:
+        fig = go.Figure()
+        fig.add_annotation(
+            text="Insufficient data for trend analysis",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, xanchor='center', yanchor='middle',
+            showarrow=False, font=dict(size=16)
+        )
+        return fig
+    
+    # Ensure date column is datetime
+    data = data.copy()
+    data[date_column] = pd.to_datetime(data[date_column])
+    
+    # Group by date and calculate mean
+    if len(data) > 1:
+        daily_avg = data.groupby(data[date_column].dt.date)[value_column].mean().reset_index()
+        daily_avg.columns = [date_column, value_column]
+    else:
+        daily_avg = data[[date_column, value_column]]
+    
+    # Create trend line
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(
+        x=daily_avg[date_column],
+        y=daily_avg[value_column],
+        mode='lines+markers',
+        name=f'{value_column.title()} Trend',
+        line=dict(width=2)
+    ))
+    
+    # Add trend line if enough data points
+    if len(daily_avg) > 2:
+        # Simple linear trend
+        x_numeric = np.arange(len(daily_avg))
+        z = np.polyfit(x_numeric, daily_avg[value_column], 1)
+        p = np.poly1d(z)
+        
+        fig.add_trace(go.Scatter(
+            x=daily_avg[date_column],
+            y=p(x_numeric),
+            mode='lines',
+            name='Trend Line',
+            line=dict(dash='dash', color='red')
+        ))
+    
+    fig.update_layout(
+        title=f'{value_column.title()} Trend Over Time',
+        xaxis_title='Date',
+        yaxis_title=value_column.title(),
+        height=500,
+        hovermode='x unified'
+    )
+    
+    return fig
+
+
+def create_weather_charts(weather_data: pd.DataFrame) -> Dict[str, go.Figure]:
+    """
+    Create weather-related charts for agricultural analysis.
+    
+    Args:
+        weather_data: Weather data DataFrame
+        
+    Returns:
+        Dictionary of weather charts
+    """
+    charts = {}
+    
+    if weather_data.empty:
+        empty_fig = go.Figure()
+        empty_fig.add_annotation(
+            text="No weather data available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, xanchor='center', yanchor='middle',
+            showarrow=False, font=dict(size=16)
+        )
+        return {'empty': empty_fig}
+    
+    # Temperature and rainfall chart
+    if 'date' in weather_data.columns:
+        weather_data['date'] = pd.to_datetime(weather_data['date'])
+        
+        if 'temperature' in weather_data.columns and 'rainfall' in weather_data.columns:
             fig = make_subplots(
-                rows=2, cols=2,
-                subplot_titles=['Productivity Score', 'Health Score', 'Efficiency Score', 'Technology Score'],
-                specs=[[{"type": "indicator"}, {"type": "indicator"}],
-                      [{"type": "indicator"}, {"type": "indicator"}]]
+                rows=2, cols=1,
+                subplot_titles=('Temperature Trend', 'Rainfall Pattern'),
+                vertical_spacing=0.1
             )
             
-            # Performance metrics with thresholds
-            performance_configs = [
-                ('productivity_score', 'Productivity', 1, 1),
-                ('health_score', 'Health', 1, 2),
-                ('efficiency_score', 'Efficiency', 2, 1),
-                ('technology_adoption_score', 'Technology', 2, 2)
-            ]
+            # Temperature
+            fig.add_trace(
+                go.Scatter(
+                    x=weather_data['date'],
+                    y=weather_data['temperature'],
+                    mode='lines',
+                    name='Temperature (°C)',
+                    line=dict(color='red')
+                ),
+                row=1, col=1
+            )
             
-            for metric_key, title, row, col in performance_configs:
-                value = metrics.get(metric_key, 0) * 100  # Convert to percentage
-                
-                # Determine color based on performance
-                if value >= 80:
-                    color = self.color_schemes['status'][0]  # Green
-                elif value >= 60:
-                    color = self.color_schemes['status'][1]  # Yellow
-                else:
-                    color = self.color_schemes['status'][2]  # Red
-                
-                fig.add_trace(go.Indicator(
-                    mode="gauge+number+delta",
-                    value=value,
-                    domain={'x': [0, 1], 'y': [0, 1]},
-                    title={'text': title, 'font': {'size': 16}},
-                    delta={'reference': 75, 'increasing': {'color': "green"}},
-                    gauge={
-                        'axis': {'range': [None, 100], 'tickwidth': 1, 'tickcolor': "darkblue"},
-                        'bar': {'color': color},
-                        'bgcolor': "white",
-                        'borderwidth': 2,
-                        'bordercolor': "gray",
-                        'steps': [
-                            {'range': [0, 50], 'color': '#ffebee'},
-                            {'range': [50, 75], 'color': '#fff3e0'},
-                            {'range': [75, 100], 'color': '#e8f5e8'}
-                        ],
-                        'threshold': {
-                            'line': {'color': "red", 'width': 4},
-                            'thickness': 0.75,
-                            'value': 90
-                        }
-                    }
-                ), row=row, col=col)
+            # Rainfall
+            fig.add_trace(
+                go.Bar(
+                    x=weather_data['date'],
+                    y=weather_data['rainfall'],
+                    name='Rainfall (mm)',
+                    marker_color='blue'
+                ),
+                row=2, col=1
+            )
             
             fig.update_layout(
-                title="Farm Performance Dashboard",
+                title="Weather Conditions Over Time",
                 height=600,
-                **self.layout_template
+                showlegend=True
             )
             
-            return fig
-            
-        except Exception as e:
-            logger.error(f"Error creating performance dashboard: {e}")
-            return self._create_error_chart("Error creating performance dashboard")
+            charts['weather_overview'] = fig
     
-    def create_disease_distribution_chart(self, disease_data: List[Dict]) -> go.Figure:
-        """Create disease distribution visualization"""
-        try:
-            if not disease_data:
-                return self._create_empty_chart("No disease data available")
-            
-            # Process disease data
-            df = pd.DataFrame(disease_data)
-            disease_counts = df['detected_disease'].value_counts()
-            
-            # Create pie chart
-            fig = go.Figure(data=[go.Pie(
-                labels=disease_counts.index,
-                values=disease_counts.values,
-                hole=0.4,
-                marker=dict(
-                    colors=self.color_schemes['agricultural'],
-                    line=dict(color='#FFFFFF', width=2)
-                ),
-                textinfo='label+percent',
-                textposition='outside',
-                hovertemplate='<b>%{label}</b><br>Count: %{value}<br>Percentage: %{percent}<extra></extra>'
-            )])
-            
-            # Add center text
-            fig.add_annotation(
-                text=f"Total<br>{disease_counts.sum()}",
-                x=0.5, y=0.5,
-                font_size=16,
-                showarrow=False
-            )
-            
-            fig.update_layout(
-                title="Disease Distribution Analysis",
-                **self.layout_template
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"Error creating disease distribution chart: {e}")
-            return self._create_error_chart("Error creating disease distribution chart")
+    # Humidity vs Temperature scatter
+    if 'temperature' in weather_data.columns and 'humidity' in weather_data.columns:
+        charts['temp_humidity'] = px.scatter(
+            weather_data,
+            x='temperature',
+            y='humidity',
+            title="Temperature vs Humidity Relationship",
+            labels={'temperature': 'Temperature (°C)', 'humidity': 'Humidity (%)'}
+        )
+        charts['temp_humidity'].update_layout(height=400)
     
-    def create_weather_impact_chart(self, weather_data: Dict[str, Any]) -> go.Figure:
-        """Create weather impact visualization"""
-        try:
-            if not weather_data:
-                return self._create_empty_chart("No weather data available")
-            
-            # Extract locations and impact scores
-            locations = list(weather_data.keys())
-            impact_scores = [data.get('impact_score', 0) * 100 for data in weather_data.values()]
-            
-            # Color mapping based on impact score
-            colors = []
-            for score in impact_scores:
-                if score >= 70:
-                    colors.append(self.color_schemes['status'][0])  # Green
-                elif score >= 50:
-                    colors.append(self.color_schemes['status'][1])  # Yellow
-                else:
-                    colors.append(self.color_schemes['status'][2])  # Red
-            
-            fig = go.Figure(data=[go.Bar(
-                x=locations,
-                y=impact_scores,
-                marker=dict(color=colors, line=dict(color='white', width=1)),
-                text=[f"{score:.1f}%" for score in impact_scores],
-                textposition='outside',
-                hovertemplate='<b>%{x}</b><br>Impact Score: %{y:.1f}%<extra></extra>'
-            )])
-            
-            # Add reference lines
-            fig.add_hline(y=70, line_dash="dash", line_color="green", 
-                         annotation_text="Good Conditions")
-            fig.add_hline(y=50, line_dash="dash", line_color="orange", 
-                         annotation_text="Moderate Conditions")
-            
-            fig.update_layout(
-                title="Weather Impact Assessment by Location",
-                xaxis_title="Farm Locations",
-                yaxis_title="Weather Impact Score (%)",
-                yaxis=dict(range=[0, 100]),
-                **self.layout_template
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"Error creating weather impact chart: {e}")
-            return self._create_error_chart("Error creating weather impact chart")
+    return charts
+
+
+def create_soil_monitoring_charts(soil_data: pd.DataFrame, field_id: str = None) -> Dict[str, go.Figure]:
+    """
+    Create soil monitoring charts.
     
-    def create_roi_comparison_chart(self, roi_data: Dict[str, Dict]) -> go.Figure:
-        """Create ROI comparison visualization"""
-        try:
-            if not roi_data:
-                return self._create_empty_chart("No ROI data available")
-            
-            # Extract data for comparison
-            categories = []
-            roi_values = []
-            payback_periods = []
-            
-            for category, data in roi_data.items():
-                categories.append(category.replace('_', ' ').title())
-                roi_values.append(data.get('roi_percentage', 0))
-                payback_periods.append(data.get('payback_period_months', 0))
-            
-            # Create dual axis chart
-            fig = make_subplots(specs=[[{"secondary_y": True}]])
-            
-            # ROI bars
-            fig.add_trace(go.Bar(
-                x=categories,
-                y=roi_values,
-                name='ROI %',
-                marker=dict(color=self.color_schemes['performance'][0]),
-                yaxis='y',
-                hovertemplate='<b>%{x}</b><br>ROI: %{y}%<extra></extra>'
-            ), secondary_y=False)
-            
-            # Payback period line
+    Args:
+        soil_data: Soil monitoring data DataFrame
+        field_id: Specific field ID to filter data
+        
+    Returns:
+        Dictionary of soil monitoring charts
+    """
+    charts = {}
+    
+    if soil_data.empty:
+        empty_fig = go.Figure()
+        empty_fig.add_annotation(
+            text="No soil data available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, xanchor='center', yanchor='middle',
+            showarrow=False, font=dict(size=16)
+        )
+        return {'empty': empty_fig}
+    
+    # Filter by field if specified
+    if field_id and 'field_id' in soil_data.columns:
+        soil_data = soil_data[soil_data['field_id'] == field_id]
+    
+    # pH trend over time
+    if 'date' in soil_data.columns and 'ph' in soil_data.columns:
+        soil_data['date'] = pd.to_datetime(soil_data['date'])
+        
+        charts['ph_trend'] = px.line(
+            soil_data.sort_values('date'),
+            x='date',
+            y='ph',
+            title="Soil pH Trend",
+            labels={'ph': 'pH Level', 'date': 'Date'}
+        )
+        
+        # Add optimal pH range
+        charts['ph_trend'].add_hline(y=6.0, line_dash="dash", line_color="green", 
+                                    annotation_text="Optimal Min (6.0)")
+        charts['ph_trend'].add_hline(y=7.5, line_dash="dash", line_color="green", 
+                                    annotation_text="Optimal Max (7.5)")
+        charts['ph_trend'].update_layout(height=400)
+    
+    # Nutrient levels
+    nutrient_cols = ['nitrogen', 'phosphorus', 'potassium']
+    available_nutrients = [col for col in nutrient_cols if col in soil_data.columns]
+    
+    if available_nutrients and 'date' in soil_data.columns:
+        fig = go.Figure()
+        
+        for nutrient in available_nutrients:
             fig.add_trace(go.Scatter(
-                x=categories,
-                y=payback_periods,
+                x=soil_data['date'],
+                y=soil_data[nutrient],
                 mode='lines+markers',
-                name='Payback Period (months)',
-                line=dict(color=self.color_schemes['performance'][2], width=3),
-                marker=dict(size=10),
-                yaxis='y2',
-                hovertemplate='<b>%{x}</b><br>Payback: %{y} months<extra></extra>'
-            ), secondary_y=True)
-            
-            # Update axes titles
-            fig.update_xaxes(title_text="Investment Category")
-            fig.update_yaxes(title_text="ROI Percentage (%)", secondary_y=False)
-            fig.update_yaxes(title_text="Payback Period (Months)", secondary_y=True)
-            
-            fig.update_layout(
-                title="Investment ROI Comparison",
-                **self.layout_template
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"Error creating ROI comparison chart: {e}")
-            return self._create_error_chart("Error creating ROI comparison chart")
-    
-    def create_seasonal_forecast_chart(self, forecast_data: Dict[str, Any]) -> go.Figure:
-        """Create seasonal forecast visualization"""
-        try:
-            # Generate sample forecast data if none provided
-            if not forecast_data:
-                months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                yield_forecast = [3200, 3400, 4100, 4500, 4800, 4600,
-                                4400, 4200, 3900, 3600, 3300, 3100]
-                confidence_upper = [y * 1.15 for y in yield_forecast]
-                confidence_lower = [y * 0.85 for y in yield_forecast]
-            else:
-                months = forecast_data.get('months', [])
-                yield_forecast = forecast_data.get('yield_forecast', [])
-                confidence_upper = forecast_data.get('confidence_upper', [])
-                confidence_lower = forecast_data.get('confidence_lower', [])
-            
-            fig = go.Figure()
-            
-            # Confidence band
-            if confidence_upper and confidence_lower:
-                fig.add_trace(go.Scatter(
-                    x=months + months[::-1],
-                    y=confidence_upper + confidence_lower[::-1],
-                    fill='toself',
-                    fillcolor='rgba(31, 119, 180, 0.2)',
-                    line=dict(color='rgba(255,255,255,0)'),
-                    name='Confidence Range',
-                    showlegend=True,
-                    hoverinfo='skip'
-                ))
-            
-            # Main forecast line
-            fig.add_trace(go.Scatter(
-                x=months,
-                y=yield_forecast,
-                mode='lines+markers',
-                name='Yield Forecast',
-                line=dict(color=self.color_schemes['primary'][0], width=3),
-                marker=dict(size=10, symbol='diamond'),
-                hovertemplate='<b>%{x}</b><br>Forecast: %{y:.0f} kg/ha<extra></extra>'
+                name=nutrient.title()
             ))
-            
-            fig.update_layout(
-                title="Seasonal Yield Forecast",
-                xaxis_title="Month",
-                yaxis_title="Predicted Yield (kg/ha)",
-                **self.layout_template
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"Error creating seasonal forecast chart: {e}")
-            return self._create_error_chart("Error creating seasonal forecast chart")
+        
+        fig.update_layout(
+            title="Soil Nutrient Levels Over Time",
+            xaxis_title="Date",
+            yaxis_title="Concentration (ppm)",
+            height=400
+        )
+        
+        charts['nutrient_trends'] = fig
     
-    def create_nutrient_balance_chart(self, nutrient_data: Dict[str, float]) -> go.Figure:
-        """Create nutrient balance radar chart"""
-        try:
-            # Default nutrients if none provided
-            if not nutrient_data:
-                nutrient_data = {
-                    'Nitrogen': 75,
-                    'Phosphorus': 60,
-                    'Potassium': 85,
-                    'Calcium': 70,
-                    'Magnesium': 55,
-                    'Sulfur': 65
-                }
-            
-            nutrients = list(nutrient_data.keys())
-            values = list(nutrient_data.values())
-            
-            fig = go.Figure()
-            
-            # Add radar chart
-            fig.add_trace(go.Scatterpolar(
-                r=values,
-                theta=nutrients,
-                fill='toself',
-                fillcolor='rgba(46, 139, 87, 0.3)',
-                line=dict(color=self.color_schemes['agricultural'][0], width=2),
-                name='Current Levels',
-                hovertemplate='<b>%{theta}</b><br>Level: %{r}%<extra></extra>'
-            ))
-            
-            # Add optimal range
-            optimal_values = [80] * len(nutrients)  # Assuming 80% is optimal
-            fig.add_trace(go.Scatterpolar(
-                r=optimal_values,
-                theta=nutrients,
-                mode='lines',
-                line=dict(color='red', width=2, dash='dash'),
-                name='Optimal Level',
-                hovertemplate='<b>%{theta}</b><br>Optimal: %{r}%<extra></extra>'
-            ))
-            
-            fig.update_layout(
-                title="Soil Nutrient Balance Analysis",
-                polar=dict(
-                    radialaxis=dict(
-                        visible=True,
-                        range=[0, 100],
-                        ticksuffix='%'
-                    )
-                ),
-                **self.layout_template
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"Error creating nutrient balance chart: {e}")
-            return self._create_error_chart("Error creating nutrient balance chart")
+    # Moisture levels
+    if 'date' in soil_data.columns and 'moisture' in soil_data.columns:
+        charts['moisture_trend'] = px.area(
+            soil_data.sort_values('date'),
+            x='date',
+            y='moisture',
+            title="Soil Moisture Levels",
+            labels={'moisture': 'Moisture Content (%)', 'date': 'Date'}
+        )
+        
+        # Add optimal moisture range
+        charts['moisture_trend'].add_hline(y=40, line_dash="dash", line_color="green", 
+                                         annotation_text="Optimal Min (40%)")
+        charts['moisture_trend'].add_hline(y=70, line_dash="dash", line_color="green", 
+                                         annotation_text="Optimal Max (70%)")
+        charts['moisture_trend'].update_layout(height=400)
     
-    def create_cost_benefit_analysis(self, cost_data: Dict[str, Dict]) -> go.Figure:
-        """Create cost-benefit analysis waterfall chart"""
-        try:
-            if not cost_data:
-                return self._create_empty_chart("No cost-benefit data available")
-            
-            # Extract data for waterfall chart
-            categories = ['Initial Investment']
-            values = [-5000]  # Initial cost
-            colors = ['red']
-            
-            for category, data in cost_data.items():
-                benefit = data.get('revenue_increase', 0)
-                categories.append(category.replace('_', ' ').title())
-                values.append(benefit)
-                colors.append('green')
-            
-            # Add total
-            categories.append('Net Benefit')
-            values.append(sum(values[1:]) + values[0])  # Net calculation
-            colors.append('blue' if values[-1] > 0 else 'red')
-            
-            fig = go.Figure(go.Waterfall(
-                name="Cost-Benefit Analysis",
-                orientation="v",
-                measure=["absolute"] + ["relative"] * (len(categories) - 2) + ["total"],
-                x=categories,
-                textposition="outside",
-                text=[f"${val:,.0f}" for val in values],
-                y=values,
-                connector={"line": {"color": "rgb(63, 63, 63)"}},
-                increasing={"marker": {"color": self.color_schemes['status'][0]}},
-                decreasing={"marker": {"color": self.color_schemes['status'][2]}},
-                totals={"marker": {"color": self.color_schemes['primary'][0]}}
-            ))
-            
-            fig.update_layout(
-                title="Investment Cost-Benefit Analysis",
-                xaxis_title="Investment Categories",
-                yaxis_title="Financial Impact ($)",
-                **self.layout_template
-            )
-            
-            return fig
-            
-        except Exception as e:
-            logger.error(f"Error creating cost-benefit analysis: {e}")
-            return self._create_error_chart("Error creating cost-benefit analysis")
+    return charts
+
+
+def create_yield_prediction_charts(actual_yields: List[float], predicted_yields: List[float],
+                                 feature_importance: Dict[str, float] = None) -> Dict[str, go.Figure]:
+    """
+    Create charts for yield prediction analysis.
     
-    def _create_error_chart(self, error_message: str) -> go.Figure:
-        """Create error message chart"""
+    Args:
+        actual_yields: List of actual yield values
+        predicted_yields: List of predicted yield values
+        feature_importance: Dictionary of feature names and importance scores
+        
+    Returns:
+        Dictionary of prediction analysis charts
+    """
+    charts = {}
+    
+    if not actual_yields or not predicted_yields:
+        empty_fig = go.Figure()
+        empty_fig.add_annotation(
+            text="No prediction data available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, xanchor='center', yanchor='middle',
+            showarrow=False, font=dict(size=16)
+        )
+        return {'empty': empty_fig}
+    
+    # Actual vs Predicted scatter plot
+    min_val = min(min(actual_yields), min(predicted_yields))
+    max_val = max(max(actual_yields), max(predicted_yields))
+    
+    charts['actual_vs_predicted'] = go.Figure()
+    
+    charts['actual_vs_predicted'].add_trace(go.Scatter(
+        x=actual_yields,
+        y=predicted_yields,
+        mode='markers',
+        name='Predictions',
+        marker=dict(size=8, opacity=0.7)
+    ))
+    
+    # Add perfect prediction line
+    charts['actual_vs_predicted'].add_trace(go.Scatter(
+        x=[min_val, max_val],
+        y=[min_val, max_val],
+        mode='lines',
+        name='Perfect Prediction',
+        line=dict(dash='dash', color='red')
+    ))
+    
+    charts['actual_vs_predicted'].update_layout(
+        title="Actual vs Predicted Yields",
+        xaxis_title="Actual Yield (tons/ha)",
+        yaxis_title="Predicted Yield (tons/ha)",
+        height=400
+    )
+    
+    # Residuals plot
+    residuals = np.array(actual_yields) - np.array(predicted_yields)
+    
+    charts['residuals'] = go.Figure()
+    charts['residuals'].add_trace(go.Scatter(
+        x=predicted_yields,
+        y=residuals,
+        mode='markers',
+        name='Residuals',
+        marker=dict(size=8, opacity=0.7)
+    ))
+    
+    charts['residuals'].add_hline(y=0, line_dash="solid", line_color="red")
+    
+    charts['residuals'].update_layout(
+        title="Residuals Plot",
+        xaxis_title="Predicted Yield (tons/ha)",
+        yaxis_title="Residuals",
+        height=400
+    )
+    
+    # Feature importance chart
+    if feature_importance:
+        features = list(feature_importance.keys())
+        importance = list(feature_importance.values())
+        
+        # Sort by importance
+        sorted_data = sorted(zip(features, importance), key=lambda x: x[1], reverse=True)
+        features, importance = zip(*sorted_data)
+        
+        charts['feature_importance'] = go.Figure(go.Bar(
+            x=importance,
+            y=features,
+            orientation='h'
+        ))
+        
+        charts['feature_importance'].update_layout(
+            title="Feature Importance in Yield Prediction",
+            xaxis_title="Importance Score",
+            yaxis_title="Features",
+            height=400
+        )
+    
+    return charts
+
+
+def create_comparative_analysis_charts(data: pd.DataFrame, group_column: str, 
+                                     value_column: str) -> Dict[str, go.Figure]:
+    """
+    Create comparative analysis charts for different groups.
+    
+    Args:
+        data: DataFrame with data to compare
+        group_column: Column to group by
+        value_column: Column with values to compare
+        
+    Returns:
+        Dictionary of comparative charts
+    """
+    charts = {}
+    
+    if data.empty or group_column not in data.columns or value_column not in data.columns:
+        empty_fig = go.Figure()
+        empty_fig.add_annotation(
+            text="Insufficient data for comparison",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, xanchor='center', yanchor='middle',
+            showarrow=False, font=dict(size=16)
+        )
+        return {'empty': empty_fig}
+    
+    # Box plot comparison
+    charts['box_comparison'] = px.box(
+        data,
+        x=group_column,
+        y=value_column,
+        title=f"{value_column.title()} Comparison by {group_column.title()}",
+        labels={value_column: value_column.title(), group_column: group_column.title()}
+    )
+    charts['box_comparison'].update_layout(height=400)
+    
+    # Violin plot comparison
+    charts['violin_comparison'] = px.violin(
+        data,
+        x=group_column,
+        y=value_column,
+        box=True,
+        title=f"{value_column.title()} Distribution by {group_column.title()}",
+        labels={value_column: value_column.title(), group_column: group_column.title()}
+    )
+    charts['violin_comparison'].update_layout(height=400)
+    
+    # Statistical summary table
+    summary_stats = data.groupby(group_column)[value_column].agg([
+        'count', 'mean', 'median', 'std', 'min', 'max'
+    ]).round(2)
+    
+    # Convert to table format for display
+    charts['summary_table'] = go.Figure(data=[go.Table(
+        header=dict(
+            values=['Group'] + list(summary_stats.columns),
+            fill_color='paleturquoise',
+            align='left'
+        ),
+        cells=dict(
+            values=[summary_stats.index] + [summary_stats[col] for col in summary_stats.columns],
+            fill_color='lavender',
+            align='left'
+        )
+    )])
+    
+    charts['summary_table'].update_layout(
+        title=f"Statistical Summary: {value_column.title()} by {group_column.title()}",
+        height=400
+    )
+    
+    return charts
+
+
+def create_correlation_heatmap(data: pd.DataFrame, title: str = "Correlation Matrix") -> go.Figure:
+    """
+    Create correlation heatmap for numeric columns.
+    
+    Args:
+        data: DataFrame with numeric data
+        title: Title for the heatmap
+        
+    Returns:
+        Plotly heatmap figure
+    """
+    # Select only numeric columns
+    numeric_data = data.select_dtypes(include=[np.number])
+    
+    if numeric_data.empty or numeric_data.shape[1] < 2:
         fig = go.Figure()
         fig.add_annotation(
-            text=f"⚠️ {error_message}",
-            x=0.5, y=0.5,
+            text="Insufficient numeric data for correlation analysis",
             xref="paper", yref="paper",
-            font=dict(size=16, color="red"),
-            showarrow=False
-        )
-        fig.update_layout(
-            title="Chart Error",
-            **self.layout_template
+            x=0.5, y=0.5, xanchor='center', yanchor='middle',
+            showarrow=False, font=dict(size=16)
         )
         return fig
     
-    def _create_empty_chart(self, message: str) -> go.Figure:
-        """Create empty state chart"""
-        fig = go.Figure()
-        fig.add_annotation(
-            text=f"📊 {message}",
-            x=0.5, y=0.5,
-            xref="paper", yref="paper",
-            font=dict(size=16, color="gray"),
-            showarrow=False
-        )
-        fig.update_layout(
-            title="No Data Available",
-            **self.layout_template
-        )
-        return fig
+    # Calculate correlation matrix
+    corr_matrix = numeric_data.corr()
+    
+    # Create heatmap
+    fig = go.Figure(data=go.Heatmap(
+        z=corr_matrix.values,
+        x=corr_matrix.columns,
+        y=corr_matrix.columns,
+        colorscale='RdBu_r',
+        zmid=0,
+        text=corr_matrix.values.round(2),
+        texttemplate="%{text}",
+        textfont={"size": 10},
+        hoverongaps=False
+    ))
+    
+    fig.update_layout(
+        title=title,
+        height=500,
+        width=500
+    )
+    
+    return fig
 
-# Global visualization engine instance
-viz_engine = VisualizationEngine()
 
-# Convenience functions for backward compatibility
-def create_yield_chart(data: pd.DataFrame) -> go.Figure:
-    """Create yield chart (convenience function)"""
-    return viz_engine.create_yield_trend_chart(data)
+def create_gauge_chart(value: float, title: str, min_val: float = 0, 
+                      max_val: float = 100, unit: str = "") -> go.Figure:
+    """
+    Create a gauge chart for displaying single metric values.
+    
+    Args:
+        value: Current value to display
+        title: Title for the gauge
+        min_val: Minimum value for the gauge
+        max_val: Maximum value for the gauge
+        unit: Unit of measurement
+        
+    Returns:
+        Plotly gauge figure
+    """
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number+delta",
+        value=value,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': f"{title} ({unit})" if unit else title},
+        gauge={
+            'axis': {'range': [None, max_val]},
+            'bar': {'color': "darkblue"},
+            'steps': [
+                {'range': [min_val, max_val * 0.5], 'color': "lightgray"},
+                {'range': [max_val * 0.5, max_val * 0.8], 'color': "yellow"},
+                {'range': [max_val * 0.8, max_val], 'color': "green"}
+            ],
+            'threshold': {
+                'line': {'color': "red", 'width': 4},
+                'thickness': 0.75,
+                'value': max_val * 0.9
+            }
+        }
+    ))
+    
+    fig.update_layout(height=300, margin=dict(l=20, r=20, t=60, b=20))
+    
+    return fig
 
-def create_performance_metrics(metrics: Dict[str, float]) -> go.Figure:
-    """Create performance metrics (convenience function)"""
-    return viz_engine.create_performance_dashboard(metrics)
 
-def create_disease_chart(disease_data: List[Dict]) -> go.Figure:
-    """Create disease chart (convenience function)"""
-    return viz_engine.create_disease_distribution_chart(disease_data)
-import logging
-
-# Configuration du logger
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-
-# Ton code principal ici
-def main():
-    print("✅ Script exécuté avec succès !")
-    logging.info("Le script a été exécuté sans erreur.")
-
-if __name__ == "__main__":
-    main()
+def create_time_series_forecast_chart(historical_data: pd.DataFrame, 
+                                    forecast_data: pd.DataFrame = None,
+                                    date_col: str = 'date', 
+                                    value_col: str = 'value') -> go.Figure:
+    """
+    Create a time series chart with optional forecast data.
+    
+    Args:
+        historical_data: Historical time series data
+        forecast_data: Future forecast data (optional)
+        date_col: Name of date column
+        value_col: Name of value column
+        
+    Returns:
+        Plotly time series figure
+    """
+    fig = go.Figure()
+    
+    if not historical_data.empty:
+        # Historical data
+        fig.add_trace(go.Scatter(
+            x=historical_data[date_col],
+            y=historical_data[value_col],
+            mode='lines+markers',
+            name='Historical Data',
+            line=dict(color='blue')
+        ))
+    
+    if forecast_data is not None and not forecast_data.empty:
+        # Forecast data
+        fig.add_trace(go.Scatter(
+            x=forecast_data[date_col],
+            y=forecast_data[value_col],
+            mode='lines+markers',
+            name='Forecast',
+            line=dict(color='red', dash='dash')
+        ))
+    
+    fig.update_layout(
+        title="Time Series with Forecast",
+        xaxis_title="Date",
+        yaxis_title=value_col.title(),
+        height=500,
+        hovermode='x unified'
+    )
+    
+    return fig
