@@ -2,6 +2,8 @@
 Enterprise Analysis Service
 Advanced analytics and business intelligence for agricultural data
 """
+import sys
+import os
 import logging
 import pandas as pd
 import numpy as np
@@ -13,6 +15,7 @@ from dataclasses import dataclass
 from core.database import db_manager
 from services.weather_service import weather_service
 from services.prediction_service import prediction_service
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "core")))
 
 logger = logging.getLogger(__name__)
 

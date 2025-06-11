@@ -163,7 +163,6 @@ try:
     from ui.model_training import render_model_training
     from ui.analytics import render_analytics
     from config.settings import APP_CONFIG
-    from utils.translations import get_translations, get_available_languages
     # Initialize database
     init_db()
     
