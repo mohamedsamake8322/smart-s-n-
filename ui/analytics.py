@@ -1183,3 +1183,15 @@ def render_regional_comparison():
     """Render regional analysis comparison"""
     st.markdown("**🗺️ Regional Analysis Comparison**")
     st.info("Regional comparison will analyze performance differences across geographical regions")
+import logging
+
+# Configuration du logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Ton code principal ici
+def main():
+    print("✅ Script exécuté avec succès !")
+    logging.info("Le script a été exécuté sans erreur.")
+
+if __name__ == "__main__":
+    main()

@@ -345,3 +345,15 @@ def generate_sample_trend_data(days: int = 30) -> pd.DataFrame:
         'detections': detections,
         'active_users': users
     })
+import logging
+
+# Configuration du logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Ton code principal ici
+def main():
+    print("✅ Script exécuté avec succès !")
+    logging.info("Le script a été exécuté sans erreur.")
+
+if __name__ == "__main__":
+    main()

@@ -906,3 +906,15 @@ def render_extreme_weather_analysis():
     """Render extreme weather events analysis"""
     st.markdown("#### ⛈️ Extreme Weather Events Analysis")
     st.info("Extreme weather analysis tracks and predicts severe weather events that could impact agriculture.")
+import logging
+
+# Configuration du logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Ton code principal ici
+def main():
+    print("✅ Script exécuté avec succès !")
+    logging.info("Le script a été exécuté sans erreur.")
+
+if __name__ == "__main__":
+    main()

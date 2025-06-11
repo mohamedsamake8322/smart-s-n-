@@ -468,3 +468,15 @@ def detect_disease(image_array: np.ndarray) -> Dict[str, Any]:
 def recommend_fertilizer(input_data: Dict) -> Dict[str, Any]:
     """Recommend fertilizer (backward compatibility)"""
     return model_manager.recommend_fertilizer(input_data)
+import logging
+
+# Configuration du logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Ton code principal ici
+def main():
+    print("✅ Script exécuté avec succès !")
+    logging.info("Le script a été exécuté sans erreur.")
+
+if __name__ == "__main__":
+    main()

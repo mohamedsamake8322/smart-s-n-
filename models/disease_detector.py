@@ -366,3 +366,15 @@ def detect_disease(image_input, return_top_k: int = 3) -> Dict[str, Any]:
 def load_disease_model(model_path: str) -> bool:
     """Load disease model (backward compatibility)"""
     return disease_detector.load_model(model_path)
+import logging
+
+# Configuration du logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Ton code principal ici
+def main():
+    print("✅ Script exécuté avec succès !")
+    logging.info("Le script a été exécuté sans erreur.")
+
+if __name__ == "__main__":
+    main()

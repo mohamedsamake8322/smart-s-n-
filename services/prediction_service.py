@@ -757,3 +757,15 @@ def detect_plant_disease(image_data, user_id: int = 1) -> Dict[str, Any]:
     )
     result = prediction_service.detect_plant_disease(request)
     return result.__dict__
+import logging
+
+# Configuration du logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Ton code principal ici
+def main():
+    print("✅ Script exécuté avec succès !")
+    logging.info("Le script a été exécuté sans erreur.")
+
+if __name__ == "__main__":
+    main()

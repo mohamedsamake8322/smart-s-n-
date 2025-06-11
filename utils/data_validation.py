@@ -643,3 +643,15 @@ def validate_yield_input(input_data: Dict[str, Any]) -> ValidationResult:
 def validate_disease_input(input_data: Dict[str, Any]) -> ValidationResult:
     """Validate disease detection input (convenience function)"""
     return data_validator.validate_disease_detection_input(input_data)
+import logging
+
+# Configuration du logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Ton code principal ici
+def main():
+    print("✅ Script exécuté avec succès !")
+    logging.info("Le script a été exécuté sans erreur.")
+
+if __name__ == "__main__":
+    main()

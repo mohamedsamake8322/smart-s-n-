@@ -368,3 +368,15 @@ def save_prediction(user_id: int, prediction_type: str, input_data: Dict,
 def get_user_predictions(user_id: int, limit: int = 100) -> List[Dict]:
     """Get user predictions (backward compatibility)"""
     return db_manager.get_user_predictions(user_id, limit)
+import logging
+
+# Configuration du logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Ton code principal ici
+def main():
+    print("✅ Script exécuté avec succès !")
+    logging.info("Le script a été exécuté sans erreur.")
+
+if __name__ == "__main__":
+    main()
