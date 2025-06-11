@@ -10,12 +10,14 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
-
+import sys
+import os
 from services.analysis_service import analysis_service, AnalysisRequest
 from services.prediction_service import prediction_service
 from core.database import db_manager
 from utils.visualization import viz_engine
 from utils.file_handler import file_handler
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 def render_analytics():
     """Render the analytics interface"""
