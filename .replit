@@ -40,4 +40,3 @@ args = "cd services && python disease_model_trainer.py"
 
 [[ports]]
 localPort = 5000
-externalPort = 80

@@ -28,11 +28,12 @@ logs/
 *.log
 *.sqlite
 
-# 🔹 Machine Learning models
+# 🔹 Machine Learning models (Exclure sauf exceptions)
+# 🔹 Machine Learning models (Exclure sauf exceptions)
 model/
+!model/*.pth
+!model/*.h5
 *.pkl
-*.h5
-*.pt
 *.joblib
 *.onnx
 
@@ -47,4 +48,6 @@ data/
 # 🔹 Streamlit session files
 .streamlit/
 script.py
-!model/plant_disease_model.h5
+
+# 🔹 Dataset spécifique à exclure
+plant_disease_dataset/
