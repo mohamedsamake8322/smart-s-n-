@@ -622,7 +622,7 @@ with tab5:
             pub_period = st.text_input("Période/Échéance")
             pub_quantity = st.text_input("Quantité/Durée")
         
-        pub_description = st.text_area("Description détaillée")
+        pub_description = st.text_area("Description détaillée", key="pub_description")
         
         if st.button(f"📤 Publier {offer_or_request}"):
             if pub_title and pub_description:
