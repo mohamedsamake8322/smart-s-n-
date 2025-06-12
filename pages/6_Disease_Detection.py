@@ -15,6 +15,7 @@ import os
 from datetime import datetime
 from utils.disease_detector import DiseaseDetector, preprocess_image
 from utils.disease_database import DiseaseDatabase
+from utils.disease_database_extended import ExtendedDiseaseDatabase
 
 st.set_page_config(page_title="Disease Detection", page_icon="🔬", layout="wide")
 
@@ -25,9 +26,22 @@ st.markdown("### Diagnostic intelligent des maladies agricoles par IA")
 if 'disease_detector' not in st.session_state:
     st.session_state.disease_detector = DiseaseDetector()
     st.session_state.disease_db = DiseaseDatabase()
+    st.session_state.extended_disease_db = ExtendedDiseaseDatabase()
 
 detector = st.session_state.disease_detector
 disease_db = st.session_state.disease_db
+extended_db = st.session_state.extended_disease_db
+
+# Display database stats
+st.sidebar.markdown("---")
+st.sidebar.markdown("**📊 Base de Données**")
+total_diseases = extended_db.get_disease_count()
+st.sidebar.metric("Maladies Couvertes", f"{total_diseases}+")
+
+# Economic impact analysis
+impact_analysis = extended_db.get_economic_impact_analysis()
+catastrophic_count = len(impact_analysis['catastrophic_diseases'])
+st.sidebar.metric("Maladies Catastrophiques", catastrophic_count)
 
 # Sidebar configuration
 st.sidebar.title("Configuration du Diagnostic")
