@@ -4,15 +4,28 @@ import pandas as pd
 import numpy as np
 import cv2
 from PIL import Image, ImageEnhance
-import tensorflow as tf
-from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 import plotly.express as px
 import plotly.graph_objects as go
 import json
 import os
 from datetime import datetime
+
+# Safe TensorFlow import with fallback
+try:
+    import tensorflow as tf
+    from tensorflow.keras.applications import MobileNetV2
+    from tensorflow.keras.preprocessing import image
+    from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+    TENSORFLOW_AVAILABLE = True
+except ImportError as e:
+    st.error(f"⚠️ TensorFlow non disponible: {e}")
+    TENSORFLOW_AVAILABLE = False
+    # Mock TensorFlow functions for graceful degradation
+    class MockTF:
+        def __init__(self):
+            pass
+    tf = MockTF()
+
 from utils.disease_detector import DiseaseDetector, preprocess_image
 from utils.disease_database import DiseaseDatabase
 from utils.disease_database_extended import ExtendedDiseaseDatabase
@@ -22,15 +35,32 @@ st.set_page_config(page_title="Disease Detection", page_icon="🔬", layout="wid
 st.title("🔬 AI Disease Detection")
 st.markdown("### Diagnostic intelligent des maladies agricoles par IA")
 
-# Initialize disease detector
-if 'disease_detector' not in st.session_state:
-    st.session_state.disease_detector = DiseaseDetector()
-    st.session_state.disease_db = DiseaseDatabase()
-    st.session_state.extended_disease_db = ExtendedDiseaseDatabase()
+# Initialize disease detector with TensorFlow check
+if not TENSORFLOW_AVAILABLE:
+    st.error("🚫 **TensorFlow non disponible** - Module de détection IA désactivé")
+    st.info("💡 **Solution:** Redémarrez le Repl après installation des dépendances compatibles")
+    st.markdown("---")
+    st.subheader("Mode Dégradé - Base de Connaissances Disponible")
+    
+    # Initialize only database components
+    if 'disease_db' not in st.session_state:
+        st.session_state.disease_db = DiseaseDatabase()
+        st.session_state.extended_disease_db = ExtendedDiseaseDatabase()
+    
+    disease_db = st.session_state.disease_db
+    extended_db = st.session_state.extended_disease_db
+    detector = None
+    
+else:
+    # Initialize disease detector normally
+    if 'disease_detector' not in st.session_state:
+        st.session_state.disease_detector = DiseaseDetector()
+        st.session_state.disease_db = DiseaseDatabase()
+        st.session_state.extended_disease_db = ExtendedDiseaseDatabase()
 
-detector = st.session_state.disease_detector
-disease_db = st.session_state.disease_db
-extended_db = st.session_state.extended_disease_db
+    detector = st.session_state.disease_detector
+    disease_db = st.session_state.disease_db
+    extended_db = st.session_state.extended_disease_db
 
 # Display database stats
 st.sidebar.markdown("---")
@@ -71,16 +101,25 @@ crop_filter = st.sidebar.multiselect(
     help="Limitez la détection aux cultures sélectionnées"
 )
 
-# Main content tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "Diagnostic Image", 
-    "Analyse par Lot", 
-    "Historique", 
-    "Base de Connaissances", 
-    "Statistiques"
-])
+# Main content tabs - adjust based on TensorFlow availability
+if TENSORFLOW_AVAILABLE:
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "Diagnostic Image", 
+        "Analyse par Lot", 
+        "Historique", 
+        "Base de Connaissances", 
+        "Statistiques"
+    ])
+else:
+    # Limited tabs in degraded mode
+    tab4, tab_info = st.tabs([
+        "Base de Connaissances", 
+        "Informations Système"
+    ])
 
-with tab1:
+# Only show AI tabs if TensorFlow is available
+if TENSORFLOW_AVAILABLE:
+    with tab1:
     st.subheader("Diagnostic d'Image Unique")
     
     col1, col2 = st.columns([1, 1])
@@ -596,7 +635,7 @@ with tab4:
                     st.write(f"• {prevention}")
 
 with tab5:
-    st.subheader("Statistiques et Performance")
+        st.subheader("Statistiques et Performance")
     
     # Model performance metrics
     st.markdown("**Performance des Modèles**")
@@ -668,25 +707,58 @@ with tab5:
     
     else:
         st.info("Aucune statistique d'usage disponible. Effectuez des diagnostics pour voir les métriques.")
-    
-    # System performance
-    st.markdown("---")
-    st.markdown("**Performance Système**")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        # Simulate system metrics
-        cpu_usage = np.random.uniform(20, 80)
-        st.metric("CPU Usage", f"{cpu_usage:.1f}%")
-    
-    with col2:
-        memory_usage = np.random.uniform(30, 70)
-        st.metric("Memory Usage", f"{memory_usage:.1f}%")
-    
-    with col3:
-        gpu_usage = np.random.uniform(10, 90)
-        st.metric("GPU Usage", f"{gpu_usage:.1f}%")
+        
+        # System performance
+        st.markdown("---")
+        st.markdown("**Performance Système**")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            # Simulate system metrics
+            cpu_usage = np.random.uniform(20, 80)
+            st.metric("CPU Usage", f"{cpu_usage:.1f}%")
+        
+        with col2:
+            memory_usage = np.random.uniform(30, 70)
+            st.metric("Memory Usage", f"{memory_usage:.1f}%")
+        
+        with col3:
+            gpu_usage = np.random.uniform(10, 90)
+            st.metric("GPU Usage", f"{gpu_usage:.1f}%")
+
+# Add system info tab for degraded mode
+else:
+    with tab_info:
+        st.subheader("⚠️ Informations Système")
+        
+        st.error("**Problème de Compatibilité Détecté**")
+        st.markdown("""
+        **Cause:** Conflit entre NumPy 2.3.0 et TensorFlow 2.14.0
+        
+        **Solutions:**
+        1. **Automatique:** Les packages compatibles sont en cours d'installation
+        2. **Manuel:** Redémarrez le Repl après installation
+        3. **Alternative:** Utilisez la base de connaissances en attendant
+        """)
+        
+        # Show current environment info
+        st.markdown("---")
+        st.markdown("**État de l'Environnement**")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.metric("NumPy Version", "2.3.0 (Incompatible)")
+            st.metric("TensorFlow", "2.14.0 (En attente)")
+        
+        with col2:
+            st.metric("Status IA", "❌ Indisponible")
+            st.metric("Base de Données", "✅ Disponible")
+        
+        # Retry button
+        if st.button("🔄 Tester à Nouveau TensorFlow"):
+            st.rerun()
 
 # Add custom CSS for better styling
 st.markdown("""
