@@ -28,6 +28,7 @@ except ImportError as e:
 from utils.disease_detector import DiseaseDetector, preprocess_image
 from utils.disease_database import DiseaseDatabase
 from utils.disease_database_extended import ExtendedDiseaseDatabase
+from io import BytesIO
 
 st.set_page_config(page_title="Disease Detection", page_icon="🔬", layout="wide")
 
@@ -634,8 +635,8 @@ if TENSORFLOW_AVAILABLE:
                     for prevention in disease['prevention']:
                         st.write(f"• {prevention}")
 
-    with tab5:
-            st.subheader("Statistiques et Performance")
+            with tab5:
+                st.subheader("Statistiques et Performance")
 
         # Model performance metrics
         st.markdown("**Performance des Modèles**")
