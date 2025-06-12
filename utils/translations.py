@@ -194,3 +194,154 @@ class TranslationManager:
 
 # Global translation manager instance
 translator = TranslationManager()
+# Smart fertilization translations
+translations.update({
+    'smart_fertilization': {
+        'en': 'Smart Fertilization',
+        'fr': 'Fertilisation Intelligente'
+    },
+    'ai_fertilization_subtitle': {
+        'en': 'AI-powered fertilization planning and optimization',
+        'fr': 'Planification et optimisation de fertilisation par IA'
+    },
+    'create_plan': {
+        'en': 'Create Plan',
+        'fr': 'Créer Plan'
+    },
+    'crop_database': {
+        'en': 'Crop Database',
+        'fr': 'Base Cultures'
+    },
+    'ai_optimization': {
+        'en': 'AI Optimization',
+        'fr': 'Optimisation IA'
+    },
+    'cost_analysis': {
+        'en': 'Cost Analysis',
+        'fr': 'Analyse Coûts'
+    },
+    'iot_integration': {
+        'en': 'IoT Integration',
+        'fr': 'Intégration IoT'
+    },
+    'plan_history': {
+        'en': 'Plan History',
+        'fr': 'Historique Plans'
+    },
+    'create_fertilization_plan': {
+        'en': 'Create Fertilization Plan',
+        'fr': 'Créer Plan de Fertilisation'
+    },
+    'farm_information': {
+        'en': 'Farm Information',
+        'fr': 'Informations Exploitation'
+    },
+    'farmer_name': {
+        'en': 'Farmer Name',
+        'fr': 'Nom Agriculteur'
+    },
+    'farmer_name_help': {
+        'en': 'Enter the farmer\'s full name',
+        'fr': 'Saisir le nom complet de l\'agriculteur'
+    },
+    'farm_name': {
+        'en': 'Farm Name',
+        'fr': 'Nom Exploitation'
+    },
+    'farm_name_help': {
+        'en': 'Enter the farm or company name',
+        'fr': 'Saisir le nom de l\'exploitation ou société'
+    },
+    'crop_type': {
+        'en': 'Crop Type',
+        'fr': 'Type de Culture'
+    },
+    'area_hectares': {
+        'en': 'Area (hectares)',
+        'fr': 'Superficie (hectares)'
+    },
+    'planting_date': {
+        'en': 'Planting Date',
+        'fr': 'Date de Semis'
+    },
+    'target_yield': {
+        'en': 'Target Yield (t/ha)',
+        'fr': 'Rendement Cible (t/ha)'
+    },
+    'target_yield_help': {
+        'en': 'Expected yield in tons per hectare',
+        'fr': 'Rendement attendu en tonnes par hectare'
+    },
+    'soil_conditions': {
+        'en': 'Soil Conditions',
+        'fr': 'Conditions du Sol'
+    },
+    'soil_ph': {
+        'en': 'Soil pH',
+        'fr': 'pH du Sol'
+    },
+    'nitrogen_ppm': {
+        'en': 'Nitrogen (ppm)',
+        'fr': 'Azote (ppm)'
+    },
+    'phosphorus_ppm': {
+        'en': 'Phosphorus (ppm)',
+        'fr': 'Phosphore (ppm)'
+    },
+    'potassium_ppm': {
+        'en': 'Potassium (ppm)',
+        'fr': 'Potassium (ppm)'
+    },
+    'organic_matter': {
+        'en': 'Organic Matter (%)',
+        'fr': 'Matière Organique (%)'
+    },
+    'soil_moisture': {
+        'en': 'Soil Moisture (%)',
+        'fr': 'Humidité Sol (%)'
+    },
+    'moisture_help': {
+        'en': 'Current soil moisture percentage',
+        'fr': 'Pourcentage d\'humidité actuel du sol'
+    },
+    'generate_plan': {
+        'en': 'Generate Plan',
+        'fr': 'Générer Plan'
+    },
+    'generating_plan': {
+        'en': 'Generating fertilization plan...',
+        'fr': 'Génération du plan de fertilisation...'
+    },
+    'plan_generated': {
+        'en': 'Fertilization plan generated successfully!',
+        'fr': 'Plan de fertilisation généré avec succès !'
+    },
+    'plan_preview': {
+        'en': 'Plan Preview',
+        'fr': 'Aperçu du Plan'
+    },
+    'generate_pdf': {
+        'en': 'Generate PDF',
+        'fr': 'Générer PDF'
+    },
+    'download_pdf': {
+        'en': 'Download PDF',
+        'fr': 'Télécharger PDF'
+    },
+    'create_plan_first': {
+        'en': 'Create a fertilization plan first to see the preview',
+        'fr': 'Créez d\'abord un plan de fertilisation pour voir l\'aperçu'
+    },
+    'select_crop_info': {
+        'en': 'Select crop to view information',
+        'fr': 'Sélectionner une culture pour voir les informations'
+    },
+    'quick_actions': {
+        'en': 'Quick Actions',
+        'fr': 'Actions Rapides'
+    },
+    'refresh_data': {
+        'en': 'Refresh Data',
+        'fr': 'Actualiser Données'
+    }
+})
