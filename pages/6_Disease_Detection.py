@@ -579,7 +579,7 @@ with tab4:
                         st.write(f"• {crop}")
                 
                 st.markdown("**Sévérité:** " + disease.get('severity', 'Modérée'))
-                st.markdown("**Saison:** " + disease.get('season', 'Toute l'année'))
+                st.markdown("**Saison:** " + disease.get('season', 'Toute l annee'))
             
             # Treatments
             if 'treatments' in disease:
