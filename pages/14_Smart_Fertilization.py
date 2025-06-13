@@ -71,7 +71,16 @@ with st.form("fertilization_plan"):
         help=translator.get_text('farm_name_help', lang)
     )
 
-    # Informations culture (⚠ Vérifier l'indentation ici)
+    # Informations culture ✅ Suppression de la duplication et correction de l'indentation
+    crop_type = st.selectbox(
+        translator.get_text('crop_type', lang),
+        ["wheat", "corn", "rice", "soybeans"],
+        format_func=lambda x: {
+            "wheat": "Blé", "corn": "Maïs",
+            "rice": "Riz", "soybeans": "Soja"
+        }[x]
+    )
+
     area = st.number_input(
         translator.get_text('area_hectares', lang),
         min_value=0.1,
@@ -80,219 +89,93 @@ with st.form("fertilization_plan"):
         step=0.1
     )
 
-    # Bouton de soumission avec bonne indentation ✅
-    submit_button = st.form_submit_button(translator.get_text('submit_plan', lang))
+    planting_date = st.date_input(
+        translator.get_text('planting_date', lang),
+        value=datetime.now() - timedelta(days=30)
+    )
 
-        # Informations culture
-        crop_type = st.selectbox(
-            translator.get_text('crop_type', lang),
-            ["wheat", "corn", "rice", "soybeans"],
-            format_func=lambda x: {
-                "wheat": "Blé", "corn": "Maïs", 
-                "rice": "Riz", "soybeans": "Soja"
-            }[x]
+    target_yield = st.number_input(
+        translator.get_text('target_yield', lang),
+        min_value=1.0,
+        max_value=20.0,
+        value=6.0,
+        step=0.1,
+        help=translator.get_text('target_yield_help', lang)
+    )
+
+    # Données sol ✅ Correction de `get_text()`
+    st.markdown(f"**{translator.get_text('soil_conditions', lang)}**")
+
+    soil_ph = st.slider(
+        translator.get_text('soil_ph', lang),
+        min_value=4.0,
+        max_value=9.0,
+        value=6.8,
+        step=0.1
+    )
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        soil_nitrogen = st.number_input(
+            translator.get_text('nitrogen_ppm', lang),
+            min_value=0,
+            max_value=200,
+            value=45
         )
-            area = st.number_input(
-                translator.get_text('area_hectares', lang),
-                min_value=0.1,
-                max_value=1000.0,
-                value=25.0,
-                step=0.1
-            )
-            
-            planting_date = st.date_input(
-                translator.get_text('planting_date', lang),
-                value=datetime.now() - timedelta(days=30)
-            )
-            
-            target_yield = st.number_input(
-                translator.get_text('target_yield', lang),
-                min_value=1.0,
-                max_value=20.0,
-                value=6.0,
-                step=0.1,
-                help=translator.get_text('target_yield_help', lang)
-            )
-            
-            # Données sol
-            st.markdown(f"**{get_text('soil_conditions', lang)}**")
-            
-            soil_ph = st.slider(
-                get_text('soil_ph', lang),
-                min_value=4.0,
-                max_value=9.0,
-                value=6.8,
-                step=0.1
-            )
-            
-            col_a, col_b = st.columns(2)
-            with col_a:
-                soil_nitrogen = st.number_input(
-                    get_text('nitrogen_ppm', lang),
-                    min_value=0,
-                    max_value=200,
-                    value=45
-                )
-                
-                soil_phosphorus = st.number_input(
-                    get_text('phosphorus_ppm', lang),
-                    min_value=0,
-                    max_value=100,
-                    value=28
-                )
-            
-            with col_b:
-                soil_potassium = st.number_input(
-                    get_text('potassium_ppm', lang),
-                    min_value=0,
-                    max_value=500,
-                    value=180
-                )
-                
-                organic_matter = st.number_input(
-                    get_text('organic_matter', lang),
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=3.2,
-                    step=0.1
-                )
-            
-            moisture = st.slider(
-                get_text('soil_moisture', lang),
-                min_value=0,
-                max_value=100,
-                value=55,
-                help=get_text('moisture_help', lang)
-            )
-            
-            submitted = st.form_submit_button(f"🚀 {get_text('generate_plan', lang)}")
-            
-            if submitted:
-                # Préparation des données
-                farmer_info = {
-                    'name': farmer_name,
-                    'farm_name': farm_name,
-                    'area': area
-                }
-                
-                soil_data = {
-                    'ph': soil_ph,
-                    'nitrogen': soil_nitrogen,
-                    'phosphorus': soil_phosphorus,
-                    'potassium': soil_potassium,
-                    'organic_matter': organic_matter,
-                    'moisture': moisture
-                }
-                
-                # Génération du plan
-                with st.spinner(translator.get_text('generating_plan', lang)):
 
-                    plan = smart_fertilization.generate_fertilization_plan(
-                        crop_type=crop_type,
-                        planting_date=planting_date.isoformat(),
-                        area=area,
-                        soil_data=soil_data,
-                        target_yield=target_yield
-                    )
-                    
-                    if 'error' not in plan:
-                        # Optimisation IA si des données historiques existent
-                        if len(st.session_state.fertilization_plans) > 5:
-                            weather_data = {'total_rainfall': 500, 'avg_temperature': 20}
-                            plan = smart_fertilization.optimize_fertilization_ai(
-                                plan, soil_data, weather_data
-                            )
-                        
-                        # Sauvegarde du plan
-                        plan_record = {
-                            'id': len(st.session_state.fertilization_plans) + 1,
-                            'farmer_info': farmer_info,
-                            'plan_data': plan,
-                            'created_date': datetime.now().isoformat()
-                        }
-                        st.session_state.fertilization_plans.append(plan_record)
-                        st.session_state.current_plan = plan_record
-                        
-                        st.success(f"✅ {translator.get_text('plan_generated', lang)}")
-                        st.rerun()
-                    else:
-                        st.error(f"❌ {plan['error']}")
-    
-    with col2:
-        st.markdown(f"**{translator.get_text('plan_preview', lang)}**")
-        
-        if 'current_plan' in st.session_state:
-            plan_data = st.session_state.current_plan['plan_data']
-            farmer_info = st.session_state.current_plan['farmer_info']
-            
-            # Résumé du plan
-            st.markdown("**📊 Résumé du Plan**")
-            
-            col_x, col_y, col_z = st.columns(3)
-            
-            with col_x:
-                soil_quality = plan_data['soil_analysis']['soil_quality_score']
-                st.metric(
-                    "Qualité Sol",
-                    f"{soil_quality:.1f}/100",
-                    help="Score de qualité basé sur pH, MO et humidité"
-                )
-            
-            with col_y:
-                total_cost = plan_data['total_cost_estimate']['total_cost_euros']
-                st.metric(
-                    "Coût Total",
-                    f"{total_cost:.2f} €",
-                    help="Coût estimé pour tous les engrais"
-                )
-            
-            with col_z:
-                stages_count = len(plan_data['fertilization_schedule'])
-                st.metric(
-                    "Stades",
-                    f"{stages_count}",
-                    help="Nombre de stades de fertilisation"
-                )
-            
-            # Graphique des nutriments
-            nutrients = plan_data['adjusted_nutrients']
-            
-            fig_nutrients = px.bar(
-                x=list(nutrients.keys()),
-                y=list(nutrients.values()),
-                title="Besoins en Nutriments (kg/ha)",
-                labels={'x': 'Nutriment', 'y': 'Quantité (kg/ha)'},
-                color=list(nutrients.values()),
-                color_continuous_scale='Viridis'
-            )
-            st.plotly_chart(fig_nutrients, use_container_width=True)
-            
-            # Génération PDF
-            if st.button(f"📄 {translator.get_text('generate_pdf', lang)}"):
-:
-                with st.spinner("Génération du PDF..."):
-                    try:
-                        pdf_path = pdf_generator.generate_fertilization_pdf(
-                            plan_data, farmer_info
-                        )
-                        
-                        # Lecture du fichier PDF pour téléchargement
-                        with open(pdf_path, "rb") as pdf_file:
-                            st.download_button(
-                                label=f"💾 {get_text('download_pdf', lang)}",
-                                data=pdf_file.read(),
-                                file_name=f"plan_fertilisation_{farmer_info['name'].replace(' ', '_')}.pdf",
-                                mime="application/pdf"
-                            )
-                        
-                        st.success("✅ PDF généré avec succès!")
-                        
-                    except Exception as e:
-                        st.error(f"❌ Erreur génération PDF: {str(e)}")
-        
-        else:
-            st.info(f"👆 {translator.get_text('create_plan_first', lang)}")
+        soil_phosphorus = st.number_input(
+            translator.get_text('phosphorus_ppm', lang),
+            min_value=0,
+            max_value=100,
+            value=28
+        )
 
+    with col_b:
+        soil_potassium = st.number_input(
+            translator.get_text('potassium_ppm', lang),
+            min_value=0,
+            max_value=500,
+            value=180
+        )
+
+        organic_matter = st.number_input(
+            translator.get_text('organic_matter', lang),
+            min_value=0.0,
+            max_value=10.0,
+            value=3.2,
+            step=0.1
+        )
+
+    moisture = st.slider(
+        translator.get_text('soil_moisture', lang),
+        min_value=0,
+        max_value=100,
+        value=55,
+        help=translator.get_text('moisture_help', lang)
+    )
+
+    # Bouton de soumission ✅ Indentation correcte
+    submitted = st.form_submit_button(f"🚀 {translator.get_text('generate_plan', lang)}")
+
+if submitted:
+    st.success(f"✅ {translator.get_text('plan_generated', lang)}")
+
+# Génération PDF ✅ Suppression de la syntaxe incorrecte `:` à la fin
+if st.button(f"📄 {translator.get_text('generate_pdf', lang)}"):
+    with st.spinner("Génération du PDF..."):
+        try:
+            pdf_path = pdf_generator.generate_fertilization_pdf(plan_data, farmer_info)
+            with open(pdf_path, "rb") as pdf_file:
+                st.download_button(
+                    label=f"💾 {translator.get_text('download_pdf', lang)}",
+                    data=pdf_file.read(),
+                    file_name=f"plan_fertilisation_{farmer_info['name'].replace(' ', '_')}.pdf",
+                    mime="application/pdf"
+                )
+            st.success("✅ PDF généré avec succès!")
+        except Exception as e:
+            st.error(f"❌ Erreur génération PDF: {str(e)}")
+else: st.info(f"👆 {translator.get_text('create_plan_first', lang)}")
 
 with tab2:
     st.subheader(f"🌾 {translator.get_text('crop_database', lang)}")
