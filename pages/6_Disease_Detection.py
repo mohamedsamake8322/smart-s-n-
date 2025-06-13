@@ -10,6 +10,10 @@ import os
 from datetime import datetime
 
 # Safe TensorFlow import with fallback
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Désactive GPU pour éviter l'erreur DLL
+
+# Safe TensorFlow import with fallback
 try:
     import tensorflow as tf
     from tensorflow.keras.applications import MobileNetV2
@@ -24,6 +28,7 @@ except ImportError as e:
         def __init__(self):
             pass
     tf = MockTF()
+
 
 from utils.disease_detector import DiseaseDetector, preprocess_image
 from utils.disease_database import DiseaseDatabase
