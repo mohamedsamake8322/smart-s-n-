@@ -1,11 +1,9 @@
 import os
-os.environ["STREAMLIT_SERVER_PORT"] = "8501"
+os.environ["STREAMLIT_SERVER_ADDRESS"] = "0.0.0.0"
+os.environ["STREAMLIT_SERVER_PORT"] = "8502"
 os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"
-os.environ["BROWSER_SERVER_ADDRESS"] = "0.0.0.0"
 os.environ["STREAMLIT_SERVER_ENABLE_CORS"] = "false"
 os.environ["STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION"] = "false"
-
-
 import streamlit as st
 import pandas as pd
 import numpy as np
