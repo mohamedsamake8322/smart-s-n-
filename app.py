@@ -1,5 +1,7 @@
 import os
-os.environ["STREAMLIT_SERVER_PORT"] = "8501"
+os.environ["STREAMLIT_SERVER_PORT"] = "8501"  # Définit le bon port pour Streamlit Cloud
+os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"  # Active le mode serveur
+os.environ["BROWSER_SERVER_ADDRESS"] = "0.0.0.0"  # Rend l'application accessible publiquement
 
 import streamlit as st
 import pandas as pd
