@@ -57,22 +57,31 @@ with tab1:
 with col1:
     st.markdown(f"**{translator.get_text('farm_information', lang)}**")
 
-    with st.form("fertilization_plan"):
-        # Informations agriculteur
-        farmer_name = st.text_input(
-            translator.get_text('farmer_name', lang),
-            value="Jean Dupont",
-            help=translator.get_text('farmer_name_help', lang)
-        )
+with st.form("fertilization_plan"):
+    # Informations agriculteur
+    farmer_name = st.text_input(
+        translator.get_text('farmer_name', lang),
+        value="Jean Dupont",
+        help=translator.get_text('farmer_name_help', lang)
+    )
 
-        farm_name = st.text_input(
-            translator.get_text('farm_name', lang),
-            value="Ferme du Soleil Levant",
-            help=translator.get_text('farm_name_help', lang)
-        )
+    farm_name = st.text_input(
+        translator.get_text('farm_name', lang),
+        value="Ferme du Soleil Levant",
+        help=translator.get_text('farm_name_help', lang)
+    )
 
-        # Ajouter le bouton de soumission avec une indentation correcte ✅
-        submit_button = st.form_submit_button(translator.get_text('submit_plan', lang))
+    # Informations culture (⚠ Vérifier l'indentation ici)
+    area = st.number_input(
+        translator.get_text('area_hectares', lang),
+        min_value=0.1,
+        max_value=1000.0,
+        value=25.0,
+        step=0.1
+    )
+
+    # Bouton de soumission avec bonne indentation ✅
+    submit_button = st.form_submit_button(translator.get_text('submit_plan', lang))
 
         # Informations culture
         crop_type = st.selectbox(
@@ -83,7 +92,6 @@ with col1:
                 "rice": "Riz", "soybeans": "Soja"
             }[x]
         )
-
             area = st.number_input(
                 translator.get_text('area_hectares', lang),
                 min_value=0.1,
