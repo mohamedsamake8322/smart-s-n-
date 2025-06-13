@@ -66,11 +66,11 @@ with tab1:
             )
             
             farm_name = st.text_input(
-                 translator.get_text('farm_name', lang),
+                translator.get_text('farm_name', lang),
                 value="Ferme du Soleil Levant",
-               help=translator.get_text('farm_name_help', lang)
+                help=translator.get_text('farm_name_help', lang)
             )
-            
+             submit_button = st.form_submit_button(translator.get_text('submit_plan', lang))
             # Informations culture
             crop_type = st.selectbox(
                 translator.get_text('crop_type', lang),
@@ -176,7 +176,8 @@ with tab1:
                 }
                 
                 # Génération du plan
-                with st.spinner(get_text('generating_plan', lang)):
+                with st.spinner(translator.get_text('generating_plan', lang)):
+
                     plan = smart_fertilization.generate_fertilization_plan(
                         crop_type=crop_type,
                         planting_date=planting_date.isoformat(),
@@ -203,13 +204,13 @@ with tab1:
                         st.session_state.fertilization_plans.append(plan_record)
                         st.session_state.current_plan = plan_record
                         
-                        st.success(f"✅ {get_text('plan_generated', lang)}")
+                        st.success(f"✅ {translator.get_text('plan_generated', lang)}")
                         st.rerun()
                     else:
                         st.error(f"❌ {plan['error']}")
     
     with col2:
-        st.markdown(f"**{get_text('plan_preview', lang)}**")
+        st.markdown(f"**{translator.get_text('plan_preview', lang)}**")
         
         if 'current_plan' in st.session_state:
             plan_data = st.session_state.current_plan['plan_data']
@@ -258,7 +259,8 @@ with tab1:
             st.plotly_chart(fig_nutrients, use_container_width=True)
             
             # Génération PDF
-            if st.button(f"📄 {get_text('generate_pdf', lang)}"):
+            if st.button(f"📄 {translator.get_text('generate_pdf', lang)}"):
+:
                 with st.spinner("Génération du PDF..."):
                     try:
                         pdf_path = pdf_generator.generate_fertilization_pdf(
@@ -280,16 +282,17 @@ with tab1:
                         st.error(f"❌ Erreur génération PDF: {str(e)}")
         
         else:
-            st.info(f"👆 {get_text('create_plan_first', lang)}")
+            st.info(f"👆 {translator.get_text('create_plan_first', lang)}")
+
 
 with tab2:
-    st.subheader(f"🌾 {get_text('crop_database', lang)}")
+    st.subheader(f"🌾 {translator.get_text('crop_database', lang)}")
     
     crop_db = CropDatabase()
     
     # Sélection de culture pour affichage
     selected_crop = st.selectbox(
-        get_text('select_crop_info', lang),
+        translator.get_text('select_crop_info', lang),
         ["wheat", "corn", "rice", "soybeans"],
         format_func=lambda x: {
             "wheat": "Blé", "corn": "Maïs", 
@@ -373,7 +376,7 @@ with tab2:
                 st.write(f"• **{element}**: {amount} kg/ha")
 
 with tab3:
-    st.subheader(f"🤖 {get_text('ai_optimization', lang)}")
+    st.subheader(f"🤖 {translator.get_text('ai_optimization', lang)}")
     
     # Entraînement du modèle IA
     st.markdown("**🎓 Entraînement du Modèle IA**")
@@ -453,7 +456,7 @@ with tab3:
         st.info("🎓 Entraînez d'abord le modèle IA pour accéder aux fonctionnalités d'optimisation.")
 
 with tab4:
-    st.subheader(f"💰 {get_text('cost_analysis', lang)}")
+    st.subheader(f"💰 {translator.get_text('cost_analysis', lang)}")
     
     if st.session_state.fertilization_plans:
         # Sélection du plan à analyser
@@ -570,7 +573,7 @@ with tab4:
         st.info("📋 Créez d'abord un plan de fertilisation pour accéder à l'analyse des coûts.")
 
 with tab5:
-    st.subheader(f"📡 {get_text('iot_integration', lang)}")
+    st.subheader(f"📡 {translator.get_text('iot_integration', lang)}")
     
     # Simulation d'intégration IoT
     st.markdown("**🌐 Intégration Capteurs IoT**")
@@ -711,7 +714,7 @@ with tab5:
     st.plotly_chart(fig_trends, use_container_width=True)
 
 with tab6:
-    st.subheader(f"📚 {get_text('plan_history', lang)}")
+    st.subheader(f"📚 {translator.get_text('plan_history', lang)}")
     
     if st.session_state.fertilization_plans:
         # Tableau des plans
