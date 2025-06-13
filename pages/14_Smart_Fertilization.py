@@ -54,35 +54,36 @@ with tab1:
     
     col1, col2 = st.columns(2)  # Corrigé
 
-    with col1:
-        st.markdown(f"**{translator.get_text('farm_information', lang)}**")
+with col1:
+    st.markdown(f"**{translator.get_text('farm_information', lang)}**")
 
-        with st.form("fertilization_plan"):
-            # Informations agriculteur
-            farmer_name = st.text_input(
-                translator.get_text('farmer_name', lang),
-                value="Jean Dupont",
-                help=translator.get_text('farmer_name_help', lang)
-            )
-            
-            farm_name = st.text_input(
-                translator.get_text('farm_name', lang),
-                value="Ferme du Soleil Levant",
-                help=translator.get_text('farm_name_help', lang)
-            )
-             submit_button = st.form_submit_button(translator.get_text('submit_plan', lang))
-            # Informations culture
-            crop_type = st.selectbox(
-                translator.get_text('crop_type', lang),
-                ["wheat", "corn", "rice", "soybeans"],
-                format_func=lambda x: {
-                    "wheat": "Blé",
-                    "corn": "Maïs", 
-                    "rice": "Riz",
-                    "soybeans": "Soja"
-                }[x]
-            )
-            
+    with st.form("fertilization_plan"):
+        # Informations agriculteur
+        farmer_name = st.text_input(
+            translator.get_text('farmer_name', lang),
+            value="Jean Dupont",
+            help=translator.get_text('farmer_name_help', lang)
+        )
+
+        farm_name = st.text_input(
+            translator.get_text('farm_name', lang),
+            value="Ferme du Soleil Levant",
+            help=translator.get_text('farm_name_help', lang)
+        )
+
+        # Ajouter le bouton de soumission avec une indentation correcte ✅
+        submit_button = st.form_submit_button(translator.get_text('submit_plan', lang))
+
+        # Informations culture
+        crop_type = st.selectbox(
+            translator.get_text('crop_type', lang),
+            ["wheat", "corn", "rice", "soybeans"],
+            format_func=lambda x: {
+                "wheat": "Blé", "corn": "Maïs", 
+                "rice": "Riz", "soybeans": "Soja"
+            }[x]
+        )
+
             area = st.number_input(
                 translator.get_text('area_hectares', lang),
                 min_value=0.1,
