@@ -1,5 +1,7 @@
 import os
 import os
+import time
+
 print("🚀 Streamlit Cloud démarre...")
 os.environ["STREAMLIT_SERVER_PORT"] = "8501"
 os.environ["STREAMLIT_SERVER_ADDRESS"] = "0.0.0.0"
