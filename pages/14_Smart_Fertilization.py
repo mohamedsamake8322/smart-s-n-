@@ -9,7 +9,7 @@ import json
 import io
 from utils.smart_fertilization import smart_fertilization, CropDatabase
 from utils.pdf_generator import pdf_generator
-from utils.translations import get_text
+from utils.translations import TranslationManager
 from utils.data_processing import generate_soil_sample_data
 
 st.set_page_config(page_title="Smart Fertilization", page_icon="🌱", layout="wide")
@@ -19,7 +19,11 @@ lang = st.sidebar.selectbox("Language / Langue", ["en", "fr"], index=1)
 
 st.title(f"🌱 {get_text('smart_fertilization', lang)}")
 st.markdown(f"### {get_text('ai_fertilization_subtitle', lang)}")
+# Instancier le gestionnaire de traduction
+translator = TranslationManager()
 
+# Utiliser la méthode get_text depuis l'instance
+text = translator.get_text("smart_fertilization", lang="fr")
 # Initialize session state
 if 'fertilization_plans' not in st.session_state:
     st.session_state.fertilization_plans = []
