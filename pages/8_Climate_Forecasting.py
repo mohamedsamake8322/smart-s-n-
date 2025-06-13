@@ -114,22 +114,22 @@ with tab1:
             height=400,
             hovermode='x unified'
         )
-        
+
         st.plotly_chart(fig, use_container_width=True)
-        
-        # Carte météorologique
+
+# Carte météorologique
         st.markdown("**Carte Météorologique Régionale**")
-        
-        # Simulation d'une carte de températures
+
+# Simulation d'une carte de températures
         lat = np.random.uniform(45, 50, 100)
         lon = np.random.uniform(1, 6, 100)
         temp_map = np.random.normal(20, 5, 100)
-        
-        fig_map = px.scatter_mapbox(
+
+        fig_map = px.scatter_map(
             lat=lat,
             lon=lon,
             color=temp_map,
-            size=abs(temp_map-20)+5,
+            size=abs(temp_map - 20) + 5,
             hover_name=[f"Station {i}" for i in range(100)],
             hover_data={"Température": temp_map},
             color_continuous_scale="Viridis",
@@ -138,9 +138,10 @@ with tab1:
             height=400,
             title="Température Régionale en Temps Réel"
         )
-        
-        fig_map.update_layout(mapbox_style="open-street-map")
+
+        fig_map.update_layout(map_style="open-street-map")
         st.plotly_chart(fig_map, use_container_width=True)
+
     
     with col2:
         st.markdown("**Conditions Actuelles**")
