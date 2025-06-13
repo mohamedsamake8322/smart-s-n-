@@ -4,6 +4,12 @@ import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Union
 from dotenv import load_dotenv  # Ajout pour charger les clés API
+# Charger les variables d'environnement
+load_dotenv()
+
+# Vérification immédiate
+print("🔎 OPENWEATHER_API_KEY chargée :", os.getenv("OPENWEATHER_API_KEY"))
+print("🔎 WEATHERAPI_KEY chargée :", os.getenv("WEATHERAPI_KEY"))
 
 class WeatherAPI:
     """
