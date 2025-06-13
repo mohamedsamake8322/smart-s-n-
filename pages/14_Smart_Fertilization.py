@@ -13,12 +13,13 @@ from utils.translations import TranslationManager
 from utils.data_processing import generate_soil_sample_data
 
 st.set_page_config(page_title="Smart Fertilization", page_icon="🌱", layout="wide")
-
+# Instancier le gestionnaire de traduction
+translator = TranslationManager()
 # Language selection
 lang = st.sidebar.selectbox("Language / Langue", ["en", "fr"], index=1)
-
-st.title(f"🌱 {get_text('smart_fertilization', lang)}")
-st.markdown(f"### {get_text('ai_fertilization_subtitle', lang)}")
+# Utilisation correcte de get_text()
+st.title(f"🌱 {translator.get_text('smart_fertilization', lang)}")
+st.markdown(f"### {translator.get_text('ai_fertilization_subtitle', lang)}")
 # Instancier le gestionnaire de traduction
 translator = TranslationManager()
 
@@ -32,47 +33,47 @@ if 'soil_data' not in st.session_state:
     st.session_state.soil_data = generate_soil_sample_data()
 
 # Sidebar for quick actions
-st.sidebar.title(get_text('quick_actions', lang))
+st.sidebar.title(translator.get_text('quick_actions', lang))
 
-if st.sidebar.button(f"🔄 {get_text('refresh_data', lang)}"):
+if st.sidebar.button(f"🔄 {translator.get_text('refresh_data', lang)}"):
     st.session_state.soil_data = generate_soil_sample_data()
     st.rerun()
 
 # Main tabs
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    get_text('create_plan', lang),
-    get_text('crop_database', lang), 
-    get_text('ai_optimization', lang),
-    get_text('cost_analysis', lang),
-    get_text('iot_integration', lang),
-    get_text('plan_history', lang)
+    translator.get_text('create_plan', lang),
+    translator.get_text('crop_database', lang), 
+    translator.get_text('ai_optimization', lang),
+    translator.get_text('cost_analysis', lang),
+    translator.get_text('iot_integration', lang),
+    translator.get_text('plan_history', lang)
 ])
 
 with tab1:
-    st.subheader(f"📋 {get_text('create_fertilization_plan', lang)}")
+   st.subheader(f"📋 {translator.get_text('create_fertilization_plan', lang)}")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown(f"**{get_text('farm_information', lang)}**")
+        st.markdown(f"**{translator.get_text('farm_information', lang)}**")
         
         with st.form("fertilization_plan"):
             # Informations agriculteur
             farmer_name = st.text_input(
-                get_text('farmer_name', lang),
+                translator.get_text('farmer_name', lang),
                 value="Jean Dupont",
-                help=get_text('farmer_name_help', lang)
+                help=translator.get_text('farmer_name_help', lang)
             )
             
             farm_name = st.text_input(
-                get_text('farm_name', lang),
+                 translator.get_text('farm_name', lang),
                 value="Ferme du Soleil Levant",
-                help=get_text('farm_name_help', lang)
+               help=translator.get_text('farm_name_help', lang)
             )
             
             # Informations culture
             crop_type = st.selectbox(
-                get_text('crop_type', lang),
+                translator.get_text('crop_type', lang),
                 ["wheat", "corn", "rice", "soybeans"],
                 format_func=lambda x: {
                     "wheat": "Blé",
@@ -83,7 +84,7 @@ with tab1:
             )
             
             area = st.number_input(
-                get_text('area_hectares', lang),
+                translator.get_text('area_hectares', lang),
                 min_value=0.1,
                 max_value=1000.0,
                 value=25.0,
@@ -91,17 +92,17 @@ with tab1:
             )
             
             planting_date = st.date_input(
-                get_text('planting_date', lang),
+                translator.get_text('planting_date', lang),
                 value=datetime.now() - timedelta(days=30)
             )
             
             target_yield = st.number_input(
-                get_text('target_yield', lang),
+                translator.get_text('target_yield', lang),
                 min_value=1.0,
                 max_value=20.0,
                 value=6.0,
                 step=0.1,
-                help=get_text('target_yield_help', lang)
+                help=translator.get_text('target_yield_help', lang)
             )
             
             # Données sol
