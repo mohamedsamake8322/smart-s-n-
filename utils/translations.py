@@ -1,6 +1,13 @@
 
 import json
 from typing import Dict, Any
+translations = {}
+translations.update({
+    'smart_fertilization': {
+        'en': 'Smart Fertilization',
+        'fr': 'Fertilisation Intelligente'
+    }
+})
 
 class TranslationManager:
     def __init__(self):

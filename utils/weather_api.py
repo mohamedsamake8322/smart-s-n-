@@ -3,6 +3,7 @@ import json
 import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Union
+from dotenv import load_dotenv  # Ajout pour charger les clés API
 
 class WeatherAPI:
     """
@@ -11,22 +12,29 @@ class WeatherAPI:
     """
     
     def __init__(self):
-        # API keys from environment variables
-        self.openweather_api_key = os.getenv("OPENWEATHER_API_KEY", "your_openweather_api_key")
-        self.weatherapi_key = os.getenv("WEATHERAPI_KEY", "your_weatherapi_key")
-        
-        # Base URLs for different providers
+        # Charger les variables d'environnement
+        load_dotenv()
+
+        # API keys
+        self.openweather_api_key = os.getenv("OPENWEATHER_API_KEY")
+        self.weatherapi_key = os.getenv("WEATHERAPI_KEY")
+
+        # Vérification que les clés API existent
+        if not self.openweather_api_key or not self.weatherapi_key:
+            raise ValueError("❌ API keys are missing! Check your .env file.")
+
+        # Base URLs
         self.openweather_base_url = "https://api.openweathermap.org/data/2.5"
         self.weatherapi_base_url = "https://api.weatherapi.com/v1"
-        
-        # Cache for API responses (simple in-memory cache)
+
+        # Cache
         self._cache = {}
         self._cache_duration = 600  # 10 minutes
-    
+
     def _get_cache_key(self, endpoint: str, params: dict) -> str:
         """Generate cache key for API requests."""
         return f"{endpoint}_{hash(str(sorted(params.items())))}"
-    
+
     def _is_cache_valid(self, cache_entry: dict) -> bool:
         """Check if cached data is still valid."""
         if not cache_entry:
@@ -36,20 +44,27 @@ class WeatherAPI:
         current_time = datetime.now().timestamp()
         
         return (current_time - cache_time) < self._cache_duration
-    
+
     def _make_request(self, url: str, params: dict) -> Optional[dict]:
         """Make HTTP request with error handling."""
         try:
             response = requests.get(url, params=params, timeout=10)
             response.raise_for_status()
             return response.json()
+        except requests.exceptions.HTTPError as e:
+            print(f"❌ HTTP Error: {e}")
+        except requests.exceptions.ConnectionError:
+            print("❌ Connection error! Check your network.")
+        except requests.exceptions.Timeout:
+            print("❌ Timeout error! Server took too long to respond.")
         except requests.exceptions.RequestException as e:
-            print(f"API request failed: {e}")
-            return None
+            print(f"❌ API request failed: {e}")
         except json.JSONDecodeError as e:
-            print(f"Failed to parse JSON response: {e}")
-            return None
-    
+            print(f"❌ Failed to parse JSON response: {e}")
+        
+        return None
+
+
     def get_current_weather(self, location: str) -> Optional[Dict]:
         """
         Get current weather data for a location.
