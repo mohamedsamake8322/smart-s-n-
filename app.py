@@ -19,6 +19,9 @@ st.set_page_config(
 st.title("🌾 Agricultural Analytics Platform")
 st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
 
+if __name__ == "__main__":
+    # Lance Streamlit avec un accès réseau correct
+    st.run(server.port=8501, server.address="0.0.0.0", server.headless=True)
 # Sidebar information
 st.sidebar.title("Navigation")
 st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
