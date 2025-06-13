@@ -11,7 +11,8 @@ from datetime import datetime
 
 # Safe TensorFlow import with fallback
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Désactive GPU pour éviter l'erreur DLL
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+  # Désactive GPU pour éviter l'erreur DLL
 
 # Safe TensorFlow import with fallback
 try:
