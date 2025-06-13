@@ -63,8 +63,6 @@ class WeatherAPI:
             print(f"❌ Failed to parse JSON response: {e}")
         
         return None
-
-
     def get_current_weather(self, location: str) -> Optional[Dict]:
         """
         Get current weather data for a location.
