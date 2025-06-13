@@ -1,6 +1,7 @@
 import os
 import os
 import time
+import streamlit as st
 
 print("🚀 Streamlit Cloud démarre...")
 os.environ["STREAMLIT_SERVER_PORT"] = "8501"
@@ -10,7 +11,7 @@ print("✅ Configuration serveur appliquée !")
 time.sleep(5)  # Pause pour voir si le script tourne bien
 print("📢 Streamlit devrait démarrer maintenant...")
 print("🔎 Vérification des packages installés...")
-import streamlit as st
+
 print("✅ Streamlit version :", streamlit.__version__)
 st.title("🚀 Test Streamlit Cloud")
 st.write("Si cette page apparaît, alors Streamlit Cloud fonctionne bien.")
