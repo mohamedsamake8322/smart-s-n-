@@ -1,20 +1,4 @@
-import os
-import os
-import time
 import streamlit as st
-
-print("🚀 Streamlit Cloud démarre...")
-os.environ["STREAMLIT_SERVER_PORT"] = "8501"
-os.environ["STREAMLIT_SERVER_ADDRESS"] = "0.0.0.0"
-os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"
-print("✅ Configuration serveur appliquée !")
-time.sleep(5)  # Pause pour voir si le script tourne bien
-print("📢 Streamlit devrait démarrer maintenant...")
-print("🔎 Vérification des packages installés...")
-
-print("✅ Streamlit version :", streamlit.__version__)
-st.title("🚀 Test Streamlit Cloud")
-st.write("Si cette page apparaît, alors Streamlit Cloud fonctionne bien.")
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -158,5 +142,3 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-if __name__ == "__main__":
-    st.write("✅ Streamlit est bien lancé sur Cloud !")
