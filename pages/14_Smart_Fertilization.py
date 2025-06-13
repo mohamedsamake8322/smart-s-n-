@@ -50,13 +50,13 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 ])
 
 with tab1:
-   st.subheader(f"📋 {translator.get_text('create_fertilization_plan', lang)}")
+    st.subheader(f"📋 {translator.get_text('create_fertilization_plan', lang)}")
     
-    col1, col2 = st.columns(2)
-    
+    col1, col2 = st.columns(2)  # Corrigé
+
     with col1:
         st.markdown(f"**{translator.get_text('farm_information', lang)}**")
-        
+
         with st.form("fertilization_plan"):
             # Informations agriculteur
             farmer_name = st.text_input(
