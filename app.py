@@ -1,15 +1,4 @@
 import streamlit as st
-st.write("🚀 L'application démarre... Vérification en cours.")
-# Contenu principal
-st.title("🌾 Agricultural Analytics Platform")
-st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
-st.set_page_config(
-    page_title="Agricultural Analytics Platform",
-    page_icon="🌾",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -18,22 +7,21 @@ import plotly.graph_objects as go
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
 import os
-import time
-# 🚀 Test de démarrage
-st.write("🚀 Vérification du lancement de l'application...")
-time.sleep(2)
 
-# 🔎 Vérifier que Streamlit est bien en mode serveur
-server_status = os.system("curl -s http://localhost:8501/healthz")
-if server_status != 0:
-    st.error("⚠️ Erreur : Streamlit ne répond pas sur le port 8501. Vérifie la configuration.")
-import sys
-
-# 🔎 Vérifier que Streamlit tourne dans le bon contexte
-if not hasattr(st.runtime, "scriptrunner"):
-    st.error("❌ Streamlit semble ne pas fonctionner correctement dans son contexte.")
-    sys.exit(1)  # Arrêter l'exécution si Streamlit Cloud ne reconnaît pas l'application
 # Configuration de la page
+st.set_page_config(
+    page_title="Agricultural Analytics Platform",
+    page_icon="🌾",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+st.write("🚀 L'application démarre... Vérification en cours.")
+
+# Contenu principal
+st.title("🌾 Agricultural Analytics Platform")
+st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
+
 # Sidebar
 st.sidebar.title("Navigation")
 st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
@@ -46,6 +34,12 @@ st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 # Indicateur de démarrage
 if __name__ == "__main__":
     st.write("🚀 Smart Fertilization App is running!")
+    import sys
+
+# 🔎 Vérifier que Streamlit tourne dans le bon contexte
+if not hasattr(st.runtime, "scriptrunner"):
+    st.error("❌ Streamlit semble ne pas fonctionner correctement dans son contexte.")
+    sys.exit(1)  # Arrêter l'exécution si Streamlit Cloud ne reconnaît pas l'application
  # 🔧 Forcer Streamlit Cloud à utiliser le bon port
 # Main dashboard overview
 col1, col2, col3, col4 = st.columns(4)
