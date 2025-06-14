@@ -20,19 +20,6 @@ st.write("🚀 L'application démarre... Vérification en cours.")
 
 # TEST : Vérifier que le script atteint la fin sans erreur
 print("✅ Script Streamlit exécuté sans erreur.")
-
-# Configuration forcée du serveur via ~/.streamlit/config.toml
-os.makedirs(os.path.expanduser("~/.streamlit"), exist_ok=True)
-with open(os.path.expanduser("~/.streamlit/config.toml"), "w") as config:
-    config.write("""
-[server]
-port = 8502
-headless = true
-enableCORS = false
-enableXsrfProtection = false
-""")
-
-
 # Contenu principal
 st.title("🌾 Agricultural Analytics Platform")
 st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
