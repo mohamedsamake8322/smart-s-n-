@@ -17,9 +17,6 @@ st.set_page_config(
 )
 
 st.write("🚀 L'application démarre... Vérification en cours.")
-
-# TEST : Vérifier que le script atteint la fin sans erreur
-print("✅ Script Streamlit exécuté sans erreur.")
 # Contenu principal
 st.title("🌾 Agricultural Analytics Platform")
 st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
