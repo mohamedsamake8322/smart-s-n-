@@ -37,10 +37,6 @@ st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 if __name__ == "__main__":
     st.write("🚀 Smart Fertilization App is running!")
  # 🔧 Forcer Streamlit Cloud à utiliser le bon port
-import os
-os.system("streamlit run app.py --server.port=8502 --server.headless=true")
-
-
 # Main dashboard overview
 col1, col2, col3, col4 = st.columns(4)
 
