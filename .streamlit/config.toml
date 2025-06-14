@@ -1,9 +1,12 @@
 [server]
 port = 8501
-headless = true
+headless = false  # Changer à "false" pour permettre l'ouverture automatique
 enableCORS = false
 enableXsrfProtection = false
-enableWebsocketCompression = false  # Ajoute cette ligne !
+enableWebsocketCompression = false
+
 [browser]
 serverAddress = "localhost"
 gatherUsageStats = false
+serverPort = 8501  # Ajoute cette ligne !
+serverAddress = "localhost"  # Vérifie que c'est bien "localhost"
