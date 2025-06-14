@@ -1,9 +1,9 @@
 [server]
 port = 8501
-headless = false
+headless = true
 enableCORS = false
 enableXsrfProtection = false
-
+enableWebsocketCompression = false  # Ajoute cette ligne !
 [browser]
 serverAddress = "localhost"
 gatherUsageStats = false
