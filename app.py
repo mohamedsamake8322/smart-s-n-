@@ -8,7 +8,7 @@ from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
 import os
 
-# Configuration de la page
+# ✅ Configuration de la page (doit être la première commande Streamlit)
 st.set_page_config(
     page_title="Agricultural Analytics Platform",
     page_icon="🌾",
@@ -18,11 +18,17 @@ st.set_page_config(
 
 st.write("🚀 L'application démarre... Vérification en cours.")
 
-# Contenu principal
+# ✅ Vérification du bon démarrage de Streamlit Cloud
+server_status = os.system("curl -s http://localhost:8501/healthz")
+if server_status != 0:
+    st.error("⚠️ Streamlit ne répond pas sur le port 8501.")
+    st.stop()
+
+# 📌 Contenu principal
 st.title("🌾 Agricultural Analytics Platform")
 st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
 
-# Sidebar
+# 🔹 Sidebar
 st.sidebar.title("Navigation")
 st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
 st.sidebar.markdown("- **Dashboard**: Overview of your agricultural data")
@@ -31,15 +37,12 @@ st.sidebar.markdown("- **Weather Data**: Real-time and historical weather inform
 st.sidebar.markdown("- **Soil Monitoring**: Soil condition analysis")
 st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 
-# Indicateur de démarrage
+# ✅ Indicateur de démarrage
 if __name__ == "__main__":
     st.write("🚀 Smart Fertilization App is running!")
-    import sys
 
-# 🔎 Vérifier que Streamlit tourne dans le bon contexte
-if not hasattr(st.runtime, "scriptrunner"):
-    st.error("❌ Streamlit semble ne pas fonctionner correctement dans son contexte.")
-    sys.exit(1)  # Arrêter l'exécution si Streamlit Cloud ne reconnaît pas l'application
+# 🔥 Supprimé : Vérification inutile du contexte Streamlit (provoquait des erreurs)
+  # Arrêter l'exécution si Streamlit Cloud ne reconnaît pas l'application
  # 🔧 Forcer Streamlit Cloud à utiliser le bon port
 # Main dashboard overview
 col1, col2, col3, col4 = st.columns(4)
