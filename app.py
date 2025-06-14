@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
 
-# Page configuration
+# Configuration de la page
 st.set_page_config(
     page_title="Agricultural Analytics Platform",
     page_icon="🌾",
@@ -15,14 +15,23 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Main page content
+# Configuration du serveur via ~/.streamlit/config.toml
+import os
+os.makedirs(os.path.expanduser("~/.streamlit"), exist_ok=True)
+with open(os.path.expanduser("~/.streamlit/config.toml"), "w") as config:
+    config.write("""
+[server]
+port = 8501
+headless = true
+enableCORS = false
+enableXsrfProtection = false
+""")
+
+# Contenu principal
 st.title("🌾 Agricultural Analytics Platform")
 st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
 
-if __name__ == "__main__":
-    # Lance Streamlit avec un accès réseau correct
-    st.run(server.port=8501, server.address="0.0.0.0", server.headless=True)
-# Sidebar information
+# Sidebar
 st.sidebar.title("Navigation")
 st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
 st.sidebar.markdown("- **Dashboard**: Overview of your agricultural data")
@@ -30,6 +39,11 @@ st.sidebar.markdown("- **Yield Prediction**: ML-powered crop yield forecasting")
 st.sidebar.markdown("- **Weather Data**: Real-time and historical weather information")
 st.sidebar.markdown("- **Soil Monitoring**: Soil condition analysis")
 st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
+
+# Indicateur de démarrage
+if __name__ == "__main__":
+    st.write("🚀 Smart Fertilization App is running!")
+
 
 # Main dashboard overview
 col1, col2, col3, col4 = st.columns(4)
