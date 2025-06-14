@@ -16,6 +16,12 @@ time.sleep(2)
 server_status = os.system("curl -s http://localhost:8501/healthz")
 if server_status != 0:
     st.error("⚠️ Erreur : Streamlit ne répond pas sur le port 8501. Vérifie la configuration.")
+import sys
+
+# 🔎 Vérifier que Streamlit tourne dans le bon contexte
+if not hasattr(st.runtime, "scriptrunner"):
+    st.error("❌ Streamlit semble ne pas fonctionner correctement dans son contexte.")
+    sys.exit(1)  # Arrêter l'exécution si Streamlit Cloud ne reconnaît pas l'application
 # Configuration de la page
 st.set_page_config(
     page_title="Agricultural Analytics Platform",
