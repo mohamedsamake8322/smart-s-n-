@@ -40,7 +40,18 @@ st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 # ✅ Indicateur de démarrage
 if __name__ == "__main__":
     st.write("🚀 Smart Fertilization App is running!")
+st.write("🚀 Vérification avancée du démarrage...")
 
+# 🔎 Afficher les variables d'environnement de Streamlit Cloud
+env_vars = os.environ
+st.write("🔍 Variables d'environnement détectées :")
+st.json({k: v for k, v in env_vars.items() if "STREAMLIT" in k or "PYTHON" in k})
+
+# 🔎 Vérifier si le serveur tourne bien
+server_status = os.system("curl -s http://localhost:8501/healthz")
+if server_status != 0:
+    st.error("❌ Streamlit ne répond pas sur 8501 ! Problème détecté.")
+    st.stop()
 # 🔥 Supprimé : Vérification inutile du contexte Streamlit (provoquait des erreurs)
   # Arrêter l'exécution si Streamlit Cloud ne reconnaît pas l'application
  # 🔧 Forcer Streamlit Cloud à utiliser le bon port
