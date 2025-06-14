@@ -26,11 +26,12 @@ os.makedirs(os.path.expanduser("~/.streamlit"), exist_ok=True)
 with open(os.path.expanduser("~/.streamlit/config.toml"), "w") as config:
     config.write("""
 [server]
-port = 8501
+port = 8502
 headless = true
 enableCORS = false
 enableXsrfProtection = false
 """)
+
 
 # Contenu principal
 st.title("🌾 Agricultural Analytics Platform")
