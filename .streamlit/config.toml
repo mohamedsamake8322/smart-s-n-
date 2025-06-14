@@ -1,12 +1,11 @@
 [server]
 port = 8501
-headless = false  # Changer à "false" pour permettre l'ouverture automatique
+headless = false  # Permet l'ouverture automatique du navigateur
 enableCORS = false
 enableXsrfProtection = false
 enableWebsocketCompression = false
 
 [browser]
-serverAddress = "localhost"
+serverAddress = "localhost"  # Garde cette seule occurrence !
 gatherUsageStats = false
-serverPort = 8501  # Ajoute cette ligne !
-serverAddress = "localhost"  # Vérifie que c'est bien "localhost"
+serverPort = 8501
