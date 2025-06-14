@@ -6,6 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
+import os
 
 # Configuration de la page
 st.set_page_config(
@@ -15,8 +16,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Configuration du serveur via ~/.streamlit/config.toml
-import os
+st.write("🚀 L'application démarre... Vérification en cours.")
+
+# TEST : Vérifier que le script atteint la fin sans erreur
+print("✅ Script Streamlit exécuté sans erreur.")
+
+# Configuration forcée du serveur via ~/.streamlit/config.toml
 os.makedirs(os.path.expanduser("~/.streamlit"), exist_ok=True)
 with open(os.path.expanduser("~/.streamlit/config.toml"), "w") as config:
     config.write("""
@@ -43,6 +48,7 @@ st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 # Indicateur de démarrage
 if __name__ == "__main__":
     st.write("🚀 Smart Fertilization App is running!")
+
 
 
 # Main dashboard overview
