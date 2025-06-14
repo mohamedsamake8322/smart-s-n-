@@ -1,4 +1,15 @@
 import streamlit as st
+st.write("🚀 L'application démarre... Vérification en cours.")
+# Contenu principal
+st.title("🌾 Agricultural Analytics Platform")
+st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
+st.set_page_config(
+    page_title="Agricultural Analytics Platform",
+    page_icon="🌾",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -23,18 +34,6 @@ if not hasattr(st.runtime, "scriptrunner"):
     st.error("❌ Streamlit semble ne pas fonctionner correctement dans son contexte.")
     sys.exit(1)  # Arrêter l'exécution si Streamlit Cloud ne reconnaît pas l'application
 # Configuration de la page
-st.set_page_config(
-    page_title="Agricultural Analytics Platform",
-    page_icon="🌾",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-st.write("🚀 L'application démarre... Vérification en cours.")
-# Contenu principal
-st.title("🌾 Agricultural Analytics Platform")
-st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
-
 # Sidebar
 st.sidebar.title("Navigation")
 st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
