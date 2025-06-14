@@ -7,7 +7,15 @@ import plotly.graph_objects as go
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
 import os
+import time
+# 🚀 Test de démarrage
+st.write("🚀 Vérification du lancement de l'application...")
+time.sleep(2)
 
+# 🔎 Vérifier que Streamlit est bien en mode serveur
+server_status = os.system("curl -s http://localhost:8501/healthz")
+if server_status != 0:
+    st.error("⚠️ Erreur : Streamlit ne répond pas sur le port 8501. Vérifie la configuration.")
 # Configuration de la page
 st.set_page_config(
     page_title="Agricultural Analytics Platform",
