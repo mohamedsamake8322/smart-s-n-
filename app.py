@@ -49,7 +49,9 @@ st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 # Indicateur de démarrage
 if __name__ == "__main__":
     st.write("🚀 Smart Fertilization App is running!")
-
+ # 🔧 Forcer Streamlit Cloud à utiliser le bon port
+import os
+os.system("streamlit run app.py --server.port=8502 --server.headless=true")
 
 
 # Main dashboard overview
