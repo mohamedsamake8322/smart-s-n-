@@ -50,12 +50,15 @@ model.compile(optimizer=Adam(learning_rate=0.0001), loss="categorical_crossentro
 
 # 📌 **Prétraitement des images avec gestion de transparence**
 def preprocess_image(img):
-    if isinstance(img, np.ndarray):  # Vérification si c'est bien un tableau NumPy
+    if isinstance(img, np.ndarray):  # Vérifie si img est un tableau NumPy
         if img.dtype != np.uint8:
-            img = (img * 255).astype(np.uint8)  # Normalisation en uint8 si nécessaire
-        img = Image.fromarray(img)  # Conversion en image PIL
+            img = (img * 255).astype(np.uint8)  # Convertit les valeurs en uint8
+        return img  # ✅ Retourne directement l'image sous format NumPy
 
-    return img.convert("RGBA").convert("RGB")  # Conversion transparente → RGB
+    img = np.array(img)  # ✅ Conversion explicite PIL -> NumPy
+    img = Image.fromarray(img)  # Reconversion en PIL après correction
+    img = img.convert("RGBA").convert("RGB")  # Supprime la transparence
+    return np.array(img)  # ✅ Convertit l'image corrigée en NumPy avant retour
 train_datagen = ImageDataGenerator(
     preprocessing_function=preprocess_image,
     rescale=1./255,
