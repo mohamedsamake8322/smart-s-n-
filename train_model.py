@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Input
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 import os
-
+from tensorflow.keras import layers, Model
 # 🔹 Réduction des options CPU pour éviter l'OOM
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
@@ -16,24 +16,34 @@ MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.h5"
 # 🔍 Vérification et création du dossier modèle
 os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 
-# ✅ Création du modèle EfficientNet + ResNet avec une seule entrée
+# ✅ Création du modèle EfficientNet + ResNet avec une seule entré
+
 def create_model():
-    """Construit un modèle fusionné (EfficientNetB4 + ResNet50) avec entrée unique."""
-    input_layer = Input(shape=(224, 224, 3))  # 📌 Réduction de la taille d’entrée
+    # Définition de la couche d'entrée
+    input_layer = layers.Input(shape=(224, 224, 3), name="input_layer")
 
-    base_model_efficient = EfficientNetB4(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
-    base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
+    # Ajout de la normalisation
+    x = layers.Rescaling(1./255)(input_layer)
 
-    x_eff = GlobalAveragePooling2D()(base_model_efficient.output)
-    x_res = GlobalAveragePooling2D()(base_model_resnet.output)
-    merged = tf.keras.layers.concatenate([x_eff, x_res])
+    # Exemple de quelques couches de traitement
+    x = layers.Conv2D(32, (3,3), activation="relu", padding="same")(x)
+    x = layers.MaxPooling2D((2,2))(x)
+    x = layers.Conv2D(64, (3,3), activation="relu", padding="same")(x)
+    x = layers.MaxPooling2D((2,2))(x)
 
-    x = Dense(256, activation="relu")(merged)
-    output = Dense(45, activation="softmax")(x)  # ✅ Ajusté pour **45 classes**
+    # Aplatissement et classification
+    x = layers.Flatten()(x)
+    x = layers.Dense(128, activation="relu")(x)
+    output = layers.Dense(45, activation="softmax", name="output_layer")(x)  # 45 classes
 
+    # Création du modèle
     model = Model(inputs=input_layer, outputs=output)
-    model.compile(optimizer=Adam(learning_rate=0.0001), loss="categorical_crossentropy", metrics=["accuracy"])
+
     return model
+
+# Vérification de la structure du modèle
+model = create_model()
+model.summary()
 
 # 🔹 Chargement et Prétraitement des images
 train_datagen = ImageDataGenerator(
