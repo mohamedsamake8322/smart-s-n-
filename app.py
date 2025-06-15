@@ -104,17 +104,17 @@ with tab1:
     - Machine learning-powered yield predictions
     - Statistical analysis of agricultural metrics
     - Trend analysis and forecasting
-    
+
     **🌤️ Weather Intelligence**
     - Real-time weather data integration
     - Historical weather pattern analysis
     - Weather-based risk assessment
-    
+
     **📊 Data Visualization**
     - Interactive charts and graphs
     - Customizable dashboards
     - Export capabilities for reports
-    
+
     **🌱 Soil Monitoring**
     - Soil condition analysis
     - Nutrient level tracking
@@ -127,17 +127,17 @@ with tab2:
     - Go to the Data Upload page
     - Upload your CSV/Excel files with agricultural data
     - Ensure data includes fields like crop type, yield, weather conditions
-    
+
     **Step 2: Configure Weather Monitoring**
     - Visit the Weather Data page
     - Set your location for weather tracking
     - Review current and historical weather data
-    
+
     **Step 3: Generate Predictions**
     - Use the Yield Prediction page
     - Input your crop and field parameters
     - Get ML-powered yield forecasts
-    
+
     **Step 4: Monitor and Analyze**
     - Use the Dashboard for comprehensive overview
     - Track soil conditions on the Soil Monitoring page
@@ -170,7 +170,8 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666666; padding: 20px;'>
-    Agricultural Analytics Platform - Empowering farmers with data-driven insights
+    🌾 SènèSmart Yield Predictor - Empowering African farmers with AI-driven insights
+    🚀 Developed by <strong>Mohamed SAMAKE</strong> | Precision farming for a better future
     </div>
     """,
     unsafe_allow_html=True
