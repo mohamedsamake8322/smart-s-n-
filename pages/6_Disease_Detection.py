@@ -176,7 +176,7 @@ if TENSORFLOW_AVAILABLE:
                 remove_background = st.checkbox("Supprimer l'arrière-plan", value=False)
 
                 # Apply preprocessing
-                if uploaded_image:
+            if uploaded_image:
                 uploaded_image = uploaded_image.convert("RGB")  # Convertir pour éviter les erreurs
                 processed_image = uploaded_image.copy()  # Maintenant, c'est sécurisé
 
