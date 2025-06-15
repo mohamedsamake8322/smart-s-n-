@@ -6,6 +6,8 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 import os
 from tensorflow.keras.callbacks import ReduceLROnPlateau
+import numpy as np
+from PIL import Image
 
 # 🔹 Réduction des options CPU pour éviter l'OOM
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
@@ -47,8 +49,13 @@ model = create_model()
 model.compile(optimizer=Adam(learning_rate=0.0001), loss="categorical_crossentropy", metrics=["accuracy"])
 
 # 📌 **Prétraitement des images avec gestion de transparence**
+def preprocess_image(img):
+    if isinstance(img, np.ndarray):  # Vérification si c'est un array NumPy
+        img = Image.fromarray(img)  # Conversion en image PIL
+    return img.convert("RGBA").convert("RGB")  # Conversion transparente → RGB
+
 train_datagen = ImageDataGenerator(
-    preprocessing_function=lambda img: img.convert("RGBA").convert("RGB"),
+    preprocessing_function=preprocess_image,
     rescale=1./255,
     rotation_range=20,
     zoom_range=0.15,
