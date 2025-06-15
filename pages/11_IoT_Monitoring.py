@@ -18,33 +18,42 @@ st.title("📡 IoT Monitoring System - Smart Agriculture")
 st.markdown("### Suivi en temps réel des paramètres agricoles")
 
 # ✅ Paramètres MQTT et API
-BROKER = "broker.hivemq.com"  # Exemple public, à modifier selon tes capteurs
-TOPIC = "smart-agriculture/sensors"
+MQTT_BROKER = "broker.hivemq.com"
+MQTT_PORT = 1883
+MQTT_TOPIC = "smart-agriculture/sensors"
 API_URL = "http://iot-server/api/data"
 
-# ✅ Connexion et récupération des données IoT
-sensor_data = []  # Stockage temporaire
+# ✅ Stockage temporaire des données IoT
+sensor_data = []
 
+# ✅ Connexion MQTT et récupération des données IoT
 def on_connect(client, userdata, flags, rc):
+    """Exécutée lors de la connexion au broker MQTT."""
     st.write("🔗 Connexion au broker MQTT réussie !")
-    client.subscribe(TOPIC)
+    client.subscribe(MQTT_TOPIC)
 
 def on_message(client, userdata, msg):
-    data = json.loads(msg.payload)
-    sensor_data.append(data)
+    """Exécutée lorsqu'un message MQTT est reçu."""
+    try:
+        data = json.loads(msg.payload)
+        sensor_data.append(data)
+    except json.JSONDecodeError:
+        st.error("🚨 Erreur de décodage des données MQTT reçues !")
 
-client = mqtt.Client()
+# ✅ Initialisation du client MQTT
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect(BROKER, 1883, 60)
+client.connect(MQTT_BROKER, MQTT_PORT, 60)
 
-# ✅ Récupération de données via API
+# ✅ Fonction de récupération des données via API
 def fetch_api_data():
     try:
         response = requests.get(API_URL)
         return response.json()
-    except:
-        st.error("🚨 Impossible de récupérer les données IoT !")
+    except requests.RequestException:
+        st.error("🚨 Impossible de récupérer les données IoT via l’API !")
+        return {}
 
 # ✅ Stockage et prétraitement des données
 def store_data(data):
@@ -90,9 +99,7 @@ if st.sidebar.button("🔄 Rafraîchir les données"):
 
 st.sidebar.info("Données mises à jour en temps réel grâce aux capteurs IoT.")
 
-# ✅ Exécution continue du client MQTT
+# ✅ Démarrer l'écoute MQTT en continu
 client.loop_start()
-time.sleep(10)  # Simulation d'attente pour la réception des données
-client.loop_stop()
 
-st.write("🚀 Système IoT actif - Données mises à jour toutes les 10 secondes")
+st.write("🚀 Système IoT actif - Données mises à jour en temps réel !")
