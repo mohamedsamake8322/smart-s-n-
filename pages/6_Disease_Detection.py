@@ -110,16 +110,16 @@ crop_filter = st.sidebar.multiselect(
 # Main content tabs - adjust based on TensorFlow availability
 if TENSORFLOW_AVAILABLE:
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "Diagnostic Image", 
-        "Analyse par Lot", 
-        "Historique", 
-        "Base de Connaissances", 
+        "Diagnostic Image",
+        "Analyse par Lot",
+        "Historique",
+        "Base de Connaissances",
         "Statistiques"
     ])
 else:
     # Limited tabs in degraded mode
     tab4, tab_info = st.tabs([
-        "Base de Connaissances", 
+        "Base de Connaissances",
         "Informations Système"
     ])
 
@@ -176,15 +176,18 @@ if TENSORFLOW_AVAILABLE:
                 remove_background = st.checkbox("Supprimer l'arrière-plan", value=False)
 
                 # Apply preprocessing
-                processed_image = uploaded_image.copy()
+                if uploaded_image:
+                uploaded_image = uploaded_image.convert("RGB")  # Convertir pour éviter les erreurs
+                processed_image = uploaded_image.copy()  # Maintenant, c'est sécurisé
 
-                if enhance_contrast:
-                    enhancer = ImageEnhance.Contrast(processed_image)
-                    processed_image = enhancer.enhance(1.2)
+                if enhance_contrast and uploaded_image:
+                enhancer = ImageEnhance.Contrast(processed_image)
+                processed_image = enhancer.enhance(1.1)  # Ajuste à 1.1 au lieu de 1.2
 
-                if enhance_brightness:
-                    enhancer = ImageEnhance.Brightness(processed_image)
-                    processed_image = enhancer.enhance(1.1)
+                if enhance_brightness and uploaded_image:
+                enhancer = ImageEnhance.Brightness(processed_image)
+                processed_image = enhancer.enhance(1.05)  # Réduction légère pour éviter l’effet trop fort
+
 
                 # Display original and processed images
                 col_img1, col_img2 = st.columns(2)
@@ -204,7 +207,7 @@ if TENSORFLOW_AVAILABLE:
                 with st.spinner("Analyse en cours par l'IA..."):
                     # Run disease detection
                     detection_results = detector.predict_disease(
-                        processed_image, 
+                        processed_image,
                         model_type=model_type.split()[0].lower(),
                         confidence_threshold=confidence_threshold,
                         crop_filter=crop_filter
@@ -299,7 +302,7 @@ if TENSORFLOW_AVAILABLE:
                         st.markdown("**Graphique de Confiance**")
 
                         chart_data = pd.DataFrame([
-                            {'Maladie': r['disease'], 'Confiance': r['confidence']} 
+                            {'Maladie': r['disease'], 'Confiance': r['confidence']}
                             for r in detection_results[:5]
                         ])
 
