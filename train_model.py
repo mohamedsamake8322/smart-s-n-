@@ -1,13 +1,13 @@
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications import EfficientNetB4, ResNet50
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Input, Concatenate
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Input, Concatenate, Flatten
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 import os
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 
-# 🔹 Réduction des options CPU pour éviter l'OOM
+# 🔹 Désactivation des optimisations CPU pour éviter l’OOM
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 # 🔹 Définition des chemins
@@ -21,19 +21,19 @@ os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 def create_model():
     input_layer = Input(shape=(224, 224, 3), name="input_layer")
 
-    # 🔹 Normalisation des images avant d'entrer dans le modèle
-    x = tf.keras.layers.Rescaling(1./255)(input_layer)
-
-    # 🔹 Connexion de EfficientNetB4 et ResNet50
+    # 🔹 Connexion des modèles sans Rescaling
     base_model_efficient = EfficientNetB4(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
     base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
 
-    x1 = base_model_efficient(x)
-    x2 = base_model_resnet(x)
+    x1 = base_model_efficient(input_layer)
+    x2 = base_model_resnet(input_layer)
 
-    # 🔹 Fusion des modèles
+    # 🔹 Ajout de Flatten pour améliorer la fusion des features
     x1 = GlobalAveragePooling2D()(x1)
     x2 = GlobalAveragePooling2D()(x2)
+    x1 = Flatten()(x1)
+    x2 = Flatten()(x2)
+
     merged = Concatenate()([x1, x2])
 
     # 🔹 Couches fully connected
@@ -60,26 +60,26 @@ train_datagen = ImageDataGenerator(
 train_generator = train_datagen.flow_from_directory(
     os.path.join(DATASET_PATH, "train"),
     target_size=(224, 224),
-    batch_size=8,  # ✅ Réduction du batch pour éviter l'OOM
+    batch_size=4,  # ✅ Réduction du batch pour éviter l'OOM
     class_mode="categorical"
 )
 
 val_generator = train_datagen.flow_from_directory(
     os.path.join(DATASET_PATH, "val"),
     target_size=(224, 224),
-    batch_size=8,
+    batch_size=4,
     class_mode="categorical"
 )
 
 # 🔹 Ajout d'un callback pour ajuster le taux d’apprentissage
-lr_callback = ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=3, verbose=1)
+lr_callback = ReduceLROnPlateau(monitor="val_loss", factor=0.3, patience=3, verbose=1)
 
 # 🚀 **Entraînement du modèle**
 history = model.fit(
     train_generator,
     validation_data=val_generator,
-    epochs=15,  # ✅ Réduction des epochs pour éviter le surapprentissage
-    batch_size=8,
+    epochs=10,  # ✅ Réduction des epochs pour tester la stabilité
+    batch_size=4,
     callbacks=[lr_callback]
 )
 
