@@ -640,19 +640,20 @@ if TENSORFLOW_AVAILABLE:
                     for prevention in disease['prevention']:
                         st.write(f"• {prevention}")
 
-    with tab5:
-            st.subheader("Statistiques et Performance")
+with tab5:
+    st.subheader("Statistiques et Performance")
 
-        # Model performance metrics
-        st.markdown("**Performance des Modèles**")
+    # Model performance metrics
+    st.markdown("**Performance des Modèles**")
 
-        model_stats = {
-            'MobileNetV2': {'accuracy': 92.3, 'speed': '0.2s', 'size': '14MB'},
-            'ResNet50': {'accuracy': 95.7, 'speed': '0.8s', 'size': '98MB'},
-            'EfficientNet': {'accuracy': 94.1, 'speed': '0.5s', 'size': '29MB'}
-        }
+    model_stats = {
+        'MobileNetV2': {'accuracy': 92.3, 'speed': '0.2s', 'size': '14MB'},
+        'ResNet50': {'accuracy': 95.7, 'speed': '0.8s', 'size': '98MB'},
+        'EfficientNet': {'accuracy': 94.1, 'speed': '0.5s', 'size': '29MB'}
+    }
 
-        col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
+
 
         for i, (model, stats) in enumerate(model_stats.items()):
             with [col1, col2, col3][i]:
