@@ -10,21 +10,26 @@ import os
 from datetime import datetime
 
 # Safe TensorFlow import with fallback
-try:
-import tensorflow as tf
-from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
-TENSORFLOW_AVAILABLE = True
-except ImportError as e:
-st.error(f"⚠️ TensorFlow non disponible: {e}")
-TENSORFLOW_AVAILABLE = False
-# Mock TensorFlow functions for graceful degradation
-class MockTF:
-    def __init__(self):
-        pass
-tf = MockTF()
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Désactive les warnings inutiles
 
+try:
+    import tensorflow as tf
+    from tensorflow.keras.applications import MobileNetV2
+    from tensorflow.keras.preprocessing import image
+    from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+    TENSORFLOW_AVAILABLE = True
+except ImportError as e:
+    st.error(f"⚠️ TensorFlow non disponible: {e}")
+    TENSORFLOW_AVAILABLE = False
+
+    # Mock TensorFlow functions for graceful degradation
+    class MockTF:
+        def __init__(self):
+            pass
+
+    tf = MockTF()
+
+# Imports des modules internes
 from utils.disease_detector import DiseaseDetector, preprocess_image
 from utils.disease_database import DiseaseDatabase
 from utils.disease_database_extended import ExtendedDiseaseDatabase
