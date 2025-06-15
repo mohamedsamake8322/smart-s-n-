@@ -12,7 +12,7 @@ os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 # 🔹 Définition des chemins
 DATASET_PATH = "C:/plateforme-agricole-complete-v2/plant_disease_dataset"
-MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.h5"
+MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
 
 # 🔍 Vérification et création du dossier modèle
 os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
@@ -85,7 +85,7 @@ history = model.fit(
 
 # 💾 **Sauvegarde du modèle avec gestion d'erreur**
 try:
-    model.save(MODEL_PATH)
+    model.save(MODEL_PATH, save_format="keras")
     print(f"✅ Modèle entraîné et enregistré sous {MODEL_PATH}")
 except Exception as e:
     print(f"🚨 Erreur de sauvegarde : {e}")
