@@ -8,7 +8,9 @@ import streamlit.components.v1 as components
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
 from datetime import datetime
-
+from utils.voice_assistant import voice_assistant
+from utils.micro_input import get_voice_input
+from utils.animations import typewriting_effect, pulsing_title
 # ✅ Configuration de la page (doit être la première commande Streamlit)
 st.set_page_config(
     page_title="SènèSmart Yield Predictor",
@@ -19,34 +21,13 @@ st.set_page_config(
 
 # ✅ Effet d’apparition progressif sur le titre
 title_placeholder = st.empty()
-title_text = "🌾 SènèSmart Yield Predictor"
-for i in range(1, len(title_text) + 1):
-    title_placeholder.title(title_text[:i])
-    time.sleep(0.08)
+typewriting_effect(title_placeholder, "🌾 SènèSmart Yield Predictor")
+
 
 # ✅ Effet de "typewriting" sur le sous-titre
 subtitle_placeholder = st.empty()
-subtitle_text = "### 🚀 SènèSmart Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SènèSmart Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈."
-for i in range(len(subtitle_text)):
-    subtitle_placeholder.markdown(subtitle_text[:i+1])
-    time.sleep(0.04)
-
-# ✅ Animation de pulsation subtile pour le titre
-css_code = """
-<style>
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
-}
-h1 {
-  animation: pulse 2s infinite;
-}
-</style>
-"""
-
-components.html(css_code, height=0)
-
+typewriting_effect(subtitle_placeholder, "### 🚀 SènèSmart Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SènèSmart Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈.")
+pulsing_title(components)
 # 🔹 Sidebar
 st.sidebar.title("Navigation")
 st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
@@ -164,6 +145,26 @@ with col2:
 with col3:
     if st.button("📁 Upload Data", use_container_width=True):
         st.switch_page("pages/5_Data_Upload.py")
+st.title("🧠 Smart Voice Assistant for Farmers")
+
+user_message = st.text_input("Ask your question here (in text)")
+
+if user_message:
+    response = voice_assistant.get_response(user_message)
+    st.markdown("### 🤖 Assistant's Response:")
+    st.write(response['text'])
+
+    # Handle actions
+    if response['action'] == "open_weather_dashboard":
+        st.info("📡 Opening the weather module… (to be implemented)")
+    elif response['action'] == "analyze_image":
+        st.warning("🖼️ Image analysis awaiting your photo…")
+
+if st.button("🎙️ Speak now"):
+    user_message = get_voice_input()
+    st.write(f"🗣️ You said: {user_message}")
+    response = voice_assistant.get_response(user_message)
+    st.write(response['text'])
 
 # Footer
 st.markdown("---")
