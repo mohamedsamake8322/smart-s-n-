@@ -67,9 +67,11 @@ val_generator = train_datagen.flow_from_directory(
     batch_size=16,
     class_mode="categorical"
 )
+# 🚀 Création et compilation du modèle
+model = create_model()
+model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
 # 🚀 **Entraînement du modèle**
-model = create_model()
 history = model.fit(
     train_generator,
     validation_data=val_generator,
