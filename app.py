@@ -6,7 +6,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
-import os
 
 # ✅ Configuration de la page (doit être la première commande Streamlit)
 st.set_page_config(
@@ -16,7 +15,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.write("🚀 L'application démarre... Vérification en cours.")
 # 📌 Contenu principal
 st.title("🌾 Agricultural Analytics Platform")
 st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
@@ -32,27 +30,7 @@ st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 
 # ✅ Indicateur de démarrage
 st.write("🚀 Smart Fertilization App is running!")
-st.write("🚀 Vérification avancée du démarrage...")
 
-# 🔎 Afficher les variables d'environnement de Streamlit Cloud
-env_vars = os.environ
-st.write("🔍 Variables d'environnement détectées :")
-st.json({k: v for k, v in env_vars.items() if "STREAMLIT" in k or "PYTHON" in k})
-import time
-time.sleep(5)  # Attendre 5 secondes avant de tester la connexion
-st.write("🚀 Vérification du lancement...")
-
-import requests
-
-st.write("🚀 Vérification du lancement...")
-
-try:
-    response = requests.get("http://localhost:8501/healthz")
-    if response.status_code != 200:
-        st.error("❌ Problème : Streamlit ne répond pas sur le serveur Cloud.")
-        st.write("🔎 Vérifie les logs pour voir si une dépendance bloque.")
-except requests.exceptions.RequestException:
-    st.error("⚠️ Impossible de se connecter au serveur Streamlit.")
 
  # 🔧 Forcer Streamlit Cloud à utiliser le bon port
 # Main dashboard overview
