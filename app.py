@@ -17,13 +17,6 @@ st.set_page_config(
 )
 
 st.write("🚀 L'application démarre... Vérification en cours.")
-
-# ✅ Vérification du bon démarrage de Streamlit Cloud
-server_status = os.system("curl -s http://localhost:8501/healthz")
-if server_status != 0:
-    st.error("⚠️ Streamlit ne répond pas sur le port 8501.")
-    st.stop()
-
 # 📌 Contenu principal
 st.title("🌾 Agricultural Analytics Platform")
 st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
@@ -38,22 +31,29 @@ st.sidebar.markdown("- **Soil Monitoring**: Soil condition analysis")
 st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 
 # ✅ Indicateur de démarrage
-if __name__ == "__main__":
-    st.write("🚀 Smart Fertilization App is running!")
+st.write("🚀 Smart Fertilization App is running!")
 st.write("🚀 Vérification avancée du démarrage...")
 
 # 🔎 Afficher les variables d'environnement de Streamlit Cloud
 env_vars = os.environ
 st.write("🔍 Variables d'environnement détectées :")
 st.json({k: v for k, v in env_vars.items() if "STREAMLIT" in k or "PYTHON" in k})
+import time
+time.sleep(5)  # Attendre 5 secondes avant de tester la connexion
+st.write("🚀 Vérification du lancement...")
 
-# 🔎 Vérifier si le serveur tourne bien
-server_status = os.system("curl -s http://localhost:8501/healthz")
-if server_status != 0:
-    st.error("❌ Streamlit ne répond pas sur 8501 ! Problème détecté.")
-    st.stop()
-# 🔥 Supprimé : Vérification inutile du contexte Streamlit (provoquait des erreurs)
-  # Arrêter l'exécution si Streamlit Cloud ne reconnaît pas l'application
+import requests
+
+st.write("🚀 Vérification du lancement...")
+
+try:
+    response = requests.get("http://localhost:8501/healthz")
+    if response.status_code != 200:
+        st.error("❌ Problème : Streamlit ne répond pas sur le serveur Cloud.")
+        st.write("🔎 Vérifie les logs pour voir si une dépendance bloque.")
+except requests.exceptions.RequestException:
+    st.error("⚠️ Impossible de se connecter au serveur Streamlit.")
+
  # 🔧 Forcer Streamlit Cloud à utiliser le bon port
 # Main dashboard overview
 col1, col2, col3, col4 = st.columns(4)
