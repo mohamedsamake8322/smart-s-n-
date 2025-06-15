@@ -6,8 +6,6 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 import os
 from tensorflow.keras.callbacks import ReduceLROnPlateau
-import numpy as np
-from PIL import Image
 
 # 🔹 Réduction des options CPU pour éviter l'OOM
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
@@ -23,46 +21,36 @@ os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 def create_model():
     input_layer = Input(shape=(224, 224, 3), name="input_layer")
 
-    # 🔹 Ajout explicite de la normalisation sur input_layer
+    # 🔹 Normalisation des images avant d'entrer dans le modèle
     x = tf.keras.layers.Rescaling(1./255)(input_layer)
 
-    # 🔹 Connexion de EfficientNetB4 et ResNet50 à input_layer
-    base_model_efficientnet = EfficientNetB4(weights="imagenet", include_top=False)
-    base_model_resnet = ResNet50(weights="imagenet", include_top=False)
+    # 🔹 Connexion de EfficientNetB4 et ResNet50
+    base_model_efficient = EfficientNetB4(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
+    base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
 
-    x1 = base_model_efficientnet(x)  # Utilisation de x comme entrée
-    x2 = base_model_resnet(x)  # Connexion à x également
+    x1 = base_model_efficient(x)
+    x2 = base_model_resnet(x)
 
-    # 🔹 Fusion des deux modèles
+    # 🔹 Fusion des modèles
     x1 = GlobalAveragePooling2D()(x1)
     x2 = GlobalAveragePooling2D()(x2)
     merged = Concatenate()([x1, x2])
 
-    # 🔹 Ajout de couches fully connected
+    # 🔹 Couches fully connected
     x = Dense(256, activation="relu")(merged)
     x = Dense(128, activation="relu")(x)
-    output = Dense(45, activation="softmax", name="output_layer")(x)  # 45 classes
+    output = Dense(45, activation="softmax", name="output_layer")(x)
 
     model = Model(inputs=input_layer, outputs=output)
-
     return model
 
 # 🚀 Création et compilation du modèle
 model = create_model()
 model.compile(optimizer=Adam(learning_rate=0.0001), loss="categorical_crossentropy", metrics=["accuracy"])
 
-def preprocess_image(img):
-    if isinstance(img, np.ndarray):  # Vérifier si img est un tableau NumPy
-        if img.dtype != np.uint8:
-            img = (img * 255).astype(np.uint8)  # Convertit les valeurs en uint8
-        img = Image.fromarray(img)  # ✅ Conversion correcte en image PIL
-
-    img = img.convert("RGBA").convert("RGB")  # Supprimer la transparence
-    return np.array(img)  # ✅ Retour sous forme NumPy après correction
-
-
+# 🔹 Chargement et prétraitement des images
 train_datagen = ImageDataGenerator(
-    preprocessing_function=preprocess_image,
+    preprocessing_function=tf.keras.applications.efficientnet.preprocess_input,  # ✅ Correction
     rotation_range=20,
     zoom_range=0.15,
     horizontal_flip=True,
@@ -72,14 +60,14 @@ train_datagen = ImageDataGenerator(
 train_generator = train_datagen.flow_from_directory(
     os.path.join(DATASET_PATH, "train"),
     target_size=(224, 224),
-    batch_size=16,
+    batch_size=8,  # ✅ Réduction du batch pour éviter l'OOM
     class_mode="categorical"
 )
 
 val_generator = train_datagen.flow_from_directory(
     os.path.join(DATASET_PATH, "val"),
     target_size=(224, 224),
-    batch_size=16,
+    batch_size=8,
     class_mode="categorical"
 )
 
@@ -90,8 +78,8 @@ lr_callback = ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=3, verb
 history = model.fit(
     train_generator,
     validation_data=val_generator,
-    epochs=25,  # Augmentation des epochs pour une meilleure convergence
-    batch_size=16,
+    epochs=15,  # ✅ Réduction des epochs pour éviter le surapprentissage
+    batch_size=8,
     callbacks=[lr_callback]
 )
 
