@@ -1,23 +1,50 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+import time
 import plotly.express as px
 import plotly.graph_objects as go
+import streamlit.components.v1 as components
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
 
 # ✅ Configuration de la page (doit être la première commande Streamlit)
 st.set_page_config(
-    page_title="Agricultural Analytics Platform",
+    page_title="SènèSmart Yield Predictor",
     page_icon="🌾",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# 📌 Contenu principal
-st.title("🌾 Agricultural Analytics Platform")
-st.markdown("### Welcome to your comprehensive agricultural data analysis and prediction system")
+# ✅ Effet d’apparition progressif sur le titre
+title_placeholder = st.empty()
+title_text = "🌾 SènèSmart Yield Predictor"
+for i in range(1, len(title_text) + 1):
+    title_placeholder.title(title_text[:i])
+    time.sleep(0.08)
+
+# ✅ Effet de "typewriting" sur le sous-titre
+subtitle_placeholder = st.empty()
+subtitle_text = "### 🚀 SènèSmart Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SènèSmart Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈."
+for i in range(len(subtitle_text)):
+    subtitle_placeholder.markdown(subtitle_text[:i+1])
+    time.sleep(0.04)
+
+# ✅ Animation de pulsation subtile pour le titre
+css_code = """
+<style>
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+h1 {
+  animation: pulse 2s infinite;
+}
+</style>
+"""
+
+components.html(css_code, height=0)
 
 # 🔹 Sidebar
 st.sidebar.title("Navigation")
