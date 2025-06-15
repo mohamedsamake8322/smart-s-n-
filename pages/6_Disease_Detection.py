@@ -177,6 +177,7 @@ if TENSORFLOW_AVAILABLE:
 
                 # Apply preprocessing
                 processed_image = uploaded_image.copy()
+                processed_image = processed_image.convert("RGB")
 
                 if enhance_contrast:
                     enhancer = ImageEnhance.Contrast(processed_image)
