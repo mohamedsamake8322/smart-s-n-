@@ -6,6 +6,9 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 import os
 
+# 🔹 Réduction des options CPU pour éviter l'OOM
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+
 # 🔹 Définition des chemins
 DATASET_PATH = "C:/plateforme-agricole-complete-v2/plant_disease_dataset"
 MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.h5"
@@ -15,11 +18,11 @@ os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 
 # ✅ Création du modèle EfficientNet + ResNet avec une seule entrée
 def create_model():
-    """Construit un modèle fusionné (EfficientNetB4 + ResNet50) avec une seule entrée."""
-    input_layer = Input(shape=(380, 380, 3))  # 📌 Une seule entrée
+    """Construit un modèle fusionné (EfficientNetB4 + ResNet50) avec entrée unique."""
+    input_layer = Input(shape=(224, 224, 3))  # 📌 Réduction de la taille d’entrée
 
-    base_model_efficient = EfficientNetB4(weights="imagenet", include_top=False, input_tensor=input_layer)
-    base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_tensor=input_layer)
+    base_model_efficient = EfficientNetB4(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
+    base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
 
     x_eff = GlobalAveragePooling2D()(base_model_efficient.output)
     x_res = GlobalAveragePooling2D()(base_model_resnet.output)
@@ -35,26 +38,23 @@ def create_model():
 # 🔹 Chargement et Prétraitement des images
 train_datagen = ImageDataGenerator(
     rescale=1.0 / 255,
-    rotation_range=30,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    shear_range=0.2,
-    zoom_range=0.2,
+    rotation_range=20,  # 📌 Moins de rotation pour éviter la perte de caractéristiques
+    zoom_range=0.15,  # 📌 Réduction de l'effet zoom
     horizontal_flip=True,
     validation_split=0.2
 )
 
 train_generator = train_datagen.flow_from_directory(
     os.path.join(DATASET_PATH, "train"),
-    target_size=(380, 380),
-    batch_size=32,
+    target_size=(224, 224),  # ✅ Réduction de la taille d'image
+    batch_size=16,  # ✅ Réduction du batch pour éviter l'OOM
     class_mode="categorical"
 )
 
 val_generator = train_datagen.flow_from_directory(
     os.path.join(DATASET_PATH, "val"),
-    target_size=(380, 380),
-    batch_size=32,
+    target_size=(224, 224),
+    batch_size=16,
     class_mode="categorical"
 )
 
@@ -63,8 +63,8 @@ model = create_model()
 history = model.fit(
     train_generator,
     validation_data=val_generator,
-    epochs=20,
-    batch_size=32
+    epochs=15,  # 📌 Réduction des epochs pour éviter le surapprentissage
+    batch_size=16
 )
 
 # 💾 **Sauvegarde du modèle avec gestion d'erreur**
