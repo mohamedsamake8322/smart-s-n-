@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 import streamlit.components.v1 as components
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
+from datetime import datetime
 
 # ✅ Configuration de la page (doit être la première commande Streamlit)
 st.set_page_config(
