@@ -23,12 +23,9 @@ os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 def create_model():
     input_layer = Input(shape=(224, 224, 3), name="input_layer")
 
-    # 🔹 Ajout de la normalisation
-    x = tf.keras.layers.Rescaling(1./255)(input_layer)
-
     # 🔹 Bases pré-entraînées EfficientNetB4 et ResNet50
-    base_model_efficientnet = EfficientNetB4(weights="imagenet", include_top=False, input_tensor=x)
-    base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_tensor=x)
+    base_model_efficientnet = EfficientNetB4(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
+    base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
 
     # 🔹 Fusion des deux modèles
     x1 = GlobalAveragePooling2D()(base_model_efficientnet.output)
@@ -50,18 +47,12 @@ model.compile(optimizer=Adam(learning_rate=0.0001), loss="categorical_crossentro
 
 # 📌 **Prétraitement des images avec gestion de transparence**
 def preprocess_image(img):
-    if isinstance(img, np.ndarray):  # Vérifie si img est un tableau NumPy
-        if img.dtype != np.uint8:
-            img = (img * 255).astype(np.uint8)  # Convertit les valeurs en uint8
-        return img  # ✅ Retourne directement l'image sous format NumPy
+    img = Image.open(img)  # ✅ Ouvrir correctement l’image avec PIL
+    img = img.convert("RGBA").convert("RGB")  # Supprimer la transparence
+    return np.array(img)  # ✅ Convertir l'image en NumPy avant retour
 
-    img = np.array(img)  # ✅ Conversion explicite PIL -> NumPy
-    img = Image.fromarray(img)  # Reconversion en PIL après correction
-    img = img.convert("RGBA").convert("RGB")  # Supprime la transparence
-    return np.array(img)  # ✅ Convertit l'image corrigée en NumPy avant retour
 train_datagen = ImageDataGenerator(
     preprocessing_function=preprocess_image,
-    rescale=1./255,
     rotation_range=20,
     zoom_range=0.15,
     horizontal_flip=True,
