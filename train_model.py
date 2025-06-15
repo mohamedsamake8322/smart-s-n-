@@ -51,11 +51,15 @@ def create_model():
 model = create_model()
 model.compile(optimizer=Adam(learning_rate=0.0001), loss="categorical_crossentropy", metrics=["accuracy"])
 
-# 📌 **Prétraitement des images avec gestion de transparence**
 def preprocess_image(img):
-    img = Image.open(img)  # ✅ Ouvrir correctement l’image avec PIL
+    if isinstance(img, np.ndarray):  # Vérifier si img est un tableau NumPy
+        if img.dtype != np.uint8:
+            img = (img * 255).astype(np.uint8)  # Convertit les valeurs en uint8
+        img = Image.fromarray(img)  # ✅ Conversion correcte en image PIL
+
     img = img.convert("RGBA").convert("RGB")  # Supprimer la transparence
-    return np.array(img)  # ✅ Convertir l'image en NumPy avant retour
+    return np.array(img)  # ✅ Retour sous forme NumPy après correction
+
 
 train_datagen = ImageDataGenerator(
     preprocessing_function=preprocess_image,
