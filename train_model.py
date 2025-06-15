@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications import EfficientNetB4, ResNet50
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Input
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 import os
@@ -14,20 +14,22 @@ MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.h5"
 if not os.path.exists(DATASET_PATH):
     raise FileNotFoundError(f"🚨 Dataset introuvable : {DATASET_PATH}")
 
-# ✅ Création du modèle EfficientNet + ResNet
+# ✅ Création du modèle EfficientNet + ResNet avec une seule entrée
 def create_model():
-    """Construit et retourne un modèle combiné EfficientNetB4 + ResNet50."""
-    base_model_efficient = EfficientNetB4(weights="imagenet", include_top=False)
-    base_model_resnet = ResNet50(weights="imagenet", include_top=False)
+    """Construit un modèle fusionné (EfficientNetB4 + ResNet50) avec entrée unique."""
+    input_layer = Input(shape=(380, 380, 3))  # 📌 Une seule entrée
+
+    base_model_efficient = EfficientNetB4(weights="imagenet", include_top=False, input_tensor=input_layer)
+    base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_tensor=input_layer)
 
     x_eff = GlobalAveragePooling2D()(base_model_efficient.output)
     x_res = GlobalAveragePooling2D()(base_model_resnet.output)
     merged = tf.keras.layers.concatenate([x_eff, x_res])
 
     x = Dense(256, activation="relu")(merged)
-    output = Dense(4, activation="softmax")(x)  # 🔹 Ajuster selon le nombre de classes
+    output = Dense(45, activation="softmax")(x)  # ✅ Ajusté pour **45 classes**
 
-    model = Model(inputs=[base_model_efficient.input, base_model_resnet.input], outputs=output)
+    model = Model(inputs=input_layer, outputs=output)
     model.compile(optimizer=Adam(learning_rate=0.0001), loss="categorical_crossentropy", metrics=["accuracy"])
     return model
 
@@ -68,5 +70,4 @@ history = model.fit(
 
 # 💾 **Sauvegarde du modèle**
 model.save(MODEL_PATH)
-print(f"✅ Modèle enregistré sous {MODEL_PATH}")
-
+print(f"✅ Modèle entraîné et enregistré sous {MODEL_PATH}")
