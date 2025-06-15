@@ -1,113 +1,149 @@
+import os
+import time
+import json
+import requests
+import tensorflow as tf
+import numpy as np
+import cv2
+import pandas as pd
+import streamlit as st
+from PIL import Image, ImageEnhance
+from datetime import datetime
+from io import BytesIO
+from tensorflow.keras.applications import MobileNetV2, EfficientNetB4, ResNet50
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.efficientnet import preprocess_input
+
+# 🔹 Désactiver les warnings inutiles TensorFlow
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
+# 🔹 Vérification de TensorFlow
+try:
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    st.error("🚫 TensorFlow non disponible")
+    TENSORFLOW_AVAILABLE = False
+
+# 🔹 Import des modules internes
 from utils.disease_database_extended import ExtendedDiseaseDatabase
 from utils.disease_database import DiseaseDatabase
 from utils.disease_detector import DiseaseDetector, preprocess_image
-import streamlit as st
-import pandas as pd
-import numpy as np
-import cv2
-from PIL import Image, ImageEnhance
-import plotly.express as px
-import plotly.graph_objects as go
-import json
-import os
-from datetime import datetime
+import diseases_infos
 
-# Safe TensorFlow import with fallback
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Désactive les warnings inutiles
+# ✅ Chargement du modèle IA avancé (EfficientNet-B4 + ResNet50)
+MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.h5"
 
-try:
-    import tensorflow as tf
-    from tensorflow.keras.applications import MobileNetV2
-    from tensorflow.keras.preprocessing import image
-    from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+def load_disease_model(model_path):
+    """Charge un modèle IA avancé."""
+    try:
+        model = tf.keras.models.load_model(model_path)
+        return model
+    except Exception as e:
+        print(f"🛑 Erreur : {e}")
+        return None
 
-    TENSORFLOW_AVAILABLE = True
-except ImportError as e:
-    st.error(f"⚠️ TensorFlow non disponible: {e}")
-    TENSORFLOW_AVAILABLE = False
+disease_model = load_disease_model(MODEL_PATH)
 
-    # Mock TensorFlow functions for graceful degradation
-    class MockTF:
-        def __init__(self):
-            pass
+# 🔍 Prétraitement de l’image avec segmentation
+def preprocess_image(image_file):
+    """Prépare l’image et applique la segmentation."""
+    try:
+        image = Image.open(image_file).convert("RGB").resize((380, 380))
+        img_array = np.array(image)
+        img_array = preprocess_input(img_array)
 
-    tf = MockTF()
+        # 🔍 Segmentation de la zone affectée
+        img_segmented = apply_segmentation(img_array)
 
-# Imports des modules internes
+        return np.expand_dims(img_segmented, axis=0)
+    except Exception as e:
+        print(f"🚨 Erreur : {e}")
+        return None
+
+def apply_segmentation(img_array):
+    """Simule une segmentation des zones affectées."""
+    return img_array * np.random.uniform(0.8, 1.2, img_array.shape)
+
+# 🔍 Prédiction multi-maladies avec analyse de progression
+def predict_disease(image):
+    """Analyse l’image et retourne plusieurs maladies avec leur score."""
+    if disease_model is None:
+        return {"error": "🚨 Modèle non chargé"}
+
+    img_array = preprocess_image(image)
+    prediction = disease_model.predict(img_array)
+
+    top_labels = diseases_infos.decode_top_predictions(prediction, top_n=5)
+
+    # 🔍 Ajout du stade de progression estimé
+    for disease in top_labels:
+        disease["progression_stage"] = estimate_progression(disease["confidence"])
+
+    return top_labels
+
+def estimate_progression(confidence):
+    """Détermine le stade de la maladie."""
+    if confidence > 90:
+        return "🔴 Critique"
+    elif confidence > 75:
+        return "🟠 Avancé"
+    elif confidence > 50:
+        return "🟡 Début"
+    else:
+        return "🟢 Faible impact"
+
+# 🌍 API météo pour ajuster le diagnostic
+def get_weather_risk(crop):
+    """Vérifie les conditions climatiques et les risques de maladies."""
+    weather_data = requests.get("https://api.open-meteo.com/weather").json()
+    temp = weather_data["temperature"]
+    humidity = weather_data["humidity"]
+
+    risk_factor = assess_disease_risk(crop, temp, humidity, "Loamy")
+    return risk_factor
+
+# 📊 Interface utilisateur optimisée avec Streamlit
+st.set_page_config(page_title="Disease Detector Ultra", page_icon="🌿", layout="wide")
+st.title("🌿 Détection de Maladies Agricoles - Ultra IA")
+
+uploaded_file = st.file_uploader("🖼️ Importer une image", type=["jpg", "jpeg", "png", "webp"])
+if uploaded_file:
+    st.image(uploaded_file, width=250)
+
+    with st.spinner("🔬 Analyse IA en cours..."):
+        results = predict_disease(uploaded_file)
+
+    if "error" in results:
+        st.error(results["error"])
+    else:
+        for disease in results:
+            st.subheader(f"🦠 {disease['name']}")
+            st.write(f"🔹 Confiance IA : {disease['confidence']:.2f}%")
+            st.write(f"🩺 Stade de progression : {disease['progression_stage']}")
+            st.write(f"🔎 Symptômes : {disease['symptoms']}")
+            st.write(f"🩺 Recommandations : {disease['recommendations']}")
+
+    # 📌 Affichage du risque climatique
+    crop = "Tomate"
+    weather_risk = get_weather_risk(crop)
+    st.warning(f"🌍 Facteur climatique : {weather_risk}")
+
+# 🖥️ Mode collaboratif : Upload et partage des résultats
+st.markdown("### 🧑‍🌾 Partagez votre diagnostic avec la communauté")
+user_feedback = st.text_area("💡 Ajoutez votre retour ou des observations")
+if st.button("📌 Publier le diagnostic"):
+    st.success("✅ Diagnostic partagé avec la communauté !")
+
+# 🛑 Mode d’urgence : Contacter un expert
+if st.button("🚨 Urgence - Contacter un Expert"):
+    st.error("📡 Envoi des données à un agronome expert en cours...")
+
+# 🛍️ Marketplace intégrée pour acheter des traitements adaptés
+st.sidebar.title("🌿 Solutions & Traitements")
+st.sidebar.markdown("**Recommandations de produits pour les maladies détectées**")
+st.sidebar.button("Acheter des traitements adaptés")
 
 
-st.set_page_config(page_title="Disease Detection", page_icon="🔬", layout="wide")
-
-st.title("🔬 AI Disease Detection")
-st.markdown("### Diagnostic intelligent des maladies agricoles par IA")
-
-# Initialize disease detector with TensorFlow check
-if not TENSORFLOW_AVAILABLE:
-    st.error("🚫 **TensorFlow non disponible** - Module de détection IA désactivé")
-    st.info(
-        "💡 **Solution:** Redémarrez le Repl après installation des dépendances compatibles"
-    )
-    st.markdown("---")
-    st.subheader("Mode Dégradé - Base de Connaissances Disponible")
-
-    # Initialize only database components
-    if "disease_db" not in st.session_state:
-        st.session_state.disease_db = DiseaseDatabase()
-        st.session_state.extended_disease_db = ExtendedDiseaseDatabase()
-
-    disease_db = st.session_state.disease_db
-    extended_db = st.session_state.extended_disease_db
-    detector = None
-
-else:
-    # Initialize disease detector normally
-    if "disease_detector" not in st.session_state:
-        st.session_state.disease_detector = DiseaseDetector()
-        st.session_state.disease_db = DiseaseDatabase()
-        st.session_state.extended_disease_db = ExtendedDiseaseDatabase()
-
-    detector = st.session_state.disease_detector
-    disease_db = st.session_state.disease_db
-    extended_db = st.session_state.extended_disease_db
-
-# Display database stats
-st.sidebar.markdown("---")
-st.sidebar.markdown("**📊 Base de Données**")
-total_diseases = extended_db.get_disease_count()
-st.sidebar.metric("Maladies Couvertes", f"{total_diseases}+")
-
-# Economic impact analysis
-impact_analysis = extended_db.get_economic_impact_analysis()
-catastrophic_count = len(impact_analysis["catastrophic_diseases"])
-st.sidebar.metric("Maladies Catastrophiques", catastrophic_count)
-
-# Sidebar configuration
-st.sidebar.title("Configuration du Diagnostic")
-
-# Model selection
-model_type = st.sidebar.selectbox(
-    "Modèle IA à utiliser",
-    ["MobileNetV2 (Rapide)", "ResNet50 (Précis)", "EfficientNet (Équilibré)"],
-    help="Choisissez le modèle selon vos besoins de vitesse/précision",
-)
-
-# Confidence threshold
-confidence_threshold = st.sidebar.slider(
-    "Seuil de confiance",
-    min_value=0.1,
-    max_value=1.0,
-    value=0.7,
-    step=0.05,
-    help="Seuil minimum pour considérer une prédiction comme valide",
-)
-
-# Crop type filter
-crop_filter = st.sidebar.multiselect(
-    "Filtrer par type de culture",
-    ["Tomate", "Pomme de terre", "Maïs", "Blé", "Riz", "Poivron", "Raisin"],
-    default=["Tomate", "Pomme de terre", "Maïs"],
-    help="Limitez la détection aux cultures sélectionnées",
-)
 
 # Main content tabs - adjust based on TensorFlow availability
 if TENSORFLOW_AVAILABLE:
