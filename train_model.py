@@ -23,13 +23,19 @@ os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 def create_model():
     input_layer = Input(shape=(224, 224, 3), name="input_layer")
 
-    # 🔹 Bases pré-entraînées EfficientNetB4 et ResNet50
-    base_model_efficientnet = EfficientNetB4(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
-    base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
+    # 🔹 Ajout explicite de la normalisation sur input_layer
+    x = tf.keras.layers.Rescaling(1./255)(input_layer)
+
+    # 🔹 Connexion de EfficientNetB4 et ResNet50 à input_layer
+    base_model_efficientnet = EfficientNetB4(weights="imagenet", include_top=False)
+    base_model_resnet = ResNet50(weights="imagenet", include_top=False)
+
+    x1 = base_model_efficientnet(x)  # Utilisation de x comme entrée
+    x2 = base_model_resnet(x)  # Connexion à x également
 
     # 🔹 Fusion des deux modèles
-    x1 = GlobalAveragePooling2D()(base_model_efficientnet.output)
-    x2 = GlobalAveragePooling2D()(base_model_resnet.output)
+    x1 = GlobalAveragePooling2D()(x1)
+    x2 = GlobalAveragePooling2D()(x2)
     merged = Concatenate()([x1, x2])
 
     # 🔹 Ajout de couches fully connected
