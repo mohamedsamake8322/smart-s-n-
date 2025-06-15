@@ -1,3 +1,6 @@
+from utils.disease_database_extended import ExtendedDiseaseDatabase
+from utils.disease_database import DiseaseDatabase
+from utils.disease_detector import DiseaseDetector, preprocess_image
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -30,12 +33,12 @@ except ImportError as e:
     tf = MockTF()
 
 # Imports des modules internes
-from utils.disease_detector import DiseaseDetector, preprocess_image
-from utils.disease_database import DiseaseDatabase
-from utils.disease_database_extended import ExtendedDiseaseDatabase
 
 
-st.set_page_config(page_title="Disease Detection", page_icon="🔬", layout="wide")
+st.set_page_config(
+    page_title="Disease Detection",
+    page_icon="🔬",
+     layout="wide")
 
 st.title("🔬 AI Disease Detection")
 st.markdown("### Diagnostic intelligent des maladies agricoles par IA")
@@ -170,9 +173,12 @@ if TENSORFLOW_AVAILABLE:
             if uploaded_image:
                 st.markdown("**Options de Préprocessing**")
 
-                enhance_contrast = st.checkbox("Améliorer le contraste", value=True)
-                enhance_brightness = st.checkbox("Ajuster la luminosité", value=False)
-                remove_background = st.checkbox("Supprimer l'arrière-plan", value=False)
+                enhance_contrast = st.checkbox(
+    "Améliorer le contraste", value=True)
+                enhance_brightness = st.checkbox(
+                    "Ajuster la luminosité", value=False)
+                remove_background = st.checkbox(
+    "Supprimer l'arrière-plan", value=False)
 
                 # Apply preprocessing
                 processed_image = uploaded_image.copy()
@@ -218,7 +224,8 @@ if TENSORFLOW_AVAILABLE:
                             st.success("🌱 Plante en Bonne Santé")
                             status_color = "green"
                         else:
-                            st.error(f"🦠 Maladie Détectée: {main_result['disease']}")
+                            st.error(
+                                f"🦠 Maladie Détectée: {main_result['disease']}")
                             status_color = "red"
 
                         # Confidence metrics
@@ -251,13 +258,17 @@ if TENSORFLOW_AVAILABLE:
 
                         # Disease information
                         if main_result['disease'] != 'Healthy':
-                            disease_info = disease_db.get_disease_info(main_result['disease'])
+                            disease_info = disease_db.get_disease_info(
+                                main_result['disease'])
 
                             if disease_info:
                                 with st.expander("📖 Informations sur la Maladie", expanded=True):
-                                    st.markdown(f"**Nom scientifique:** {disease_info.get('scientific_name', 'N/A')}")
-                                    st.markdown(f"**Cause:** {disease_info.get('cause', 'N/A')}")
-                                    st.markdown(f"**Description:** {disease_info.get('description', 'N/A')}")
+                                    st.markdown(
+                                        f"**Nom scientifique:** {disease_info.get('scientific_name', 'N/A')}")
+                                    st.markdown(
+                                        f"**Cause:** {disease_info.get('cause', 'N/A')}")
+                                    st.markdown(
+                                        f"**Description:** {disease_info.get('description', 'N/A')}")
 
                                     # Symptoms
                                     if 'symptoms' in disease_info:
@@ -268,9 +279,12 @@ if TENSORFLOW_AVAILABLE:
                                 with st.expander("💊 Recommandations de Traitement", expanded=True):
                                     if 'treatments' in disease_info:
                                         for treatment in disease_info['treatments']:
-                                            st.markdown(f"**{treatment['type']}:** {treatment['description']}")
+                                            st.markdown(
+                                                f"**{treatment['type']}:** {treatment['description']}")
                                             if 'products' in treatment:
-                                                st.write("Produits recommandés:", ", ".join(treatment['products']))
+                                                st.write(
+    "Produits recommandés:", ", ".join(
+        treatment['products']))
 
                                 with st.expander("🛡️ Mesures Préventives"):
                                     if 'prevention' in disease_info:
@@ -282,23 +296,29 @@ if TENSORFLOW_AVAILABLE:
                             st.markdown("---")
                             st.markdown("**Diagnostics Alternatifs**")
 
-                            alt_results = detection_results[1:4]  # Top 3 alternatives
+                            # Top 3 alternatives
+                            alt_results = detection_results[1:4]
 
                             for i, result in enumerate(alt_results, 1):
                                 with st.expander(f"{i}. {result['disease']} ({result['confidence']:.1f}%)"):
-                                    st.write(f"Confiance: {result['confidence']:.1f}%")
+                                    st.write(
+                                        f"Confiance: {result['confidence']:.1f}%")
                                     if result['disease'] != 'Healthy':
-                                        alt_info = disease_db.get_disease_info(result['disease'])
+                                        alt_info = disease_db.get_disease_info(
+                                            result['disease'])
                                         if alt_info:
-                                            st.write(f"Cause: {alt_info.get('cause', 'N/A')}")
-                                            st.write(f"Description: {alt_info.get('description', 'N/A')}")
+                                            st.write(
+                                                f"Cause: {alt_info.get('cause', 'N/A')}")
+                                            st.write(
+                                                f"Description: {alt_info.get('description', 'N/A')}")
 
                         # Confidence chart
                         st.markdown("---")
                         st.markdown("**Graphique de Confiance**")
 
                         chart_data = pd.DataFrame([
-                            {'Maladie': r['disease'], 'Confiance': r['confidence']}
+                            {'Maladie': r['disease'],
+                                'Confiance': r['confidence']}
                             for r in detection_results[:5]
                         ])
 
@@ -329,11 +349,14 @@ if TENSORFLOW_AVAILABLE:
                             if 'diagnosis_history' not in st.session_state:
                                 st.session_state.diagnosis_history = []
 
-                            st.session_state.diagnosis_history.append(diagnosis_data)
-                            st.success("Diagnostic sauvegardé dans l'historique!")
+                            st.session_state.diagnosis_history.append(
+                                diagnosis_data)
+                            st.success(
+                                "Diagnostic sauvegardé dans l'historique!")
 
                     else:
-                        st.warning("Aucune maladie détectée avec le seuil de confiance défini")
+                        st.warning(
+                            "Aucune maladie détectée avec le seuil de confiance défini")
 
             else:
                 st.info("Uploadez une image pour commencer le diagnostic")
@@ -341,7 +364,8 @@ if TENSORFLOW_AVAILABLE:
     with tab2:
         st.subheader("Analyse par Lot")
 
-        st.markdown("Analysez plusieurs images simultanément pour un diagnostic de masse.")
+        st.markdown(
+            "Analysez plusieurs images simultanément pour un diagnostic de masse.")
 
         # Bulk upload
         uploaded_files = st.file_uploader(
@@ -376,7 +400,8 @@ if TENSORFLOW_AVAILABLE:
                 batch_results = []
 
                 for i, uploaded_file in enumerate(uploaded_files):
-                    status_text.text(f"Analyse de l'image {i+1}/{len(uploaded_files)}: {uploaded_file.name}")
+                    status_text.text(
+                        f"Analyse de l'image {i+1}/{len(uploaded_files)}: {uploaded_file.name}")
 
                     try:
                         image_pil = Image.open(uploaded_file)
@@ -412,18 +437,27 @@ if TENSORFLOW_AVAILABLE:
                 st.subheader("Résumé des Résultats")
 
                 # Summary metrics
-                healthy_count = sum(1 for r in batch_results if r['status'] == 'Healthy')
-                diseased_count = sum(1 for r in batch_results if r['status'] == 'Diseased')
-                error_count = sum(1 for r in batch_results if r['status'] == 'Error')
+                healthy_count = sum(
+    1 for r in batch_results if r['status'] == 'Healthy')
+                diseased_count = sum(
+    1 for r in batch_results if r['status'] == 'Diseased')
+                error_count = sum(
+    1 for r in batch_results if r['status'] == 'Error')
 
                 col1, col2, col3, col4 = st.columns(4)
 
                 with col1:
                     st.metric("Total Images", len(batch_results))
                 with col2:
-                    st.metric("Plantes Saines", healthy_count, delta=f"{healthy_count/len(batch_results)*100:.1f}%")
+                    st.metric(
+    "Plantes Saines",
+    healthy_count,
+     delta=f"{healthy_count/len(batch_results)*100:.1f}%")
                 with col3:
-                    st.metric("Plantes Malades", diseased_count, delta=f"{diseased_count/len(batch_results)*100:.1f}%")
+                    st.metric(
+    "Plantes Malades",
+    diseased_count,
+     delta=f"{diseased_count/len(batch_results)*100:.1f}%")
                 with col4:
                     st.metric("Erreurs", error_count)
 
@@ -457,7 +491,8 @@ if TENSORFLOW_AVAILABLE:
 
                 with col2:
                     # Disease distribution
-                    disease_counts = df_results[df_results['Statut'] != 'Healthy']['Maladie Principale'].value_counts()
+                    disease_counts = df_results[df_results['Statut'] !=
+                        'Healthy']['Maladie Principale'].value_counts()
                     if not disease_counts.empty:
                         fig_diseases = px.bar(
                             x=disease_counts.values,
@@ -473,11 +508,10 @@ if TENSORFLOW_AVAILABLE:
                 if st.button("📊 Exporter les Résultats"):
                     csv = df_results.to_csv(index=False)
                     st.download_button(
-                        label="Télécharger CSV",
-                        data=csv,
-                        file_name=f"diagnostic_batch_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                        mime="text/csv"
-                    )
+    label="Télécharger CSV",
+    data=csv,
+    file_name=f"diagnostic_batch_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+     mime="text/csv")
 
     with tab3:
         st.subheader("Historique des Diagnostics")
@@ -494,11 +528,8 @@ if TENSORFLOW_AVAILABLE:
                 )
 
             with col2:
-                disease_filter = st.multiselect(
-                    "Filtrer par maladie",
-                    options=list(set([d['main_disease'] for d in st.session_state.diagnosis_history])),
-                    default=[]
-                )
+                disease_filter = st.multiselect("Filtrer par maladie", options=list(set(
+                    [d['main_disease'] for d in st.session_state.diagnosis_history])), default=[])
 
             with col3:
                 confidence_filter = st.slider(
@@ -510,27 +541,33 @@ if TENSORFLOW_AVAILABLE:
             filtered_history = st.session_state.diagnosis_history.copy()
 
             if disease_filter:
-                filtered_history = [d for d in filtered_history if d['main_disease'] in disease_filter]
+                filtered_history = [
+    d for d in filtered_history if d['main_disease'] in disease_filter]
 
-            filtered_history = [d for d in filtered_history if d['confidence'] >= confidence_filter]
+            filtered_history = [
+    d for d in filtered_history if d['confidence'] >= confidence_filter]
 
             # Display history
             st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
 
-            for i, diagnosis in enumerate(reversed(filtered_history[-20:])):  # Last 20 results
+            for i, diagnosis in enumerate(
+                reversed(filtered_history[-20:])):  # Last 20 results
                 with st.expander(f"#{len(filtered_history)-i}: {diagnosis['main_disease']} - {diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"):
 
                     col1, col2 = st.columns([1, 2])
 
                     with col1:
                         st.metric("Maladie", diagnosis['main_disease'])
-                        st.metric("Confiance", f"{diagnosis['confidence']:.1f}%")
+                        st.metric(
+    "Confiance", f"{diagnosis['confidence']:.1f}%")
                         st.metric("Modèle", diagnosis.get('model_used', 'N/A'))
 
                     with col2:
                         st.markdown("**Top 3 Prédictions:**")
-                        for j, pred in enumerate(diagnosis['all_predictions'][:3], 1):
-                            st.write(f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
+                        for j, pred in enumerate(
+                            diagnosis['all_predictions'][:3], 1):
+                            st.write(
+                                f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
 
             # History statistics
             st.markdown("---")
@@ -555,7 +592,9 @@ if TENSORFLOW_AVAILABLE:
 
                 with col2:
                     # Confidence over time
-                    timestamps = [datetime.fromisoformat(d['timestamp']) for d in filtered_history]
+                    timestamps = [
+    datetime.fromisoformat(
+        d['timestamp']) for d in filtered_history]
                     confidences = [d['confidence'] for d in filtered_history]
 
                     fig_conf = px.line(
@@ -572,31 +611,35 @@ if TENSORFLOW_AVAILABLE:
                 st.rerun()
 
         else:
-            st.info("Aucun diagnostic dans l'historique. Commencez par analyser des images!")
+            st.info(
+                "Aucun diagnostic dans l'historique. Commencez par analyser des images!")
 
     with tab4:
         st.subheader("Base de Connaissances des Maladies")
 
         # Disease search
-        search_term = st.text_input("Rechercher une maladie", placeholder="Ex: mildiou, oïdium, rouille...")
+        search_term = st.text_input(
+    "Rechercher une maladie",
+     placeholder="Ex: mildiou, oïdium, rouille...")
 
         # Category filter
         category = st.selectbox(
-            "Catégorie",
-            ["Toutes", "Fongiques", "Bactériennes", "Virales", "Parasitaires", "Carences"]
-        )
+    "Catégorie", [
+        "Toutes", "Fongiques", "Bactériennes", "Virales", "Parasitaires", "Carences"])
 
         # Get disease list
         all_diseases = disease_db.get_all_diseases()
 
         # Filter diseases
         if search_term:
-            filtered_diseases = [d for d in all_diseases if search_term.lower() in d['name'].lower()]
+            filtered_diseases = [
+    d for d in all_diseases if search_term.lower() in d['name'].lower()]
         else:
             filtered_diseases = all_diseases
 
         if category != "Toutes":
-            filtered_diseases = [d for d in filtered_diseases if d.get('category') == category]
+            filtered_diseases = [
+    d for d in filtered_diseases if d.get('category') == category]
 
         # Display diseases
         st.markdown(f"**{len(filtered_diseases)} maladies trouvées**")
@@ -607,10 +650,13 @@ if TENSORFLOW_AVAILABLE:
                 col1, col2 = st.columns([2, 1])
 
                 with col1:
-                    st.markdown(f"**Nom scientifique:** {disease.get('scientific_name', 'N/A')}")
-                    st.markdown(f"**Catégorie:** {disease.get('category', 'N/A')}")
+                    st.markdown(
+                        f"**Nom scientifique:** {disease.get('scientific_name', 'N/A')}")
+                    st.markdown(
+                        f"**Catégorie:** {disease.get('category', 'N/A')}")
                     st.markdown(f"**Cause:** {disease.get('cause', 'N/A')}")
-                    st.markdown(f"**Description:** {disease.get('description', 'N/A')}")
+                    st.markdown(
+                        f"**Description:** {disease.get('description', 'N/A')}")
 
                     if 'symptoms' in disease:
                         st.markdown("**Symptômes:**")
@@ -623,16 +669,28 @@ if TENSORFLOW_AVAILABLE:
                         for crop in disease['affected_crops']:
                             st.write(f"• {crop}")
 
-                    st.markdown("**Sévérité:** " + disease.get('severity', 'Modérée'))
-                    st.markdown("**Saison:** " + disease.get('season', 'Toute l annee'))
+                    st.markdown(
+    "**Sévérité:** " +
+    disease.get(
+        'severity',
+         'Modérée'))
+                    st.markdown(
+    "**Saison:** " +
+    disease.get(
+        'season',
+         'Toute l annee'))
 
                 # Treatments
                 if 'treatments' in disease:
                     st.markdown("**Traitements:**")
                     for treatment in disease['treatments']:
-                        st.markdown(f"*{treatment['type']}:* {treatment['description']}")
+                        st.markdown(
+                            f"*{treatment['type']}:* {treatment['description']}")
                         if 'products' in treatment:
-                            st.write("Produits: " + ", ".join(treatment['products']))
+                            st.write(
+    "Produits: " +
+    ", ".join(
+        treatment['products']))
 
                 # Prevention
                 if 'prevention' in disease:
@@ -654,8 +712,7 @@ with tab5:
 
     col1, col2, col3 = st.columns(3)
 
-
-        for i, (model, stats) in enumerate(model_stats.items()):
+       for i, (model, stats) in enumerate(model_stats.items()):
             with [col1, col2, col3][i]:
                 st.metric(f"{model} - Précision", f"{stats['accuracy']}%")
                 st.metric("Vitesse", stats['speed'])
@@ -672,7 +729,8 @@ with tab5:
 
             with col1:
                 st.metric("Total Diagnostics", len(history))
-                healthy_percentage = len([d for d in history if d['main_disease'] == 'Healthy']) / len(history) * 100
+                healthy_percentage = len(
+                    [d for d in history if d['main_disease'] == 'Healthy']) / len(history) * 100
                 st.metric("Plantes Saines", f"{healthy_percentage:.1f}%")
 
                 avg_confidence = np.mean([d['confidence'] for d in history])
@@ -684,7 +742,8 @@ with tab5:
                 for d in history:
                     disease = d['main_disease']
                     if disease != 'Healthy':
-                        disease_counts[disease] = disease_counts.get(disease, 0) + 1
+                        disease_counts[disease] = disease_counts.get(
+                            disease, 0) + 1
 
                 if disease_counts:
                     most_common = max(disease_counts, key=disease_counts.get)
@@ -692,7 +751,9 @@ with tab5:
                     st.metric("Occurrences", disease_counts[most_common])
 
             # Performance over time
-            timestamps = [datetime.fromisoformat(d['timestamp']) for d in history]
+            timestamps = [
+    datetime.fromisoformat(
+        d['timestamp']) for d in history]
             confidences = [d['confidence'] for d in history]
 
             df_performance = pd.DataFrame({
@@ -713,7 +774,8 @@ with tab5:
             st.plotly_chart(fig_trend, use_container_width=True)
 
         else:
-            st.info("Aucune statistique d'usage disponible. Effectuez des diagnostics pour voir les métriques.")
+            st.info(
+                "Aucune statistique d'usage disponible. Effectuez des diagnostics pour voir les métriques.")
 
             # System performance
             st.markdown("---")
