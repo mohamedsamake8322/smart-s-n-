@@ -800,50 +800,44 @@ if TENSORFLOW_AVAILABLE:
             ]
 
         # Display diseases
-        st.markdown(f"**{len(filtered_diseases)} maladies trouvées**")
+       st.markdown(f"**{len(filtered_diseases)} maladies trouvées**")
 
-        for disease in filtered_diseases[:10]:  # Limit to 10 for performance
-            with st.expander(f"🦠 {disease['name']}"):
+for disease in filtered_diseases[:10]:  # Limit to 10 for performance
+    with st.expander(f"🦠 {disease['name']}"):
+        st.markdown(f"**Nom scientifique:** {disease.get('scientific_name', 'N/A')}")
+        st.markdown(f"**Catégorie:** {disease.get('category', 'N/A')}")
+        st.markdown(f"**Cause:** {disease.get('cause', 'N/A')}")
+        st.markdown(f"**Description:** {disease.get('description', 'N/A')}")
 
-                col1, col2 = st.columns([2, 1])
+        if "symptoms" in disease:
+            st.markdown("**Symptômes:**")
+            for symptom in disease["symptoms"]:
+                st.write(f"• {symptom}")
 
-                with col1:
-                    st.markdown(
-                        f"**Nom scientifique:** {disease.get('scientific_name', 'N/A')}"
-                    )
-                    st.markdown(f"**Catégorie:** {disease.get('category', 'N/A')}")
-                    st.markdown(f"**Cause:** {disease.get('cause', 'N/A')}")
-                    st.markdown(f"**Description:** {disease.get('description', 'N/A')}")
+        st.markdown("**Cultures Affectées:**")
+        if "affected_crops" in disease:
+            for crop in disease["affected_crops"]:
+                st.write(f"• {crop}")
 
-                    if "symptoms" in disease:
-                        st.markdown("**Symptômes:**")
-                        for symptom in disease["symptoms"]:
-                            st.write(f"• {symptom}")
+        st.markdown("**Sévérité:** " + disease.get("severity", "Modérée"))
+        st.markdown("**Saison:** " + disease.get("season", "Toute l'année"))
 
-                with col2:
-                    st.markdown("**Cultures Affectées:**")
-                    if "affected_crops" in disease:
-                        for crop in disease["affected_crops"]:
-                            st.write(f"• {crop}")
+    # ✅ Déplacer `st.columns()` en dehors de `st.expander()`
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.markdown("### Informations complémentaires")
+        if "treatments" in disease:
+            st.markdown("**Traitements:**")
+            for treatment in disease["treatments"]:
+                st.markdown(f"*{treatment['type']}:* {treatment['description']}")
+                if "products" in treatment:
+                    st.write("Produits: " + ", ".join(treatment["products"]))
 
-                    st.markdown("**Sévérité:** " + disease.get("severity", "Modérée"))
-                    st.markdown("**Saison:** " + disease.get("season", "Toute l annee"))
-
-                # Treatments
-                if "treatments" in disease:
-                    st.markdown("**Traitements:**")
-                    for treatment in disease["treatments"]:
-                        st.markdown(
-                            f"*{treatment['type']}:* {treatment['description']}"
-                        )
-                        if "products" in treatment:
-                            st.write("Produits: " + ", ".join(treatment["products"]))
-
-                # Prevention
-                if "prevention" in disease:
-                    st.markdown("**Prévention:**")
-                    for prevention in disease["prevention"]:
-                        st.write(f"• {prevention}")
+    with col2:
+        if "prevention" in disease:
+            st.markdown("**Prévention:**")
+            for prevention in disease["prevention"]:
+                st.write(f"• {prevention}")
 
 with tab5:
     st.subheader("Statistiques et Performance")
