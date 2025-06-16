@@ -463,6 +463,7 @@ disease_manager.add_disease(
     "Remove infected plant debris, improve ventilation for seedlings, apply fungicide treatments...",
     ["Fungicides available for control"]
 )
+# Ajout de la maladie Phomopsis Blight
 disease_manager.add_disease(
     "Phomopsis Blight",
     ["Eggplant", "Pepper"],
@@ -472,32 +473,33 @@ disease_manager.add_disease(
     ["Protectant fungicide sprays recommended"]
 )
 
-            # PLANTES SAINES
-            "Healthy": {
-                "name": "Plante Saine",
-                "scientific_name": "N/A",
-                "category": "Aucune",
-                "severity": "Aucune",
-                "affected_crops": ["Toutes"],
-                "global_distribution": ["Mondial"],
-                "economic_impact": "Positif"
-            }
-        }
+# ✅ Correction du dictionnaire pour "Healthy"
+DISEASE_DATABASE = {
+    "Healthy": {
+        "name": "Plante Saine",
+        "scientific_name": "N/A",
+        "category": "Aucune",
+        "severity": "Aucune",
+        "affected_crops": ["Toutes"],
+        "global_distribution": ["Mondial"],
+        "economic_impact": "Positif",
+    }
+}
 
-    def _initialize_extended_treatments_database(self) -> Dict[str, List[Dict]]:
+def _initialize_extended_treatments_database(self) -> Dict[str, List[Dict]]:
         """Traitements pour les maladies étendues"""
         return {
             # Ajouter tous les traitements pour chaque maladie
             # Structure similaire mais étendue pour 100+ maladies
         }
 
-    def _initialize_extended_prevention_database(self) -> Dict[str, List[str]]:
+def _initialize_extended_prevention_database(self) -> Dict[str, List[str]]:
         """Préventions pour les maladies étendues"""
         return {
             # Ajouter toutes les préventions pour chaque maladie
         }
 
-    def _initialize_regional_disease_data(self) -> Dict[str, List[str]]:
+def _initialize_regional_disease_data(self) -> Dict[str, List[str]]:
         """Données régionales des maladies"""
         return {
             "Europe": ["Wheat_Stripe_rust", "Apple_Scab", "Grape_Downy_mildew"],
@@ -507,11 +509,11 @@ disease_manager.add_disease(
             "Océanie": ["Wheat_Stem_rust", "Grape_Powdery_mildew"]
         }
 
-    def get_disease_count(self) -> int:
+def get_disease_count(self) -> int:
         """Retourne le nombre total de maladies"""
         return len(self.diseases_data)
 
-    def get_diseases_by_severity(self, severity: str) -> List[Dict]:
+def get_diseases_by_severity(self, severity: str) -> List[Dict]:
         """Récupère les maladies par niveau de sévérité"""
         return [
             {**disease_data, 'id': disease_id}
@@ -519,7 +521,7 @@ disease_manager.add_disease(
             if disease_data.get('severity') == severity
         ]
 
-    def get_diseases_by_region(self, region: str) -> List[Dict]:
+def get_diseases_by_region(self, region: str) -> List[Dict]:
         """Récupère les maladies par région"""
         regional_diseases = self.regional_data.get(region, [])
         return [
@@ -528,7 +530,7 @@ disease_manager.add_disease(
             if disease_id in self.diseases_data
         ]
 
-    def get_economic_impact_analysis(self) -> Dict[str, Any]:
+def get_economic_impact_analysis(self) -> Dict[str, Any]:
         """Analyse de l'impact économique des maladies"""
         impact_counts = {}
         for disease_data in self.diseases_data.values():
