@@ -591,7 +591,8 @@ disease_manager.add_disease("Whiteflies (Family: Aleyrodidae)",
                             )
 disease_manager.add_disease(
     "Alfalfa Mosaic Virus",
-    ["Alfalfa", "Potato", "Pepper", "Tomato", "Hemp", "Many ornamentals and weeds"],
+    ["Alfalfa", "Potato", "Pepper", "Tomato",
+        "Hemp", "Many ornamentals and weeds"],
     "Alfalfa mosaic virus (AMV) is in the genus Alfamovirus and is spread by aphids...",
     "Yellow mosaic or calico patterns on foliage, stunted plants, tuber necrosis, bright yellow blotches interspersed with green...",
     "Avoid planting potatoes or hemp near alfalfa fields, remove plants with positive diagnosis...",
@@ -726,7 +727,8 @@ disease_manager.add_disease(
 )
 disease_manager.add_disease(
     "Powdery Mildew on Vegetables",
-    ["Brassicas", "Cucurbits", "Root Crops", "Solanaceous Crops", "Legumes", "Hemp"],
+    ["Brassicas", "Cucurbits", "Root Crops",
+        "Solanaceous Crops", "Legumes", "Hemp"],
     "Powdery mildew is easily identifiable as white, powdery patches on leaves. It thrives in warm temperatures, humid canopies, and poor airflow...",
     "White, powdery fungal growth on leaves, stems, and petioles; yellowing and wilting of leaves, potential fruit sunscald and yield loss...",
     "Plant resistant varieties, remove infected plant material after harvest, improve air circulation, use morning irrigation, switch to drip irrigation...",
