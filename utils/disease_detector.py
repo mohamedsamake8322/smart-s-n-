@@ -135,31 +135,28 @@ class DiseaseDetector:
         except Exception as e:
             print(f"🚨 Erreur lors de la détection heuristique: {e}")
             return []
-        # ✅ Si aucun résultat ne dépasse le seuil, prendre la meilleure prédiction
-        if not results and sorted_indices:
-            top_idx = sorted_indices[0]
-            confidence = float(predictions[top_idx]) * 100
-            disease_name = class_labels[top_idx]
-            severity, urgency = self._assess_disease_severity(
-                disease_name, confidence)
+try:
+    # ✅ Si aucun résultat ne dépasse le seuil, prendre la meilleure prédiction
+    if not results and sorted_indices:
+        top_idx = sorted_indices[0]
+        confidence = float(predictions[top_idx]) * 100
+        disease_name = class_labels[top_idx]
 
-            results.append(
-                {
-                    "disease": disease_name,
-                    "confidence": confidence,
-                    "severity": severity,
-                    "urgency": urgency,
-                    "model_used": "efficientnet_resnet",
-                }
-            )
+        # ✅ Correction : `_assess_disease_severity()` ne retourne qu'une valeur
+        severity = self._assess_disease_severity(disease_name, confidence)
 
-        return results
+        results.append({
+            "disease": disease_name,
+            "confidence": confidence,
+            "severity": severity,
+            "model_used": "efficientnet_resnet",
+        })
 
-    except Exception as e:
-        print(f"🚨 Erreur lors de la prédiction: {e}")
-        return []
+    return results
 
-
+except Exception as e:
+    print(f"🚨 Erreur lors de la prédiction: {e}")
+    return []
 def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
     """
     Analyse les caractéristiques de l'image pour un passage optimisé au modèle EfficientNet-ResNet.
