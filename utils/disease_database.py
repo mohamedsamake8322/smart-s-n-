@@ -576,24 +576,22 @@ def export_database(self, format_type: str = "json") -> str:
         }
         return json.dumps(export_data, ensure_ascii=False, indent=2)
 
-    raise ValueError(f"🚨 Format {format_type} non supporté.")
+    elif format_type == "csv":
+        # Convertir en DataFrame pour l'export CSV
+        diseases_list = []
+        for disease_id, disease_data in self.diseases_data.items():
+            row = disease_data.copy()
+            row["disease_id"] = disease_id
+            row["symptoms"] = "; ".join(row.get("symptoms", []))
+            row["affected_crops"] = "; ".join(row.get("affected_crops", []))
+            row["favorable_conditions"] = "; ".join(row.get("favorable_conditions", []))
+            diseases_list.append(row)
 
-        elif format_type == 'csv':
-            # Convert to DataFrame for CSV export
-            diseases_list = []
-            for disease_id, disease_data in self.diseases_data.items():
-                row = disease_data.copy()
-                row['disease_id'] = disease_id
-                row['symptoms'] = '; '.join(row.get('symptoms', []))
-                row['affected_crops'] = '; '.join(row.get('affected_crops', []))
-                row['favorable_conditions'] = '; '.join(row.get('favorable_conditions', []))
-                diseases_list.append(row)
+        df = pd.DataFrame(diseases_list)
+        return df.to_csv(index=False)
 
-            df = pd.DataFrame(diseases_list)
-            return df.to_csv(index=False)
-
-        else:
-            raise ValueError(f"Format non supporté: {format_type}")
+    else:
+        raise ValueError(f"🚨 Format non supporté: {format_type}")
 
     def add_disease(self, disease_id: str, disease_data: Dict) -> bool:
         """
