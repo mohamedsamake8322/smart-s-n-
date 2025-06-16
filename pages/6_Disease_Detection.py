@@ -1,5 +1,4 @@
 import diseases_infos
-from utils.disease_detector import preprocess_image
 import os
 import requests
 import tensorflow as tf
@@ -157,6 +156,30 @@ def estimate_progression(confidence):
     else:
         return "🟢 Faible impact"
 
+def assess_disease_risk(crop, temp, humidity, soil_type):
+    """
+    Évalue le risque de maladie en fonction du type de culture, de la température,
+    de l'humidité et du type de sol.
+    """
+    # 🚀 Définition des seuils de risque
+    risk_levels = {
+        "Low": temp > 25 and humidity < 50,
+        "Medium": 20 <= temp <= 25 and 50 <= humidity <= 70,
+        "High": temp < 20 or humidity > 70,
+    }
+
+    # 📌 Logique pour ajuster le risque en fonction du type de sol et de la culture
+    if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy":
+        base_risk = "High"
+    else:
+        base_risk = "Medium"
+
+    # ✅ Détermination du risque final
+    for level, condition in risk_levels.items():
+        if condition:
+            return level if base_risk != "High" else "Critical"
+
+    return "Unknown"
 
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""
