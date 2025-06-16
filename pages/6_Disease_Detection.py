@@ -1,21 +1,15 @@
 import diseases_infos
-from utils.disease_detector import DiseaseDetector, preprocess_image
-from utils.disease_database import DiseaseDatabase
-from utils.disease_database_extended import ExtendedDiseaseDatabase
+from utils.disease_detector import preprocess_image
 import os
-import time
-import json
 import requests
 import tensorflow as tf
 import numpy as np
-import cv2
 import pandas as pd
 import streamlit as st
 import requests
 from PIL import Image, ImageEnhance
 from datetime import datetime
 from io import BytesIO
-from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.efficientnet import preprocess_input
 
 # 🔹 Désactiver les warnings inutiles TensorFlow
