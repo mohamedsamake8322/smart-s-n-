@@ -468,20 +468,34 @@ batch_results.append(
     }
 )
 
-            except Exception as e:
-                batch_results.append(
-                    {
-                        "filename": uploaded_file.name,
-                        "main_disease": "Error",
-                        "confidence": 0,
-                        "status": "Error",
-                        "error": str(e),
-                    }
-                )
+try:
+    image_pil = Image.open(uploaded_file)
 
-            progress_bar.progress((i + 1) / len(uploaded_files))
+    # ✅ Vérification de `detector`
+    if detector:
+        results = detector.predict_disease(
+            image_pil,
+            model_type=batch_model.split()[0].lower(),
+            confidence_threshold=batch_confidence,
+        )
+    else:
+        st.error("🚨 Le détecteur n'est pas disponible.")
+        continue
 
-        status_text.text("Analyse terminée!")
+except Exception as e:
+    batch_results.append(
+        {
+            "filename": uploaded_file.name,
+            "main_disease": "Error",
+            "confidence": 0,
+            "status": "Error",
+            "error": str(e),
+        }
+    )
+
+progress_bar.progress((i + 1) / len(uploaded_files))
+status_text.text("Analyse terminée!")
+
 
         # ✅ Résumé des résultats
         st.markdown("---")
