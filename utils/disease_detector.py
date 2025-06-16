@@ -28,36 +28,26 @@ def __init__(self):
     self.preprocessors = {}
     self.class_labels = {}
 
-    # ✅ Chargement du modèle entraîné
-    MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
-    self.models["efficientnet_resnet"] = tf.keras.models.load_model(MODEL_PATH)
-    self.preprocessors["efficientnet_resnet"] = efficientnet_preprocess
-    self.class_labels["efficientnet_resnet"] = [
-        "Healthy", "Tomato_Late_blight", "Tomato_Early_blight", "Tomato_Bacterial_spot",
-        "Tomato_Septoria_leaf_spot", "Potato_Late_blight", "Potato_Early_blight",
-        "Corn_Common_rust", "Corn_Northern_Leaf_Blight", "Wheat_Leaf_rust",
-        "Wheat_Yellow_rust", "Rice_Blast", "Rice_Brown_spot", "Pepper_Bacterial_spot",
-        "Grape_Black_rot", "Grape_Powdery_mildew"
-    ]
-        # Initialize default disease classes
-        self.disease_classes = [
-            'Healthy',
-            'Tomato_Late_blight',
-            'Tomato_Early_blight',
-            'Tomato_Bacterial_spot',
-            'Tomato_Septoria_leaf_spot',
-            'Potato_Late_blight',
-            'Potato_Early_blight',
-            'Corn_Common_rust',
-            'Corn_Northern_Leaf_Blight',
-            'Wheat_Leaf_rust',
-            'Wheat_Yellow_rust',
-            'Rice_Blast',
-            'Rice_Brown_spot',
-            'Pepper_Bacterial_spot',
-            'Grape_Black_rot',
-            'Grape_Powdery_mildew'
-    ]
+  # ✅ Chargement du modèle entraîné
+MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
+self.models["efficientnet_resnet"] = tf.keras.models.load_model(MODEL_PATH)
+self.preprocessors["efficientnet_resnet"] = efficientnet_preprocess
+self.class_labels["efficientnet_resnet"] = [
+    "Healthy", "Tomato_Late_blight", "Tomato_Early_blight", "Tomato_Bacterial_spot",
+    "Tomato_Septoria_leaf_spot", "Potato_Late_blight", "Potato_Early_blight",
+    "Corn_Common_rust", "Corn_Northern_Leaf_Blight", "Wheat_Leaf_rust",
+    "Wheat_Yellow_rust", "Rice_Blast", "Rice_Brown_spot", "Pepper_Bacterial_spot",
+    "Grape_Black_rot", "Grape_Powdery_mildew"
+]
+
+# Initialize default disease classes
+self.disease_classes = [
+    "Healthy", "Tomato_Late_blight", "Tomato_Early_blight", "Tomato_Bacterial_spot",
+    "Tomato_Septoria_leaf_spot", "Potato_Late_blight", "Potato_Early_blight",
+    "Corn_Common_rust", "Corn_Northern_Leaf_Blight", "Wheat_Leaf_rust",
+    "Wheat_Yellow_rust", "Rice_Blast", "Rice_Brown_spot", "Pepper_Bacterial_spot",
+    "Grape_Black_rot", "Grape_Powdery_mildew"
+]
 
         # Create simplified models for demo (in production, load real trained models)
         self._initialize_demo_models()
