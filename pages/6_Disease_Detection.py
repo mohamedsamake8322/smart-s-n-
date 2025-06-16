@@ -460,18 +460,18 @@ with tab2:
                     continue
 
                 batch_results.append(
-                    {
-                        "filename": uploaded_file.name,
-                        "main_disease": results[0]["disease"] if results else "Unknown",
-                        "confidence": results[0]["confidence"] if results else 0,
-                        "status": (
-                            "Healthy"
-                            if (results and results[0]["disease"] == "Healthy")
-                            else "Diseased"
-                        ),
-                        "all_results": results[:3],
-                    }
-                )
+    {
+        "filename": uploaded_file.name,
+        "main_disease": results[0]["disease"] if results else "Unknown",
+        "confidence": results[0]["confidence"] if results else 0,
+        "status": (
+            "Healthy"
+            if results and results[0]["disease"] == "Healthy"
+            else "Diseased"
+        ),
+        "all_results": results[:3],
+    }
+)
 
             except Exception as e:
                 batch_results.append(
@@ -688,7 +688,10 @@ filtered_diseases = [
 ]
 
 # ✅ Gestion des statistiques de l'historique
-if "diagnosis_history" in st.session_state and st.session_state.diagnosis_history:
+if (
+    "diagnosis_history" in st.session_state
+    and st.session_state.diagnosis_history
+):
     st.subheader("Statistiques d'Usage")
 
     history = st.session_state.diagnosis_history
