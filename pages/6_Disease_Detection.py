@@ -530,10 +530,20 @@ if filtered_history:
         )
         st.plotly_chart(fig_conf, use_container_width=True)
 
+# ✅ Vérification avant nettoyage historique
+if "diagnosis_history" not in st.session_state:
+    st.session_state.diagnosis_history = []
+
 # ✅ Nettoyage historique
 if st.button("🗑️ Vider l'Historique"):
     st.session_state.diagnosis_history = []
     st.rerun()
+
+# ✅ Vérification des variables avant filtrage
+search_term = search_term if "search_term" in locals() else ""
+category = category if "category" in locals() else "Toutes"
+if "all_diseases" not in locals():
+    all_diseases = []
 
 # ✅ Filtrage maladies optimisé
 filtered_diseases = [
@@ -541,6 +551,7 @@ filtered_diseases = [
     if (search_term.lower() in d["name"].lower() if search_term else True) and
     (d.get("category") == category if category != "Toutes" else True)
 ]
+
 
 
 # ✅ Déplacement des colonnes en dehors de `st.expander()`
