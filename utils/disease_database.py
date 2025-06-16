@@ -9,12 +9,12 @@ class DiseaseDatabase:
     Base de données complète des maladies agricoles
     Contient informations, symptômes, traitements et préventions
     """
-    
+
     def __init__(self):
         self.diseases_data = self._initialize_disease_database()
         self.treatments_data = self._initialize_treatments_database()
         self.prevention_data = self._initialize_prevention_database()
-    
+
     def _initialize_disease_database(self) -> Dict[str, Dict]:
         """
         Initialise la base de données des maladies
@@ -43,7 +43,7 @@ class DiseaseDatabase:
                     "Mauvaise circulation d'air"
                 ]
             },
-            
+
             "Tomato_Early_blight": {
                 "name": "Alternariose de la Tomate",
                 "scientific_name": "Alternaria solani",
@@ -66,7 +66,7 @@ class DiseaseDatabase:
                     "Plants affaiblis"
                 ]
             },
-            
+
             "Tomato_Bacterial_spot": {
                 "name": "Tache Bactérienne de la Tomate",
                 "scientific_name": "Xanthomonas spp.",
@@ -89,7 +89,7 @@ class DiseaseDatabase:
                     "Propagation par éclaboussures"
                 ]
             },
-            
+
             "Potato_Late_blight": {
                 "name": "Mildiou de la Pomme de Terre",
                 "scientific_name": "Phytophthora infestans",
@@ -112,7 +112,7 @@ class DiseaseDatabase:
                     "Rosée persistante"
                 ]
             },
-            
+
             "Corn_Common_rust": {
                 "name": "Rouille Commune du Maïs",
                 "scientific_name": "Puccinia sorghi",
@@ -135,7 +135,7 @@ class DiseaseDatabase:
                     "Variétés sensibles"
                 ]
             },
-            
+
             "Wheat_Leaf_rust": {
                 "name": "Rouille Brune du Blé",
                 "scientific_name": "Puccinia triticina",
@@ -158,7 +158,7 @@ class DiseaseDatabase:
                     "Densité de plantation élevée"
                 ]
             },
-            
+
             "Rice_Blast": {
                 "name": "Pyriculariose du Riz",
                 "scientific_name": "Magnaporthe oryzae",
@@ -181,7 +181,7 @@ class DiseaseDatabase:
                     "Variétés sensibles"
                 ]
             },
-            
+
             "Grape_Powdery_mildew": {
                 "name": "Oïdium de la Vigne",
                 "scientific_name": "Erysiphe necator",
@@ -204,7 +204,7 @@ class DiseaseDatabase:
                     "Mauvaise aération"
                 ]
             },
-            
+
             "Pepper_Bacterial_spot": {
                 "name": "Tache Bactérienne du Poivron",
                 "scientific_name": "Xanthomonas campestris",
@@ -227,7 +227,7 @@ class DiseaseDatabase:
                     "Propagation par eau"
                 ]
             },
-            
+
             "Healthy": {
                 "name": "Plant Saine",
                 "scientific_name": "N/A",
@@ -251,7 +251,7 @@ class DiseaseDatabase:
                 ]
             }
         }
-    
+
     def _initialize_treatments_database(self) -> Dict[str, List[Dict]]:
         """
         Initialise la base de données des traitements
@@ -280,7 +280,7 @@ class DiseaseDatabase:
                     "timing": "Avant plantation"
                 }
             ],
-            
+
             "Tomato_Early_blight": [
                 {
                     "type": "Fongicide préventif",
@@ -297,7 +297,7 @@ class DiseaseDatabase:
                     "timing": "Avant semis et plantation"
                 }
             ],
-            
+
             "Tomato_Bacterial_spot": [
                 {
                     "type": "Bactéricide cuivre",
@@ -314,7 +314,7 @@ class DiseaseDatabase:
                     "timing": "Avant plantation"
                 }
             ],
-            
+
             "Corn_Common_rust": [
                 {
                     "type": "Fongicide foliaire",
@@ -324,7 +324,7 @@ class DiseaseDatabase:
                     "timing": "Avant floraison"
                 }
             ],
-            
+
             "Wheat_Leaf_rust": [
                 {
                     "type": "Fongicide systémique",
@@ -334,7 +334,7 @@ class DiseaseDatabase:
                     "timing": "Montaison à épiaison"
                 }
             ],
-            
+
             "Rice_Blast": [
                 {
                     "type": "Fongicide systémique",
@@ -344,7 +344,7 @@ class DiseaseDatabase:
                     "timing": "Stades critiques de développement"
                 }
             ],
-            
+
             "Grape_Powdery_mildew": [
                 {
                     "type": "Fongicide préventif",
@@ -354,7 +354,7 @@ class DiseaseDatabase:
                     "timing": "Débourrement à véraison"
                 }
             ],
-            
+
             "Pepper_Bacterial_spot": [
                 {
                     "type": "Bactéricide préventif",
@@ -365,7 +365,7 @@ class DiseaseDatabase:
                 }
             ]
         }
-    
+
     def _initialize_prevention_database(self) -> Dict[str, List[str]]:
         """
         Initialise la base de données des mesures préventives
@@ -381,7 +381,7 @@ class DiseaseDatabase:
                 "Éviter l'excès d'azote",
                 "Surveillance météorologique"
             ],
-            
+
             "Tomato_Early_blight": [
                 "Rotation des cultures",
                 "Élimination des débris végétaux",
@@ -392,7 +392,7 @@ class DiseaseDatabase:
                 "Utilisation de paillis",
                 "Variétés résistantes"
             ],
-            
+
             "Tomato_Bacterial_spot": [
                 "Semences traitées et certifiées",
                 "Désinfection des outils",
@@ -403,7 +403,7 @@ class DiseaseDatabase:
                 "Rotation avec cultures non-hôtes",
                 "Hygiène stricte en serre"
             ],
-            
+
             "Corn_Common_rust": [
                 "Utilisation de variétés résistantes",
                 "Rotation des cultures",
@@ -413,7 +413,7 @@ class DiseaseDatabase:
                 "Surveillance régulière",
                 "Espacement optimal des plants"
             ],
-            
+
             "Wheat_Leaf_rust": [
                 "Variétés résistantes ou tolérantes",
                 "Rotation des cultures",
@@ -423,7 +423,7 @@ class DiseaseDatabase:
                 "Surveillance des bulletins d'alerte",
                 "Éviter les densités excessives"
             ],
-            
+
             "Rice_Blast": [
                 "Variétés résistantes",
                 "Gestion de l'eau d'irrigation",
@@ -433,7 +433,7 @@ class DiseaseDatabase:
                 "Semences saines",
                 "Éviter l'excès d'humidité"
             ],
-            
+
             "Grape_Powdery_mildew": [
                 "Taille pour aérer la végétation",
                 "Élimination des sarments infectés",
@@ -443,7 +443,7 @@ class DiseaseDatabase:
                 "Surveillance météorologique",
                 "Nettoyage d'hiver rigoureux"
             ],
-            
+
             "Pepper_Bacterial_spot": [
                 "Semences certifiées",
                 "Rotation avec cultures non-solanacées",
@@ -454,44 +454,40 @@ class DiseaseDatabase:
                 "Éviter les blessures mécaniques"
             ]
         }
-    
+
     def get_disease_info(self, disease_name: str) -> Optional[Dict]:
         """
         Récupère les informations complètes d'une maladie
         """
-        return self.diseases_data.get(disease_name)
-    
+        return self.diseases_data.get(disease_name, None)  # Assure un retour explicite si la maladie n'existe pas
+
+
     def get_treatment_info(self, disease_name: str) -> List[Dict]:
         """
         Récupère les informations de traitement d'une maladie
         """
         return self.treatments_data.get(disease_name, [])
-    
+
     def get_prevention_info(self, disease_name: str) -> List[str]:
         """
         Récupère les mesures préventives d'une maladie
         """
         return self.prevention_data.get(disease_name, [])
-    
+
     def get_all_diseases(self) -> List[Dict]:
         """
         Récupère la liste de toutes les maladies
         """
         diseases = []
-        for disease_id, disease_data in self.diseases_data.items():
-            disease_info = disease_data.copy()
-            disease_info['id'] = disease_id
-            diseases.append(disease_info)
-        
-        return diseases
-    
+        return list(self.diseases_data.values())  # Retourne directement toutes les maladies sans manipulation inutile
+
     def search_diseases(self, query: str, category: str = None) -> List[Dict]:
         """
         Recherche des maladies par nom ou symptôme
         """
         query_lower = query.lower()
         results = []
-        
+
         for disease_id, disease_data in self.diseases_data.items():
             # Search in name, scientific name, and symptoms
             searchable_text = (
@@ -499,57 +495,57 @@ class DiseaseDatabase:
                 disease_data.get('scientific_name', '').lower() + ' ' +
                 ' '.join(disease_data.get('symptoms', [])).lower()
             )
-            
+
             if query_lower in searchable_text:
                 if category is None or disease_data.get('category') == category:
                     disease_info = disease_data.copy()
                     disease_info['id'] = disease_id
                     results.append(disease_info)
-        
+
         return results
-    
+
     def get_diseases_by_crop(self, crop_name: str) -> List[Dict]:
         """
         Récupère les maladies affectant une culture spécifique
         """
         crop_diseases = []
-        
+
         for disease_id, disease_data in self.diseases_data.items():
             affected_crops = disease_data.get('affected_crops', [])
-            
+
             for crop in affected_crops:
                 if crop_name.lower() in crop.lower():
                     disease_info = disease_data.copy()
                     disease_info['id'] = disease_id
                     crop_diseases.append(disease_info)
                     break
-        
+
         return crop_diseases
-    
+
     def get_disease_statistics(self) -> Dict[str, Any]:
         """
         Génère des statistiques sur la base de données des maladies
         """
         total_diseases = len(self.diseases_data)
-        
+
         # Count by category
         category_counts = {}
         severity_counts = {}
         crop_counts = {}
-        
+
         for disease_data in self.diseases_data.values():
             # Category stats
             category = disease_data.get('category', 'Unknown')
             category_counts[category] = category_counts.get(category, 0) + 1
-            
+
             # Severity stats
             severity = disease_data.get('severity', 'Unknown')
             severity_counts[severity] = severity_counts.get(severity, 0) + 1
-            
+
             # Crop stats
             for crop in disease_data.get('affected_crops', []):
                 crop_counts[crop] = crop_counts.get(crop, 0) + 1
-        
+
         return {
             'total_diseases': total_diseases,
             'category_distribution': category_counts,
@@ -563,11 +559,15 @@ class DiseaseDatabase:
                 'parasitic_diseases': category_counts.get('Parasitaires', 0)
             }
         }
-    
+
     def export_database(self, format_type: str = 'json') -> str:
         """
         Exporte la base de données au format spécifié
         """
+        return json.dumps(export_data, ensure_ascii=False, indent=2)
+        if not self.diseases_data:
+        raise ValueError("🚨 La base de données est vide, impossible d'exporter.")
+
         if format_type == 'json':
             export_data = {
                 'diseases': self.diseases_data,
@@ -577,7 +577,7 @@ class DiseaseDatabase:
                 'version': '1.0'
             }
             return json.dumps(export_data, ensure_ascii=False, indent=2)
-        
+
         elif format_type == 'csv':
             # Convert to DataFrame for CSV export
             diseases_list = []
@@ -588,13 +588,13 @@ class DiseaseDatabase:
                 row['affected_crops'] = '; '.join(row.get('affected_crops', []))
                 row['favorable_conditions'] = '; '.join(row.get('favorable_conditions', []))
                 diseases_list.append(row)
-            
+
             df = pd.DataFrame(diseases_list)
             return df.to_csv(index=False)
-        
+
         else:
             raise ValueError(f"Format non supporté: {format_type}")
-    
+
     def add_disease(self, disease_id: str, disease_data: Dict) -> bool:
         """
         Ajoute une nouvelle maladie à la base de données
@@ -608,7 +608,7 @@ class DiseaseDatabase:
         except Exception as e:
             print(f"Erreur lors de l'ajout de la maladie: {e}")
             return False
-    
+
     def update_disease(self, disease_id: str, updated_data: Dict) -> bool:
         """
         Met à jour les informations d'une maladie existante
