@@ -1,8 +1,9 @@
-
 import json
 import pandas as pd
 from typing import Dict, List, Optional, Any
 from datetime import datetime
+
+
 class DiseaseDatabase:
     """
     Base de données complète des maladies agricoles
@@ -33,16 +34,15 @@ class DiseaseDatabase:
                     "Flétrissement rapide des feuilles",
                     "Taches sombres sur les tiges",
                     "Pourriture des fruits",
-                    "Duvet blanc sous les feuilles par temps humide"
+                    "Duvet blanc sous les feuilles par temps humide",
                 ],
                 "favorable_conditions": [
                     "Température 15-20°C",
                     "Humidité élevée (>85%)",
                     "Temps pluvieux",
-                    "Mauvaise circulation d'air"
-                ]
+                    "Mauvaise circulation d'air",
+                ],
             },
-
             "Tomato_Early_blight": {
                 "name": "Alternariose de la Tomate",
                 "scientific_name": "Alternaria solani",
@@ -56,16 +56,15 @@ class DiseaseDatabase:
                     "Taches circulaires brunes avec anneaux concentriques",
                     "Jaunissement et flétrissement des feuilles inférieures",
                     "Taches sur les tiges et pétioles",
-                    "Pourriture des fruits près du pédoncule"
+                    "Pourriture des fruits près du pédoncule",
                 ],
                 "favorable_conditions": [
                     "Température 24-29°C",
                     "Alternance humidité/sécheresse",
                     "Stress hydrique",
-                    "Plants affaiblis"
-                ]
+                    "Plants affaiblis",
+                ],
             },
-
             "Tomato_Bacterial_spot": {
                 "name": "Tache Bactérienne de la Tomate",
                 "scientific_name": "Xanthomonas spp.",
@@ -79,16 +78,15 @@ class DiseaseDatabase:
                     "Petites taches noires avec halo jaune",
                     "Taches sur feuilles, tiges et fruits",
                     "Défoliation en cas d'infection sévère",
-                    "Fruits craquelés et déformés"
+                    "Fruits craquelés et déformés",
                 ],
                 "favorable_conditions": [
                     "Température 25-30°C",
                     "Humidité élevée",
                     "Blessures sur les plants",
-                    "Propagation par éclaboussures"
-                ]
+                    "Propagation par éclaboussures",
+                ],
             },
-
             "Potato_Late_blight": {
                 "name": "Mildiou de la Pomme de Terre",
                 "scientific_name": "Phytophthora infestans",
@@ -102,16 +100,15 @@ class DiseaseDatabase:
                     "Taches brunes aqueuses sur feuilles",
                     "Pourriture noire des tubercules",
                     "Flétrissement rapide du feuillage",
-                    "Odeur désagréable des tubercules infectés"
+                    "Odeur désagréable des tubercules infectés",
                 ],
                 "favorable_conditions": [
                     "Température 10-20°C",
                     "Humidité >90%",
                     "Temps pluvieux prolongé",
-                    "Rosée persistante"
-                ]
+                    "Rosée persistante",
+                ],
             },
-
             "Corn_Common_rust": {
                 "name": "Rouille Commune du Maïs",
                 "scientific_name": "Puccinia sorghi",
@@ -125,16 +122,15 @@ class DiseaseDatabase:
                     "Pustules orange-brun sur les feuilles",
                     "Pustules ovales à circulaires",
                     "Jaunissement des feuilles",
-                    "Réduction du rendement en grains"
+                    "Réduction du rendement en grains",
                 ],
                 "favorable_conditions": [
                     "Température 16-23°C",
                     "Humidité élevée",
                     "Rosée matinale",
-                    "Variétés sensibles"
-                ]
+                    "Variétés sensibles",
+                ],
             },
-
             "Wheat_Leaf_rust": {
                 "name": "Rouille Brune du Blé",
                 "scientific_name": "Puccinia triticina",
@@ -148,16 +144,15 @@ class DiseaseDatabase:
                     "Pustules orange-brun sur les feuilles",
                     "Taches circulaires à ovales",
                     "Jaunissement prématuré",
-                    "Réduction du poids des grains"
+                    "Réduction du poids des grains",
                 ],
                 "favorable_conditions": [
                     "Température 15-22°C",
                     "Humidité élevée",
                     "Irrigation par aspersion",
-                    "Densité de plantation élevée"
-                ]
+                    "Densité de plantation élevée",
+                ],
             },
-
             "Rice_Blast": {
                 "name": "Pyriculariose du Riz",
                 "scientific_name": "Magnaporthe oryzae",
@@ -171,16 +166,15 @@ class DiseaseDatabase:
                     "Taches losangiques gris-brun sur feuilles",
                     "Lésions sur le col de la panicule",
                     "Échaudage des grains",
-                    "Cassure des tiges"
+                    "Cassure des tiges",
                 ],
                 "favorable_conditions": [
                     "Température 25-28°C",
                     "Humidité élevée",
                     "Fertilisation azotée excessive",
-                    "Variétés sensibles"
-                ]
+                    "Variétés sensibles",
+                ],
             },
-
             "Grape_Powdery_mildew": {
                 "name": "Oïdium de la Vigne",
                 "scientific_name": "Erysiphe necator",
@@ -194,16 +188,15 @@ class DiseaseDatabase:
                     "Duvet blanc poudreux sur feuilles",
                     "Taches blanches sur les grappes",
                     "Déformation des feuilles",
-                    "Éclatement des baies"
+                    "Éclatement des baies",
                 ],
                 "favorable_conditions": [
                     "Température 20-27°C",
                     "Humidité modérée",
                     "Temps sec après rosée",
-                    "Mauvaise aération"
-                ]
+                    "Mauvaise aération",
+                ],
             },
-
             "Pepper_Bacterial_spot": {
                 "name": "Tache Bactérienne du Poivron",
                 "scientific_name": "Xanthomonas campestris",
@@ -217,16 +210,15 @@ class DiseaseDatabase:
                     "Petites taches brunes avec halo jaune",
                     "Taches liégeuses sur les fruits",
                     "Défoliation sévère",
-                    "Réduction de la qualité des fruits"
+                    "Réduction de la qualité des fruits",
                 ],
                 "favorable_conditions": [
                     "Température 24-30°C",
                     "Humidité élevée",
                     "Blessures mécaniques",
-                    "Propagation par eau"
-                ]
+                    "Propagation par eau",
+                ],
             },
-
             "Healthy": {
                 "name": "Plant Saine",
                 "scientific_name": "N/A",
@@ -240,15 +232,15 @@ class DiseaseDatabase:
                     "Feuillage vert et vigoureux",
                     "Croissance normale",
                     "Absence de taches ou lésions",
-                    "Système racinaire sain"
+                    "Système racinaire sain",
                 ],
                 "favorable_conditions": [
                     "Nutrition équilibrée",
                     "Irrigation adéquate",
                     "Bonne aération",
-                    "Conditions climatiques favorables"
-                ]
-            }
+                    "Conditions climatiques favorables",
+                ],
+            },
         }
 
     def _initialize_treatments_database(self) -> Dict[str, List[Dict]]:
@@ -260,109 +252,109 @@ class DiseaseDatabase:
                 {
                     "type": "Fongicide préventif",
                     "description": "Application de fongicides cupriques avant l'apparition des symptômes",
-                    "products": ["Bouillie bordelaise", "Oxychlorure de cuivre", "Mancozèbe"],
+                    "products": [
+                        "Bouillie bordelaise",
+                        "Oxychlorure de cuivre",
+                        "Mancozèbe",
+                    ],
                     "application": "Pulvérisation foliaire tous les 7-10 jours",
-                    "timing": "Avant et pendant les périodes à risque"
+                    "timing": "Avant et pendant les périodes à risque",
                 },
                 {
                     "type": "Fongicide curatif",
                     "description": "Traitement systémique dès les premiers symptômes",
                     "products": ["Métalaxyl", "Cymoxanil", "Fluazinam"],
                     "application": "Pulvérisation avec adjuvant",
-                    "timing": "Dès détection des premiers symptômes"
+                    "timing": "Dès détection des premiers symptômes",
                 },
                 {
                     "type": "Mesures culturales",
                     "description": "Amélioration des conditions de culture",
-                    "products": ["Paillis plastique", "Système d'irrigation goutte-à-goutte"],
+                    "products": [
+                        "Paillis plastique",
+                        "Système d'irrigation goutte-à-goutte",
+                    ],
                     "application": "Installation en début de culture",
-                    "timing": "Avant plantation"
-                }
+                    "timing": "Avant plantation",
+                },
             ],
-
             "Tomato_Early_blight": [
                 {
                     "type": "Fongicide préventif",
                     "description": "Protection avant apparition des symptômes",
                     "products": ["Chlorothalonil", "Mancozèbe", "Azoxystrobine"],
                     "application": "Pulvérisation régulière",
-                    "timing": "Dès la formation des premiers fruits"
+                    "timing": "Dès la formation des premiers fruits",
                 },
                 {
                     "type": "Biocontrôle",
                     "description": "Utilisation d'agents biologiques",
                     "products": ["Bacillus subtilis", "Trichoderma harzianum"],
                     "application": "Traitement des semences et sol",
-                    "timing": "Avant semis et plantation"
-                }
+                    "timing": "Avant semis et plantation",
+                },
             ],
-
             "Tomato_Bacterial_spot": [
                 {
                     "type": "Bactéricide cuivre",
                     "description": "Application de produits cupriques",
                     "products": ["Sulfate de cuivre", "Hydroxyde de cuivre"],
                     "application": "Pulvérisation préventive",
-                    "timing": "Conditions favorables prévues"
+                    "timing": "Conditions favorables prévues",
                 },
                 {
                     "type": "Résistance variétale",
                     "description": "Utilisation de variétés résistantes",
                     "products": ["Variétés certifiées résistantes"],
                     "application": "Choix variétal",
-                    "timing": "Avant plantation"
-                }
+                    "timing": "Avant plantation",
+                },
             ],
-
             "Corn_Common_rust": [
                 {
                     "type": "Fongicide foliaire",
                     "description": "Traitement préventif des feuilles",
                     "products": ["Tébuconazole", "Propiconazole", "Azoxystrobine"],
                     "application": "Pulvérisation aérienne ou terrestre",
-                    "timing": "Avant floraison"
+                    "timing": "Avant floraison",
                 }
             ],
-
             "Wheat_Leaf_rust": [
                 {
                     "type": "Fongicide systémique",
                     "description": "Protection systémique de la plante",
                     "products": ["Tébuconazole", "Propiconazole", "Époxiconazole"],
                     "application": "Pulvérisation foliaire",
-                    "timing": "Montaison à épiaison"
+                    "timing": "Montaison à épiaison",
                 }
             ],
-
             "Rice_Blast": [
                 {
                     "type": "Fongicide systémique",
                     "description": "Traitement préventif et curatif",
                     "products": ["Tricyclazole", "Carbendazime", "Isoprothiolane"],
                     "application": "Pulvérisation ou granulés",
-                    "timing": "Stades critiques de développement"
+                    "timing": "Stades critiques de développement",
                 }
             ],
-
             "Grape_Powdery_mildew": [
                 {
                     "type": "Fongicide préventif",
                     "description": "Protection avant infection",
                     "products": ["Soufre", "Kresoxim-méthyl", "Myclobutanil"],
                     "application": "Poudrage ou pulvérisation",
-                    "timing": "Débourrement à véraison"
+                    "timing": "Débourrement à véraison",
                 }
             ],
-
             "Pepper_Bacterial_spot": [
                 {
                     "type": "Bactéricide préventif",
                     "description": "Protection contre l'infection bactérienne",
                     "products": ["Streptomycine", "Kasugamycine", "Cuivre"],
                     "application": "Pulvérisation préventive",
-                    "timing": "Conditions favorables"
+                    "timing": "Conditions favorables",
                 }
-            ]
+            ],
         }
 
     def _initialize_prevention_database(self) -> Dict[str, List[str]]:
@@ -378,9 +370,8 @@ class DiseaseDatabase:
                 "Utiliser des semences certifiées",
                 "Drainage efficace des parcelles",
                 "Éviter l'excès d'azote",
-                "Surveillance météorologique"
+                "Surveillance météorologique",
             ],
-
             "Tomato_Early_blight": [
                 "Rotation des cultures",
                 "Élimination des débris végétaux",
@@ -389,9 +380,8 @@ class DiseaseDatabase:
                 "Fertilisation équilibrée",
                 "Espacement adéquat des plants",
                 "Utilisation de paillis",
-                "Variétés résistantes"
+                "Variétés résistantes",
             ],
-
             "Tomato_Bacterial_spot": [
                 "Semences traitées et certifiées",
                 "Désinfection des outils",
@@ -400,9 +390,8 @@ class DiseaseDatabase:
                 "Irrigation localisée",
                 "Élimination des plants infectés",
                 "Rotation avec cultures non-hôtes",
-                "Hygiène stricte en serre"
+                "Hygiène stricte en serre",
             ],
-
             "Corn_Common_rust": [
                 "Utilisation de variétés résistantes",
                 "Rotation des cultures",
@@ -410,9 +399,8 @@ class DiseaseDatabase:
                 "Éviter les semis tardifs",
                 "Fertilisation azotée modérée",
                 "Surveillance régulière",
-                "Espacement optimal des plants"
+                "Espacement optimal des plants",
             ],
-
             "Wheat_Leaf_rust": [
                 "Variétés résistantes ou tolérantes",
                 "Rotation des cultures",
@@ -420,9 +408,8 @@ class DiseaseDatabase:
                 "Semis à la date optimale",
                 "Fertilisation équilibrée",
                 "Surveillance des bulletins d'alerte",
-                "Éviter les densités excessives"
+                "Éviter les densités excessives",
             ],
-
             "Rice_Blast": [
                 "Variétés résistantes",
                 "Gestion de l'eau d'irrigation",
@@ -430,9 +417,8 @@ class DiseaseDatabase:
                 "Élimination des chaumes infectés",
                 "Rotation avec cultures sèches",
                 "Semences saines",
-                "Éviter l'excès d'humidité"
+                "Éviter l'excès d'humidité",
             ],
-
             "Grape_Powdery_mildew": [
                 "Taille pour aérer la végétation",
                 "Élimination des sarments infectés",
@@ -440,9 +426,8 @@ class DiseaseDatabase:
                 "Éviter l'excès d'azote",
                 "Variétés moins sensibles",
                 "Surveillance météorologique",
-                "Nettoyage d'hiver rigoureux"
+                "Nettoyage d'hiver rigoureux",
             ],
-
             "Pepper_Bacterial_spot": [
                 "Semences certifiées",
                 "Rotation avec cultures non-solanacées",
@@ -450,16 +435,17 @@ class DiseaseDatabase:
                 "Désinfection des outils et structures",
                 "Élimination des plants infectés",
                 "Contrôle de l'humidité en serre",
-                "Éviter les blessures mécaniques"
-            ]
+                "Éviter les blessures mécaniques",
+            ],
         }
 
     def get_disease_info(self, disease_name: str) -> Optional[Dict]:
         """
         Récupère les informations complètes d'une maladie
         """
-        return self.diseases_data.get(disease_name, None)  # Assure un retour explicite si la maladie n'existe pas
-
+        return self.diseases_data.get(
+            disease_name, None
+        )  # Assure un retour explicite si la maladie n'existe pas
 
     def get_treatment_info(self, disease_name: str) -> List[Dict]:
         """
@@ -478,7 +464,9 @@ class DiseaseDatabase:
         Récupère la liste de toutes les maladies
         """
         diseases = []
-        return list(self.diseases_data.values())  # Retourne directement toutes les maladies sans manipulation inutile
+        return list(
+            self.diseases_data.values()
+        )  # Retourne directement toutes les maladies sans manipulation inutile
 
     def search_diseases(self, query: str, category: str = None) -> List[Dict]:
         """
@@ -490,15 +478,17 @@ class DiseaseDatabase:
         for disease_id, disease_data in self.diseases_data.items():
             # Search in name, scientific name, and symptoms
             searchable_text = (
-                disease_data.get('name', '').lower() + ' ' +
-                disease_data.get('scientific_name', '').lower() + ' ' +
-                ' '.join(disease_data.get('symptoms', [])).lower()
+                disease_data.get("name", "").lower()
+                + " "
+                + disease_data.get("scientific_name", "").lower()
+                + " "
+                + " ".join(disease_data.get("symptoms", [])).lower()
             )
 
             if query_lower in searchable_text:
-                if category is None or disease_data.get('category') == category:
+                if category is None or disease_data.get("category") == category:
                     disease_info = disease_data.copy()
-                    disease_info['id'] = disease_id
+                    disease_info["id"] = disease_id
                     results.append(disease_info)
 
         return results
@@ -510,12 +500,12 @@ class DiseaseDatabase:
         crop_diseases = []
 
         for disease_id, disease_data in self.diseases_data.items():
-            affected_crops = disease_data.get('affected_crops', [])
+            affected_crops = disease_data.get("affected_crops", [])
 
             for crop in affected_crops:
                 if crop_name.lower() in crop.lower():
                     disease_info = disease_data.copy()
-                    disease_info['id'] = disease_id
+                    disease_info["id"] = disease_id
                     crop_diseases.append(disease_info)
                     break
 
@@ -534,30 +524,33 @@ class DiseaseDatabase:
 
         for disease_data in self.diseases_data.values():
             # Category stats
-            category = disease_data.get('category', 'Unknown')
+            category = disease_data.get("category", "Unknown")
             category_counts[category] = category_counts.get(category, 0) + 1
 
             # Severity stats
-            severity = disease_data.get('severity', 'Unknown')
+            severity = disease_data.get("severity", "Unknown")
             severity_counts[severity] = severity_counts.get(severity, 0) + 1
 
             # Crop stats
-            for crop in disease_data.get('affected_crops', []):
+            for crop in disease_data.get("affected_crops", []):
                 crop_counts[crop] = crop_counts.get(crop, 0) + 1
 
         return {
-            'total_diseases': total_diseases,
-            'category_distribution': category_counts,
-            'severity_distribution': severity_counts,
-            'most_affected_crops': dict(sorted(crop_counts.items(), key=lambda x: x[1], reverse=True)[:10]),
-            'database_version': datetime.now().strftime('%Y-%m-%d'),
-            'coverage': {
-                'fungal_diseases': category_counts.get('Fongiques', 0),
-                'bacterial_diseases': category_counts.get('Bactériennes', 0),
-                'viral_diseases': category_counts.get('Virales', 0),
-                'parasitic_diseases': category_counts.get('Parasitaires', 0)
-            }
+            "total_diseases": total_diseases,
+            "category_distribution": category_counts,
+            "severity_distribution": severity_counts,
+            "most_affected_crops": dict(
+                sorted(crop_counts.items(), key=lambda x: x[1], reverse=True)[:10]
+            ),
+            "database_version": datetime.now().strftime("%Y-%m-%d"),
+            "coverage": {
+                "fungal_diseases": category_counts.get("Fongiques", 0),
+                "bacterial_diseases": category_counts.get("Bactériennes", 0),
+                "viral_diseases": category_counts.get("Virales", 0),
+                "parasitic_diseases": category_counts.get("Parasitaires", 0),
+            },
         }
+
 
 def export_database(self, format_type: str = "json") -> str:
     """
