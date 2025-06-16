@@ -800,7 +800,7 @@ if TENSORFLOW_AVAILABLE:
             ]
 
         # Display diseases
-       st.markdown(f"**{len(filtered_diseases)} maladies trouvées**")
+st.markdown(f"**{len(filtered_diseases)} maladies trouvées**")
 
 for disease in filtered_diseases[:10]:  # Limit to 10 for performance
     with st.expander(f"🦠 {disease['name']}"):
