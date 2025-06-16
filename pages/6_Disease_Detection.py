@@ -1,4 +1,3 @@
-import diseases_infos
 import os
 import requests
 import tensorflow as tf
@@ -10,6 +9,8 @@ from datetime import datetime
 from io import BytesIO
 from tensorflow.keras.applications.efficientnet import preprocess_input
 import plotly.express as px  # Corrige l'erreur F821 pour `px`
+from utils.disease_detector import predict_disease
+from utils import disease_detector
 
 # ✅ Définition des variables manquantes
 detector = None
@@ -117,7 +118,8 @@ def predict_disease(image):
     if img_array is None:
         return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
 
-    predictions = disease_model.predict(img_array)[0]  # Retirer la dimension batch
+    predictions = disease_model.predict(
+        img_array)[0]  # Retirer la dimension batch
     top_labels = []
 
     # ✅ Trier les résultats par confiance
@@ -125,7 +127,8 @@ def predict_disease(image):
 
     # Afficher uniquement les 5 meilleurs résultats
     for idx in sorted_indices[:5]:
-        disease_name = diseases_infos.DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
+        disease_name = disease_detector.DISEASE_CLASSES.get(
+            idx, "🔍 Maladie inconnue")
         disease_icon = DISEASE_ICONS.get(
             disease_name, "❓"
         )  # Icône par défaut si inconnue
@@ -155,6 +158,8 @@ def estimate_progression(confidence):
         return "🟡 Début"
     else:
         return "🟢 Faible impact"
+
+
 def assess_disease_risk(crop, temp, humidity, soil_type):
     """
     Évalue le risque de maladie en fonction du type de culture, de la température,
@@ -185,7 +190,8 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""
     try:
-        response = requests.get("https://api.open-meteo.com/weather", timeout=5)
+        response = requests.get(
+            "https://api.open-meteo.com/weather", timeout=5)
         response.raise_for_status()
         weather_data = response.json()
 
@@ -204,11 +210,16 @@ def get_weather_risk(crop):
         return risk_factor  # ✅ Vérifier si bien aligné avec la fonction
 
     except requests.exceptions.RequestException as e:
-        print(f"⚠️ Erreur de requête météo : {e}")  # ✅ Vérifier la fermeture de cette chaîne
+        # ✅ Vérifier la fermeture de cette chaîne
+        print(f"⚠️ Erreur de requête météo : {e}")
         return "Erreur lors de la récupération des données météo"
 
+
 # 📊 Interface utilisateur optimisée avec Streamlit
-st.set_page_config(page_title="Disease Detector Ultra", page_icon="🌿", layout="wide")
+st.set_page_config(
+    page_title="Disease Detector Ultra",
+    page_icon="🌿",
+    layout="wide")
 st.title("🌿 Détection de Maladies Agricoles - Ultra IA")
 
 uploaded_file = st.file_uploader(
@@ -226,7 +237,9 @@ if uploaded_file:
         for disease in results:
             st.subheader(f"🦠 {disease['name']}")
             st.write(f"🔹 Confiance IA : {disease['confidence']:.2f}%")
-            st.write(f"🩺 Stade de progression : {disease['progression_stage']}")
+            st.write(
+                f"🩺 Stade de progression : {
+                    disease['progression_stage']}")
             st.write(f"🔎 Symptômes : {disease['symptoms']}")
             st.write(f"🩺 Recommandations : {disease['recommendations']}")
 
@@ -247,7 +260,8 @@ if st.button("🚨 Urgence - Contacter un Expert"):
 
 # 🛍️ Marketplace intégrée pour acheter des traitements adaptés
 st.sidebar.title("🌿 Solutions & Traitements")
-st.sidebar.markdown("**Recommandations de produits pour les maladies détectées**")
+st.sidebar.markdown(
+    "**Recommandations de produits pour les maladies détectées**")
 st.sidebar.button("Acheter des traitements adaptés")
 
 
@@ -308,8 +322,10 @@ if TENSORFLOW_AVAILABLE:
         # ✅ Déplacer `st.columns()` en dehors de `st.expander()`
         if uploaded_image:
             st.markdown("**Options de Préprocessing**")
-            enhance_contrast = st.checkbox("Améliorer le contraste", value=True)
-            enhance_brightness = st.checkbox("Ajuster la luminosité", value=False)
+            enhance_contrast = st.checkbox(
+                "Améliorer le contraste", value=True)
+            enhance_brightness = st.checkbox(
+                "Ajuster la luminosité", value=False)
 
             processed_image = uploaded_image.convert("RGB")
 
@@ -332,11 +348,13 @@ if TENSORFLOW_AVAILABLE:
 
             with st.spinner("Analyse en cours..."):
                 if detector:
-                    detection_results = detector.predict_disease(processed_image)
+                    detection_results = detector.predict_disease(
+                        processed_image)
                     if detection_results:
                         main_result = detection_results[0]
                         st.metric("Maladie Détectée", main_result["disease"])
-                        st.metric("Confiance", f"{main_result['confidence']:.1f}%")
+                        st.metric("Confiance",
+                                  f"{main_result['confidence']:.1f}%")
                 else:
                     st.error("🚨 Le détecteur n'est pas disponible.")
 
@@ -395,7 +413,8 @@ else:
 
 with tab2:
     st.subheader("Analyse par Lot")
-    st.markdown("Analysez plusieurs images simultanément pour un diagnostic de masse.")
+    st.markdown(
+        "Analysez plusieurs images simultanément pour un diagnostic de masse.")
 
     # ✅ Vérification avant utilisation de `st.columns()`
     col1, col2 = st.columns(2)
@@ -493,10 +512,12 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
             d for d in filtered_history if d["main_disease"] in disease_filter
         ]
 
-    filtered_history = [d for d in filtered_history if d["confidence"] >= confidence_filter]
+    filtered_history = [
+        d for d in filtered_history if d["confidence"] >= confidence_filter]
     st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
 
-    for i, diagnosis in enumerate(reversed(filtered_history[-20:])):  # Last 20 results
+    for i, diagnosis in enumerate(
+            reversed(filtered_history[-20:])):  # Last 20 results
         expander_label = (
             f"#{len(filtered_history) - i}: {diagnosis['main_disease']} - "
             f"{diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
@@ -509,7 +530,10 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
             if "all_predictions" in diagnosis:
                 st.markdown("**Top 3 Prédictions:**")
                 for j, pred in enumerate(diagnosis["all_predictions"][:3], 1):
-                    st.write(f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
+                    st.write(
+                        f"{j}. {
+                            pred['disease']}: {
+                            pred['confidence']:.1f}%")
 
 
 # ✅ Résumé des statistiques
@@ -525,7 +549,9 @@ if filtered_history:
 
     # ✅ Vérification format `datetime`
     try:
-        timestamps = [datetime.fromisoformat(d["timestamp"]) for d in filtered_history]
+        timestamps = [
+            datetime.fromisoformat(
+                d["timestamp"]) for d in filtered_history]
     except ValueError:
         st.warning("⚠️ Format de date incorrect, vérifiez les données.")
         timestamps = []
@@ -587,7 +613,8 @@ with col2:
 
 for disease in filtered_diseases[:10]:  # Limite à 10 pour performance
     with st.expander(f"🦠 {disease['name']}"):
-        st.markdown(f"**Nom scientifique:** {disease.get('scientific_name', 'N/A')}")
+        st.markdown(
+            f"**Nom scientifique:** {disease.get('scientific_name', 'N/A')}")
         st.markdown(f"**Catégorie:** {disease.get('category', 'N/A')}")
         st.markdown(f"**Cause:** {disease.get('cause', 'N/A')}")
         st.markdown(f"**Description:** {disease.get('description', 'N/A')}")
@@ -609,7 +636,8 @@ for disease in filtered_diseases[:10]:  # Limite à 10 pour performance
         if "treatments" in disease:
             st.markdown("**Traitements:**")
             for treatment in disease["treatments"]:
-                st.markdown(f"*{treatment['type']}:* {treatment['description']}")
+                st.markdown(
+                    f"*{treatment['type']}:* {treatment['description']}")
                 if "products" in treatment:
                     st.write("Produits: " + ", ".join(treatment["products"]))
 
