@@ -552,8 +552,6 @@ filtered_diseases = [
     (d.get("category") == category if category != "Toutes" else True)
 ]
 
-
-
 # ✅ Déplacement des colonnes en dehors de `st.expander()`
 st.markdown(f"**{len(filtered_diseases)} maladies trouvées**")
 
@@ -647,11 +645,17 @@ if "diagnosis_history" in st.session_state and st.session_state.diagnosis_histor
         avg_confidence = np.mean([d["confidence"] for d in history])
         st.metric("Confiance Moyenne", f"{avg_confidence:.1f}%")
 
-   with col2:
+# ✅ Correction d'indentation
+col1, col2 = st.columns(2)  # Assurez-vous qu'il est bien défini avant
+
+with col2:
     # ✅ Vérification avant utilisation de `history`
-    if "diagnosis_history" in st.session_state:
-        history = st.session_state.diagnosis_history
-    else:
+    if "diagnosis_history" not in st.session_state:
+        st.session_state.diagnosis_history = []
+
+    history = st.session_state.diagnosis_history
+
+    if not history:
         st.warning("⚠️ Aucun historique disponible.")
         history = []  # Définit `history` comme une liste vide par défaut
 
