@@ -526,8 +526,8 @@ st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
 for i, diagnosis in enumerate(
         reversed(filtered_history[-20:])):  # Last 20 results
     with st.expander(
-        f"#{len(filtered_history) - i}: {diagnosis['main_disease']} - {
-            diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
+         f"#{len(filtered_history) - i}: {diagnosis['main_disease']} - "
+        f"{diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
     ):
         st.metric("Maladie", diagnosis["main_disease"])
         st.metric("Confiance", f"{diagnosis['confidence']:.1f}%")
