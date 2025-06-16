@@ -196,10 +196,7 @@ if uploaded_file:
         for disease in results:
             st.subheader(f"🦠 {disease['name']}")
             st.write(f"🔹 Confiance IA : {disease['confidence']:.2f}%")
-            st.write(
-                f"🩺 Stade de progression : {
-        disease['progression_stage']}"
-            )
+            st.write(f"🩺 Stade de progression : {disease['progression_stage']}")
             st.write(f"🔎 Symptômes : {disease['symptoms']}")
             st.write(f"🩺 Recommandations : {disease['recommendations']}")
 
