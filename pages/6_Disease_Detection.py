@@ -547,9 +547,10 @@ if "all_diseases" not in locals():
 
 # ✅ Filtrage maladies optimisé
 filtered_diseases = [
-    d for d in all_diseases
-    if (search_term.lower() in d["name"].lower() if search_term else True) and
-    (d.get("category") == category if category != "Toutes" else True)
+    d
+    for d in all_diseases
+    if (search_term.lower() in d["name"].lower() if search_term else True)
+    and (d.get("category") == category if category != "Toutes" else True)
 ]
 
 # ✅ Déplacement des colonnes en dehors de `st.expander()`
