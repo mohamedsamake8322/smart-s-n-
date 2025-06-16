@@ -67,9 +67,8 @@ class DiseaseManager:
     def load_model(self, model_path):
         """Charge le modèle CNN et l'attache à l'instance."""
         if not os.path.exists(model_path):
-             logger.error(f"🚨 Erreur : Le fichier modèle {model_path} est introuvable.")
+            logger.error(f"🚨 Erreur : Le fichier modèle {model_path} est introuvable.")
         raise FileNotFoundError(f"🚨 Modèle non trouvé : {model_path}")
-
 
         try:
             self.model = tf.keras.models.load_model(model_path)
