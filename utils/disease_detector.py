@@ -57,7 +57,7 @@ def __init__(self):
             'Pepper_Bacterial_spot',
             'Grape_Black_rot',
             'Grape_Powdery_mildew'
-        ]
+    ]
 
         # Create simplified models for demo (in production, load real trained models)
         self._initialize_demo_models()
