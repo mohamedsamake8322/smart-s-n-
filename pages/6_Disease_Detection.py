@@ -125,6 +125,7 @@ def predict_disease(image):
         })
 
     return top_labels
+import requests
 
 # 🔍 Détermination du stade de progression
 def estimate_progression(confidence):
@@ -143,12 +144,26 @@ def estimate_progression(confidence):
 # 🌍 API météo pour ajuster le diagnostic
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""
-    weather_data = requests.get("https://api.open-meteo.com/weather").json()
-    temp = weather_data["temperature"]
-    humidity = weather_data["humidity"]
+    try:
+        response = requests.get("https://api.open-meteo.com/weather")
+        response.raise_for_status()  # Vérifie si la requête a réussi
+        weather_data = response.json()
 
-    risk_factor = assess_disease_risk(crop, temp, humidity, "Loamy")
-    return risk_factor
+        # Vérification des clés avant extraction
+        temp = weather_data.get("temperature", None)
+        humidity = weather_data.get("humidity", None)
+
+        if temp is None or humidity is None:
+            print("⚠️ Impossible de récupérer les données météo")
+            return "Données météo indisponibles"
+
+        risk_factor = assess_disease_risk(crop, temp, humidity, "Loamy")
+        return risk_factor
+
+    except requests.exceptions.RequestException as e:
+        print(f"⚠️ Erreur de requête météo : {e}")
+        return "Erreur lors de la récupération des données météo"
+
 
 # 📊 Interface utilisateur optimisée avec Streamlit
 st.set_page_config(page_title="Disease Detector Ultra", page_icon="🌿", layout="wide")
