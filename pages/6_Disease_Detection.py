@@ -129,7 +129,8 @@ def predict_disease(image):
 # 🔍 Détermination du stade de progression
 def estimate_progression(confidence):
     """Détermine le stade de la maladie."""
-if confidence > 90:
+
+    if confidence > 90:
         return "🔴 Critique"
     elif confidence > 75:
         return "🟠 Avancé"
