@@ -113,8 +113,7 @@ def predict_disease(image):
     if img_array is None:
         return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
 
-    predictions = disease_model.predict(
-        img_array)[0]  # Retirer la dimension batch
+    predictions = disease_model.predict(img_array)[0]  # Retirer la dimension batch
     top_labels = []
 
     # ✅ Trier les résultats par confiance
@@ -122,8 +121,7 @@ def predict_disease(image):
 
     # Afficher uniquement les 5 meilleurs résultats
     for idx in sorted_indices[:5]:
-        disease_name = diseases_infos.DISEASE_CLASSES.get(
-            idx, "🔍 Maladie inconnue")
+        disease_name = diseases_infos.DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
         disease_icon = DISEASE_ICONS.get(
             disease_name, "❓"
         )  # Icône par défaut si inconnue
@@ -156,8 +154,7 @@ def estimate_progression(confidence):
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""
     try:
-        response = requests.get(
-    "https://api.open-meteo.com/weather", timeout=5)
+        response = requests.get("https://api.open-meteo.com/weather", timeout=5)
         response.raise_for_status()
         weather_data = response.json()
 
@@ -181,10 +178,7 @@ def get_weather_risk(crop):
 
 
 # 📊 Interface utilisateur optimisée avec Streamlit
-st.set_page_config(
-    page_title="Disease Detector Ultra",
-    page_icon="🌿",
-     layout="wide")
+st.set_page_config(page_title="Disease Detector Ultra", page_icon="🌿", layout="wide")
 st.title("🌿 Détection de Maladies Agricoles - Ultra IA")
 
 uploaded_file = st.file_uploader(
@@ -203,8 +197,9 @@ if uploaded_file:
             st.subheader(f"🦠 {disease['name']}")
             st.write(f"🔹 Confiance IA : {disease['confidence']:.2f}%")
             st.write(
-    f"🩺 Stade de progression : {
-        disease['progression_stage']}")
+                f"🩺 Stade de progression : {
+        disease['progression_stage']}"
+            )
             st.write(f"🔎 Symptômes : {disease['symptoms']}")
             st.write(f"🩺 Recommandations : {disease['recommendations']}")
 
@@ -225,8 +220,7 @@ if st.button("🚨 Urgence - Contacter un Expert"):
 
 # 🛍️ Marketplace intégrée pour acheter des traitements adaptés
 st.sidebar.title("🌿 Solutions & Traitements")
-st.sidebar.markdown(
-    "**Recommandations de produits pour les maladies détectées**")
+st.sidebar.markdown("**Recommandations de produits pour les maladies détectées**")
 st.sidebar.button("Acheter des traitements adaptés")
 
 
@@ -256,14 +250,14 @@ if TENSORFLOW_AVAILABLE:
         with col1:
             st.markdown("**Upload de l'Image**")
             upload_method = st.radio(
-    "Méthode d'upload", [
-        "Fichier", "Caméra", "URL"], horizontal=True)
+                "Méthode d'upload", ["Fichier", "Caméra", "URL"], horizontal=True
+            )
             uploaded_image = None
 
             if upload_method == "Fichier":
                 uploaded_file = st.file_uploader(
-    "Choisissez une image", type=[
-        "png", "jpg", "jpeg", "webp"])
+                    "Choisissez une image", type=["png", "jpg", "jpeg", "webp"]
+                )
                 if uploaded_file:
                     uploaded_image = Image.open(uploaded_file)
 
@@ -287,10 +281,8 @@ if TENSORFLOW_AVAILABLE:
         # ✅ Déplacer `st.columns()` en dehors de `st.expander()`
         if uploaded_image:
             st.markdown("**Options de Préprocessing**")
-            enhance_contrast = st.checkbox(
-    "Améliorer le contraste", value=True)
-            enhance_brightness = st.checkbox(
-    "Ajuster la luminosité", value=False)
+            enhance_contrast = st.checkbox("Améliorer le contraste", value=True)
+            enhance_brightness = st.checkbox("Ajuster la luminosité", value=False)
 
             processed_image = uploaded_image.convert("RGB")
 
@@ -313,22 +305,23 @@ if TENSORFLOW_AVAILABLE:
 
             with st.spinner("Analyse en cours..."):
                 if detector:
-                    detection_results = detector.predict_disease(
-                        processed_image)
+                    detection_results = detector.predict_disease(processed_image)
                     if detection_results:
                         main_result = detection_results[0]
                         st.metric("Maladie Détectée", main_result["disease"])
-                        st.metric("Confiance",
-     f"{main_result['confidence']:.1f}%")
+                        st.metric("Confiance", f"{main_result['confidence']:.1f}%")
                 else:
                     st.error("🚨 Le détecteur n'est pas disponible.")
 
-                        # Confidence chart
+                    # Confidence chart
 st.markdown("---")
 st.markdown("**Graphique de Confiance**")
 
 chart_data = pd.DataFrame(
-    [{"Maladie": r["disease"], "Confiance": r["confidence"]} for r in detection_results[:5]]
+    [
+        {"Maladie": r["disease"], "Confiance": r["confidence"]}
+        for r in detection_results[:5]
+    ]
 )
 
 fig = px.bar(
@@ -378,7 +371,6 @@ with tab2:
     st.subheader("Analyse par Lot")
     st.markdown("Analysez plusieurs images simultanément pour un diagnostic de masse.")
 
-
     # ✅ Vérification avant utilisation de `st.columns()`
     col1, col2 = st.columns(2)
 
@@ -400,34 +392,48 @@ with tab2:
         batch_results = []
 
         for i, uploaded_file in enumerate(uploaded_files):
-            status_text.text(f"Analyse {i+1}/{len(uploaded_files)}: {uploaded_file.name}")
+            status_text.text(
+                f"Analyse {i+1}/{len(uploaded_files)}: {uploaded_file.name}"
+            )
 
             try:
                 image_pil = Image.open(uploaded_file)
 
                 # ✅ Vérification de `detector`
                 if detector:
-                    results = detector.predict_disease(image_pil, model_type=batch_model.split()[0].lower(), confidence_threshold=batch_confidence)
+                    results = detector.predict_disease(
+                        image_pil,
+                        model_type=batch_model.split()[0].lower(),
+                        confidence_threshold=batch_confidence,
+                    )
                 else:
                     st.error("🚨 Le détecteur n'est pas disponible.")
                     continue
 
-                batch_results.append({
-                    "filename": uploaded_file.name,
-                    "main_disease": results[0]["disease"] if results else "Unknown",
-                    "confidence": results[0]["confidence"] if results else 0,
-                    "status": "Healthy" if (results and results[0]["disease"] == "Healthy") else "Diseased",
-                    "all_results": results[:3],
-                })
+                batch_results.append(
+                    {
+                        "filename": uploaded_file.name,
+                        "main_disease": results[0]["disease"] if results else "Unknown",
+                        "confidence": results[0]["confidence"] if results else 0,
+                        "status": (
+                            "Healthy"
+                            if (results and results[0]["disease"] == "Healthy")
+                            else "Diseased"
+                        ),
+                        "all_results": results[:3],
+                    }
+                )
 
             except Exception as e:
-                batch_results.append({
-                    "filename": uploaded_file.name,
-                    "main_disease": "Error",
-                    "confidence": 0,
-                    "status": "Error",
-                    "error": str(e),
-                })
+                batch_results.append(
+                    {
+                        "filename": uploaded_file.name,
+                        "main_disease": "Error",
+                        "confidence": 0,
+                        "status": "Error",
+                        "error": str(e),
+                    }
+                )
 
             progress_bar.progress((i + 1) / len(uploaded_files))
 
@@ -446,9 +452,17 @@ with tab2:
         with col1:
             st.metric("Total Images", len(batch_results))
         with col2:
-            st.metric("Plantes Saines", healthy_count, delta=f"{healthy_count/len(batch_results)*100:.1f}%")
+            st.metric(
+                "Plantes Saines",
+                healthy_count,
+                delta=f"{healthy_count/len(batch_results)*100:.1f}%",
+            )
         with col3:
-            st.metric("Plantes Malades", diseased_count, delta=f"{diseased_count/len(batch_results)*100:.1f}%")
+            st.metric(
+                "Plantes Malades",
+                diseased_count,
+                delta=f"{diseased_count/len(batch_results)*100:.1f}%",
+            )
         with col4:
             st.metric("Erreurs", error_count)
 
@@ -456,15 +470,21 @@ with tab2:
     filtered_history = st.session_state.get("diagnosis_history", [])
 
     if disease_filter:
-        filtered_history = [d for d in filtered_history if d["main_disease"] in disease_filter]
+        filtered_history = [
+            d for d in filtered_history if d["main_disease"] in disease_filter
+        ]
 
-    filtered_history = [d for d in filtered_history if d["confidence"] >= confidence_filter]
+    filtered_history = [
+        d for d in filtered_history if d["confidence"] >= confidence_filter
+    ]
 
-           # ✅ Vérification avant `st.expander()`
+    # ✅ Vérification avant `st.expander()`
 st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
 
 for i, diagnosis in enumerate(reversed(filtered_history[-20:])):  # Last 20 results
-    with st.expander(f"#{len(filtered_history)-i}: {diagnosis['main_disease']} - {diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"):
+    with st.expander(
+        f"#{len(filtered_history)-i}: {diagnosis['main_disease']} - {diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
+    ):
         st.metric("Maladie", diagnosis["main_disease"])
         st.metric("Confiance", f"{diagnosis['confidence']:.1f}%")
         st.metric("Modèle", diagnosis.get("model_used", "N/A"))
@@ -480,7 +500,10 @@ st.subheader("Statistiques de l'Historique")
 
 if filtered_history:
     # ✅ Création des statistiques maladies
-    disease_freq = {d["main_disease"]: disease_freq.get(d["main_disease"], 0) + 1 for d in filtered_history}
+    disease_freq = {
+        d["main_disease"]: disease_freq.get(d["main_disease"], 0) + 1
+        for d in filtered_history
+    }
 
     # ✅ Vérification format `datetime`
     try:
@@ -494,11 +517,20 @@ if filtered_history:
     col1, col2 = st.columns(2)
 
     with col1:
-        fig_freq = px.pie(values=list(disease_freq.values()), names=list(disease_freq.keys()), title="Distribution des Maladies Détectées")
+        fig_freq = px.pie(
+            values=list(disease_freq.values()),
+            names=list(disease_freq.keys()),
+            title="Distribution des Maladies Détectées",
+        )
         st.plotly_chart(fig_freq, use_container_width=True)
 
     with col2:
-        fig_conf = px.line(x=timestamps, y=confidences, title="Évolution de la Confiance", labels={"x": "Date", "y": "Confiance (%)"})
+        fig_conf = px.line(
+            x=timestamps,
+            y=confidences,
+            title="Évolution de la Confiance",
+            labels={"x": "Date", "y": "Confiance (%)"},
+        )
         st.plotly_chart(fig_conf, use_container_width=True)
 
 # ✅ Nettoyage historique
@@ -508,12 +540,13 @@ if st.button("🗑️ Vider l'Historique"):
 
 # ✅ Filtrage maladies optimisé
 filtered_diseases = [
-    d for d in all_diseases
+    d
+    for d in all_diseases
     if (search_term.lower() in d["name"].lower() if search_term else True)
     and (d.get("category") == category if category != "Toutes" else True)
 ]
 
-  # ✅ Déplacement des colonnes en dehors de `st.expander()`
+# ✅ Déplacement des colonnes en dehors de `st.expander()`
 st.markdown(f"**{len(filtered_diseases)} maladies trouvées**")
 
 col1, col2 = st.columns([2, 1])
@@ -581,7 +614,8 @@ with tab5:
 
 # ✅ Correction du filtrage des maladies
 filtered_diseases = [
-    d for d in all_diseases
+    d
+    for d in all_diseases
     if (search_term.lower() in d["name"].lower() if search_term else True)
     and (d.get("category") == category if category != "Toutes" else True)
 ]
@@ -597,7 +631,9 @@ if "diagnosis_history" in st.session_state and st.session_state.diagnosis_histor
     with col1:
         st.metric("Total Diagnostics", len(history))
         healthy_percentage = (
-            len([d for d in history if d["main_disease"] == "Healthy"]) / len(history) * 100
+            len([d for d in history if d["main_disease"] == "Healthy"])
+            / len(history)
+            * 100
         )
         st.metric("Plantes Saines", f"{healthy_percentage:.1f}%")
         avg_confidence = np.mean([d["confidence"] for d in history])
@@ -621,14 +657,16 @@ if "system_issue" in st.session_state:
         st.subheader("⚠️ Informations Système")
         st.error("**Problème de Compatibilité Détecté**")
 
-        st.markdown("""
+        st.markdown(
+            """
         **Cause:** Conflit entre NumPy 2.3.0 et TensorFlow 2.14.0
 
         **Solutions:**
         - ✅ Installation automatique en cours
         - 🔄 Redémarrer le Repl après installation
         - ⚠️ Utiliser la base de connaissances en attendant
-        """)
+        """
+        )
 
         col1, col2 = st.columns(2)
         with col1:
