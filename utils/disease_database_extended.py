@@ -1,3 +1,4 @@
+from typing import Dict
 import json
 import pandas as pd
 from typing import Dict, List, Optional, Any
@@ -23,10 +24,6 @@ class ExtendedDiseaseDatabase:
         self.treatments_data = self._initialize_extended_treatments_database()
         self.prevention_data = self._initialize_extended_prevention_database()
         self.regional_data = self._initialize_regional_disease_data()
-
-
-import logging
-from typing import Dict
 
 
 def _initialize_extended_disease_database(self) -> Dict[str, Dict]:
@@ -59,7 +56,8 @@ logger = logging.getLogger(__name__)
 class DiseaseManager:
     def __init__(
         self,
-        model_path="C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras",  # 📌 Assure-toi que le chemin est bon
+        # 📌 Assure-toi que le chemin est bon
+        model_path="C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras",
     ):
         """Initialisation du gestionnaire de maladies et chargement du modèle CNN."""
         self.diseases = {}
@@ -69,7 +67,8 @@ class DiseaseManager:
     def load_model(self, model_path):
         """Charge le modèle CNN et l'attache à l'instance."""
         if not os.path.exists(model_path):
-            logger.error(f"🚨 Erreur : Le fichier modèle {model_path} est introuvable.")
+            logger.error(f"🚨 Erreur : Le fichier modèle {
+                         model_path} est introuvable.")
             raise FileNotFoundError(f"🚨 Modèle non trouvé : {model_path}")
 
         try:
@@ -79,7 +78,14 @@ class DiseaseManager:
             logger.error(f"🚨 Impossible de charger le modèle : {e}")
             raise RuntimeError(f"🚨 Échec du chargement du modèle : {e}")
 
-    def add_disease(self, name, hosts, overview, symptoms, management, insecticides):
+    def add_disease(
+            self,
+            name,
+            hosts,
+            overview,
+            symptoms,
+            management,
+            insecticides):
         """Ajoute une maladie avec ses détails."""
         self.diseases[name] = {
             "hosts": hosts,
@@ -136,11 +142,14 @@ class DiseaseManager:
     def decode_prediction(self, prediction):
         """Transforme la prédiction du modèle en un label compréhensible."""
         disease_labels = list(self.diseases.keys())
-        return (
-            disease_labels[prediction.argmax()] if prediction is not None else "Unknown"
-        )
+        return (disease_labels[prediction.argmax()]
+                if prediction is not None else "Unknown")
 
-    def export_to_pdf(self, disease_name, user_name="Unknown", save_path="reports/"):
+    def export_to_pdf(
+            self,
+            disease_name,
+            user_name="Unknown",
+            save_path="reports/"):
         """Génère un rapport PDF avec les informations sur la maladie."""
         if disease_name not in self.diseases:
             return "🚨 Maladie introuvable"
@@ -149,11 +158,17 @@ class DiseaseManager:
             os.makedirs(save_path)
 
         disease = self.diseases[disease_name]
-        buffer = self._generate_pdf_report(user_name, disease_name, disease, save_path)
+        buffer = self._generate_pdf_report(
+            user_name, disease_name, disease, save_path)
 
         return buffer
 
-    def _generate_pdf_report(self, user_name, disease_name, disease, save_path):
+    def _generate_pdf_report(
+            self,
+            user_name,
+            disease_name,
+            disease,
+            save_path):
         """Crée un PDF avec les détails de la maladie."""
         buffer = os.path.join(save_path, f"{disease_name}_report.pdf")
         c = canvas.Canvas(buffer, pagesize=A4)
@@ -179,35 +194,32 @@ class DiseaseManager:
 
 # ✅ Ajout des maladies
 disease_manager = DiseaseManager()
-disease_manager.add_disease(
-    "Aphids on Vegetables",
-    [
-        "Asparagus",
-        "Brassicas",
-        "Legumes",
-        "Corn",
-        "Solanaceae",
-        "Leafy Greens",
-        "Cucurbits",
-        "Potato",
-        "Root Crops",
-    ],
-    "Aphids are small, soft-bodied insects that suck sap from plant tissues...",
-    "Aphid feeding results in an overall loss of plant vigor...",
-    "Thoroughly scout crops and weeds for signs or symptoms of aphids...",
-    [
-        "carbaryl",
-        "methomyl",
-        "malathion",
-        "alpha-cypermethrin",
-        "bifenthrin",
-        "cyfluthrin",
-        "fenpropathrin",
-        "lambda-cyhalothrin",
-        "deltamethrin",
-        "permethrin",
-    ],
-)
+disease_manager.add_disease("Aphids on Vegetables",
+                            ["Asparagus",
+                             "Brassicas",
+                             "Legumes",
+                             "Corn",
+                             "Solanaceae",
+                             "Leafy Greens",
+                             "Cucurbits",
+                             "Potato",
+                             "Root Crops",
+                             ],
+                            "Aphids are small, soft-bodied insects that suck sap from plant tissues...",
+                            "Aphid feeding results in an overall loss of plant vigor...",
+                            "Thoroughly scout crops and weeds for signs or symptoms of aphids...",
+                            ["carbaryl",
+                                "methomyl",
+                                "malathion",
+                                "alpha-cypermethrin",
+                                "bifenthrin",
+                                "cyfluthrin",
+                                "fenpropathrin",
+                                "lambda-cyhalothrin",
+                                "deltamethrin",
+                                "permethrin",
+                             ],
+                            )
 
 print("🚀 Disease Manager is fully operational!")
 
@@ -316,122 +328,110 @@ disease_manager.add_disease(
     ],
 )
 
-disease_manager.add_disease(
-    "Spotted Cucumber Beetle",
-    [
-        "Hemp",
-        "Beans",
-        "Corn",
-        "Cucurbits",
-        "Potato",
-        "Tomato",
-        "Small grains",
-        "Ornamentals",
-        "Grasses",
-        "Weeds",
-    ],
-    "Adults have a black head, legs, and antennae. They have ovoid yellow-green bodies with 12 black spots on the wings...",
-    "In hemp, adults chew on leaves, creating irregular-shaped holes. Damage is considered minor...",
-    "Keep crop area weed-free, use plastic or organic mulches, destroy crop residues after harvest...",
-    [
-        "azadirachtin",
-        "potassium laurate",
-        "mineral oil",
-        "diatomaceous earth",
-        "pyrethrins",
-        "rosemary oil",
-        "neem oil",
-        "kaolin",
-    ],
-)
-disease_manager.add_disease(
-    "Cutworms on Vegetables",
-    [
-        "Artichoke",
-        "Asparagus",
-        "Brassicas",
-        "Cucurbits",
-        "Corn",
-        "Legumes",
-        "Leafy Greens",
-        "Onion",
-        "Potato",
-        "Root Crops",
-        "Solanaceae Crops",
-    ],
-    "Cutworms belong to a large group of night-flying moths in the Noctuidae family...",
-    "Larvae feed with chewing mouthparts and can clip off seedlings at the soil line...",
-    "Remove cool-season weeds, use fall tillage to expose overwintering pupae, protect seedlings with collars...",
-    [
-        "bifenthrin",
-        "zeta-cypermethrin",
-        "lambda-cyhalothrin",
-        "permethrin",
-        "deltamethrin",
-        "cyfluthrin",
-        "pyrethrins + neem oil",
-        "imiclacloprid",
-        "sulfur",
-        "methomyl",
-        "fenpropathrin",
-    ],
-)
-disease_manager.add_disease(
-    "False Chinch Bug",
-    [
-        "Alfalfa",
-        "Brassicas",
-        "Cucurbits",
-        "Corn",
-        "Leafy Greens",
-        "Potato",
-        "Root Crops",
-        "Solanaceae Crops",
-        "Hemp",
-    ],
-    "On adults, the head, thorax, and anterior portion of the wings are brownish gray and the posterior portion of the wings are whitish-clear...",
-    "Adults and nymphs feed with piercing-sucking mouthparts. Large numbers of aggregating adults can cause plants to wilt and die rapidly...",
-    "Scout field edges that may contain mustards, look for aggregations on plants, keep plants well irrigated...",
-    [
-        "bifenthrin",
-        "zeta-cypermethrin",
-        "lambda-cyhalothrin",
-        "permethrin",
-        "deltamethrin",
-        "cyfluthrin",
-        "pyrethrins + neem oil",
-        "imiclacloprid",
-        "sulfur",
-        "methomyl",
-        "fenpropathrin",
-    ],
-)
-disease_manager.add_disease(
-    "Flea Beetles",
-    [
-        "Brassicas",
-        "Leafy Greens",
-        "Solanaceae Crops",
-        "Root Crops",
-        "Cucurbits",
-        "Potato",
-    ],
-    "Flea beetles are common and problematic in Utah, affecting vegetable crops and ornamental plants...",
-    "Small, round holes or pits in leaves and cotyledons...",
-    "Adjust planting times, promote healthy plant growth, use trap crops and row covers...",
-    [
-        "lacewing larvae",
-        "big-eyed bugs",
-        "damsel bugs",
-        "bifenthrin",
-        "zeta-cypermethrin",
-        "lambda-cyhalothrin",
-        "permethrin",
-        "deltamethrin",
-        "cyfluthrin",
-        "pyrethrins + neem oil",
-    ],
-)
+disease_manager.add_disease("Spotted Cucumber Beetle",
+                            ["Hemp",
+                             "Beans",
+                             "Corn",
+                             "Cucurbits",
+                             "Potato",
+                             "Tomato",
+                             "Small grains",
+                             "Ornamentals",
+                             "Grasses",
+                             "Weeds",
+                             ],
+                            "Adults have a black head, legs, and antennae. They have ovoid yellow-green bodies with 12 black spots on the wings...",
+                            "In hemp, adults chew on leaves, creating irregular-shaped holes. Damage is considered minor...",
+                            "Keep crop area weed-free, use plastic or organic mulches, destroy crop residues after harvest...",
+                            ["azadirachtin",
+                                "potassium laurate",
+                                "mineral oil",
+                                "diatomaceous earth",
+                                "pyrethrins",
+                                "rosemary oil",
+                                "neem oil",
+                                "kaolin",
+                             ],
+                            )
+disease_manager.add_disease("Cutworms on Vegetables",
+                            ["Artichoke",
+                             "Asparagus",
+                             "Brassicas",
+                             "Cucurbits",
+                             "Corn",
+                             "Legumes",
+                             "Leafy Greens",
+                             "Onion",
+                             "Potato",
+                             "Root Crops",
+                             "Solanaceae Crops",
+                             ],
+                            "Cutworms belong to a large group of night-flying moths in the Noctuidae family...",
+                            "Larvae feed with chewing mouthparts and can clip off seedlings at the soil line...",
+                            "Remove cool-season weeds, use fall tillage to expose overwintering pupae, protect seedlings with collars...",
+                            ["bifenthrin",
+                                "zeta-cypermethrin",
+                                "lambda-cyhalothrin",
+                                "permethrin",
+                                "deltamethrin",
+                                "cyfluthrin",
+                                "pyrethrins + neem oil",
+                                "imiclacloprid",
+                                "sulfur",
+                                "methomyl",
+                                "fenpropathrin",
+                             ],
+                            )
+disease_manager.add_disease("False Chinch Bug",
+                            ["Alfalfa",
+                             "Brassicas",
+                             "Cucurbits",
+                             "Corn",
+                             "Leafy Greens",
+                             "Potato",
+                             "Root Crops",
+                             "Solanaceae Crops",
+                             "Hemp",
+                             ],
+                            "On adults, the head, thorax, and anterior portion of the wings are brownish gray and the posterior portion of the wings are whitish-clear...",
+                            "Adults and nymphs feed with piercing-sucking mouthparts. Large numbers of aggregating adults can cause plants to wilt and die rapidly...",
+                            "Scout field edges that may contain mustards, look for aggregations on plants, keep plants well irrigated...",
+                            ["bifenthrin",
+                                "zeta-cypermethrin",
+                                "lambda-cyhalothrin",
+                                "permethrin",
+                                "deltamethrin",
+                                "cyfluthrin",
+                                "pyrethrins + neem oil",
+                                "imiclacloprid",
+                                "sulfur",
+                                "methomyl",
+                                "fenpropathrin",
+                             ],
+                            )
+disease_manager.add_disease("Flea Beetles",
+                            ["Brassicas",
+                             "Leafy Greens",
+                             "Solanaceae Crops",
+                             "Root Crops",
+                             "Cucurbits",
+                             "Potato",
+                             ],
+                            "Flea beetles are common and problematic in Utah, affecting vegetable crops and ornamental plants...",
+                            "Small, round holes or pits in leaves and cotyledons...",
+                            "Adjust planting times, promote healthy plant growth, use trap crops and row covers...",
+                            ["lacewing larvae",
+                                "big-eyed bugs",
+                                "damsel bugs",
+                                "bifenthrin",
+                                "zeta-cypermethrin",
+                                "lambda-cyhalothrin",
+                                "permethrin",
+                                "deltamethrin",
+                                "cyfluthrin",
+                                "pyrethrins + neem oil",
+                             ],
+                            )
 disease_manager.add_disease(
     "Tomato and Tobacco Hornworms",
     ["Tomato", "Pepper", "Potato"],
@@ -452,92 +452,83 @@ disease_manager.add_disease(
         "fenpropathrin",
     ],
 )
-disease_manager.add_disease(
-    "Thrips on Vegetables",
-    [
-        "Alfalfa",
-        "Asparagus",
-        "Bean",
-        "Cabbage",
-        "Cauliflower",
-        "Cucumber",
-        "Garlic",
-        "Onion",
-        "Potato",
-        "Small Grains",
-        "Tomato",
-    ],
-    "Thrips overwinter as adults in plant debris and protected areas. In the spring, they become active and move into fields...",
-    "White flecks or silvery scars on foliage, dark fecal spots on leaves, distorted leaf growth, reduced bulb size in onions...",
-    "Plow plant debris under after harvest, inspect transplants for thrips, remove weeds within fields, place mulch, plant resistant crop varieties...",
-    [
-        "bifenthrin",
-        "zeta-cypermethrin",
-        "lambda-cyhalothrin",
-        "permethrin",
-        "deltamethrin",
-        "cyfluthrin",
-        "pyrethrins + neem oil",
-        "imiclacloprid",
-        "sulfur",
-        "methomyl",
-        "fenpropathrin",
-    ],
-)
-disease_manager.add_disease(
-    "Potato Leafhopper",
-    [
-        "Alfalfa",
-        "Legumes",
-        "Potato",
-        "Solanaceae",
-        "Weeds including pigweed and shepherd's purse",
-    ],
-    "Adults are wedge-shaped, light green in color, and widest at the head with an elongated body...",
-    "Adults and nymphs feed with piercing-sucking mouthparts, causing white-flecked injury (stippling) on foliage. Heavy feeding can lead to scorching...",
-    "Manage weeds to reduce leafhopper populations, monitor symptoms such as curling leaves and stippling, apply insecticides when necessary...",
-    [
-        "bifenthrin",
-        "zeta-cypermethrin",
-        "lambda-cyhalothrin",
-        "permethrin",
-        "deltamethrin",
-        "cyfluthrin",
-        "pyrethrins + neem oil",
-        "imiclacloprid",
-        "sulfur",
-        "methomyl",
-        "fenpropathrin",
-    ],
-)
-disease_manager.add_disease(
-    "Two-Spotted Spider Mite",
-    [
-        "Corn",
-        "Cucurbits",
-        "Hemp",
-        "Legumes",
-        "Onions",
-        "Root crops",
-        "Solanaceae crops",
-        "Many weeds and ornamentals",
-    ],
-    "Adults are tiny, with a yellowish-clear body and two dark spots on either side of its back...",
-    "Stippled (small yellow spots) leaves, generalized bronzing or reddish discoloration, reduced plant vigor, premature leaf drop...",
-    "Keep plants healthy, wash mites off plants with strong water stream, avoid malathion and pyrethroid insecticides, attract predatory mites...",
-    [
-        "predatory mites",
-        "lacewings",
-        "ladybugs",
-        "bifenthrin",
-        "zeta-cypermethrin",
-        "lambda-cyhalothrin",
-        "permethrin",
-        "deltamethrin",
-        "cyfluthrin",
-        "pyrethrins + neem oil",
-    ],
-)
+disease_manager.add_disease("Thrips on Vegetables",
+                            ["Alfalfa",
+                             "Asparagus",
+                             "Bean",
+                             "Cabbage",
+                             "Cauliflower",
+                             "Cucumber",
+                             "Garlic",
+                             "Onion",
+                             "Potato",
+                             "Small Grains",
+                             "Tomato",
+                             ],
+                            "Thrips overwinter as adults in plant debris and protected areas. In the spring, they become active and move into fields...",
+                            "White flecks or silvery scars on foliage, dark fecal spots on leaves, distorted leaf growth, reduced bulb size in onions...",
+                            "Plow plant debris under after harvest, inspect transplants for thrips, remove weeds within fields, place mulch, plant resistant crop varieties...",
+                            ["bifenthrin",
+                                "zeta-cypermethrin",
+                                "lambda-cyhalothrin",
+                                "permethrin",
+                                "deltamethrin",
+                                "cyfluthrin",
+                                "pyrethrins + neem oil",
+                                "imiclacloprid",
+                                "sulfur",
+                                "methomyl",
+                                "fenpropathrin",
+                             ],
+                            )
+disease_manager.add_disease("Potato Leafhopper",
+                            ["Alfalfa",
+                             "Legumes",
+                             "Potato",
+                             "Solanaceae",
+                             "Weeds including pigweed and shepherd's purse",
+                             ],
+                            "Adults are wedge-shaped, light green in color, and widest at the head with an elongated body...",
+                            "Adults and nymphs feed with piercing-sucking mouthparts, causing white-flecked injury (stippling) on foliage. Heavy feeding can lead to scorching...",
+                            "Manage weeds to reduce leafhopper populations, monitor symptoms such as curling leaves and stippling, apply insecticides when necessary...",
+                            ["bifenthrin",
+                                "zeta-cypermethrin",
+                                "lambda-cyhalothrin",
+                                "permethrin",
+                                "deltamethrin",
+                                "cyfluthrin",
+                                "pyrethrins + neem oil",
+                                "imiclacloprid",
+                                "sulfur",
+                                "methomyl",
+                                "fenpropathrin",
+                             ],
+                            )
+disease_manager.add_disease("Two-Spotted Spider Mite",
+                            ["Corn",
+                             "Cucurbits",
+                             "Hemp",
+                             "Legumes",
+                             "Onions",
+                             "Root crops",
+                             "Solanaceae crops",
+                             "Many weeds and ornamentals",
+                             ],
+                            "Adults are tiny, with a yellowish-clear body and two dark spots on either side of its back...",
+                            "Stippled (small yellow spots) leaves, generalized bronzing or reddish discoloration, reduced plant vigor, premature leaf drop...",
+                            "Keep plants healthy, wash mites off plants with strong water stream, avoid malathion and pyrethroid insecticides, attract predatory mites...",
+                            ["predatory mites",
+                                "lacewings",
+                                "ladybugs",
+                                "bifenthrin",
+                                "zeta-cypermethrin",
+                                "lambda-cyhalothrin",
+                                "permethrin",
+                                "deltamethrin",
+                                "cyfluthrin",
+                                "pyrethrins + neem oil",
+                             ],
+                            )
 disease_manager.add_disease(
     "Corn Earworm / Tomato Fruitworm",
     ["Beans", "Corn", "Eggplant", "Pepper", "Peas", "Tomato"],
@@ -564,43 +555,40 @@ disease_manager.add_disease(
     "Use clean transplants, avoid planting during hot, dry periods, remove infested debris, clean tools after use...",
     ["sulfur", "abamectin"],
 )
-disease_manager.add_disease(
-    "Whiteflies (Family: Aleyrodidae)",
-    [
-        "Field-grown and greenhouse-grown hemp",
-        "Ageratum",
-        "Aster",
-        "Beans",
-        "Begonia",
-        "Calendula",
-        "Cucumber",
-        "Grape",
-        "Hibiscus",
-        "Lantana",
-        "Nicotiana",
-        "Poinsettia",
-        "Squash",
-        "Tomato",
-    ],
-    "Adults are tiny with bright white wings and yellow-orange heads. Immature stages are pale, translucent, and mostly immobile...",
-    "Leaves turn yellow, appear dry, or fall off plants. Whiteflies also excrete honeydew, causing sticky surfaces or sooty mold growth...",
-    "Attract and conserve natural enemies, inspect transplants, remove heavily infested plants, use biocontrol such as Encarsia sp....",
-    [
-        "azadirachtin",
-        "potassium laurate",
-        "clarified hydrophobic extract of neem oil",
-        "pyrethrins",
-        "capsicum oleoresin extract",
-        "Encarsia sp.",
-        "bifenthrin",
-        "zeta-cypermethrin",
-        "lambda-cyhalothrin",
-        "permethrin",
-        "deltamethrin",
-        "cyfluthrin",
-        "pyrethrins + neem oil",
-    ],
-)
+disease_manager.add_disease("Whiteflies (Family: Aleyrodidae)",
+                            ["Field-grown and greenhouse-grown hemp",
+                             "Ageratum",
+                             "Aster",
+                             "Beans",
+                             "Begonia",
+                             "Calendula",
+                             "Cucumber",
+                             "Grape",
+                             "Hibiscus",
+                             "Lantana",
+                             "Nicotiana",
+                             "Poinsettia",
+                             "Squash",
+                             "Tomato",
+                             ],
+                            "Adults are tiny with bright white wings and yellow-orange heads. Immature stages are pale, translucent, and mostly immobile...",
+                            "Leaves turn yellow, appear dry, or fall off plants. Whiteflies also excrete honeydew, causing sticky surfaces or sooty mold growth...",
+                            "Attract and conserve natural enemies, inspect transplants, remove heavily infested plants, use biocontrol such as Encarsia sp....",
+                            ["azadirachtin",
+                                "potassium laurate",
+                                "clarified hydrophobic extract of neem oil",
+                                "pyrethrins",
+                                "capsicum oleoresin extract",
+                                "Encarsia sp.",
+                                "bifenthrin",
+                                "zeta-cypermethrin",
+                                "lambda-cyhalothrin",
+                                "permethrin",
+                                "deltamethrin",
+                                "cyfluthrin",
+                                "pyrethrins + neem oil",
+                             ],
+                            )
 disease_manager.add_disease(
     "Alfalfa Mosaic Virus",
     ["Alfalfa", "Potato", "Pepper", "Tomato", "Hemp", "Many ornamentals and weeds"],
@@ -626,25 +614,22 @@ disease_manager.add_disease(
     "Start examining undersides of leaves soon after planting, delay planting until wet conditions pass, avoid overhead irrigation, rotate crops...",
     ["Crop rotation", "Avoid overhead irrigation"],
 )
-disease_manager.add_disease(
-    "Beet Curly Top Virus",
-    [
-        "Bean",
-        "Beet",
-        "Cucurbits",
-        "Pepper",
-        "Spinach",
-        "Tomato",
-        "Several other wild and economic hosts",
-    ],
-    "Beet Curly Top Virus (BCTV) is a Curtovirus in the Geminiviridae family, vectored by the beet leafhopper (BLH)...",
-    "Young infected plants usually die, stunted growth, thick curled leaves, dull yellow color with purple veins, prematurely ripened fruit...",
-    "Implement shading, use row covers, double plant to reduce losses, manage weeds that serve as alternative hosts for BLH...",
-    [
-        "Integrated pest management (IPM)",
-        "Avoid chemical treatments due to BLH migration",
-    ],
-)
+disease_manager.add_disease("Beet Curly Top Virus",
+                            ["Bean",
+                             "Beet",
+                             "Cucurbits",
+                             "Pepper",
+                             "Spinach",
+                             "Tomato",
+                             "Several other wild and economic hosts",
+                             ],
+                            "Beet Curly Top Virus (BCTV) is a Curtovirus in the Geminiviridae family, vectored by the beet leafhopper (BLH)...",
+                            "Young infected plants usually die, stunted growth, thick curled leaves, dull yellow color with purple veins, prematurely ripened fruit...",
+                            "Implement shading, use row covers, double plant to reduce losses, manage weeds that serve as alternative hosts for BLH...",
+                            ["Integrated pest management (IPM)",
+                                "Avoid chemical treatments due to BLH migration",
+                             ],
+                            )
 disease_manager.add_disease(
     "Big Bud",
     ["Tomato", "Pepper"],
