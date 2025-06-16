@@ -164,21 +164,23 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
     Évalue le risque de maladie en fonction du type de culture, de la température,
     de l'humidité et du type de sol.
     """
+
+
     # 🚀 Définition des seuils de risque
 risk_levels = {
     "Low": (temp > 25 and humidity < 50),
     "Medium": (
-            20 <= temp <= 25 and 50 <= humidity <= 70
+        20 <= temp <= 25 and 50 <= humidity <= 70
     ),
     "High": (temp < 20 or humidity > 70),
 }
-    # 📌 Ajustement basé sur le type de sol et la culture
+# 📌 Ajustement basé sur le type de sol et la culture
 base_risk = (
     "High"
     if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy"
     else "Medium"
 )
-    # ✅ Détermination finale du risque
+# ✅ Détermination finale du risque
 for level, condition in risk_levels.items():
     if condition:
         return "Critical" if base_risk == "High" else level
