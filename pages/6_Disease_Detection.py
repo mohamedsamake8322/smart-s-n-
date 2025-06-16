@@ -433,7 +433,7 @@ with tab2:
 
         for i, uploaded_file in enumerate(uploaded_files):
             status_text.text(
-                f"Analyse {i+1}/{len(uploaded_files)}: {uploaded_file.name}"
+                f"Analyse {i + 1}/{len(uploaded_files)}: {uploaded_file.name}"
             )
 
             try:
@@ -497,13 +497,13 @@ with tab2:
             st.metric(
                 "Plantes Saines",
                 healthy_count,
-                delta=f"{healthy_count/len(batch_results)*100:.1f}%",
+                delta=f"{healthy_count / len(batch_results) * 100:.1f}%",
             )
         with col3:
             st.metric(
                 "Plantes Malades",
                 diseased_count,
-                delta=f"{diseased_count/len(batch_results)*100:.1f}%",
+                delta=f"{diseased_count / len(batch_results) * 100:.1f}%",
             )
         with col4:
             st.metric("Erreurs", error_count)
@@ -526,7 +526,8 @@ st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
 for i, diagnosis in enumerate(
         reversed(filtered_history[-20:])):  # Last 20 results
     with st.expander(
-        f"#{len(filtered_history)-i}: {diagnosis['main_disease']} - {diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
+        f"#{len(filtered_history) - i}: {diagnosis['main_disease']} - {
+            diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
     ):
         st.metric("Maladie", diagnosis["main_disease"])
         st.metric("Confiance", f"{diagnosis['confidence']:.1f}%")
