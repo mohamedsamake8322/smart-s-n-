@@ -156,6 +156,7 @@ def estimate_progression(confidence):
     else:
         return "🟢 Faible impact"
 
+
 def assess_disease_risk(crop, temp, humidity, soil_type):
     """
     Évalue le risque de maladie en fonction du type de culture, de la température,
@@ -180,6 +181,7 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
             return level if base_risk != "High" else "Critical"
 
     return "Unknown"
+
 
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""
