@@ -3,7 +3,6 @@ import json
 import pandas as pd
 from typing import Dict, List, Optional, Any
 from datetime import datetime
-
 class DiseaseDatabase:
     """
     Base de données complète des maladies agricoles
@@ -560,23 +559,24 @@ class DiseaseDatabase:
             }
         }
 
-    def export_database(self, format_type: str = 'json') -> str:
-        """
-        Exporte la base de données au format spécifié
-        """
-        return json.dumps(export_data, ensure_ascii=False, indent=2)
-        if not self.diseases_data:
+def export_database(self, format_type: str = "json") -> str:
+    """
+    Exporte la base de données au format spécifié.
+    """
+    if not self.diseases_data:
         raise ValueError("🚨 La base de données est vide, impossible d'exporter.")
 
-        if format_type == 'json':
-            export_data = {
-                'diseases': self.diseases_data,
-                'treatments': self.treatments_data,
-                'prevention': self.prevention_data,
-                'export_date': datetime.now().isoformat(),
-                'version': '1.0'
-            }
-            return json.dumps(export_data, ensure_ascii=False, indent=2)
+    if format_type == "json":
+        export_data = {
+            "diseases": self.diseases_data,
+            "treatments": self.treatments_data,
+            "prevention": self.prevention_data,
+            "export_date": datetime.now().isoformat(),
+            "version": "1.0",
+        }
+        return json.dumps(export_data, ensure_ascii=False, indent=2)
+
+    raise ValueError(f"🚨 Format {format_type} non supporté.")
 
         elif format_type == 'csv':
             # Convert to DataFrame for CSV export
