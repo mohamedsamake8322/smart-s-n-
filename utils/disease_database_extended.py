@@ -21,7 +21,7 @@ class ExtendedDiseaseDatabase:
         self.regional_data = self._initialize_regional_disease_data()
 
 
-def _initialize_extended_disease_database(self) -> Dict[str, Dict]:
+def _initialize_extended_disease_database() -> Dict[str, Dict]:
     """
     Base de données étendue avec 100+ maladies.
     """
@@ -31,10 +31,7 @@ def _initialize_extended_disease_database(self) -> Dict[str, Dict]:
             "traitement": "Antibiotiques",
         },
         "Maladie2": {"symptômes": ["Toux", "Fatigue"], "traitement": "Repos"},
-        # Ajoute ici d'autres maladies pour compléter la base
     }
-
-
 # ✅ Base globale des maladies (après l'initialisation)
 DISEASE_DATABASE = _initialize_extended_disease_database(None)
 
@@ -49,23 +46,17 @@ logger = logging.getLogger(__name__)
 
 
 class DiseaseManager:
-    def __init__(
-        self,
-        # 📌 Assure-toi que le chemin est bon
-        model_path="C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras",
-    ):
+    def __init__(self, model_path):
         """Initialisation du gestionnaire de maladies et chargement du modèle CNN."""
-        self.diseases = {}
+        self.model_path = model_path
         self.model = None
-        self.load_model(model_path)
+        self.load_model(self.model_path)  # ✅ Appelle `load_model` avec `self.model_path`
 
     def load_model(self, model_path):
         """Charge le modèle CNN et l'attache à l'instance."""
         if not os.path.exists(model_path):
-            logger.error(
-                f"🚨 Erreur : Le fichier modèle {model_path} est introuvable."
-            )
-        raise FileNotFoundError(f"🚨 Modèle non trouvé : {model_path}")
+            logger.error(f"🚨 Erreur : Le fichier modèle {model_path} est introuvable.")
+            raise FileNotFoundError(f"🚨 Modèle non trouvé : {model_path}")
 
         try:
             self.model = tf.keras.models.load_model(model_path)
