@@ -306,8 +306,8 @@ if TENSORFLOW_AVAILABLE:
 
 
                         # Confidence chart
-                        st.markdown("---")
-                        st.markdown("**Graphique de Confiance**")
+st.markdown("---")
+st.markdown("**Graphique de Confiance**")
 
                         chart_data = pd.DataFrame(
                             [
