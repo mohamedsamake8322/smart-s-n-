@@ -498,8 +498,8 @@ status_text.text("Analyse terminée!")
 
 
         # ✅ Résumé des résultats
-        st.markdown("---")
-        st.subheader("Résumé des Résultats")
+st.markdown("---")
+    st.subheader("Résumé des Résultats")
 
         healthy_count = sum(
             1 for r in batch_results if r["status"] == "Healthy")
