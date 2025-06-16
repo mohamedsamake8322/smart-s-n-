@@ -7,6 +7,7 @@ import numpy as np
 import cv2
 import pandas as pd
 import streamlit as st
+import requests
 from PIL import Image, ImageEnhance
 from datetime import datetime
 from io import BytesIO
@@ -125,7 +126,6 @@ def predict_disease(image):
         })
 
     return top_labels
-import requests
 
 # 🔍 Détermination du stade de progression
 def estimate_progression(confidence):
@@ -145,16 +145,20 @@ def estimate_progression(confidence):
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""
     try:
-        response = requests.get("https://api.open-meteo.com/weather")
+        response = requests.get("https://api.open-meteo.com/weather", timeout=5)
         response.raise_for_status()  # Vérifie si la requête a réussi
         weather_data = response.json()
 
-        # Vérification des clés avant extraction
-        temp = weather_data.get("temperature", None)
-        humidity = weather_data.get("humidity", None)
+        if not weather_data:  # Vérifie que les données sont bien présentes
+            print("⚠️ Données météo vides ou mal formatées.")
+            return "Risque météo inconnu"
 
-        if temp is None or humidity is None:
-            print("⚠️ Impossible de récupérer les données météo")
+        # Vérification des clés avant extraction
+        temp = weather_data.get("temperature", -1)  # Valeur par défaut pour éviter NoneType
+        humidity = weather_data.get("humidity", -1)
+
+        if temp == -1 or humidity == -1:
+            print("⚠️ Impossible de récupérer les données météo.")
             return "Données météo indisponibles"
 
         risk_factor = assess_disease_risk(crop, temp, humidity, "Loamy")
