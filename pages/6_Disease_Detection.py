@@ -501,42 +501,41 @@ status_text.text("Analyse terminée!")
 st.markdown("---")
 st.subheader("Résumé des Résultats")
 
-        healthy_count = sum(
-            1 for r in batch_results if r["status"] == "Healthy")
-        diseased_count = sum(
-            1 for r in batch_results if r["status"] == "Diseased")
-        error_count = sum(1 for r in batch_results if r["status"] == "Error")
+healthy_count = sum(1 for r in batch_results if r["status"] == "Healthy")
+diseased_count = sum(1 for r in batch_results if r["status"] == "Diseased")
+error_count = sum(1 for r in batch_results if r["status"] == "Error")
 
-        col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns(4)
 
-        with col1:
-            st.metric("Total Images", len(batch_results))
-        with col2:
-            st.metric(
-                "Plantes Saines",
-                healthy_count,
-                delta=f"{healthy_count / len(batch_results) * 100:.1f}%",
-            )
-        with col3:
-            st.metric(
-                "Plantes Malades",
-                diseased_count,
-                delta=f"{diseased_count / len(batch_results) * 100:.1f}%",
-            )
-        with col4:
-            st.metric("Erreurs", error_count)
+with col1:
+    st.metric("Total Images", len(batch_results))
+with col2:
+    st.metric(
+        "Plantes Saines",
+        healthy_count,
+        delta=f"{(healthy_count / len(batch_results) * 100):.1f}%",
+    )
+with col3:
+    st.metric(
+        "Plantes Malades",
+        diseased_count,
+        delta=f"{(diseased_count / len(batch_results) * 100):.1f}%",
+    )
+with col4:
+    st.metric("Erreurs", error_count)
 
-    # ✅ Filtrage historique optimisé
-    filtered_history = st.session_state.get("diagnosis_history", [])
+# ✅ Filtrage historique optimisé
+filtered_history = st.session_state.get("diagnosis_history", [])
 
-    if disease_filter:
-        filtered_history = [
-            d for d in filtered_history if d["main_disease"] in disease_filter
-        ]
-
+if disease_filter:
     filtered_history = [
-        d for d in filtered_history if d["confidence"] >= confidence_filter
+        d for d in filtered_history if d["main_disease"] in disease_filter
     ]
+
+filtered_history = [
+    d for d in filtered_history if d["confidence"] >= confidence_filter
+]
+
 
     # ✅ Vérification avant `st.expander()`
 st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
