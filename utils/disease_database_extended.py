@@ -1,9 +1,15 @@
-
 import json
 import pandas as pd
 from typing import Dict, List, Optional, Any
 from datetime import datetime
-
+import os
+import numpy as np
+import streamlit as st
+import tensorflow as tf
+import logging
+import cv2  # 🚀 Ajout de l'importation OpenCV
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 class ExtendedDiseaseDatabase:
     """
     Base de données étendue avec 100+ maladies agricoles
@@ -16,23 +22,27 @@ class ExtendedDiseaseDatabase:
         self.prevention_data = self._initialize_extended_prevention_database()
         self.regional_data = self._initialize_regional_disease_data()
 
-    def _initialize_extended_disease_database(self) -> Dict[str, Dict]:
-        """
-        Base de données étendue avec 100+ maladies
-        """
-        return {
-import os
-import numpy as np
-import streamlit as st
-import tensorflow as tf
 import logging
-import cv2  # 🚀 Ajout de l'importation OpenCV
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-DISEASE_DATABASE = {}  # ✅ Base globale des maladies
-print("✅ Script `diseases_infos.py` exécuté avec succès !")
+from typing import Dict
+
+def _initialize_extended_disease_database(self) -> Dict[str, Dict]:
+    """
+    Base de données étendue avec 100+ maladies.
+    """
+    return {
+        "Maladie1": {"symptômes": ["Fièvre", "Douleurs"], "traitement": "Antibiotiques"},
+        "Maladie2": {"symptômes": ["Toux", "Fatigue"], "traitement": "Repos"},
+        # Ajoute ici d'autres maladies pour compléter la base
+    }
+
+# ✅ Base globale des maladies (après l'initialisation)
+DISEASE_DATABASE = _initialize_extended_disease_database(None)
+
 # 🚀 Configuration du logger
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+print("✅ Script `diseases_infos.py` exécuté avec succès !")
+
 logger = logging.getLogger(__name__)
 
 class DiseaseManager:
