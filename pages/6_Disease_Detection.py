@@ -11,7 +11,6 @@ from tensorflow.keras.applications.efficientnet import preprocess_input
 import plotly.express as px  # Corrige l'erreur F821 pour `px`
 from utils.disease_detector import predict_disease
 from utils import disease_detector
-
 # ✅ Définition des variables manquantes
 detector = None
 model_type = "default"
