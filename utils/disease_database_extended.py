@@ -32,6 +32,8 @@ def _initialize_extended_disease_database() -> Dict[str, Dict]:
         },
         "Maladie2": {"symptômes": ["Toux", "Fatigue"], "traitement": "Repos"},
     }
+
+
 # ✅ Base globale des maladies (après l'initialisation)
 DISEASE_DATABASE = _initialize_extended_disease_database(None)
 
@@ -50,12 +52,16 @@ class DiseaseManager:
         """Initialisation du gestionnaire de maladies et chargement du modèle CNN."""
         self.model_path = model_path
         self.model = None
-        self.load_model(self.model_path)  # ✅ Appelle `load_model` avec `self.model_path`
+        self.load_model(
+            self.model_path
+        )  # ✅ Appelle `load_model` avec `self.model_path`
 
     def load_model(self, model_path):
         """Charge le modèle CNN et l'attache à l'instance."""
         if not os.path.exists(model_path):
-            logger.error(f"🚨 Erreur : Le fichier modèle {model_path} est introuvable.")
+            logger.error(
+                f"🚨 Erreur : Le fichier modèle {model_path} est introuvable."
+            )
             raise FileNotFoundError(f"🚨 Modèle non trouvé : {model_path}")
 
         try:
