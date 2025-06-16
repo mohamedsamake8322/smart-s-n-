@@ -17,16 +17,19 @@ from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
+
 class DiseaseDetector:
     """
     Détecteur de maladies agricoles utilisant des CNN pré-entraînés
     Supporte plusieurs architectures et optimisations pour Replit
     """
 
+
 def __init__(self):
     self.models = {}
     self.preprocessors = {}
     self.class_labels = {}
+
 
   # ✅ Chargement du modèle entraîné
 MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
@@ -52,6 +55,7 @@ self.disease_classes = [
         # Create simplified models for demo (in production, load real trained models)
 # Create simplified models for demo (in production, load real trained models)
 self._initialize_demo_models()
+
 
 def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
     """
@@ -80,7 +84,6 @@ def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
         print(f"Erreur lors du préprocessing : {e}")
         return None  # Retourne None en cas d'échec
 
-
         # ✅ Ajout de la dimension batch
         img_array = np.expand_dims(img_array, axis=0)
 
@@ -94,7 +97,11 @@ def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
         return np.zeros((1, 380, 380, 3))
 
 
-def predict_disease(self, image_pil: Image.Image, confidence_threshold: float = 0.7, crop_filter: List[str] = None) -> List[Dict]:
+def predict_disease(
+    self,
+    image_pil: Image.Image,
+    confidence_threshold: float = 0.7,
+     crop_filter: List[str] = None) -> List[Dict]:
     """
     Prédiction de maladie sur une image avec EfficientNet-ResNet
 
@@ -110,7 +117,8 @@ def predict_disease(self, image_pil: Image.Image, confidence_threshold: float = 
         # ✅ Vérifier que le modèle est bien chargé
         model = self.models.get("efficientnet_resnet", None)
         if model is None:
-            raise ValueError("🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible.")
+            raise ValueError(
+                "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible.")
 
         class_labels = self.class_labels["efficientnet_resnet"]
 
@@ -118,7 +126,8 @@ def predict_disease(self, image_pil: Image.Image, confidence_threshold: float = 
         processed_img = self.preprocess_image(image_pil)
 
         # ✅ Effectuer la prédiction
-        predictions = model.predict(processed_img, verbose=0)[0]  # Retirer la dimension batch
+        predictions = model.predict(processed_img, verbose=0)[
+                                    0]  # Retirer la dimension batch
 
         # ✅ Trier les prédictions par confiance
         sorted_indices = np.argsort(predictions)[::-1]
@@ -129,7 +138,8 @@ def predict_disease(self, image_pil: Image.Image, confidence_threshold: float = 
             disease_name = class_labels[idx]
 
             # ✅ Filtrer par culture si nécessaire
-            if crop_filter and not self._disease_matches_crops(disease_name, crop_filter):
+            if crop_filter and not self._disease_matches_crops(
+                disease_name, crop_filter):
                 continue
 
             # ✅ Appliquer le seuil de confiance
@@ -137,7 +147,8 @@ def predict_disease(self, image_pil: Image.Image, confidence_threshold: float = 
                 break
 
             # ✅ Évaluer la sévérité et l'urgence
-            severity, urgency = self._assess_disease_severity(disease_name, confidence)
+            severity, urgency = self._assess_disease_severity(
+                disease_name, confidence)
 
             results.append({
                 'disease': disease_name,
@@ -156,7 +167,8 @@ def predict_disease(self, image_pil: Image.Image, confidence_threshold: float = 
             top_idx = sorted_indices[0]
             confidence = float(predictions[top_idx]) * 100
             disease_name = class_labels[top_idx]
-            severity, urgency = self._assess_disease_severity(disease_name, confidence)
+            severity, urgency = self._assess_disease_severity(
+                disease_name, confidence)
 
             results.append({
                 'disease': disease_name,
