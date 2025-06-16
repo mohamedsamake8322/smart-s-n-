@@ -537,11 +537,11 @@ if st.button("🗑️ Vider l'Historique"):
 
 # ✅ Filtrage maladies optimisé
 filtered_diseases = [
-    d
-    for d in all_diseases
-    if (search_term.lower() in d["name"].lower() if search_term else True)
-    and (d.get("category") == category if category != "Toutes" else True)
+    d for d in all_diseases
+    if (search_term.lower() in d["name"].lower() if search_term else True) and
+    (d.get("category") == category if category != "Toutes" else True)
 ]
+
 
 # ✅ Déplacement des colonnes en dehors de `st.expander()`
 st.markdown(f"**{len(filtered_diseases)} maladies trouvées**")
