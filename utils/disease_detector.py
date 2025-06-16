@@ -50,7 +50,7 @@ self.disease_classes = [
 ]
 
         # Create simplified models for demo (in production, load real trained models)
-        self._initialize_demo_models()
+self._initialize_demo_models()
  def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
     """
     Préprocessing de l'image pour EfficientNet-ResNet
