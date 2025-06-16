@@ -184,7 +184,7 @@ def predict_disease(
         print(f"🚨 Erreur lors de la prédiction: {e}")
         return []
 
-   def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List[str] = None) -> List[Dict]:
+def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List[str] = None) -> List[Dict]:
     """
     Détection basée sur EfficientNet-ResNet au lieu des heuristiques visuelles.
     """
