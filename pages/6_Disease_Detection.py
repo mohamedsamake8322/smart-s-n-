@@ -639,17 +639,42 @@ if "diagnosis_history" in st.session_state and st.session_state.diagnosis_histor
         avg_confidence = np.mean([d["confidence"] for d in history])
         st.metric("Confiance Moyenne", f"{avg_confidence:.1f}%")
 
-    with col2:
-        disease_counts = {}
-        for d in history:
-            disease = d["main_disease"]
-            if disease != "Healthy":
-                disease_counts[disease] = disease_counts.get(disease, 0) + 1
+   with col2:
+    # ✅ Vérification avant utilisation de `history`
+    if "diagnosis_history" in st.session_state:
+        history = st.session_state.diagnosis_history
+    else:
+        st.warning("⚠️ Aucun historique disponible.")
+        history = []  # Définit `history` comme une liste vide par défaut
 
-        if disease_counts:
-            most_common = max(disease_counts, key=disease_counts.get)
-            st.metric("Maladie Plus Fréquente", most_common)
-            st.metric("Occurrences", disease_counts[most_common])
+    print("Contenu de history :", history)  # Debug
+
+    disease_counts = {}
+    for d in history:
+        disease = d["main_disease"]
+        if disease != "Healthy":
+            disease_counts[disease] = disease_counts.get(disease, 0) + 1
+
+    print("Contenu de disease_counts :", disease_counts)  # Debug
+
+    # ✅ Vérification avant utilisation de `max()`
+    if disease_counts:
+        most_common = max(disease_counts, key=disease_counts.get)
+        st.metric("Maladie Plus Fréquente", most_common)
+        st.metric("Occurrences", disease_counts[most_common])
+    else:
+        st.info("🔍 Aucune maladie détectée dans l’historique.")
+
+# ✅ Correction de l'imbrication des colonnes
+st.container()  # Alternative à `st.columns()`
+col1, col2 = st.columns(2)
+
+with col1:
+    st.metric("NumPy Version", "2.3.0 (Incompatible)")
+    st.metric("TensorFlow", "2.14.0 (En attente)")
+with col2:
+    st.metric("Status IA", "❌ Indisponible")
+    st.metric("Base de Données", "✅ Disponible")
 
 # ✅ Vérification du système
 if "system_issue" in st.session_state:
@@ -667,14 +692,6 @@ if "system_issue" in st.session_state:
         - ⚠️ Utiliser la base de connaissances en attendant
         """
         )
-
-        col1, col2 = st.columns(2)
-        with col1:
-            st.metric("NumPy Version", "2.3.0 (Incompatible)")
-            st.metric("TensorFlow", "2.14.0 (En attente)")
-        with col2:
-            st.metric("Status IA", "❌ Indisponible")
-            st.metric("Base de Données", "✅ Disponible")
 
         if st.button("🔄 Tester à Nouveau TensorFlow"):
             st.rerun()
