@@ -29,17 +29,56 @@ from utils.disease_database_extended import ExtendedDiseaseDatabase
 from utils.disease_database import DiseaseDatabase
 from utils.disease_detector import DiseaseDetector, preprocess_image
 import diseases_infos
+DISEASE_CLASSES = {
+    0: "Aphids on Vegetables",
+    1: "Armyworms on Vegetables",
+    2: "Blister Beetle",
+    3: "Beet Leafhopper",
+    4: "Colorado Potato Beetle",
+    5: "Western Striped and Spotted Cucumber Beetle",
+    6: "Spotted Cucumber Beetle",
+    7: "Cutworms on Vegetables",
+    8: "False Chinch Bug",
+    9: "Flea Beetles",
+    10: "Tomato and Tobacco Hornworms",
+    11: "Thrips on Vegetables",
+    12: "Potato Leafhopper",
+    13: "Two-Spotted Spider Mite",
+    14: "Corn Earworm / Tomato Fruitworm",
+    15: "Tomato Russet Mite",
+    16: "Whiteflies (Family: Aleyrodidae)",
+    17: "Alfalfa Mosaic Virus",
+    18: "Bacterial Canker",
+    19: "Bacterial Speck",
+    20: "Beet Curly Top Virus",
+    21: "Big Bud",
+    22: "Blossom End Rot",
+    23: "Damping-Off",
+    24: "Early Blight",
+    25: "Fusarium Crown/Root Rot",
+    26: "Fusarium Wilt",
+    27: "Late Blight",
+    28: "Root-Knot Nematodes",
+    29: "Phytophthora Root, Stem, and Crown Rots",
+    30: "Powdery Mildew on Vegetables",
+    31: "Tobacco Mosaic Virus & Tomato Mosaic Virus",
+    32: "Tomato Spotted Wilt Virus",
+    33: "Verticillium Wilt",
+    34: "Cercospora Leaf Spot (Frogeye)",
+    35: "Choanephora Blight (Wet Rot)",
+    36: "Gray Leaf Spot",
+    37: "Phomopsis Blight"
+}
 
 # ✅ Chargement du modèle IA avancé (EfficientNet-B4 + ResNet50)
-MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.h5"
+MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
 
+@st.cache_resource
 def load_disease_model(model_path):
-    """Charge un modèle IA avancé."""
     try:
-        model = tf.keras.models.load_model(model_path)
-        return model
+        return tf.keras.models.load_model(model_path)
     except Exception as e:
-        print(f"🛑 Erreur : {e}")
+        st.error(f"🛑 Erreur : {e}")
         return None
 
 disease_model = load_disease_model(MODEL_PATH)
@@ -68,14 +107,25 @@ def apply_segmentation(img_array):
 def predict_disease(image):
     """Analyse l’image et retourne plusieurs maladies avec leur score."""
     if disease_model is None:
-        return {"error": "🚨 Modèle non chargé"}
+        return [{"error": "🚨 Modèle non chargé"}]
 
     img_array = preprocess_image(image)
+    if img_array is None:
+        return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
     prediction = disease_model.predict(img_array)
+    top_labels = []
 
+    for idx, confidence in enumerate(prediction[0]):
+    disease_name = DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
+    top_labels.append({"name": disease_name, "confidence": confidence * 100})
+
+    # Ajout du stade de progression estimé
+    for disease in top_labels:
+    disease["progression_stage"] = estimate_progression(disease["confidence"])
+
+    prediction = disease_model.predict(img_array)
     top_labels = diseases_infos.decode_top_predictions(prediction, top_n=5)
 
-    # 🔍 Ajout du stade de progression estimé
     for disease in top_labels:
         disease["progression_stage"] = estimate_progression(disease["confidence"])
 
@@ -203,6 +253,8 @@ if TENSORFLOW_AVAILABLE:
                     except Exception as e:
                         st.error(f"Erreur de chargement: {e}")
 
+
+
             # Image preprocessing options
             if uploaded_image:
                 st.markdown("**Options de Préprocessing**")
@@ -258,6 +310,8 @@ if TENSORFLOW_AVAILABLE:
                         else:
                             st.error(f"🦠 Maladie Détectée: {main_result['disease']}")
                             status_color = "red"
+
+
 
                         # Confidence metrics
                         col_conf1, col_conf2, col_conf3 = st.columns(3)
@@ -392,8 +446,9 @@ if TENSORFLOW_AVAILABLE:
                             }
 
                             # Save to session state history
-                            if "diagnosis_history" not in st.session_state:
-                                st.session_state.diagnosis_history = []
+                        if "diagnosis_history" not in st.session_state:
+                            diagnosis_data["main_disease"] = DISEASE_CLASSES.get(diagnosis_data["main_disease"], "🔍 Maladie inconnue")
+                            st.session_state.diagnosis_history = []
 
                             st.session_state.diagnosis_history.append(diagnosis_data)
                             st.success("Diagnostic sauvegardé dans l'historique!")

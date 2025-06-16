@@ -8,7 +8,7 @@ MODEL_PATH_KERAS = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet
 # 🔍 Vérification du dossier de sauvegarde
 os.makedirs(os.path.dirname(MODEL_PATH_KERAS), exist_ok=True)
 
-# ✅ Charger le modèle existant `.h5`
+# ✅ Charger le modèle existant `.keras`
 model = load_model(MODEL_PATH_H5)
 
 # 🔄 Sauvegarder en `.keras`

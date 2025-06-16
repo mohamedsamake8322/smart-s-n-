@@ -36,7 +36,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class DiseaseManager:
-    def __init__(self, model_path = "C:/Mohamed/model/plant_disease_model.h5"  # 📌 Assure-toi que le chemin est bon
+    def __init__(self, model_path = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"  # 📌 Assure-toi que le chemin est bon
 ):
         """Initialisation du gestionnaire de maladies et chargement du modèle CNN."""
         self.diseases = {}
