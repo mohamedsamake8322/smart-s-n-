@@ -172,8 +172,11 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
     }
 
     # 📌 Ajustement basé sur le type de sol et la culture
-    base_risk = "High" if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy" else "Medium"
-
+    base_risk = (
+        "High"
+        if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy"
+        else "Medium"
+    )
     # ✅ Détermination finale du risque
     for level, condition in risk_levels.items():
         if condition:
