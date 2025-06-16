@@ -177,7 +177,7 @@ base_risk = (
         "High"
         if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy"
         else "Medium"
-    )
+)
     # ✅ Détermination finale du risque
     for level, condition in risk_levels.items():
         if condition:
