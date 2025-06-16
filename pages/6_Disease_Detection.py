@@ -78,9 +78,9 @@ DISEASE_ICONS = {
 }
 
 # ✅ Chargement du modèle IA
-MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
-
-
+MODEL_PATH = (
+    "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
+)
 @st.cache_resource
 def load_disease_model(model_path):
     try:
@@ -88,11 +88,7 @@ def load_disease_model(model_path):
     except Exception as e:
         st.error(f"🛑 Erreur : {e}")
         return None
-
-
 disease_model = load_disease_model(MODEL_PATH)
-
-
 # 🔍 Prétraitement de l’image
 def preprocess_image(image_file):
     """Prépare l’image et applique le prétraitement EfficientNet."""
@@ -141,8 +137,6 @@ def predict_disease(image):
             })
 
     return top_labels
-
-
 # 🔍 Détermination du stade de progression
 def estimate_progression(confidence):
     """Détermine le stade de la maladie."""
@@ -174,6 +168,13 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
         base_risk = "High"
     else:
         base_risk = "Medium"
+
+    # ✅ Détermination finale du risque
+    for level, condition in risk_levels.items():
+        if condition:
+            return "Critical" if base_risk == "High" else level
+
+    return base_risk  # Retourne le risque ajusté si aucun seuil ne correspond
 
     # ✅ Détermination du risque final
     for level, condition in risk_levels.items():
