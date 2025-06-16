@@ -2,7 +2,9 @@ import numpy as np
 import cv2
 from PIL import Image, ImageEnhance
 import tensorflow as tf
-from tensorflow.keras.applications.efficientnet import preprocess_input as efficientnet_preprocess
+from tensorflow.keras.applications.efficientnet import (
+    preprocess_input as efficientnet_preprocess,
+)
 import os
 from typing import Dict, List
 
@@ -19,16 +21,28 @@ class DiseaseDetector:
         self.class_labels = {}
 
         # ✅ Chargement du modèle entraîné
-        MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
+        MODEL_PATH = (
+            "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
+        )
         self.models["efficientnet_resnet"] = tf.keras.models.load_model(MODEL_PATH)
         self.preprocessors["efficientnet_resnet"] = efficientnet_preprocess
         self.class_labels["efficientnet_resnet"] = [
-            "Healthy", "Tomato_Late_blight", "Tomato_Early_blight",
-            "Tomato_Bacterial_spot", "Tomato_Septoria_leaf_spot",
-            "Potato_Late_blight", "Potato_Early_blight", "Corn_Common_rust",
-            "Corn_Northern_Leaf_Blight", "Wheat_Leaf_rust", "Wheat_Yellow_rust",
-            "Rice_Blast", "Rice_Brown_spot", "Pepper_Bacterial_spot",
-            "Grape_Black_rot", "Grape_Powdery_mildew"
+            "Healthy",
+            "Tomato_Late_blight",
+            "Tomato_Early_blight",
+            "Tomato_Bacterial_spot",
+            "Tomato_Septoria_leaf_spot",
+            "Potato_Late_blight",
+            "Potato_Early_blight",
+            "Corn_Common_rust",
+            "Corn_Northern_Leaf_Blight",
+            "Wheat_Leaf_rust",
+            "Wheat_Yellow_rust",
+            "Rice_Blast",
+            "Rice_Brown_spot",
+            "Pepper_Bacterial_spot",
+            "Grape_Black_rot",
+            "Grape_Powdery_mildew",
         ]
 
     def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
@@ -51,14 +65,18 @@ class DiseaseDetector:
             print(f"🚨 Erreur lors du preprocessing: {e}")
             return np.zeros((1, 380, 380, 3))
 
-    def predict_disease(self, image_pil: Image.Image, confidence_threshold: float = 0.7) -> List[Dict]:
+    def predict_disease(
+        self, image_pil: Image.Image, confidence_threshold: float = 0.7
+    ) -> List[Dict]:
         """
         Prédiction de maladie sur une image avec EfficientNet-ResNet.
         """
         try:
             model = self.models.get("efficientnet_resnet", None)
             if model is None:
-                raise ValueError("🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible.")
+                raise ValueError(
+                    "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible."
+                )
 
             class_labels = self.class_labels["efficientnet_resnet"]
             processed_img = self.preprocess_image(image_pil)
@@ -74,12 +92,16 @@ class DiseaseDetector:
                 if confidence < confidence_threshold * 100:
                     break
 
-                results.append({
-                    "disease": disease_name,
-                    "confidence": confidence,
-                    "severity": self._assess_disease_severity(disease_name, confidence),
-                    "model_used": "efficientnet_resnet"
-                })
+                results.append(
+                    {
+                        "disease": disease_name,
+                        "confidence": confidence,
+                        "severity": self._assess_disease_severity(
+                            disease_name, confidence
+                        ),
+                        "model_used": "efficientnet_resnet",
+                    }
+                )
 
             return results
 
@@ -98,14 +120,18 @@ class DiseaseDetector:
         else:
             return "Faible"
 
-    def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List[str] = None) -> List[Dict]:
+    def _heuristic_disease_detection(
+        self, image_pil: Image.Image, crop_filter: List[str] = None
+    ) -> List[Dict]:
         """
         Détection basée sur EfficientNet-ResNet au lieu des heuristiques visuelles.
         """
         try:
             model = self.models.get("efficientnet_resnet", None)
             if model is None:
-                raise ValueError("🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible.")
+                raise ValueError(
+                    "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible."
+                )
 
             class_labels = self.class_labels["efficientnet_resnet"]
             processed_img = self.preprocess_image(image_pil)
@@ -118,23 +144,29 @@ class DiseaseDetector:
                 confidence = float(predictions[idx]) * 100
                 disease_name = class_labels[idx]
 
-                if crop_filter and not self._disease_matches_crops(disease_name, crop_filter):
+                if crop_filter and not self._disease_matches_crops(
+                    disease_name, crop_filter
+                ):
                     continue
 
                 severity = self._assess_disease_severity(disease_name, confidence)
 
-                results.append({
-                    "disease": disease_name,
-                    "confidence": confidence,
-                    "severity": severity,
-                    "model_used": "efficientnet_resnet"
-                })
+                results.append(
+                    {
+                        "disease": disease_name,
+                        "confidence": confidence,
+                        "severity": severity,
+                        "model_used": "efficientnet_resnet",
+                    }
+                )
 
             return results
 
         except Exception as e:
             print(f"🚨 Erreur lors de la détection heuristique: {e}")
             return []
+
+
 try:
     # ✅ Si aucun résultat ne dépasse le seuil, prendre la meilleure prédiction
     if not results and sorted_indices:
@@ -145,18 +177,22 @@ try:
         # ✅ Correction : `_assess_disease_severity()` ne retourne qu'une valeur
         severity = self._assess_disease_severity(disease_name, confidence)
 
-        results.append({
-            "disease": disease_name,
-            "confidence": confidence,
-            "severity": severity,
-            "model_used": "efficientnet_resnet",
-        })
+        results.append(
+            {
+                "disease": disease_name,
+                "confidence": confidence,
+                "severity": severity,
+                "model_used": "efficientnet_resnet",
+            }
+        )
 
     return results
 
 except Exception as e:
     print(f"🚨 Erreur lors de la prédiction: {e}")
     return []
+
+
 def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
     """
     Analyse les caractéristiques de l'image pour un passage optimisé au modèle EfficientNet-ResNet.
@@ -182,16 +218,10 @@ def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
 
     except Exception as e:
         print(f"🚨 Erreur dans l'analyse des caractéristiques: {e}")
-        return {
-            "texture_variance": 0.0,
-            "contrast": 0.0,
-            "overall_health": 0.5}
+        return {"texture_variance": 0.0, "contrast": 0.0, "overall_health": 0.5}
 
 
-def _disease_matches_crops(
-        self,
-        disease_name: str,
-        crop_filter: List[str]) -> bool:
+def _disease_matches_crops(self, disease_name: str, crop_filter: List[str]) -> bool:
     """
     Vérifie si une maladie correspond aux cultures filtrées
     """
