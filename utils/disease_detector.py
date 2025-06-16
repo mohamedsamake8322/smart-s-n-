@@ -50,8 +50,10 @@ self.disease_classes = [
 ]
 
         # Create simplified models for demo (in production, load real trained models)
+# Create simplified models for demo (in production, load real trained models)
 self._initialize_demo_models()
- def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
+
+def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
     """
     Préprocessing de l'image pour EfficientNet-ResNet
 
@@ -71,6 +73,13 @@ self._initialize_demo_models()
 
         # ✅ Conversion en tableau numpy
         img_array = np.array(img_resized)
+
+        return img_array  # Assure-toi de retourner le tableau pré-processé
+
+    except Exception as e:
+        print(f"Erreur lors du préprocessing : {e}")
+        return None  # Retourne None en cas d'échec
+
 
         # ✅ Ajout de la dimension batch
         img_array = np.expand_dims(img_array, axis=0)
