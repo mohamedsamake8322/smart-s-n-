@@ -165,15 +165,15 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
     de l'humidité et du type de sol.
     """
     # 🚀 Définition des seuils de risque
-    risk_levels = {
+risk_levels = {
     "Low": (temp > 25 and humidity < 50),
-    "Medium": (20 <= temp <= 25 and 50 <= humidity <= 70),
+    "Medium": (
+            20 <= temp <= 25 and 50 <= humidity <= 70
+    ),
     "High": (temp < 20 or humidity > 70),
-    }
-
-
+}
     # 📌 Ajustement basé sur le type de sol et la culture
-    base_risk = (
+base_risk = (
         "High"
         if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy"
         else "Medium"
@@ -483,7 +483,6 @@ try:
     else:
         st.error("🚨 Le détecteur n'est pas disponible.")
         continue
-
 except Exception as e:
     batch_results.append(
         {
@@ -496,7 +495,7 @@ except Exception as e:
     )
 progress_bar.progress((i + 1) / len(uploaded_files))
 status_text.text("Analyse terminée!")
-        # ✅ Résumé des résultats
+# ✅ Résumé des résultats
 st.markdown("---")
 st.subheader("Résumé des Résultats")
 
@@ -536,7 +535,8 @@ filtered_history = [
 ]
 st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
 
-for i, diagnosis in enumerate(reversed(filtered_history[-20:])):  # Last 20 results
+for i, diagnosis in enumerate(
+        reversed(filtered_history[-20:])):  # Last 20 results
     expander_label = (
         f"#{len(filtered_history) - i}: {diagnosis['main_disease']} - "
         f"{diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
