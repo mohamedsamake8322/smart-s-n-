@@ -191,23 +191,21 @@ def get_weather_risk(crop):
 
         if not weather_data or "current" not in weather_data:
             print("⚠️ Données météo vides ou mal formatées.")
-            return "Risque météo inconnu"
+            return "Risque météo inconnu"  # ✅ Vérifier la fermeture de cette chaîne
 
         temp = weather_data["current"].get("temperature", -1)
         humidity = weather_data["current"].get("humidity", -1)
 
         if temp == -1 or humidity == -1:
             print("⚠️ Impossible de récupérer les données météo.")
-            return "Données météo indisponibles"
+            return "Données météo indisponibles"  # ✅ Vérifier la fermeture ici aussi
 
         risk_factor = assess_disease_risk(crop, temp, humidity, "Loamy")
-        return risk_factor
+        return risk_factor  # ✅ Vérifier si bien aligné avec la fonction
 
     except requests.exceptions.RequestException as e:
-        print(f"⚠️ Erreur de requête météo : {e}")
+        print(f"⚠️ Erreur de requête météo : {e}")  # ✅ Vérifier la fermeture de cette chaîne
         return "Erreur lors de la récupération des données météo"
-
-
 
 # 📊 Interface utilisateur optimisée avec Streamlit
 st.set_page_config(page_title="Disease Detector Ultra", page_icon="🌿", layout="wide")
