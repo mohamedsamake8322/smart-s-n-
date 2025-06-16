@@ -155,34 +155,31 @@ def estimate_progression(confidence):
         return "🟡 Début"
     else:
         return "🟢 Faible impact"
-
-
 def assess_disease_risk(crop, temp, humidity, soil_type):
     """
     Évalue le risque de maladie en fonction du type de culture, de la température,
     de l'humidité et du type de sol.
     """
-
     # 🚀 Définition des seuils de risque
+    risk_levels = {
+        "Low": (temp > 25 and humidity < 50),
+        "Medium": (20 <= temp <= 25 and 50 <= humidity <= 70),
+        "High": (temp < 20 or humidity > 70),
+    }
 
+    # 📌 Ajustement basé sur le type de sol et la culture
+    base_risk = (
+        "High"
+        if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy"
+        else "Medium"
+    )
 
-risk_levels = {
-    "Low": (temp > 25 and humidity < 50),
-    "Medium": (20 <= temp <= 25 and 50 <= humidity <= 70),
-    "High": (temp < 20 or humidity > 70),
-}
-# 📌 Ajustement basé sur le type de sol et la culture
-base_risk = (
-    "High"
-    if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy"
-    else "Medium"
-)
-# ✅ Détermination finale du risque
-for level, condition in risk_levels.items():
-    if condition:
-        return "Critical" if base_risk == "High" else level
+    # ✅ Détermination finale du risque
+    for level, condition in risk_levels.items():
+        if condition:
+            return "Critical" if base_risk == "High" else level
 
-return base_risk  # Si aucun niveau de risque spécifique ne s’applique
+    return base_risk  # Si aucun niveau de risque spécifique ne s’applique
 
 
 def get_weather_risk(crop):
@@ -209,6 +206,7 @@ def get_weather_risk(crop):
     except requests.exceptions.RequestException as e:
         print(f"⚠️ Erreur de requête météo : {e}")
         return "Erreur lors de la récupération des données météo"
+
 
 
 # 📊 Interface utilisateur optimisée avec Streamlit
@@ -416,121 +414,105 @@ with tab2:
             "Seuil de confiance pour le lot", 0.1, 1.0, 0.6, 0.05
         )
 
-    if st.button("🚀 Lancer l'Analyse par Lot"):
-        progress_bar = st.progress(0)
-        status_text = st.empty()
-        batch_results = []
+if st.button("🚀 Lancer l'Analyse par Lot"):
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+    batch_results = []
 
-        for i, uploaded_file in enumerate(uploaded_files):
-            status_text.text(
-                f"Analyse {i + 1}/{len(uploaded_files)}: {uploaded_file.name}"
-            )
-
-            try:
-                image_pil = Image.open(uploaded_file)
-
-                # ✅ Vérification de `detector`
-                if detector:
-                    results = detector.predict_disease(
-                        image_pil,
-                        model_type=batch_model.split()[0].lower(),
-                        confidence_threshold=batch_confidence,
-                    )
-                else:
-                    st.error("🚨 Le détecteur n'est pas disponible.")
-                    continue
-            except Exception as e:
-                st.error(f"⚠️ Une erreur s'est produite : {e}")
-                continue
-batch_results.append(
-    {
-        "filename": uploaded_file.name,
-        "main_disease": results[0]["disease"] if results else "Unknown",
-        "confidence": results[0]["confidence"] if results else 0,
-        "status": (
-            "Healthy" if results and results[0]["disease"] == "Healthy" else "Diseased"
-        ),
-        "all_results": results[:3],
-    }
-)
-
-try:
-    image_pil = Image.open(uploaded_file)
-
-    # ✅ Vérification de `detector`
-    if detector:
-        results = detector.predict_disease(
-            image_pil,
-            model_type=batch_model.split()[0].lower(),
-            confidence_threshold=batch_confidence,
+    for i, uploaded_file in enumerate(uploaded_files):
+        status_text.text(
+            f"Analyse {i + 1}/{len(uploaded_files)}: {uploaded_file.name}"
         )
-    else:
-        st.error("🚨 Le détecteur n'est pas disponible.")
-        continue
-except Exception as e:
-    batch_results.append(
-        {
-            "filename": uploaded_file.name,
-            "main_disease": "Error",
-            "confidence": 0,
-            "status": "Error",
-            "error": str(e),
-        }
-    )
-progress_bar.progress((i + 1) / len(uploaded_files))
-status_text.text("Analyse terminée!")
-# ✅ Résumé des résultats
-st.markdown("---")
-st.subheader("Résumé des Résultats")
 
-healthy_count = sum(1 for r in batch_results if r["status"] == "Healthy")
-diseased_count = sum(1 for r in batch_results if r["status"] == "Diseased")
-error_count = sum(1 for r in batch_results if r["status"] == "Error")
+        try:
+            image_pil = Image.open(uploaded_file)
 
-col1, col2, col3, col4 = st.columns(4)
+            # ✅ Vérification de `detector`
+            if detector:
+                results = detector.predict_disease(
+                    image_pil,
+                    model_type=batch_model.split()[0].lower(),
+                    confidence_threshold=batch_confidence,
+                )
+            else:
+                st.error("🚨 Le détecteur n'est pas disponible.")
+                continue  # ✅ Correct, bien aligné dans la boucle
 
-with col1:
-    st.metric("Total Images", len(batch_results))
-with col2:
-    st.metric(
-        "Plantes Saines",
-        healthy_count,
-        delta=f"{(healthy_count / len(batch_results) * 100):.1f}%",
-    )
-with col3:
-    st.metric(
-        "Plantes Malades",
-        diseased_count,
-        delta=f"{(diseased_count / len(batch_results) * 100):.1f}%",
-    )
-with col4:
-    st.metric("Erreurs", error_count)
+        except Exception as e:
+            st.error(f"⚠️ Une erreur s'est produite : {e}")
+            continue  # ✅ Continue bien placé pour éviter un plantage
 
-# ✅ Filtrage historique optimisé
-filtered_history = st.session_state.get("diagnosis_history", [])
+        batch_results.append(
+            {
+                "filename": uploaded_file.name,
+                "main_disease": results[0]["disease"] if results else "Unknown",
+                "confidence": results[0]["confidence"] if results else 0,
+                "status": (
+                    "Healthy" if results and results[0]["disease"] == "Healthy"
+                    else "Diseased"
+                ),
+                "all_results": results[:3],
+            }
+        )
 
-if disease_filter:
-    filtered_history = [
-        d for d in filtered_history if d["main_disease"] in disease_filter
-    ]
+        # ✅ Progression de la barre
+        progress_bar.progress((i + 1) / len(uploaded_files))
 
-filtered_history = [d for d in filtered_history if d["confidence"] >= confidence_filter]
-st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
+    status_text.text("Analyse terminée!")
 
-for i, diagnosis in enumerate(reversed(filtered_history[-20:])):  # Last 20 results
-    expander_label = (
-        f"#{len(filtered_history) - i}: {diagnosis['main_disease']} - "
-        f"{diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
-    )
-    with st.expander(expander_label):
-        st.metric("Maladie", diagnosis["main_disease"])
-        st.metric("Confiance", f"{diagnosis['confidence']:.1f}%")
-        st.metric("Modèle", diagnosis.get("model_used", "N/A"))
+    # ✅ Résumé des résultats
+    st.markdown("---")
+    st.subheader("Résumé des Résultats")
 
-        if "all_predictions" in diagnosis:
-            st.markdown("**Top 3 Prédictions:**")
-            for j, pred in enumerate(diagnosis["all_predictions"][:3], 1):
-                st.write(f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
+    healthy_count = sum(1 for r in batch_results if r["status"] == "Healthy")
+    diseased_count = sum(1 for r in batch_results if r["status"] == "Diseased")
+    error_count = sum(1 for r in batch_results if r["status"] == "Error")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric("Total Images", len(batch_results))
+    with col2:
+        st.metric(
+            "Plantes Saines",
+            healthy_count,
+            delta=f"{(healthy_count / len(batch_results) * 100):.1f}%",
+        )
+    with col3:
+        st.metric(
+            "Plantes Malades",
+            diseased_count,
+            delta=f"{(diseased_count / len(batch_results) * 100):.1f}%",
+        )
+    with col4:
+        st.metric("Erreurs", error_count)
+
+    # ✅ Filtrage historique optimisé
+    filtered_history = st.session_state.get("diagnosis_history", [])
+
+    if disease_filter:
+        filtered_history = [
+            d for d in filtered_history if d["main_disease"] in disease_filter
+        ]
+
+    filtered_history = [d for d in filtered_history if d["confidence"] >= confidence_filter]
+    st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
+
+    for i, diagnosis in enumerate(reversed(filtered_history[-20:])):  # Last 20 results
+        expander_label = (
+            f"#{len(filtered_history) - i}: {diagnosis['main_disease']} - "
+            f"{diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
+        )
+        with st.expander(expander_label):
+            st.metric("Maladie", diagnosis["main_disease"])
+            st.metric("Confiance", f"{diagnosis['confidence']:.1f}%")
+            st.metric("Modèle", diagnosis.get("model_used", "N/A"))
+
+            if "all_predictions" in diagnosis:
+                st.markdown("**Top 3 Prédictions:**")
+                for j, pred in enumerate(diagnosis["all_predictions"][:3], 1):
+                    st.write(f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
+
 
 # ✅ Résumé des statistiques
 st.markdown("---")
