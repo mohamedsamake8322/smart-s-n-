@@ -451,7 +451,9 @@ with tab2:
                 else:
                     st.error("🚨 Le détecteur n'est pas disponible.")
                     continue
-
+            except Exception as e:
+                st.error(f"⚠️ Une erreur s'est produite : {e}")
+                continue
 batch_results.append(
     {
         "filename": uploaded_file.name,
