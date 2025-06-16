@@ -171,25 +171,15 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
         "High": temp < 20 or humidity > 70,
     }
 
-    # 📌 Logique pour ajuster le risque en fonction du type de sol et de la culture
-    if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy":
-        base_risk = "High"
-    else:
-        base_risk = "Medium"
+    # 📌 Ajustement basé sur le type de sol et la culture
+    base_risk = "High" if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy" else "Medium"
 
     # ✅ Détermination finale du risque
     for level, condition in risk_levels.items():
         if condition:
             return "Critical" if base_risk == "High" else level
 
-    return base_risk  # Retourne le risque ajusté si aucun seuil ne correspond
-
-    # ✅ Détermination du risque final
-    for level, condition in risk_levels.items():
-        if condition:
-            return level if base_risk != "High" else "Critical"
-
-    return "Unknown"
+    return base_risk  # Si aucun niveau de risque spécifique ne s’applique
 
 
 def get_weather_risk(crop):
@@ -392,8 +382,11 @@ if st.button("💾 Sauvegarder ce Diagnostic"):
         "confidence": main_result["confidence"],
         "model_used": model_type,
         "all_predictions": detection_results[:5],
-        "image_name": f"diagnosis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg",
+        "image_name": (
+            f"diagnosis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        ),
     }
+
 
     # ✅ Vérification de la session state
     if "diagnosis_history" not in st.session_state:
@@ -459,7 +452,7 @@ with tab2:
                     st.error("🚨 Le détecteur n'est pas disponible.")
                     continue
 
-                batch_results.append(
+batch_results.append(
     {
         "filename": uploaded_file.name,
         "main_disease": results[0]["disease"] if results else "Unknown",
