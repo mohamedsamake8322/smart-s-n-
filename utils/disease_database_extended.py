@@ -62,7 +62,9 @@ class DiseaseManager:
     def load_model(self, model_path):
         """Charge le modèle CNN et l'attache à l'instance."""
         if not os.path.exists(model_path):
-            logger.error(f"🚨 Erreur : Le fichier modèle {model_path} est introuvable.")
+            logger.error(
+                f"🚨 Erreur : Le fichier modèle {model_path} est introuvable."
+            )
         raise FileNotFoundError(f"🚨 Modèle non trouvé : {model_path}")
 
         try:
@@ -72,7 +74,9 @@ class DiseaseManager:
             logger.error(f"🚨 Impossible de charger le modèle : {e}")
             raise RuntimeError(f"🚨 Échec du chargement du modèle : {e}")
 
-    def add_disease(self, name, hosts, overview, symptoms, management, insecticides):
+    def add_disease(
+        self, name, hosts, overview, symptoms, management, insecticides
+    ):
         """Ajoute une maladie avec ses détails."""
         self.diseases[name] = {
             "hosts": hosts,
@@ -81,7 +85,9 @@ class DiseaseManager:
             "management": management,
             "insecticides": insecticides,
         }
-        DISEASE_DATABASE[name] = self.diseases[name]  # ✅ Enregistrement global
+        DISEASE_DATABASE[name] = self.diseases[
+            name
+        ]  # ✅ Enregistrement global
 
     def get_disease_info(self, disease_name):
         """Retourne les informations complètes sur une maladie en fonction de son nom."""
@@ -130,10 +136,14 @@ class DiseaseManager:
         """Transforme la prédiction du modèle en un label compréhensible."""
         disease_labels = list(self.diseases.keys())
         return (
-            disease_labels[prediction.argmax()] if prediction is not None else "Unknown"
+            disease_labels[prediction.argmax()]
+            if prediction is not None
+            else "Unknown"
         )
 
-    def export_to_pdf(self, disease_name, user_name="Unknown", save_path="reports/"):
+    def export_to_pdf(
+        self, disease_name, user_name="Unknown", save_path="reports/"
+    ):
         """Génère un rapport PDF avec les informations sur la maladie."""
         if disease_name not in self.diseases:
             return "🚨 Maladie introuvable"
@@ -142,11 +152,15 @@ class DiseaseManager:
             os.makedirs(save_path)
 
         disease = self.diseases[disease_name]
-        buffer = self._generate_pdf_report(user_name, disease_name, disease, save_path)
+        buffer = self._generate_pdf_report(
+            user_name, disease_name, disease, save_path
+        )
 
         return buffer
 
-    def _generate_pdf_report(self, user_name, disease_name, disease, save_path):
+    def _generate_pdf_report(
+        self, user_name, disease_name, disease, save_path
+    ):
         """Crée un PDF avec les détails de la maladie."""
         buffer = os.path.join(save_path, f"{disease_name}_report.pdf")
         c = canvas.Canvas(buffer, pagesize=A4)
@@ -290,7 +304,14 @@ disease_manager.add_disease(
 
 disease_manager.add_disease(
     "Western Striped and Spotted Cucumber Beetle",
-    ["Corn", "Cucurbits", "Leafy Greens", "Legumes", "Potato", "Solanaceae Crops"],
+    [
+        "Corn",
+        "Cucurbits",
+        "Leafy Greens",
+        "Legumes",
+        "Potato",
+        "Solanaceae Crops",
+    ],
     "Adult western striped cucumber beetles are about 1/3 inches long, with black heads and yellow and black-striped wings...",
     "Feeding scars on soft rinds of fruits, especially the undersides. Holes in stems and leaves. Destroyed flowers...",
     "Hand-pick cucumber beetles, plant resistant varieties, use row covers and mulches...",
@@ -596,7 +617,14 @@ disease_manager.add_disease(
 )
 disease_manager.add_disease(
     "Alfalfa Mosaic Virus",
-    ["Alfalfa", "Potato", "Pepper", "Tomato", "Hemp", "Many ornamentals and weeds"],
+    [
+        "Alfalfa",
+        "Potato",
+        "Pepper",
+        "Tomato",
+        "Hemp",
+        "Many ornamentals and weeds",
+    ],
     "Alfalfa mosaic virus (AMV) is in the genus Alfamovirus and is spread by aphids...",
     "Yellow mosaic or calico patterns on foliage, stunted plants, tuber necrosis, bright yellow blotches interspersed with green...",
     "Avoid planting potatoes or hemp near alfalfa fields, remove plants with positive diagnosis...",
@@ -734,7 +762,14 @@ disease_manager.add_disease(
 )
 disease_manager.add_disease(
     "Powdery Mildew on Vegetables",
-    ["Brassicas", "Cucurbits", "Root Crops", "Solanaceous Crops", "Legumes", "Hemp"],
+    [
+        "Brassicas",
+        "Cucurbits",
+        "Root Crops",
+        "Solanaceous Crops",
+        "Legumes",
+        "Hemp",
+    ],
     "Powdery mildew is easily identifiable as white, powdery patches on leaves. It thrives in warm temperatures, humid canopies, and poor airflow...",
     "White, powdery fungal growth on leaves, stems, and petioles; yellowing and wilting of leaves, potential fruit sunscald and yield loss...",
     "Plant resistant varieties, remove infected plant material after harvest, improve air circulation, use morning irrigation, switch to drip irrigation...",
@@ -746,7 +781,9 @@ disease_manager.add_disease(
     "TMV and ToMV are Tobamoviruses spread by seed, grafting, human handling, and tobacco products...",
     "Abnormally shaped fruit, fruit lesions, reduced fruit size, distorted growth points, yellowing leaves, stem distortion...",
     "Remove infected plants immediately, source disease-free seed, grow resistant varieties, disinfect tools, avoid tobacco handling...",
-    ["No chemical controls available, rely on sanitation and resistant cultivars"],
+    [
+        "No chemical controls available, rely on sanitation and resistant cultivars"
+    ],
 )
 disease_manager.add_disease(
     "Tomato Spotted Wilt Virus",
@@ -838,9 +875,21 @@ def _initialize_regional_disease_data(self) -> Dict[str, List[str]]:
     """Données régionales des maladies"""
     return {
         "Europe": ["Wheat_Stripe_rust", "Apple_Scab", "Grape_Downy_mildew"],
-        "Asie": ["Rice_Blast", "Rice_Bacterial_leaf_blight", "Coffee_Leaf_rust"],
-        "Afrique": ["Banana_Black_sigatoka", "Cocoa_Black_pod", "Rice_Brown_spot"],
-        "Amériques": ["Tomato_Late_blight", "Corn_Common_rust", "Citrus_Greening"],
+        "Asie": [
+            "Rice_Blast",
+            "Rice_Bacterial_leaf_blight",
+            "Coffee_Leaf_rust",
+        ],
+        "Afrique": [
+            "Banana_Black_sigatoka",
+            "Cocoa_Black_pod",
+            "Rice_Brown_spot",
+        ],
+        "Amériques": [
+            "Tomato_Late_blight",
+            "Corn_Common_rust",
+            "Citrus_Greening",
+        ],
         "Océanie": ["Wheat_Stem_rust", "Grape_Powdery_mildew"],
     }
 
