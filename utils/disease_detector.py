@@ -94,7 +94,7 @@ def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
         return np.zeros((1, 380, 380, 3))
 
 
-    def predict_disease(self, image_pil: Image.Image, confidence_threshold: float = 0.7, crop_filter: List[str] = None) -> List[Dict]:
+def predict_disease(self, image_pil: Image.Image, confidence_threshold: float = 0.7, crop_filter: List[str] = None) -> List[Dict]:
     """
     Prédiction de maladie sur une image avec EfficientNet-ResNet
 
