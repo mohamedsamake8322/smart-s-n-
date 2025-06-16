@@ -1,13 +1,16 @@
-
 import numpy as np
 import pandas as pd
 import cv2
 from PIL import Image, ImageEnhance
 import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2, ResNet50, EfficientNetB0
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input as mobilenet_preprocess
+from tensorflow.keras.applications.mobilenet_v2 import (
+    preprocess_input as mobilenet_preprocess,
+)
 from tensorflow.keras.applications.resnet50 import preprocess_input as resnet_preprocess
-from tensorflow.keras.applications.efficientnet import preprocess_input as efficientnet_preprocess
+from tensorflow.keras.applications.efficientnet import (
+    preprocess_input as efficientnet_preprocess,
+)
 from tensorflow.keras.preprocessing import image
 import joblib
 import os
@@ -15,7 +18,8 @@ import json
 from typing import Dict, List, Optional, Tuple, Any
 from datetime import datetime
 import warnings
-warnings.filterwarnings('ignore')
+
+warnings.filterwarnings("ignore")
 
 
 class DiseaseDetector:
@@ -31,28 +35,50 @@ def __init__(self):
     self.class_labels = {}
 
 
-  # ✅ Chargement du modèle entraîné
+# ✅ Chargement du modèle entraîné
 MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
 self.models["efficientnet_resnet"] = tf.keras.models.load_model(MODEL_PATH)
 self.preprocessors["efficientnet_resnet"] = efficientnet_preprocess
 self.class_labels["efficientnet_resnet"] = [
-    "Healthy", "Tomato_Late_blight", "Tomato_Early_blight", "Tomato_Bacterial_spot",
-    "Tomato_Septoria_leaf_spot", "Potato_Late_blight", "Potato_Early_blight",
-    "Corn_Common_rust", "Corn_Northern_Leaf_Blight", "Wheat_Leaf_rust",
-    "Wheat_Yellow_rust", "Rice_Blast", "Rice_Brown_spot", "Pepper_Bacterial_spot",
-    "Grape_Black_rot", "Grape_Powdery_mildew"
+    "Healthy",
+    "Tomato_Late_blight",
+    "Tomato_Early_blight",
+    "Tomato_Bacterial_spot",
+    "Tomato_Septoria_leaf_spot",
+    "Potato_Late_blight",
+    "Potato_Early_blight",
+    "Corn_Common_rust",
+    "Corn_Northern_Leaf_Blight",
+    "Wheat_Leaf_rust",
+    "Wheat_Yellow_rust",
+    "Rice_Blast",
+    "Rice_Brown_spot",
+    "Pepper_Bacterial_spot",
+    "Grape_Black_rot",
+    "Grape_Powdery_mildew",
 ]
 
 # Initialize default disease classes
 self.disease_classes = [
-    "Healthy", "Tomato_Late_blight", "Tomato_Early_blight", "Tomato_Bacterial_spot",
-    "Tomato_Septoria_leaf_spot", "Potato_Late_blight", "Potato_Early_blight",
-    "Corn_Common_rust", "Corn_Northern_Leaf_Blight", "Wheat_Leaf_rust",
-    "Wheat_Yellow_rust", "Rice_Blast", "Rice_Brown_spot", "Pepper_Bacterial_spot",
-    "Grape_Black_rot", "Grape_Powdery_mildew"
+    "Healthy",
+    "Tomato_Late_blight",
+    "Tomato_Early_blight",
+    "Tomato_Bacterial_spot",
+    "Tomato_Septoria_leaf_spot",
+    "Potato_Late_blight",
+    "Potato_Early_blight",
+    "Corn_Common_rust",
+    "Corn_Northern_Leaf_Blight",
+    "Wheat_Leaf_rust",
+    "Wheat_Yellow_rust",
+    "Rice_Blast",
+    "Rice_Brown_spot",
+    "Pepper_Bacterial_spot",
+    "Grape_Black_rot",
+    "Grape_Powdery_mildew",
 ]
 
-        # Create simplified models for demo (in production, load real trained models)
+# Create simplified models for demo (in production, load real trained models)
 # Create simplified models for demo (in production, load real trained models)
 self._initialize_demo_models()
 
@@ -72,8 +98,8 @@ def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
         img_resized = image_pil.resize((380, 380))
 
         # ✅ Conversion en RGB si nécessaire
-        if img_resized.mode != 'RGB':
-            img_resized = img_resized.convert('RGB')
+        if img_resized.mode != "RGB":
+            img_resized = img_resized.convert("RGB")
 
         # ✅ Conversion en tableau numpy
         img_array = np.array(img_resized)
@@ -101,7 +127,8 @@ def predict_disease(
     self,
     image_pil: Image.Image,
     confidence_threshold: float = 0.7,
-     crop_filter: List[str] = None) -> List[Dict]:
+    crop_filter: List[str] = None,
+) -> List[Dict]:
     """
     Prédiction de maladie sur une image avec EfficientNet-ResNet
 
@@ -118,7 +145,8 @@ def predict_disease(
         model = self.models.get("efficientnet_resnet", None)
         if model is None:
             raise ValueError(
-                "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible.")
+                "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible."
+            )
 
         class_labels = self.class_labels["efficientnet_resnet"]
 
@@ -127,7 +155,8 @@ def predict_disease(
 
         # ✅ Effectuer la prédiction
         predictions = model.predict(processed_img, verbose=0)[
-                                    0]  # Retirer la dimension batch
+            0
+        ]  # Retirer la dimension batch
 
         # ✅ Trier les prédictions par confiance
         sorted_indices = np.argsort(predictions)[::-1]
@@ -139,7 +168,8 @@ def predict_disease(
 
             # ✅ Filtrer par culture si nécessaire
             if crop_filter and not self._disease_matches_crops(
-                disease_name, crop_filter):
+                disease_name, crop_filter
+            ):
                 continue
 
             # ✅ Appliquer le seuil de confiance
@@ -147,16 +177,17 @@ def predict_disease(
                 break
 
             # ✅ Évaluer la sévérité et l'urgence
-            severity, urgency = self._assess_disease_severity(
-                disease_name, confidence)
+            severity, urgency = self._assess_disease_severity(disease_name, confidence)
 
-            results.append({
-                'disease': disease_name,
-                'confidence': confidence,
-                'severity': severity,
-                'urgency': urgency,
-                'model_used': "efficientnet_resnet"
-            })
+            results.append(
+                {
+                    "disease": disease_name,
+                    "confidence": confidence,
+                    "severity": severity,
+                    "urgency": urgency,
+                    "model_used": "efficientnet_resnet",
+                }
+            )
         return results
 
     except Exception as e:
@@ -167,16 +198,17 @@ def predict_disease(
             top_idx = sorted_indices[0]
             confidence = float(predictions[top_idx]) * 100
             disease_name = class_labels[top_idx]
-            severity, urgency = self._assess_disease_severity(
-                disease_name, confidence)
+            severity, urgency = self._assess_disease_severity(disease_name, confidence)
 
-            results.append({
-                'disease': disease_name,
-                'confidence': confidence,
-                'severity': severity,
-                'urgency': urgency,
-                'model_used': "efficientnet_resnet"
-            })
+            results.append(
+                {
+                    "disease": disease_name,
+                    "confidence": confidence,
+                    "severity": severity,
+                    "urgency": urgency,
+                    "model_used": "efficientnet_resnet",
+                }
+            )
 
         return results
 
@@ -184,7 +216,10 @@ def predict_disease(
         print(f"🚨 Erreur lors de la prédiction: {e}")
         return []
 
-def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List[str] = None) -> List[Dict]:
+
+def _heuristic_disease_detection(
+    self, image_pil: Image.Image, crop_filter: List[str] = None
+) -> List[Dict]:
     """
     Détection basée sur EfficientNet-ResNet au lieu des heuristiques visuelles.
     """
@@ -192,7 +227,9 @@ def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List
         # ✅ Vérifier que le modèle est bien chargé
         model = self.models.get("efficientnet_resnet", None)
         if model is None:
-            raise ValueError("🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible.")
+            raise ValueError(
+                "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible."
+            )
 
         class_labels = self.class_labels["efficientnet_resnet"]
 
@@ -200,7 +237,9 @@ def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List
         processed_img = self.preprocess_image(image_pil)
 
         # ✅ Effectuer la prédiction
-        predictions = model.predict(processed_img, verbose=0)[0]  # Retirer la dimension batch
+        predictions = model.predict(processed_img, verbose=0)[
+            0
+        ]  # Retirer la dimension batch
 
         # ✅ Trier les prédictions par confiance
         sorted_indices = np.argsort(predictions)[::-1]
@@ -211,19 +250,23 @@ def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List
             disease_name = class_labels[idx]
 
             # ✅ Filtrer par culture si nécessaire
-            if crop_filter and not self._disease_matches_crops(disease_name, crop_filter):
+            if crop_filter and not self._disease_matches_crops(
+                disease_name, crop_filter
+            ):
                 continue
 
             # ✅ Évaluer la sévérité et l'urgence
             severity, urgency = self._assess_disease_severity(disease_name, confidence)
 
-            results.append({
-                'disease': disease_name,
-                'confidence': confidence,
-                'severity': severity,
-                'urgency': urgency,
-                'model_used': "efficientnet_resnet"
-            })
+            results.append(
+                {
+                    "disease": disease_name,
+                    "confidence": confidence,
+                    "severity": severity,
+                    "urgency": urgency,
+                    "model_used": "efficientnet_resnet",
+                }
+            )
 
         # ✅ Si aucun résultat ne dépasse le seuil, prendre la meilleure prédiction
         if not results and sorted_indices:
@@ -232,19 +275,22 @@ def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List
             disease_name = class_labels[top_idx]
             severity, urgency = self._assess_disease_severity(disease_name, confidence)
 
-            results.append({
-                'disease': disease_name,
-                'confidence': confidence,
-                'severity': severity,
-                'urgency': urgency,
-                'model_used': "efficientnet_resnet"
-            })
+            results.append(
+                {
+                    "disease": disease_name,
+                    "confidence": confidence,
+                    "severity": severity,
+                    "urgency": urgency,
+                    "model_used": "efficientnet_resnet",
+                }
+            )
 
         return results
 
     except Exception as e:
         print(f"🚨 Erreur lors de la prédiction: {e}")
         return []
+
 
 def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
     """
@@ -264,58 +310,68 @@ def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
         overall_health = max(0.0, min(1.0, 1.0 - texture_variance))
 
         return {
-            'texture_variance': texture_variance,
-            'contrast': contrast,
-            'overall_health': overall_health
+            "texture_variance": texture_variance,
+            "contrast": contrast,
+            "overall_health": overall_health,
         }
 
     except Exception as e:
         print(f"🚨 Erreur dans l'analyse des caractéristiques: {e}")
-        return {
-            'texture_variance': 0.0,
-            'contrast': 0.0,
-            'overall_health': 0.5
-        }
+        return {"texture_variance": 0.0, "contrast": 0.0, "overall_health": 0.5}
+
 
 def _disease_matches_crops(self, disease_name: str, crop_filter: List[str]) -> bool:
-        """
-        Vérifie si une maladie correspond aux cultures filtrées
-        """
-        if not crop_filter:
-            return True
-
-        # Map diseases to crops
-        disease_crop_mapping = {
-            'Tomato': ['tomato'],
-            'Potato': ['potato', 'pomme de terre'],
-            'Corn': ['corn', 'maïs'],
-            'Wheat': ['wheat', 'blé'],
-            'Rice': ['rice', 'riz'],
-            'Pepper': ['pepper', 'poivron'],
-            'Grape': ['grape', 'raisin']
-        }
-
-        for crop_prefix, crop_names in disease_crop_mapping.items():
-            if disease_name.startswith(crop_prefix):
-                for filter_crop in crop_filter:
-                    if filter_crop.lower() in [c.lower() for c in crop_names]:
-                        return True
-
-        # If disease doesn't match any specific crop, allow it
+    """
+    Vérifie si une maladie correspond aux cultures filtrées
+    """
+    if not crop_filter:
         return True
 
-def _assess_disease_severity(self, disease_name: str, confidence: float) -> Tuple[str, str]:
+    # Map diseases to crops
+    disease_crop_mapping = {
+        "Tomato": ["tomato"],
+        "Potato": ["potato", "pomme de terre"],
+        "Corn": ["corn", "maïs"],
+        "Wheat": ["wheat", "blé"],
+        "Rice": ["rice", "riz"],
+        "Pepper": ["pepper", "poivron"],
+        "Grape": ["grape", "raisin"],
+    }
+
+    for crop_prefix, crop_names in disease_crop_mapping.items():
+        if disease_name.startswith(crop_prefix):
+            for filter_crop in crop_filter:
+                if filter_crop.lower() in [c.lower() for c in crop_names]:
+                    return True
+
+    # If disease doesn't match any specific crop, allow it
+    return True
+
+
+def _assess_disease_severity(
+    self, disease_name: str, confidence: float
+) -> Tuple[str, str]:
     """
     Évalue la sévérité et l'urgence d'une maladie en fonction de son type et du niveau de confiance.
     """
     # ✅ Maladies à forte sévérité
     high_severity_diseases = [
-        "Late_blight", "Black_rot", "Blast", "Wilt", "Crown_Rot", "Root_Rot"
+        "Late_blight",
+        "Black_rot",
+        "Blast",
+        "Wilt",
+        "Crown_Rot",
+        "Root_Rot",
     ]
 
     # ✅ Maladies à sévérité modérée
     moderate_severity_diseases = [
-        "Early_blight", "Bacterial_spot", "Leaf_rust", "Common_rust", "Brown_spot", "Powdery_mildew"
+        "Early_blight",
+        "Bacterial_spot",
+        "Leaf_rust",
+        "Common_rust",
+        "Brown_spot",
+        "Powdery_mildew",
     ]
 
     # ✅ Cas sain
@@ -350,20 +406,25 @@ def _assess_disease_severity(self, disease_name: str, confidence: float) -> Tupl
 
     return severity, urgency
 
+
 def get_model_info(self) -> Dict[str, Any]:
     """
     Retourne les informations sur le modèle EfficientNet-ResNet.
     """
     model = self.models.get("efficientnet_resnet", None)
     if model is None:
-        return {"status": "error", "message": "🚨 Modèle non chargé: Vérifie efficientnet_resnet.keras"}
+        return {
+            "status": "error",
+            "message": "🚨 Modèle non chargé: Vérifie efficientnet_resnet.keras",
+        }
 
     return {
         "model_name": "efficientnet_resnet",
         "input_size": (380, 380),
         "num_classes": len(self.class_labels["efficientnet_resnet"]),
-        "status": "loaded"
+        "status": "loaded",
     }
+
 
 def benchmark_model(self, test_images: List[Image.Image]) -> Dict[str, Any]:
     """
@@ -371,7 +432,10 @@ def benchmark_model(self, test_images: List[Image.Image]) -> Dict[str, Any]:
     """
     model = self.models.get("efficientnet_resnet", None)
     if model is None:
-        return {"status": "error", "message": "🚨 Modèle non chargé: Vérifie efficientnet_resnet.keras"}
+        return {
+            "status": "error",
+            "message": "🚨 Modèle non chargé: Vérifie efficientnet_resnet.keras",
+        }
 
     print("Benchmarking EfficientNet-ResNet...")
 
@@ -389,17 +453,23 @@ def benchmark_model(self, test_images: List[Image.Image]) -> Dict[str, Any]:
     avg_time_per_image = processing_time / len(test_images)
 
     valid_predictions = [p for p in predictions if p is not None]
-    avg_confidence = np.mean([p['confidence'] for p in valid_predictions]) if valid_predictions else 0
+    avg_confidence = (
+        np.mean([p["confidence"] for p in valid_predictions])
+        if valid_predictions
+        else 0
+    )
 
     return {
         "total_time": processing_time,
         "avg_time_per_image": avg_time_per_image,
         "avg_confidence": avg_confidence,
-        "success_rate": len(valid_predictions) / len(test_images) * 100
+        "success_rate": len(valid_predictions) / len(test_images) * 100,
     }
 
 
-def preprocess_image(image_pil: Image.Image, target_size: Tuple[int, int] = (380, 380)) -> np.ndarray:
+def preprocess_image(
+    image_pil: Image.Image, target_size: Tuple[int, int] = (380, 380)
+) -> np.ndarray:
     """
     Fonction de preprocessing adaptée à EfficientNet-ResNet
     """
@@ -429,6 +499,7 @@ def preprocess_image(image_pil: Image.Image, target_size: Tuple[int, int] = (380
     except Exception as e:
         print(f"🚨 Erreur dans le preprocessing: {e}")
         return np.zeros((1, 380, 380, 3))
+
 
 def enhance_image_quality(image_pil: Image.Image) -> Image.Image:
     """
