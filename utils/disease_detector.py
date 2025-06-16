@@ -246,7 +246,7 @@ def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List
         print(f"🚨 Erreur lors de la prédiction: {e}")
         return []
 
-   def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
+def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
     """
     Analyse les caractéristiques de l'image pour un passage optimisé au modèle EfficientNet-ResNet.
     """
@@ -277,7 +277,7 @@ def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List
             'overall_health': 0.5
         }
 
-    def _disease_matches_crops(self, disease_name: str, crop_filter: List[str]) -> bool:
+def _disease_matches_crops(self, disease_name: str, crop_filter: List[str]) -> bool:
         """
         Vérifie si une maladie correspond aux cultures filtrées
         """
@@ -304,7 +304,7 @@ def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List
         # If disease doesn't match any specific crop, allow it
         return True
 
-    def _assess_disease_severity(self, disease_name: str, confidence: float) -> Tuple[str, str]:
+def _assess_disease_severity(self, disease_name: str, confidence: float) -> Tuple[str, str]:
     """
     Évalue la sévérité et l'urgence d'une maladie en fonction de son type et du niveau de confiance.
     """
@@ -350,7 +350,7 @@ def _heuristic_disease_detection(self, image_pil: Image.Image, crop_filter: List
 
     return severity, urgency
 
-    def get_model_info(self) -> Dict[str, Any]:
+def get_model_info(self) -> Dict[str, Any]:
     """
     Retourne les informations sur le modèle EfficientNet-ResNet.
     """
