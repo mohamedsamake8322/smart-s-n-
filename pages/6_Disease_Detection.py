@@ -76,6 +76,7 @@ DISEASE_ICONS = {
 # ✅ Chargement du modèle IA
 MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
 
+
 @st.cache_resource
 def load_disease_model(model_path):
     try:
@@ -84,7 +85,9 @@ def load_disease_model(model_path):
         st.error(f"🛑 Erreur : {e}")
         return None
 
+
 disease_model = load_disease_model(MODEL_PATH)
+
 
 # 🔍 Prétraitement de l’image
 def preprocess_image(image_file):
@@ -98,6 +101,7 @@ def preprocess_image(image_file):
     except Exception as e:
         print(f"🚨 Erreur : {e}")
         return None
+
 
 # 🔍 Prédiction multi-maladies avec tri des résultats
 def predict_disease(image):
@@ -117,15 +121,20 @@ def predict_disease(image):
 
     for idx in sorted_indices[:5]:  # Afficher uniquement les 5 meilleurs résultats
         disease_name = diseases_infos.DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
-        disease_icon = DISEASE_ICONS.get(disease_name, "❓")  # Icône par défaut si inconnue
+        disease_icon = DISEASE_ICONS.get(
+            disease_name, "❓"
+        )  # Icône par défaut si inconnue
 
-        top_labels.append({
-            "name": f"{disease_icon} {disease_name}",
-            "confidence": predictions[idx] * 100,
-            "progression_stage": estimate_progression(predictions[idx] * 100)
-        })
+        top_labels.append(
+            {
+                "name": f"{disease_icon} {disease_name}",
+                "confidence": predictions[idx] * 100,
+                "progression_stage": estimate_progression(predictions[idx] * 100),
+            }
+        )
 
     return top_labels
+
 
 # 🔍 Détermination du stade de progression
 def estimate_progression(confidence):
@@ -166,11 +175,14 @@ def get_weather_risk(crop):
         print(f"⚠️ Erreur de requête météo : {e}")
         return "Erreur lors de la récupération des données météo"
 
+
 # 📊 Interface utilisateur optimisée avec Streamlit
 st.set_page_config(page_title="Disease Detector Ultra", page_icon="🌿", layout="wide")
 st.title("🌿 Détection de Maladies Agricoles - Ultra IA")
 
-uploaded_file = st.file_uploader("🖼️ Importer une image", type=["jpg", "jpeg", "png", "webp"])
+uploaded_file = st.file_uploader(
+    "🖼️ Importer une image", type=["jpg", "jpeg", "png", "webp"]
+)
 if uploaded_file:
     st.image(uploaded_file, width=250)
 
@@ -206,7 +218,6 @@ if st.button("🚨 Urgence - Contacter un Expert"):
 st.sidebar.title("🌿 Solutions & Traitements")
 st.sidebar.markdown("**Recommandations de produits pour les maladies détectées**")
 st.sidebar.button("Acheter des traitements adaptés")
-
 
 
 # Main content tabs - adjust based on TensorFlow availability
@@ -267,8 +278,6 @@ if TENSORFLOW_AVAILABLE:
                     except Exception as e:
                         st.error(f"Erreur de chargement: {e}")
 
-
-
             # Image preprocessing options
             if uploaded_image:
                 st.markdown("**Options de Préprocessing**")
@@ -324,8 +333,6 @@ if TENSORFLOW_AVAILABLE:
                         else:
                             st.error(f"🦠 Maladie Détectée: {main_result['disease']}")
                             status_color = "red"
-
-
 
                         # Confidence metrics
                         col_conf1, col_conf2, col_conf3 = st.columns(3)
@@ -461,7 +468,9 @@ if TENSORFLOW_AVAILABLE:
 
                             # Save to session state history
                         if "diagnosis_history" not in st.session_state:
-                            diagnosis_data["main_disease"] = DISEASE_CLASSES.get(diagnosis_data["main_disease"], "🔍 Maladie inconnue")
+                            diagnosis_data["main_disease"] = DISEASE_CLASSES.get(
+                                diagnosis_data["main_disease"], "🔍 Maladie inconnue"
+                            )
                             st.session_state.diagnosis_history = []
 
                             st.session_state.diagnosis_history.append(diagnosis_data)
