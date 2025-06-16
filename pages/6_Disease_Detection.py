@@ -166,9 +166,15 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
     """
     # 🚀 Définition des seuils de risque
     risk_levels = {
-        "Low": temp > 25 and humidity < 50,
-        "Medium": 20 <= temp <= 25 and 50 <= humidity <= 70,
-        "High": temp < 20 or humidity > 70,
+        "Low":(
+            temp > 25 and humidity < 50,
+        ),
+        "Medium":(
+            20 <= temp <= 25 and 50 <= humidity <= 70,
+        ),
+        "High": (
+            temp < 20 or humidity > 70,
+        ),
     }
 
     # 📌 Ajustement basé sur le type de sol et la culture
@@ -389,8 +395,6 @@ if st.button("💾 Sauvegarder ce Diagnostic"):
             f"diagnosis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
         ),
     }
-
-
     # ✅ Vérification de la session state
     if "diagnosis_history" not in st.session_state:
         st.session_state.diagnosis_history = []
