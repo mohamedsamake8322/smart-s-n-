@@ -141,21 +141,19 @@ def estimate_progression(confidence):
         return "🟢 Faible impact"
 
 
-# 🌍 API météo pour ajuster le diagnostic
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""
     try:
         response = requests.get("https://api.open-meteo.com/weather", timeout=5)
-        response.raise_for_status()  # Vérifie si la requête a réussi
+        response.raise_for_status()
         weather_data = response.json()
 
-        if not weather_data:  # Vérifie que les données sont bien présentes
+        if not weather_data or "current" not in weather_data:
             print("⚠️ Données météo vides ou mal formatées.")
             return "Risque météo inconnu"
 
-        # Vérification des clés avant extraction
-        temp = weather_data.get("temperature", -1)  # Valeur par défaut pour éviter NoneType
-        humidity = weather_data.get("humidity", -1)
+        temp = weather_data["current"].get("temperature", -1)
+        humidity = weather_data["current"].get("humidity", -1)
 
         if temp == -1 or humidity == -1:
             print("⚠️ Impossible de récupérer les données météo.")
@@ -167,7 +165,6 @@ def get_weather_risk(crop):
     except requests.exceptions.RequestException as e:
         print(f"⚠️ Erreur de requête météo : {e}")
         return "Erreur lors de la récupération des données météo"
-
 
 # 📊 Interface utilisateur optimisée avec Streamlit
 st.set_page_config(page_title="Disease Detector Ultra", page_icon="🌿", layout="wide")
