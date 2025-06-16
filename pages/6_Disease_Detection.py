@@ -10,6 +10,18 @@ from PIL import Image, ImageEnhance
 from datetime import datetime
 from io import BytesIO
 from tensorflow.keras.applications.efficientnet import preprocess_input
+import plotly.express as px  # Corrige l'erreur F821 pour `px`
+
+# ✅ Définition des variables manquantes
+detector = None
+model_type = "default"
+DISEASE_CLASSES = {}
+uploaded_files = []
+disease_filter = None
+confidence_filter = 0.5
+disease_freq = {}
+search_term = ""
+category = "Toutes"
 
 # 🔹 Désactiver les warnings inutiles TensorFlow
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
@@ -106,7 +118,8 @@ def predict_disease(image):
     if img_array is None:
         return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
 
-    predictions = disease_model.predict(img_array)[0]  # Retirer la dimension batch
+    predictions = disease_model.predict(
+        img_array)[0]  # Retirer la dimension batch
     top_labels = []
 
     # ✅ Trier les résultats par confiance
@@ -114,7 +127,8 @@ def predict_disease(image):
 
     # Afficher uniquement les 5 meilleurs résultats
     for idx in sorted_indices[:5]:
-        disease_name = diseases_infos.DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
+        disease_name = diseases_infos.DISEASE_CLASSES.get(
+            idx, "🔍 Maladie inconnue")
         disease_icon = DISEASE_ICONS.get(
             disease_name, "❓"
         )  # Icône par défaut si inconnue
@@ -123,9 +137,9 @@ def predict_disease(image):
             {
                 "name": f"{disease_icon} {disease_name}",
                 "confidence": predictions[idx] * 100,
-                "progression_stage": estimate_progression(predictions[idx] * 100),
-            }
-        )
+                "progression_stage": estimate_progression(
+                    predictions[idx] * 100),
+            })
 
     return top_labels
 
@@ -147,7 +161,8 @@ def estimate_progression(confidence):
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""
     try:
-        response = requests.get("https://api.open-meteo.com/weather", timeout=5)
+        response = requests.get(
+            "https://api.open-meteo.com/weather", timeout=5)
         response.raise_for_status()
         weather_data = response.json()
 
@@ -171,7 +186,10 @@ def get_weather_risk(crop):
 
 
 # 📊 Interface utilisateur optimisée avec Streamlit
-st.set_page_config(page_title="Disease Detector Ultra", page_icon="🌿", layout="wide")
+st.set_page_config(
+    page_title="Disease Detector Ultra",
+    page_icon="🌿",
+    layout="wide")
 st.title("🌿 Détection de Maladies Agricoles - Ultra IA")
 
 uploaded_file = st.file_uploader(
@@ -189,7 +207,8 @@ if uploaded_file:
         for disease in results:
             st.subheader(f"🦠 {disease['name']}")
             st.write(f"🔹 Confiance IA : {disease['confidence']:.2f}%")
-            st.write(f"🩺 Stade de progression : {disease['progression_stage']}")
+            st.write(
+                f"🩺 Stade de progression : {disease['progression_stage']}")
             st.write(f"🔎 Symptômes : {disease['symptoms']}")
             st.write(f"🩺 Recommandations : {disease['recommendations']}")
 
@@ -210,7 +229,8 @@ if st.button("🚨 Urgence - Contacter un Expert"):
 
 # 🛍️ Marketplace intégrée pour acheter des traitements adaptés
 st.sidebar.title("🌿 Solutions & Traitements")
-st.sidebar.markdown("**Recommandations de produits pour les maladies détectées**")
+st.sidebar.markdown(
+    "**Recommandations de produits pour les maladies détectées**")
 st.sidebar.button("Acheter des traitements adaptés")
 
 
@@ -240,8 +260,8 @@ if TENSORFLOW_AVAILABLE:
         with col1:
             st.markdown("**Upload de l'Image**")
             upload_method = st.radio(
-                "Méthode d'upload", ["Fichier", "Caméra", "URL"], horizontal=True
-            )
+                "Méthode d'upload", [
+                    "Fichier", "Caméra", "URL"], horizontal=True)
             uploaded_image = None
 
             if upload_method == "Fichier":
@@ -271,8 +291,10 @@ if TENSORFLOW_AVAILABLE:
         # ✅ Déplacer `st.columns()` en dehors de `st.expander()`
         if uploaded_image:
             st.markdown("**Options de Préprocessing**")
-            enhance_contrast = st.checkbox("Améliorer le contraste", value=True)
-            enhance_brightness = st.checkbox("Ajuster la luminosité", value=False)
+            enhance_contrast = st.checkbox(
+                "Améliorer le contraste", value=True)
+            enhance_brightness = st.checkbox(
+                "Ajuster la luminosité", value=False)
 
             processed_image = uploaded_image.convert("RGB")
 
@@ -295,11 +317,13 @@ if TENSORFLOW_AVAILABLE:
 
             with st.spinner("Analyse en cours..."):
                 if detector:
-                    detection_results = detector.predict_disease(processed_image)
+                    detection_results = detector.predict_disease(
+                        processed_image)
                     if detection_results:
                         main_result = detection_results[0]
                         st.metric("Maladie Détectée", main_result["disease"])
-                        st.metric("Confiance", f"{main_result['confidence']:.1f}%")
+                        st.metric(
+                            "Confiance", f"{main_result['confidence']:.1f}%")
                 else:
                     st.error("🚨 Le détecteur n'est pas disponible.")
 
@@ -359,7 +383,8 @@ else:
 
 with tab2:
     st.subheader("Analyse par Lot")
-    st.markdown("Analysez plusieurs images simultanément pour un diagnostic de masse.")
+    st.markdown(
+        "Analysez plusieurs images simultanément pour un diagnostic de masse.")
 
     # ✅ Vérification avant utilisation de `st.columns()`
     col1, col2 = st.columns(2)
@@ -433,8 +458,10 @@ with tab2:
         st.markdown("---")
         st.subheader("Résumé des Résultats")
 
-        healthy_count = sum(1 for r in batch_results if r["status"] == "Healthy")
-        diseased_count = sum(1 for r in batch_results if r["status"] == "Diseased")
+        healthy_count = sum(
+            1 for r in batch_results if r["status"] == "Healthy")
+        diseased_count = sum(
+            1 for r in batch_results if r["status"] == "Diseased")
         error_count = sum(1 for r in batch_results if r["status"] == "Error")
 
         col1, col2, col3, col4 = st.columns(4)
@@ -471,7 +498,8 @@ with tab2:
     # ✅ Vérification avant `st.expander()`
 st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
 
-for i, diagnosis in enumerate(reversed(filtered_history[-20:])):  # Last 20 results
+for i, diagnosis in enumerate(
+        reversed(filtered_history[-20:])):  # Last 20 results
     with st.expander(
         f"#{len(filtered_history)-i}: {diagnosis['main_disease']} - {diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
     ):
@@ -497,7 +525,9 @@ if filtered_history:
 
     # ✅ Vérification format `datetime`
     try:
-        timestamps = [datetime.fromisoformat(d["timestamp"]) for d in filtered_history]
+        timestamps = [
+            datetime.fromisoformat(
+                d["timestamp"]) for d in filtered_history]
     except ValueError:
         st.warning("⚠️ Format de date incorrect, vérifiez les données.")
         timestamps = []
@@ -559,7 +589,8 @@ with col2:
 
 for disease in filtered_diseases[:10]:  # Limite à 10 pour performance
     with st.expander(f"🦠 {disease['name']}"):
-        st.markdown(f"**Nom scientifique:** {disease.get('scientific_name', 'N/A')}")
+        st.markdown(
+            f"**Nom scientifique:** {disease.get('scientific_name', 'N/A')}")
         st.markdown(f"**Catégorie:** {disease.get('category', 'N/A')}")
         st.markdown(f"**Cause:** {disease.get('cause', 'N/A')}")
         st.markdown(f"**Description:** {disease.get('description', 'N/A')}")
@@ -581,7 +612,8 @@ for disease in filtered_diseases[:10]:  # Limite à 10 pour performance
         if "treatments" in disease:
             st.markdown("**Traitements:**")
             for treatment in disease["treatments"]:
-                st.markdown(f"*{treatment['type']}:* {treatment['description']}")
+                st.markdown(
+                    f"*{treatment['type']}:* {treatment['description']}")
                 if "products" in treatment:
                     st.write("Produits: " + ", ".join(treatment["products"]))
 
