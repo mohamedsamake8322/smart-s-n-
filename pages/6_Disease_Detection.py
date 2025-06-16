@@ -81,6 +81,8 @@ DISEASE_ICONS = {
 MODEL_PATH = (
     "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
 )
+
+
 @st.cache_resource
 def load_disease_model(model_path):
     try:
@@ -88,8 +90,12 @@ def load_disease_model(model_path):
     except Exception as e:
         st.error(f"🛑 Erreur : {e}")
         return None
+
+
 disease_model = load_disease_model(MODEL_PATH)
 # 🔍 Prétraitement de l’image
+
+
 def preprocess_image(image_file):
     """Prépare l’image et applique le prétraitement EfficientNet."""
     try:
@@ -138,6 +144,8 @@ def predict_disease(image):
 
     return top_labels
 # 🔍 Détermination du stade de progression
+
+
 def estimate_progression(confidence):
     """Détermine le stade de la maladie."""
 
