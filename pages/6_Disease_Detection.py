@@ -174,16 +174,16 @@ risk_levels = {
 }
     # 📌 Ajustement basé sur le type de sol et la culture
 base_risk = (
-        "High"
-        if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy"
-        else "Medium"
+    "High"
+    if crop in ["Tomate", "Pomme de terre"] and soil_type == "Loamy"
+    else "Medium"
 )
     # ✅ Détermination finale du risque
-    for level, condition in risk_levels.items():
-        if condition:
-            return "Critical" if base_risk == "High" else level
+for level, condition in risk_levels.items():
+    if condition:
+        return "Critical" if base_risk == "High" else level
 
-    return base_risk  # Si aucun niveau de risque spécifique ne s’applique
+return base_risk  # Si aucun niveau de risque spécifique ne s’applique
 
 
 def get_weather_risk(crop):
