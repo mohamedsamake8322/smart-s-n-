@@ -165,11 +165,11 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
     de l'humidité et du type de sol.
     """
     # 🚀 Définition des seuils de risque
-  risk_levels = {
+    risk_levels = {
     "Low": (temp > 25 and humidity < 50),
     "Medium": (20 <= temp <= 25 and 50 <= humidity <= 70),
     "High": (temp < 20 or humidity > 70),
-}
+    }
 
 
     # 📌 Ajustement basé sur le type de sol et la culture
