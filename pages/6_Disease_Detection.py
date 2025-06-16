@@ -1,3 +1,7 @@
+import diseases_infos
+from utils.disease_detector import DiseaseDetector, preprocess_image
+from utils.disease_database import DiseaseDatabase
+from utils.disease_database_extended import ExtendedDiseaseDatabase
 import os
 import time
 import json
@@ -25,10 +29,6 @@ except ImportError:
     TENSORFLOW_AVAILABLE = False
 
 # 🔹 Import des modules internes
-from utils.disease_database_extended import ExtendedDiseaseDatabase
-from utils.disease_database import DiseaseDatabase
-from utils.disease_detector import DiseaseDetector, preprocess_image
-import diseases_infos
 
 # ✅ Dictionnaire des icônes pour chaque maladie
 DISEASE_ICONS = {
@@ -113,14 +113,17 @@ def predict_disease(image):
     if img_array is None:
         return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
 
-    predictions = disease_model.predict(img_array)[0]  # Retirer la dimension batch
+    predictions = disease_model.predict(
+        img_array)[0]  # Retirer la dimension batch
     top_labels = []
 
     # ✅ Trier les résultats par confiance
     sorted_indices = np.argsort(predictions)[::-1]
 
-    for idx in sorted_indices[:5]:  # Afficher uniquement les 5 meilleurs résultats
-        disease_name = diseases_infos.DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
+    # Afficher uniquement les 5 meilleurs résultats
+    for idx in sorted_indices[:5]:
+        disease_name = diseases_infos.DISEASE_CLASSES.get(
+            idx, "🔍 Maladie inconnue")
         disease_icon = DISEASE_ICONS.get(
             disease_name, "❓"
         )  # Icône par défaut si inconnue
@@ -153,7 +156,8 @@ def estimate_progression(confidence):
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""
     try:
-        response = requests.get("https://api.open-meteo.com/weather", timeout=5)
+        response = requests.get(
+    "https://api.open-meteo.com/weather", timeout=5)
         response.raise_for_status()
         weather_data = response.json()
 
@@ -177,7 +181,10 @@ def get_weather_risk(crop):
 
 
 # 📊 Interface utilisateur optimisée avec Streamlit
-st.set_page_config(page_title="Disease Detector Ultra", page_icon="🌿", layout="wide")
+st.set_page_config(
+    page_title="Disease Detector Ultra",
+    page_icon="🌿",
+     layout="wide")
 st.title("🌿 Détection de Maladies Agricoles - Ultra IA")
 
 uploaded_file = st.file_uploader(
@@ -195,7 +202,9 @@ if uploaded_file:
         for disease in results:
             st.subheader(f"🦠 {disease['name']}")
             st.write(f"🔹 Confiance IA : {disease['confidence']:.2f}%")
-            st.write(f"🩺 Stade de progression : {disease['progression_stage']}")
+            st.write(
+    f"🩺 Stade de progression : {
+        disease['progression_stage']}")
             st.write(f"🔎 Symptômes : {disease['symptoms']}")
             st.write(f"🩺 Recommandations : {disease['recommendations']}")
 
@@ -216,7 +225,8 @@ if st.button("🚨 Urgence - Contacter un Expert"):
 
 # 🛍️ Marketplace intégrée pour acheter des traitements adaptés
 st.sidebar.title("🌿 Solutions & Traitements")
-st.sidebar.markdown("**Recommandations de produits pour les maladies détectées**")
+st.sidebar.markdown(
+    "**Recommandations de produits pour les maladies détectées**")
 st.sidebar.button("Acheter des traitements adaptés")
 
 
@@ -238,17 +248,22 @@ else:
 # Vérification de TensorFlow
 if TENSORFLOW_AVAILABLE:
     with tab1:
-        st.subheader("Diagnostic d'Image Unique")  # 🔹 Déplacé hors du container
+        # 🔹 Déplacé hors du container
+        st.subheader("Diagnostic d'Image Unique")
 
         col1, col2 = st.columns([1, 1])
 
         with col1:
             st.markdown("**Upload de l'Image**")
-            upload_method = st.radio("Méthode d'upload", ["Fichier", "Caméra", "URL"], horizontal=True)
+            upload_method = st.radio(
+    "Méthode d'upload", [
+        "Fichier", "Caméra", "URL"], horizontal=True)
             uploaded_image = None
 
             if upload_method == "Fichier":
-                uploaded_file = st.file_uploader("Choisissez une image", type=["png", "jpg", "jpeg", "webp"])
+                uploaded_file = st.file_uploader(
+    "Choisissez une image", type=[
+        "png", "jpg", "jpeg", "webp"])
                 if uploaded_file:
                     uploaded_image = Image.open(uploaded_file)
 
@@ -272,8 +287,10 @@ if TENSORFLOW_AVAILABLE:
         # ✅ Déplacer `st.columns()` en dehors de `st.expander()`
         if uploaded_image:
             st.markdown("**Options de Préprocessing**")
-            enhance_contrast = st.checkbox("Améliorer le contraste", value=True)
-            enhance_brightness = st.checkbox("Ajuster la luminosité", value=False)
+            enhance_contrast = st.checkbox(
+    "Améliorer le contraste", value=True)
+            enhance_brightness = st.checkbox(
+    "Ajuster la luminosité", value=False)
 
             processed_image = uploaded_image.convert("RGB")
 
@@ -296,76 +313,71 @@ if TENSORFLOW_AVAILABLE:
 
             with st.spinner("Analyse en cours..."):
                 if detector:
-                    detection_results = detector.predict_disease(processed_image)
+                    detection_results = detector.predict_disease(
+                        processed_image)
                     if detection_results:
                         main_result = detection_results[0]
                         st.metric("Maladie Détectée", main_result["disease"])
-                        st.metric("Confiance", f"{main_result['confidence']:.1f}%")
+                        st.metric("Confiance",
+     f"{main_result['confidence']:.1f}%")
                 else:
                     st.error("🚨 Le détecteur n'est pas disponible.")
-
 
                         # Confidence chart
 st.markdown("---")
 st.markdown("**Graphique de Confiance**")
 
-                        chart_data = pd.DataFrame(
-                            [
-                                {"Maladie": r["disease"], "Confiance": r["confidence"]}
-                                for r in detection_results[:5]
-                            ]
-                        )
+chart_data = pd.DataFrame(
+    [{"Maladie": r["disease"], "Confiance": r["confidence"]} for r in detection_results[:5]]
+)
 
-                        fig = px.bar(
-                            chart_data,
-                            x="Confiance",
-                            y="Maladie",
-                            orientation="h",
-                            title="Top 5 des Prédictions",
-                            color="Confiance",
-                            color_continuous_scale="RdYlGn",
-                        )
-                        fig.update_layout(height=300)
-                        st.plotly_chart(fig, use_container_width=True)
+fig = px.bar(
+    chart_data,
+    x="Confiance",
+    y="Maladie",
+    orientation="h",
+    title="Top 5 des Prédictions",
+    color="Confiance",
+    color_continuous_scale="RdYlGn",
+)
+fig.update_layout(height=300)
+st.plotly_chart(fig, use_container_width=True)
 
-                        # Save results
-                        if st.button("💾 Sauvegarder ce Diagnostic"):
-                            diagnosis_data = {
-                                "timestamp": datetime.now().isoformat(),
-                                "main_disease": main_result["disease"],
-                                "confidence": main_result["confidence"],
-                                "model_used": model_type,
-                                "all_predictions": detection_results[:5],
-                                "image_name": f"diagnosis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg",
-                            }
+# ✅ Sauvegarde des résultats
+if st.button("💾 Sauvegarder ce Diagnostic"):
+    diagnosis_data = {
+        "timestamp": datetime.now().isoformat(),
+        "main_disease": main_result["disease"],
+        "confidence": main_result["confidence"],
+        "model_used": model_type,
+        "all_predictions": detection_results[:5],
+        "image_name": f"diagnosis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg",
+    }
 
-                            # Save to session state history
-                        if "diagnosis_history" not in st.session_state:
-                            diagnosis_data["main_disease"] = DISEASE_CLASSES.get(
-                                diagnosis_data["main_disease"], "🔍 Maladie inconnue"
-                            )
-                            st.session_state.diagnosis_history = []
+    # ✅ Vérification de la session state
+    if "diagnosis_history" not in st.session_state:
+        st.session_state.diagnosis_history = []
 
-                            st.session_state.diagnosis_history.append(diagnosis_data)
-                            st.success("Diagnostic sauvegardé dans l'historique!")
+    diagnosis_data["main_disease"] = DISEASE_CLASSES.get(
+        diagnosis_data["main_disease"], "🔍 Maladie inconnue"
+    )
+    st.session_state.diagnosis_history.append(diagnosis_data)
+    st.success("Diagnostic sauvegardé dans l'historique!")
 
-                    else:
-                        st.warning(
-                            "Aucune maladie détectée avec le seuil de confiance défini"
-                        )
+else:
+    st.warning("Aucune maladie détectée avec le seuil de confiance défini")
 
-            else:
-                st.info("Uploadez une image pour commencer le diagnostic")
-
-    with tab2:
-        st.subheader("Analyse par Lot")
-
-        st.markdown(
-            "Analysez plusieurs images simultanément pour un diagnostic de masse."
-        )
-
-        if uploaded_files:
+# ✅ Vérification d'image uploadée avant analyse par lot
+if uploaded_files:
     st.write(f"**{len(uploaded_files)} images sélectionnées**")
+
+else:
+    st.info("Uploadez une image pour commencer le diagnostic")
+
+with tab2:
+    st.subheader("Analyse par Lot")
+    st.markdown("Analysez plusieurs images simultanément pour un diagnostic de masse.")
+
 
     # ✅ Vérification avant utilisation de `st.columns()`
     col1, col2 = st.columns(2)
