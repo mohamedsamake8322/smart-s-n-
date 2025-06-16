@@ -165,17 +165,12 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
     de l'humidité et du type de sol.
     """
     # 🚀 Définition des seuils de risque
-    risk_levels = {
-        "Low":(
-            temp > 25 and humidity < 50,
-        ),
-        "Medium":(
-            20 <= temp <= 25 and 50 <= humidity <= 70,
-        ),
-        "High": (
-            temp < 20 or humidity > 70,
-        ),
-    }
+  risk_levels = {
+    "Low": (temp > 25 and humidity < 50),
+    "Medium": (20 <= temp <= 25 and 50 <= humidity <= 70),
+    "High": (temp < 20 or humidity > 70),
+}
+
 
     # 📌 Ajustement basé sur le type de sol et la culture
     base_risk = (
@@ -499,11 +494,8 @@ except Exception as e:
             "error": str(e),
         }
     )
-
 progress_bar.progress((i + 1) / len(uploaded_files))
 status_text.text("Analyse terminée!")
-
-
         # ✅ Résumé des résultats
 st.markdown("---")
 st.subheader("Résumé des Résultats")
@@ -542,17 +534,14 @@ if disease_filter:
 filtered_history = [
     d for d in filtered_history if d["confidence"] >= confidence_filter
 ]
-
-
-    # ✅ Vérification avant `st.expander()`
 st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
 
-for i, diagnosis in enumerate(
-        reversed(filtered_history[-20:])):  # Last 20 results
-    with st.expander(
+for i, diagnosis in enumerate(reversed(filtered_history[-20:])):  # Last 20 results
+    expander_label = (
         f"#{len(filtered_history) - i}: {diagnosis['main_disease']} - "
         f"{diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
-    ):
+    )
+    with st.expander(expander_label):
         st.metric("Maladie", diagnosis["main_disease"])
         st.metric("Confiance", f"{diagnosis['confidence']:.1f}%")
         st.metric("Modèle", diagnosis.get("model_used", "N/A"))
@@ -560,7 +549,9 @@ for i, diagnosis in enumerate(
         if "all_predictions" in diagnosis:
             st.markdown("**Top 3 Prédictions:**")
             for j, pred in enumerate(diagnosis["all_predictions"][:3], 1):
-                st.write(f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
+                st.write(
+                    f"{j}. {pred['disease']}: {pred['confidence']:.1f}%"
+                )
 
 # ✅ Résumé des statistiques
 st.markdown("---")
