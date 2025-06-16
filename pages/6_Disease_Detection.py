@@ -10,7 +10,6 @@ import streamlit as st
 from PIL import Image, ImageEnhance
 from datetime import datetime
 from io import BytesIO
-from tensorflow.keras.applications import MobileNetV2, EfficientNetB4, ResNet50
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.efficientnet import preprocess_input
 
@@ -29,48 +28,51 @@ from utils.disease_database_extended import ExtendedDiseaseDatabase
 from utils.disease_database import DiseaseDatabase
 from utils.disease_detector import DiseaseDetector, preprocess_image
 import diseases_infos
-DISEASE_CLASSES = {
-    0: "Aphids on Vegetables",
-    1: "Armyworms on Vegetables",
-    2: "Blister Beetle",
-    3: "Beet Leafhopper",
-    4: "Colorado Potato Beetle",
-    5: "Western Striped and Spotted Cucumber Beetle",
-    6: "Spotted Cucumber Beetle",
-    7: "Cutworms on Vegetables",
-    8: "False Chinch Bug",
-    9: "Flea Beetles",
-    10: "Tomato and Tobacco Hornworms",
-    11: "Thrips on Vegetables",
-    12: "Potato Leafhopper",
-    13: "Two-Spotted Spider Mite",
-    14: "Corn Earworm / Tomato Fruitworm",
-    15: "Tomato Russet Mite",
-    16: "Whiteflies (Family: Aleyrodidae)",
-    17: "Alfalfa Mosaic Virus",
-    18: "Bacterial Canker",
-    19: "Bacterial Speck",
-    20: "Beet Curly Top Virus",
-    21: "Big Bud",
-    22: "Blossom End Rot",
-    23: "Damping-Off",
-    24: "Early Blight",
-    25: "Fusarium Crown/Root Rot",
-    26: "Fusarium Wilt",
-    27: "Late Blight",
-    28: "Root-Knot Nematodes",
-    29: "Phytophthora Root, Stem, and Crown Rots",
-    30: "Powdery Mildew on Vegetables",
-    31: "Tobacco Mosaic Virus & Tomato Mosaic Virus",
-    32: "Tomato Spotted Wilt Virus",
-    33: "Verticillium Wilt",
-    34: "Cercospora Leaf Spot (Frogeye)",
-    35: "Choanephora Blight (Wet Rot)",
-    36: "Gray Leaf Spot",
-    37: "Phomopsis Blight"
+
+# ✅ Dictionnaire des icônes pour chaque maladie
+DISEASE_ICONS = {
+    "Healthy": "✅",
+    "Aphids on Vegetables": "🐛🥦",
+    "Armyworms on Vegetables": "🐛🍃",
+    "Blister Beetle": "🪲🔥",
+    "Beet Leafhopper": "🪲🌿",
+    "Colorado Potato Beetle": "🥔🪲",
+    "Western Striped and Spotted Cucumber Beetle": "🥒🪲",
+    "Spotted Cucumber Beetle": "🥒🐞",
+    "Cutworms on Vegetables": "🐛✂️",
+    "False Chinch Bug": "🐜❌",
+    "Flea Beetles": "🪲🔬",
+    "Tomato and Tobacco Hornworms": "🍅🐛",
+    "Thrips on Vegetables": "🦟🥦",
+    "Potato Leafhopper": "🥔🌿",
+    "Two-Spotted Spider Mite": "🕷️🌱",
+    "Corn Earworm / Tomato Fruitworm": "🌽🍅🐛",
+    "Tomato Russet Mite": "🍅🕷️",
+    "Whiteflies (Family: Aleyrodidae)": "🦟🌿",
+    "Alfalfa Mosaic Virus": "🦠🌱",
+    "Bacterial Canker": "🦠⚠️",
+    "Bacterial Speck": "🦠🍅",
+    "Beet Curly Top Virus": "🌀🦠",
+    "Big Bud": "🌿💥",
+    "Blossom End Rot": "🍅⚫",
+    "Damping-Off": "🌱🚫",
+    "Early Blight": "🍅🟠",
+    "Fusarium Crown/Root Rot": "🌿🦠",
+    "Fusarium Wilt": "🌾⚠️",
+    "Late Blight": "🍅🔥",
+    "Root-Knot Nematodes": "🌱🐛",
+    "Phytophthora Root, Stem, and Crown Rots": "🌿🦠",
+    "Powdery Mildew on Vegetables": "🍃🌫️",
+    "Tobacco Mosaic Virus & Tomato Mosaic Virus": "🍅🌿🦠",
+    "Tomato Spotted Wilt Virus": "🍅🔴",
+    "Verticillium Wilt": "🌾🔴",
+    "Cercospora Leaf Spot (Frogeye)": "🌿⚪",
+    "Choanephora Blight (Wet Rot)": "🌿💧",
+    "Gray Leaf Spot": "🌿🔘",
+    "Phomopsis Blight": "🌿🔥",
 }
 
-# ✅ Chargement du modèle IA avancé (EfficientNet-B4 + ResNet50)
+# ✅ Chargement du modèle IA
 MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
 
 @st.cache_resource
@@ -83,27 +85,20 @@ def load_disease_model(model_path):
 
 disease_model = load_disease_model(MODEL_PATH)
 
-# 🔍 Prétraitement de l’image avec segmentation
+# 🔍 Prétraitement de l’image
 def preprocess_image(image_file):
-    """Prépare l’image et applique la segmentation."""
+    """Prépare l’image et applique le prétraitement EfficientNet."""
     try:
         image = Image.open(image_file).convert("RGB").resize((380, 380))
         img_array = np.array(image)
         img_array = preprocess_input(img_array)
 
-        # 🔍 Segmentation de la zone affectée
-        img_segmented = apply_segmentation(img_array)
-
-        return np.expand_dims(img_segmented, axis=0)
+        return np.expand_dims(img_array, axis=0)
     except Exception as e:
         print(f"🚨 Erreur : {e}")
         return None
 
-def apply_segmentation(img_array):
-    """Simule une segmentation des zones affectées."""
-    return img_array * np.random.uniform(0.8, 1.2, img_array.shape)
-
-# 🔍 Prédiction multi-maladies avec analyse de progression
+# 🔍 Prédiction multi-maladies avec tri des résultats
 def predict_disease(image):
     """Analyse l’image et retourne plusieurs maladies avec leur score."""
     if disease_model is None:
@@ -112,25 +107,26 @@ def predict_disease(image):
     img_array = preprocess_image(image)
     if img_array is None:
         return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
-    prediction = disease_model.predict(img_array)
+
+    predictions = disease_model.predict(img_array)[0]  # Retirer la dimension batch
     top_labels = []
 
-    for idx, confidence in enumerate(prediction[0]):
-    disease_name = DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
-    top_labels.append({"name": disease_name, "confidence": confidence * 100})
+    # ✅ Trier les résultats par confiance
+    sorted_indices = np.argsort(predictions)[::-1]
 
-    # Ajout du stade de progression estimé
-    for disease in top_labels:
-    disease["progression_stage"] = estimate_progression(disease["confidence"])
+    for idx in sorted_indices[:5]:  # Afficher uniquement les 5 meilleurs résultats
+        disease_name = diseases_infos.DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
+        disease_icon = DISEASE_ICONS.get(disease_name, "❓")  # Icône par défaut si inconnue
 
-    prediction = disease_model.predict(img_array)
-    top_labels = diseases_infos.decode_top_predictions(prediction, top_n=5)
-
-    for disease in top_labels:
-        disease["progression_stage"] = estimate_progression(disease["confidence"])
+        top_labels.append({
+            "name": f"{disease_icon} {disease_name}",
+            "confidence": predictions[idx] * 100,
+            "progression_stage": estimate_progression(predictions[idx] * 100)
+        })
 
     return top_labels
 
+# 🔍 Détermination du stade de progression
 def estimate_progression(confidence):
     """Détermine le stade de la maladie."""
     if confidence > 90:
@@ -141,6 +137,7 @@ def estimate_progression(confidence):
         return "🟡 Début"
     else:
         return "🟢 Faible impact"
+
 
 # 🌍 API météo pour ajuster le diagnostic
 def get_weather_risk(crop):
