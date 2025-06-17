@@ -28,6 +28,7 @@ class DiseaseDetector:
         MODEL_PATH = (
             "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
         )
+        print(f"🚀 Modèle chargé : {self.models.get('efficientnet_resnet', None)}")  # ✅ Affiche si le modèle est bien chargé
         self.models["efficientnet_resnet"] = tf.keras.models.load_model(MODEL_PATH)
         self.preprocessors["efficientnet_resnet"] = efficientnet_preprocess
         self.class_labels["efficientnet_resnet"] = [

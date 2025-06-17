@@ -9,11 +9,9 @@ from datetime import datetime
 from io import BytesIO
 from tensorflow.keras.applications.efficientnet import preprocess_input
 import plotly.express as px  # Corrige l'erreur F821 pour `px`
-import utils.disease_detector as disease_detector
-predict_disease = disease_detector.predict_disease
-from utils import disease_detector
+from utils.disease_detector import DiseaseDetector
 # ✅ Définition des variables manquantes
-detector = None
+detector = DiseaseDetector()
 model_type = "default"
 DISEASE_CLASSES = {}
 uploaded_files = []
@@ -118,14 +116,16 @@ def predict_disease(image):
         return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
 
     predictions = disease_model.predict(img_array)[0]  # Prendre uniquement la première prédiction
+
+    # ✅ Initialiser la liste des résultats
     top_labels = []
 
     # ✅ Trier les résultats par confiance
     sorted_indices = np.argsort(predictions)[::-1]
 
-    # Afficher uniquement les 5 meilleurs résultats
+    # ✅ Afficher uniquement les 5 meilleurs résultats
     for idx in sorted_indices[:5]:
-        disease_name = disease_detector.DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
+        disease_name = detector.class_labels["efficientnet_resnet"][idx] if idx < len(detector.class_labels["efficientnet_resnet"]) else "🔍 Maladie inconnue"
         disease_icon = DISEASE_ICONS.get(disease_name, "❓")  # Icône par défaut si inconnue
 
         top_labels.append(
@@ -230,6 +230,18 @@ if uploaded_file:
             st.write(f"🩺 Stade de progression : {disease['progression_stage']}")
             st.write(f"🔎 Symptômes : {disease['symptoms']}")
             st.write(f"🩺 Recommandations : {disease['recommendations']}")
+# ✅ Charger l’image
+uploaded_file = st.file_uploader("Téléchargez une image pour la prédiction")
+
+if uploaded_file is not None:
+    image_pil = Image.open(uploaded_file)
+
+    # ✅ Effectuer la prédiction
+    results = detector.predict_disease(image_pil)
+
+    # ✅ Afficher les résultats
+    st.write("📊 Résultats de la prédiction :")
+    st.json(results)
 
     # 📌 Affichage du risque climatique
     crop = "Tomate"
