@@ -56,7 +56,9 @@ class DiseaseManager:
         if os.path.exists(self.model_path):  # ✅ Vérifie si le modèle existe
             self.load_model(self.model_path)
         else:
-            raise FileNotFoundError(f"🚨 Modèle introuvable : {self.model_path}")
+            raise FileNotFoundError(
+                f"🚨 Modèle introuvable : {self.model_path}"
+            )
 
     def load_model(self, model_path):
         """Charge le modèle CNN et l'attache à l'instance."""
