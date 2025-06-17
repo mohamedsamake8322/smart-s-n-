@@ -69,7 +69,7 @@ class Base(declarative_base()):
 
 class CropData(Base):
     __tablename__ = "crop_data"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     crop_type = Column(String, index=True)
     yield_value = Column(Float)
@@ -84,7 +84,7 @@ class CropData(Base):
 
 class PredictionResult(Base):
     __tablename__ = "predictions"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     predicted_yield = Column(Float)
     confidence = Column(Float)
@@ -138,12 +138,12 @@ def cache_result(expiration: int = 300):
                 cached = redis_client.get(cache_key)
                 if cached:
                     return eval(cached)
-            
+
             result = await func(*args, **kwargs)
-            
+
             if redis_client:
                 redis_client.setex(cache_key, expiration, str(result))
-            
+
             return result
         return wrapper
     return decorator
@@ -174,13 +174,13 @@ async def predict_yield(
     try:
         # Conversion en dictionnaire
         input_data = prediction_input.dict()
-        
+
         # Prédiction avec modèle optimisé
         prediction_result = yield_predictor.predict(input_data, model_type='xgboost')
-        
+
         if not prediction_result:
             raise HTTPException(status_code=500, detail="Erreur lors de la prédiction")
-        
+
         # Sauvegarde asynchrone en arrière-plan
         background_tasks.add_task(
             save_prediction_async,
@@ -188,14 +188,14 @@ async def predict_yield(
             input_data,
             db
         )
-        
+
         return {
             "success": True,
             "prediction": prediction_result,
             "processing_time_ms": 0.1,
             "model_confidence": prediction_result.get("confidence", 85)
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur de prédiction: {str(e)}")
 
@@ -205,19 +205,19 @@ async def get_current_weather(location: str):
     """Données météo temps réel avec cache haute performance"""
     try:
         weather_data = weather_api.get_current_weather(location)
-        
+
         if not weather_data:
             raise HTTPException(status_code=404, detail="Données météo indisponibles")
-        
+
         # Calcul des indices agricoles
         agricultural_indices = weather_api.get_agricultural_weather_index(location)
-        
+
         return {
             "weather": weather_data,
             "agricultural_indices": agricultural_indices,
             "timestamp": datetime.utcnow()
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur météo: {str(e)}")
 
@@ -228,19 +228,19 @@ async def get_weather_forecast(location: str, days: int = 5):
     try:
         if days > 10:
             raise HTTPException(status_code=400, detail="Maximum 10 jours de prévisions")
-        
+
         forecast_data = weather_api.get_forecast(location, days)
-        
+
         if not forecast_data:
             raise HTTPException(status_code=404, detail="Prévisions indisponibles")
-        
+
         return {
             "forecast": forecast_data,
             "location": location,
             "days": days,
             "generated_at": datetime.utcnow()
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur prévisions: {str(e)}")
 
@@ -255,27 +255,27 @@ async def upload_agricultural_data(
     try:
         # Conversion en DataFrame
         df = pd.DataFrame(data)
-        
+
         # Validation des données
         validation_result = validate_agricultural_data(df, data_type.title() + " Data")
-        
+
         if not validation_result["is_valid"]:
             return {
                 "success": False,
                 "validation_errors": validation_result["errors"],
                 "warnings": validation_result["warnings"]
             }
-        
+
         # Traitement asynchrone en arrière-plan
         background_tasks.add_task(process_data_async, df, data_type, db)
-        
+
         return {
             "success": True,
             "records_uploaded": len(df),
             "validation": "passed",
             "processing": "async"
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur upload: {str(e)}")
 
@@ -290,12 +290,12 @@ async def get_dashboard_analytics(db: Session = Depends(get_db)):
         recent_predictions = db.query(PredictionResult).filter(
             PredictionResult.created_at >= datetime.utcnow() - timedelta(days=7)
         ).count()
-        
+
         if avg_yield:
             avg_yield_value = np.mean([y[0] for y in avg_yield if y[0]])
         else:
             avg_yield_value = 0
-        
+
         return {
             "total_records": total_crops,
             "average_yield": round(avg_yield_value, 2),
@@ -303,7 +303,7 @@ async def get_dashboard_analytics(db: Session = Depends(get_db)):
             "system_status": "optimal",
             "last_updated": datetime.utcnow()
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur analytics: {str(e)}")
 
@@ -312,18 +312,18 @@ async def get_model_performance():
     """Métriques de performance des modèles IA"""
     try:
         performance_data = {}
-        
+
         for model_type in ['random_forest', 'xgboost', 'linear_regression']:
             metrics = yield_predictor.get_model_performance(model_type)
             if metrics:
                 performance_data[model_type] = metrics
-        
+
         return {
             "models": performance_data,
             "best_model": "xgboost",
             "last_training": datetime.utcnow().isoformat()
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur métriques: {str(e)}")
 
@@ -337,13 +337,13 @@ async def train_model(
     try:
         # Récupération des données d'entraînement
         training_data = db.query(CropData).all()
-        
+
         if len(training_data) < 50:
             raise HTTPException(
-                status_code=400, 
+                status_code=400,
                 detail="Données insuffisantes pour l'entraînement (minimum 50 échantillons)"
             )
-        
+
         # Conversion en DataFrame
         df_data = []
         for record in training_data:
@@ -357,20 +357,20 @@ async def train_model(
                 'soil_nitrogen': record.soil_nitrogen,
                 'humidity': record.humidity
             })
-        
+
         df = pd.DataFrame(df_data)
-        
+
         # Entraînement asynchrone
         if background_tasks:
             background_tasks.add_task(train_model_async, df, model_type)
-        
+
         return {
             "success": True,
             "message": "Entraînement démarré en arrière-plan",
             "model_type": model_type,
             "training_samples": len(df)
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur entraînement: {str(e)}")
 
@@ -406,7 +406,7 @@ async def process_data_async(df: pd.DataFrame, data_type: str, db: Session):
                     metadata=row.to_dict()
                 )
                 db.add(record)
-        
+
         db.commit()
     except Exception as e:
         print(f"Erreur traitement données: {e}")
@@ -415,13 +415,13 @@ async def train_model_async(df: pd.DataFrame, model_type: str):
     """Entraînement asynchrone des modèles"""
     try:
         training_result = yield_predictor.train_model(df, model_type)
-        
+
         if training_result:
             # Sauvegarde du modèle
             model_path = f"models/{model_type}_model.joblib"
             yield_predictor.save_model(model_type, model_path)
             print(f"Modèle {model_type} entraîné et sauvegardé avec succès")
-        
+
     except Exception as e:
         print(f"Erreur entraînement asynchrone: {e}")
 
@@ -429,7 +429,7 @@ async def train_model_async(df: pd.DataFrame, model_type: str):
 if __name__ == "__main__":
     # Création des tables
     Base.metadata.create_all(bind=engine)
-    
+
     # Démarrage serveur ultra-optimisé
     uvicorn.run(
         "fastapi_server:app",
