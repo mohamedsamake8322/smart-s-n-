@@ -52,9 +52,11 @@ class DiseaseManager:
         """Initialisation du gestionnaire de maladies et chargement du modèle CNN."""
         self.model_path = model_path
         self.model = None
-        self.load_model(
-            self.model_path
-        )  # ✅ Appelle `load_model` avec `self.model_path`
+
+        if os.path.exists(self.model_path):  # ✅ Vérifie si le modèle existe
+            self.load_model(self.model_path)
+        else:
+            raise FileNotFoundError(f"🚨 Modèle introuvable : {self.model_path}")
 
     def load_model(self, model_path):
         """Charge le modèle CNN et l'attache à l'instance."""
@@ -248,9 +250,15 @@ disease_manager.add_disease(
 disease_manager.add_disease(
     "Blister Beetle",
     ["Alfalfa", "Legumes", "Solanaceae", "Potatoes"],
-    "Blister beetles in the genera Epicuata are found throughout North America...",
+    (
+        "Blister beetles in the genera Epicuata are found throughout "
+        "North America..."
+    ),
     "Adults feed on plant foliage and blossoms...",
-    "Blister beetle populations are influenced by grasshopper populations...",
+    (
+        "Blister beetle populations are influenced "
+        "by grasshopper populations..."
+    ),
     [],  # Ajout de la liste vide pour éviter l'erreur
 )
 
