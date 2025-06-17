@@ -527,12 +527,7 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
             if "all_predictions" in diagnosis:
                 st.markdown("**Top 3 Prédictions:**")
                 for j, pred in enumerate(diagnosis["all_predictions"][:3], 1):
-                    st.write(
-                        f"{j}. {
-                            pred['disease']}: {
-                            pred['confidence']:.1f}%")
-
-
+                  st.write(f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
 # ✅ Résumé des statistiques
 st.markdown("---")
 st.subheader("Statistiques de l'Historique")
