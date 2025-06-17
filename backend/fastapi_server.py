@@ -247,9 +247,9 @@ async def get_weather_forecast(location: str, days: int = 5):
 @app.post("/api/data/upload")
 async def upload_agricultural_data(
     data: List[Dict[str, Any]],
-    data_type: str = "agricultural",
     background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    data_type: str = "agricultural"
 ):
     """Upload et traitement ultra-rapide des données agricoles"""
     try:
@@ -275,6 +275,7 @@ async def upload_agricultural_data(
             "validation": "passed",
             "processing": "async"
         }
+
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur upload: {str(e)}")
