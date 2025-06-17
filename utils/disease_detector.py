@@ -10,7 +10,6 @@ from datetime import datetime  # ✅ Importation de datetime
 from typing import Tuple, Any  # ✅ Importation de Tuple et Any
 try:
     import cv2
-    cv2.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)  # Désactive `libGL.so.1`
 except ImportError:
     print("🚨 Erreur : OpenCV (`cv2`) ne peut pas être chargé. Vérifie ton installation.")
 
