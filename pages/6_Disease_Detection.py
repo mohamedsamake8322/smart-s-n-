@@ -9,7 +9,8 @@ from datetime import datetime
 from io import BytesIO
 from tensorflow.keras.applications.efficientnet import preprocess_input
 import plotly.express as px  # Corrige l'erreur F821 pour `px`
-from utils.disease_detector import predict_disease
+import utils.disease_detector as disease_detector
+predict_disease = disease_detector.predict_disease
 from utils import disease_detector
 # ✅ Définition des variables manquantes
 detector = None
