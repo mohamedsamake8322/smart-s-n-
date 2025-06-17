@@ -107,19 +107,17 @@ def preprocess_image(image_file):
         print(f"🚨 Erreur : {e}")
         return None
 
-
 # 🔍 Prédiction multi-maladies avec tri des résultats
 def predict_disease(image):
     """Analyse l’image et retourne plusieurs maladies avec leur score."""
     if disease_model is None:
-        return [{"error": "🚨 Modèle non chargé"}]
+        raise ValueError("🚨 Modèle non chargé. Assure-toi qu'il est bien initialisé.")
 
     img_array = preprocess_image(image)
     if img_array is None:
         return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
 
-    predictions = disease_model.predict(
-        img_array)[0]  # Retirer la dimension batch
+    predictions = disease_model.predict(img_array)[0]  # Prendre uniquement la première prédiction
     top_labels = []
 
     # ✅ Trier les résultats par confiance
@@ -127,26 +125,20 @@ def predict_disease(image):
 
     # Afficher uniquement les 5 meilleurs résultats
     for idx in sorted_indices[:5]:
-        disease_name = disease_detector.DISEASE_CLASSES.get(
-            idx, "🔍 Maladie inconnue")
-        disease_icon = DISEASE_ICONS.get(
-            disease_name, "❓"
-        )  # Icône par défaut si inconnue
+        disease_name = disease_detector.DISEASE_CLASSES.get(idx, "🔍 Maladie inconnue")
+        disease_icon = DISEASE_ICONS.get(disease_name, "❓")  # Icône par défaut si inconnue
 
         top_labels.append(
             {
                 "name": f"{disease_icon} {disease_name}",
-                "confidence": predictions[idx] * 100,
+                "confidence": round(predictions[idx] * 100, 1),  # ✅ Arrondi propre
                 "progression_stage": estimate_progression(predictions[idx] * 100),
             }
         )
 
     return top_labels
 
-
 # 🔍 Détermination du stade de progression
-
-
 def estimate_progression(confidence):
     """Détermine le stade de la maladie."""
 
@@ -158,7 +150,6 @@ def estimate_progression(confidence):
         return "🟡 Début"
     else:
         return "🟢 Faible impact"
-
 
 def assess_disease_risk(crop, temp, humidity, soil_type):
     """
@@ -185,7 +176,6 @@ def assess_disease_risk(crop, temp, humidity, soil_type):
             return "Critical" if base_risk == "High" else level
 
     return base_risk  # Si aucun niveau de risque spécifique ne s’applique
-
 
 def get_weather_risk(crop):
     """Vérifie les conditions climatiques et les risques de maladies."""

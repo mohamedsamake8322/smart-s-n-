@@ -7,7 +7,8 @@ from tensorflow.keras.applications.efficientnet import (
 )
 import os
 from typing import Dict, List
-
+from datetime import datetime  # ✅ Importation de datetime
+from typing import Tuple, Any  # ✅ Importation de Tuple et Any
 
 class DiseaseDetector:
     """
@@ -120,79 +121,68 @@ class DiseaseDetector:
         else:
             return "Faible"
 
-    def _heuristic_disease_detection(
-        self, image_pil: Image.Image, crop_filter: List[str] = None
-    ) -> List[Dict]:
-        """
-        Détection basée sur EfficientNet-ResNet au lieu des heuristiques visuelles.
-        """
-        try:
-            model = self.models.get("efficientnet_resnet", None)
-            if model is None:
-                raise ValueError(
-                    "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible."
-                )
+def _heuristic_disease_detection(
+    self, image_pil: Image.Image, crop_filter: List[str] = None
+) -> List[Dict]:
+    """
+    Détection basée sur EfficientNet-ResNet au lieu des heuristiques visuelles.
+    """
+    try:
+        model = self.models.get("efficientnet_resnet", None)
+        if model is None:
+            raise ValueError(
+                "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible."
+            )
 
-            class_labels = self.class_labels["efficientnet_resnet"]
-            processed_img = self.preprocess_image(image_pil)
-            predictions = model.predict(processed_img, verbose=0)[0]
+        class_labels = self.class_labels["efficientnet_resnet"]
+        processed_img = self.preprocess_image(image_pil)
+        predictions = model.predict(processed_img, verbose=0)[0]
 
-            sorted_indices = np.argsort(predictions)[::-1]
-            results = []
+        sorted_indices = np.argsort(predictions)[::-1]
+        results = []
 
-            for idx in sorted_indices:
-                confidence = float(predictions[idx]) * 100
-                disease_name = class_labels[idx]
+        for idx in sorted_indices:
+            confidence = float(predictions[idx]) * 100
+            disease_name = class_labels[idx]
 
-                if crop_filter and not self._disease_matches_crops(
-                    disease_name, crop_filter
-                ):
-                    continue
+            if crop_filter and not self._disease_matches_crops(
+                disease_name, crop_filter
+            ):
+                continue
 
-                severity = self._assess_disease_severity(disease_name, confidence)
+            severity = self._assess_disease_severity(disease_name, confidence)
 
-                results.append(
-                    {
-                        "disease": disease_name,
-                        "confidence": confidence,
-                        "severity": severity,
-                        "model_used": "efficientnet_resnet",
-                    }
-                )
+            results.append(
+                {
+                    "disease": disease_name,
+                    "confidence": confidence,
+                    "severity": severity,
+                    "model_used": "efficientnet_resnet",
+                }
+            )
 
-            return results
+        # ✅ Si aucun résultat ne dépasse le seuil, prendre la meilleure prédiction
+        if not results and sorted_indices:
+            top_idx = sorted_indices[0]
+            confidence = float(predictions[top_idx]) * 100
+            disease_name = class_labels[top_idx]
 
-        except Exception as e:
-            print(f"🚨 Erreur lors de la détection heuristique: {e}")
-            return []
+            severity = self._assess_disease_severity(disease_name, confidence)
 
+            results.append(
+                {
+                    "disease": disease_name,
+                    "confidence": confidence,
+                    "severity": severity,
+                    "model_used": "efficientnet_resnet",
+                }
+            )
 
-try:
-    # ✅ Si aucun résultat ne dépasse le seuil, prendre la meilleure prédiction
-    if not results and sorted_indices:
-        top_idx = sorted_indices[0]
-        confidence = float(predictions[top_idx]) * 100
-        disease_name = class_labels[top_idx]
+        return results
 
-        # ✅ Correction : `_assess_disease_severity()` ne retourne qu'une valeur
-        severity = self._assess_disease_severity(disease_name, confidence)
-
-        results.append(
-            {
-                "disease": disease_name,
-                "confidence": confidence,
-                "severity": severity,
-                "model_used": "efficientnet_resnet",
-            }
-        )
-
-    return results
-
-except Exception as e:
-    print(f"🚨 Erreur lors de la prédiction: {e}")
-    return []
-
-
+    except Exception as e:
+        print(f"🚨 Erreur lors de la détection heuristique: {e}")
+        return []
 def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
     """
     Analyse les caractéristiques de l'image pour un passage optimisé au modèle EfficientNet-ResNet.
@@ -306,7 +296,6 @@ def _assess_disease_severity(
             urgency = "Moyenne"
 
     return severity, urgency
-
 
 def get_model_info(self) -> Dict[str, Any]:
     """
