@@ -486,3 +486,4 @@ st.sidebar.metric("Heures de vol", "24.5h ce mois")
 st.markdown("---")
 st.markdown("**ðŸ›° Module Drone & Imagerie** - Analyse spectrale avancÃ©e pour agriculture de prÃ©cision")
 
+
