@@ -1,4 +1,4 @@
-﻿from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model
 import os
 
 # ðŸ”¹ DÃ©finition des chemins
@@ -15,4 +15,3 @@ model = load_model(MODEL_PATH_H5)
 model.save(MODEL_PATH_KERAS)
 
 print(f"âœ… ModÃ¨le converti et enregistrÃ© sous {MODEL_PATH_KERAS}")
-
