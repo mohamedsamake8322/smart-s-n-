@@ -77,8 +77,19 @@ DISEASE_ICONS = {
 }
 
 # ✅ Chargement du modèle IA
-MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
+MODEL_URL = "https://drive.google.com/uc?export=download&id=1mBKbOYqB6db3KDneEtSpcH9ywC55qfW_"
+MODEL_PATH = os.path.join("model", "efficientnet_resnet.keras")
 
+# 📥 Télécharger le modèle si nécessaire
+if not os.path.exists(MODEL_PATH):
+    st.info("📦 Téléchargement du modèle IA depuis Google Drive...")
+    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+    with requests.get(MODEL_URL, stream=True) as response:
+        with open(MODEL_PATH, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+    st.success("✅ Modèle IA téléchargé avec succès.")
 
 @st.cache_resource
 def load_disease_model(model_path):
