@@ -40,9 +40,7 @@ st.sidebar.markdown("- **Weather Data**: Real-time and historical weather inform
 st.sidebar.markdown("- **Soil Monitoring**: Soil condition analysis")
 st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 
-# ✅ Indicateur de démarrage
-st.write("🚀 Smart Fertilization App is running!")
-
+st.write("🚀 SènèSmart Yield Predictor is running!")
 
  # 🔧 Forcer Streamlit Cloud à utiliser le bon port
 # Main dashboard overview
@@ -163,11 +161,28 @@ if user_message:
     elif response['action'] == "analyze_image":
         st.warning("🖼️ Image analysis awaiting your photo…")
 
+try:
+    user_message = get_voice_input()
+    st.write(f"🗣️ You said: {user_message}")
+    response = voice_assistant.get_response(user_message)
+    if response and "text" in response:
+        st.write(response["text"])
+    else:
+        st.warning("🤖 No response generated.")
+
+except Exception as e:
+    st.warning("🎙️ Unable to capture voice input. Please try again.")
+    st.error(str(e))
+
 if st.button("🎙️ Speak now"):
     user_message = get_voice_input()
     st.write(f"🗣️ You said: {user_message}")
     response = voice_assistant.get_response(user_message)
-    st.write(response['text'])
+if response and "text" in response:
+    st.write(response["text"])
+else:
+    st.warning("🤖 No response generated.")
+
 
 # Footer
 st.markdown("---")
