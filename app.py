@@ -148,42 +148,45 @@ with col3:
         st.switch_page("pages/5_Data_Upload.py")
 st.title("🧠 Smart Voice Assistant for Farmers")
 
+# 💬 Saisie manuelle
 user_message = st.text_input("Ask your question here (in text)")
 
 if user_message:
     response = voice_assistant.get_response(user_message)
     st.markdown("### 🤖 Assistant's Response:")
-    st.write(response['text'])
+    st.write(response.get("text", "🤖 No response text available."))
 
-    # Handle actions
-    if response['action'] == "open_weather_dashboard":
+    if response.get("action") == "open_weather_dashboard":
         st.info("📡 Opening the weather module… (to be implemented)")
-    elif response['action'] == "analyze_image":
+    elif response.get("action") == "analyze_image":
         st.warning("🖼️ Image analysis awaiting your photo…")
 
-try:
-    user_message = get_voice_input()
-    st.write(f"🗣️ You said: {user_message}")
-    response = voice_assistant.get_response(user_message)
-    if response and "text" in response:
-        st.write(response["text"])
-    else:
-        st.warning("🤖 No response generated.")
-
-except Exception as e:
-    st.warning("🎙️ Unable to capture voice input. Please try again.")
-    st.error(str(e))
-
+# 🎙️ Saisie vocale
 if st.button("🎙️ Speak now"):
-    user_message = get_voice_input()
-    st.write(f"🗣️ You said: {user_message}")
-    response = voice_assistant.get_response(user_message)
-if response and "text" in response:
-    st.write(response["text"])
-else:
-    st.warning("🤖 No response generated.")
+    try:
+        user_message = get_voice_input()
+        st.write(f"🗣️ You said: {user_message}")
 
+        if user_message:
+            response = voice_assistant.get_response(user_message)
 
+            if response and "text" in response:
+                st.write(response["text"])
+            else:
+                st.warning("🤖 No response generated.")
+
+            # Handle actions
+            if response.get("action") == "open_weather_dashboard":
+                st.info("📡 Opening the weather module… (to be implemented)")
+            elif response.get("action") == "analyze_image":
+                st.warning("🖼️ Image analysis awaiting your photo…")
+
+        else:
+            st.warning("🎤 No voice input detected.")
+
+    except Exception as e:
+        st.error("🎙️ Error while capturing voice:")
+        st.exception(e)
 # Footer
 st.markdown("---")
 st.markdown(
