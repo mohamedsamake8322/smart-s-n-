@@ -11,6 +11,7 @@ from datetime import datetime
 from utils.voice_assistant import voice_assistant
 from utils.micro_input import get_voice_input
 from utils.animations import typewriting_effect, pulsing_title
+
 # ✅ Configuration de la page (doit être la première commande Streamlit)
 st.set_page_config(
     page_title="SènèSmart Yield Predictor",
@@ -19,14 +20,19 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ✅ Effet d’apparition progressif sur le titre
+# ✅ HERO HEADER animé et stylé
 title_placeholder = st.empty()
-typewriting_effect(title_placeholder, "🌾 SènèSmart Yield Predictor")
+typewriting_effect(
+    title_placeholder,
+    "<h1 style='font-size: 46px; color:#2E7D32; font-weight: 800; margin-bottom: 0;'>🌾 SènèSmart Yield Predictor</h1>"
+)
 
-
-# ✅ Effet de "typewriting" sur le sous-titre
 subtitle_placeholder = st.empty()
-typewriting_effect(subtitle_placeholder, "### 🚀 SènèSmart Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SènèSmart Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈.")
+typewriting_effect(
+    subtitle_placeholder,
+    "<h3 style='color:#555; font-style: italic;'> 🚀 SènèSmart Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SènèSmart Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈.</h3>"
+)
+
 pulsing_title(components)
 # 🔹 Sidebar
 st.sidebar.title("Navigation")
