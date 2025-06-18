@@ -1,4 +1,4 @@
-﻿
+
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
@@ -65,9 +65,9 @@ class IoTSensor:
         """Get measurement unit for sensor type"""
         units = {
             'soil_moisture': '%',
-            'soil_temperature': 'Â°C',
+            'soil_temperature': '°C',
             'soil_ph': 'pH',
-            'air_temperature': 'Â°C',
+            'air_temperature': '°C',
             'humidity': '%',
             'light_intensity': 'lux',
             'wind_speed': 'm/s',
@@ -280,7 +280,7 @@ class PlantStressDetector:
             stress_analysis['detected_stresses'].append({
                 'type': 'heat_stress',
                 'severity': 'high' if current_temp > 45 else 'medium',
-                'indicator': f'Air temperature: {current_temp}Â°C',
+                'indicator': f'Air temperature: {current_temp}°C',
                 'recommendation': 'Increase irrigation frequency, provide shade if possible'
             })
             stress_analysis['recommendations'].append('Implement heat mitigation strategies')
@@ -496,4 +496,3 @@ for sensor_id, sensor_type, location in sample_sensors:
 # Add irrigation zones
 iot_system.irrigation_system.add_zone('zone_1', 10.5, 'wheat', ['soil_01', 'soil_02'])
 iot_system.irrigation_system.add_zone('zone_2', 8.2, 'corn', ['soil_03', 'air_01'])
-

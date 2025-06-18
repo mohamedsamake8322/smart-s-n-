@@ -6,9 +6,9 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from utils.data_processing import generate_soil_sample_data
 
-st.set_page_config(page_title="Soil Monitoring", page_icon="ðŸŒ±", layout="wide")
+st.set_page_config(page_title="Soil Monitoring", page_icon="🌱", layout="wide")
 
-st.title("ðŸŒ± Soil Monitoring & Analysis")
+st.title("🌱 Soil Monitoring & Analysis")
 st.markdown("### Comprehensive soil condition monitoring and analysis")
 
 # Initialize soil data if not exists
@@ -33,7 +33,7 @@ time_range = st.sidebar.selectbox(
 )
 
 # Refresh data button
-if st.sidebar.button("ðŸ”„ Refresh Soil Data"):
+if st.sidebar.button("🔄 Refresh Soil Data"):
     st.session_state.soil_data = generate_soil_sample_data()
     st.rerun()
 
@@ -77,7 +77,7 @@ with tab1:
             temperature = current_data.get('temperature', 0)
             st.metric(
                 "Soil Temperature",
-                f"{temperature:.1f}Â°C",
+                f"{temperature:.1f}°C",
                 help="Current soil temperature"
             )
         
@@ -101,27 +101,27 @@ with tab1:
             
             # pH assessment
             if 6.0 <= ph_value <= 7.5:
-                indicators.append(("pH Level", "âœ… Optimal", "green"))
+                indicators.append(("pH Level", "✅ Optimal", "green"))
             elif 5.5 <= ph_value < 6.0 or 7.5 < ph_value <= 8.0:
-                indicators.append(("pH Level", "âš ï¸ Moderate", "orange"))
+                indicators.append(("pH Level", "⚠️ Moderate", "orange"))
             else:
-                indicators.append(("pH Level", "âŒ Poor", "red"))
+                indicators.append(("pH Level", "❌ Poor", "red"))
             
             # Moisture assessment
             if 40 <= moisture <= 70:
-                indicators.append(("Moisture", "âœ… Good", "green"))
+                indicators.append(("Moisture", "✅ Good", "green"))
             elif 30 <= moisture < 40 or 70 < moisture <= 80:
-                indicators.append(("Moisture", "âš ï¸ Monitor", "orange"))
+                indicators.append(("Moisture", "⚠️ Monitor", "orange"))
             else:
-                indicators.append(("Moisture", "âŒ Critical", "red"))
+                indicators.append(("Moisture", "❌ Critical", "red"))
             
             # Temperature assessment
             if 15 <= temperature <= 25:
-                indicators.append(("Temperature", "âœ… Optimal", "green"))
+                indicators.append(("Temperature", "✅ Optimal", "green"))
             elif 10 <= temperature < 15 or 25 < temperature <= 30:
-                indicators.append(("Temperature", "âš ï¸ Acceptable", "orange"))
+                indicators.append(("Temperature", "⚠️ Acceptable", "orange"))
             else:
-                indicators.append(("Temperature", "âŒ Extreme", "red"))
+                indicators.append(("Temperature", "❌ Extreme", "red"))
             
             for indicator, status, color in indicators:
                 st.markdown(f"**{indicator}:** {status}")
@@ -319,7 +319,7 @@ with tab3:
                 st.markdown("**pH Statistics**")
                 st.write(f"Current pH: {current_ph:.2f}")
                 st.write(f"Average pH: {avg_ph:.2f}")
-                st.write(f"pH Variability: Â±{ph_std:.2f}")
+                st.write(f"pH Variability: ±{ph_std:.2f}")
                 
                 # pH classification
                 if current_ph < 5.5:
@@ -344,20 +344,20 @@ with tab3:
                 st.markdown("**pH Management Recommendations**")
                 
                 if current_ph < 6.0:
-                    st.write("ðŸŸ¡ **Acidic Soil Management:**")
-                    st.write("â€¢ Apply lime to raise pH")
-                    st.write("â€¢ Use calcium carbonate or dolomite")
-                    st.write("â€¢ Consider organic matter addition")
+                    st.write("🟡 **Acidic Soil Management:**")
+                    st.write("• Apply lime to raise pH")
+                    st.write("• Use calcium carbonate or dolomite")
+                    st.write("• Consider organic matter addition")
                 elif current_ph > 7.5:
-                    st.write("ðŸ”µ **Alkaline Soil Management:**")
-                    st.write("â€¢ Apply sulfur to lower pH")
-                    st.write("â€¢ Use acidifying fertilizers")
-                    st.write("â€¢ Add organic acids")
+                    st.write("🔵 **Alkaline Soil Management:**")
+                    st.write("• Apply sulfur to lower pH")
+                    st.write("• Use acidifying fertilizers")
+                    st.write("• Add organic acids")
                 else:
-                    st.write("ðŸŸ¢ **pH is in optimal range:**")
-                    st.write("â€¢ Maintain current practices")
-                    st.write("â€¢ Monitor regularly")
-                    st.write("â€¢ Consider crop-specific adjustments")
+                    st.write("🟢 **pH is in optimal range:**")
+                    st.write("• Maintain current practices")
+                    st.write("• Monitor regularly")
+                    st.write("• Consider crop-specific adjustments")
         
         else:
             st.warning("No pH data available for the selected field.")
@@ -433,20 +433,20 @@ with tab4:
                 st.markdown("**Irrigation Recommendations**")
                 
                 if current_moisture < 40:
-                    st.write("ðŸ’§ **Irrigation Needed:**")
-                    st.write("â€¢ Increase watering frequency")
-                    st.write("â€¢ Check irrigation system")
-                    st.write("â€¢ Consider mulching")
+                    st.write("💧 **Irrigation Needed:**")
+                    st.write("• Increase watering frequency")
+                    st.write("• Check irrigation system")
+                    st.write("• Consider mulching")
                 elif current_moisture > 70:
-                    st.write("âš ï¸ **Reduce Irrigation:**")
-                    st.write("â€¢ Decrease watering frequency")
-                    st.write("â€¢ Improve drainage")
-                    st.write("â€¢ Monitor for root rot")
+                    st.write("⚠️ **Reduce Irrigation:**")
+                    st.write("• Decrease watering frequency")
+                    st.write("• Improve drainage")
+                    st.write("• Monitor for root rot")
                 else:
-                    st.write("âœ… **Moisture is optimal:**")
-                    st.write("â€¢ Maintain current irrigation")
-                    st.write("â€¢ Monitor weather conditions")
-                    st.write("â€¢ Adjust based on crop needs")
+                    st.write("✅ **Moisture is optimal:**")
+                    st.write("• Maintain current irrigation")
+                    st.write("• Monitor weather conditions")
+                    st.write("• Adjust based on crop needs")
         
         else:
             st.warning("No moisture data available for the selected field.")
@@ -468,28 +468,28 @@ with tab5:
             # pH recommendations
             ph = latest_data.get('ph', 7.0)
             if ph < 6.0:
-                immediate_actions.append("ðŸŸ¡ Apply lime to correct soil acidity")
+                immediate_actions.append("🟡 Apply lime to correct soil acidity")
             elif ph > 8.0:
-                immediate_actions.append("ðŸ”µ Apply sulfur to reduce soil alkalinity")
+                immediate_actions.append("🔵 Apply sulfur to reduce soil alkalinity")
             
             # Moisture recommendations
             moisture = latest_data.get('moisture', 50)
             if moisture < 30:
-                immediate_actions.append("ðŸ’§ Urgent irrigation required")
+                immediate_actions.append("💧 Urgent irrigation required")
             elif moisture > 80:
-                immediate_actions.append("ðŸš° Improve field drainage")
+                immediate_actions.append("🚰 Improve field drainage")
             
             # Nutrient recommendations
             nitrogen = latest_data.get('nitrogen', 30)
             if nitrogen < 20:
-                immediate_actions.append("ðŸŒ± Apply nitrogen fertilizer")
+                immediate_actions.append("🌱 Apply nitrogen fertilizer")
             
             phosphorus = latest_data.get('phosphorus', 25)
             if phosphorus < 15:
-                immediate_actions.append("ðŸ§¬ Supplement phosphorus levels")
+                immediate_actions.append("🧬 Supplement phosphorus levels")
             
             if not immediate_actions:
-                st.success("âœ… No immediate actions required - soil conditions are good!")
+                st.success("✅ No immediate actions required - soil conditions are good!")
             else:
                 for action in immediate_actions:
                     st.write(action)
@@ -502,19 +502,19 @@ with tab5:
             
             with col1:
                 st.markdown("**Soil Improvement Plan:**")
-                st.write("â€¢ Regular organic matter addition")
-                st.write("â€¢ Crop rotation implementation")
-                st.write("â€¢ Cover crop utilization")
-                st.write("â€¢ Precision fertilizer application")
-                st.write("â€¢ Soil testing every 6 months")
+                st.write("• Regular organic matter addition")
+                st.write("• Crop rotation implementation")
+                st.write("• Cover crop utilization")
+                st.write("• Precision fertilizer application")
+                st.write("• Soil testing every 6 months")
             
             with col2:
                 st.markdown("**Monitoring Schedule:**")
-                st.write("â€¢ Daily: Moisture levels")
-                st.write("â€¢ Weekly: pH monitoring")
-                st.write("â€¢ Monthly: Nutrient analysis")
-                st.write("â€¢ Seasonal: Comprehensive soil test")
-                st.write("â€¢ Annual: Soil health assessment")
+                st.write("• Daily: Moisture levels")
+                st.write("• Weekly: pH monitoring")
+                st.write("• Monthly: Nutrient analysis")
+                st.write("• Seasonal: Comprehensive soil test")
+                st.write("• Annual: Soil health assessment")
             
             # Crop-specific recommendations
             st.markdown("---")
@@ -571,10 +571,10 @@ with tab5:
                 
                 with col1:
                     st.markdown(f"**{crop_selection} Requirements:**")
-                    st.write(f"â€¢ pH Range: {req['ph_range']}")
-                    st.write(f"â€¢ Nitrogen: {req['nitrogen']}")
-                    st.write(f"â€¢ Moisture: {req['moisture']}")
-                    st.write(f"â€¢ Special: {req['special']}")
+                    st.write(f"• pH Range: {req['ph_range']}")
+                    st.write(f"• Nitrogen: {req['nitrogen']}")
+                    st.write(f"• Moisture: {req['moisture']}")
+                    st.write(f"• Special: {req['special']}")
                 
                 with col2:
                     st.markdown("**Compatibility Assessment:**")
@@ -589,10 +589,10 @@ with tab5:
                     if len(ph_range) == 2:
                         ph_min, ph_max = float(ph_range[0]), float(ph_range[1])
                         if ph_min <= current_ph <= ph_max:
-                            st.write("âœ… pH Compatible")
+                            st.write("✅ pH Compatible")
                             compatibility_score += 1
                         else:
-                            st.write("âŒ pH Needs Adjustment")
+                            st.write("❌ pH Needs Adjustment")
                         total_checks += 1
                     
                     # Nitrogen compatibility
@@ -601,10 +601,10 @@ with tab5:
                     if len(n_range) == 2:
                         n_min, n_max = float(n_range[0].split()[0]), float(n_range[1].split()[0])
                         if n_min <= current_n <= n_max:
-                            st.write("âœ… Nitrogen Adequate")
+                            st.write("✅ Nitrogen Adequate")
                             compatibility_score += 1
                         else:
-                            st.write("âŒ Nitrogen Adjustment Needed")
+                            st.write("❌ Nitrogen Adjustment Needed")
                         total_checks += 1
                     
                     if total_checks > 0:
@@ -615,8 +615,3 @@ with tab5:
             st.warning("No soil data available for recommendations.")
     else:
         st.error("No soil monitoring data available.")
-
-
-
-
-

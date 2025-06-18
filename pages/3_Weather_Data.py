@@ -7,9 +7,9 @@ from datetime import datetime, timedelta
 import requests
 from utils.weather_api import WeatherAPI
 
-st.set_page_config(page_title="Weather Data", page_icon="ðŸŒ¤ï¸", layout="wide")
+st.set_page_config(page_title="Weather Data", page_icon="🌤️", layout="wide")
 
-st.title("ðŸŒ¤ï¸ Weather Data Integration")
+st.title("🌤️ Weather Data Integration")
 st.markdown("### Real-time and historical weather information for agricultural planning")
 
 # Initialize weather API
@@ -66,11 +66,11 @@ with tab1:
     col1, col2 = st.columns([2, 1])
     
     with col2:
-        if st.button("ðŸ”„ Refresh Weather Data", use_container_width=True):
+        if st.button("🔄 Refresh Weather Data", use_container_width=True):
             st.session_state.weather_data = None
     
     # Get current weather data
-    if st.button("ðŸ“¡ Get Current Weather", use_container_width=True) or 'current_weather' not in st.session_state:
+    if st.button("📡 Get Current Weather", use_container_width=True) or 'current_weather' not in st.session_state:
         with st.spinner("Fetching current weather data..."):
             current_weather = weather_api.get_current_weather(location_key)
             
@@ -89,8 +89,8 @@ with tab1:
         with col1:
             st.metric(
                 "Temperature",
-                f"{weather.get('temperature', 'N/A')}Â°C",
-                delta=f"Feels like {weather.get('feels_like', 'N/A')}Â°C"
+                f"{weather.get('temperature', 'N/A')}°C",
+                delta=f"Feels like {weather.get('feels_like', 'N/A')}°C"
             )
         
         with col2:
@@ -120,9 +120,9 @@ with tab1:
         
         with col1:
             st.markdown("**Weather Conditions**")
-            st.write(f"â˜ï¸ **Condition:** {weather.get('description', 'N/A').title()}")
-            st.write(f"ðŸ‘ï¸ **Visibility:** {weather.get('visibility', 'N/A')} km")
-            st.write(f"â˜€ï¸ **UV Index:** {weather.get('uv_index', 'N/A')}")
+            st.write(f"☁️ **Condition:** {weather.get('description', 'N/A').title()}")
+            st.write(f"👁️ **Visibility:** {weather.get('visibility', 'N/A')} km")
+            st.write(f"☀️ **UV Index:** {weather.get('uv_index', 'N/A')}")
             
         with col2:
             st.markdown("**Agricultural Relevance**")
@@ -132,18 +132,18 @@ with tab1:
             humidity = weather.get('humidity', 0)
             
             if temp < 5:
-                st.warning("ðŸ¥¶ Risk of frost - protect sensitive crops")
+                st.warning("🥶 Risk of frost - protect sensitive crops")
             elif temp > 35:
-                st.warning("ðŸ”¥ High temperature - ensure adequate irrigation")
+                st.warning("🔥 High temperature - ensure adequate irrigation")
             else:
-                st.success("ðŸŒ¡ï¸ Temperature suitable for most crops")
+                st.success("🌡️ Temperature suitable for most crops")
             
             if humidity < 30:
-                st.warning("ðŸœï¸ Low humidity - consider irrigation")
+                st.warning("🏜️ Low humidity - consider irrigation")
             elif humidity > 80:
-                st.warning("ðŸ’§ High humidity - monitor for fungal diseases")
+                st.warning("💧 High humidity - monitor for fungal diseases")
             else:
-                st.success("ðŸ’¨ Humidity levels optimal")
+                st.success("💨 Humidity levels optimal")
 
 with tab2:
     st.subheader("Weather Forecast")
@@ -156,7 +156,7 @@ with tab2:
         help="Number of days to forecast"
     )
     
-    if st.button("ðŸ“… Get Weather Forecast", use_container_width=True):
+    if st.button("📅 Get Weather Forecast", use_container_width=True):
         with st.spinner("Fetching weather forecast..."):
             forecast_data = weather_api.get_forecast(location_key, forecast_days)
             
@@ -197,7 +197,7 @@ with tab2:
                 fig_temp.update_layout(
                     title="Temperature Forecast",
                     xaxis_title="Date",
-                    yaxis_title="Temperature (Â°C)"
+                    yaxis_title="Temperature (°C)"
                 )
                 st.plotly_chart(fig_temp, use_container_width=True)
             
@@ -245,7 +245,7 @@ with tab3:
     if start_date >= end_date:
         st.error("Start date must be before end date.")
     else:
-        if st.button("ðŸ“Š Get Historical Data", use_container_width=True):
+        if st.button("📊 Get Historical Data", use_container_width=True):
             with st.spinner("Fetching historical weather data..."):
                 historical_data = weather_api.get_historical_data(location_key, start_date, end_date)
                 
@@ -268,7 +268,7 @@ with tab3:
                         x='date',
                         y='temperature',
                         title="Historical Temperature Trend",
-                        labels={'temperature': 'Temperature (Â°C)', 'date': 'Date'}
+                        labels={'temperature': 'Temperature (°C)', 'date': 'Date'}
                     )
                     st.plotly_chart(fig_hist_temp, use_container_width=True)
                 
@@ -328,27 +328,27 @@ with tab4:
             
             # Temperature-based recommendations
             if temp < 0:
-                recommendations.append("â„ï¸ Risk of freezing - protect crops with covers")
+                recommendations.append("❄️ Risk of freezing - protect crops with covers")
             elif temp < 5:
-                recommendations.append("ðŸ¥¶ Cold conditions - delay planting of warm-season crops")
+                recommendations.append("🥶 Cold conditions - delay planting of warm-season crops")
             elif temp > 30:
-                recommendations.append("ðŸŒ¡ï¸ Hot conditions - increase irrigation frequency")
-                recommendations.append("â˜‚ï¸ Provide shade for sensitive crops")
+                recommendations.append("🌡️ Hot conditions - increase irrigation frequency")
+                recommendations.append("☂️ Provide shade for sensitive crops")
             
             # Humidity-based recommendations
             if humidity > 85:
-                recommendations.append("ðŸ’§ High humidity - monitor for fungal diseases")
-                recommendations.append("ðŸŒ¬ï¸ Ensure good air circulation")
+                recommendations.append("💧 High humidity - monitor for fungal diseases")
+                recommendations.append("🌬️ Ensure good air circulation")
             elif humidity < 40:
-                recommendations.append("ðŸœï¸ Low humidity - increase irrigation")
+                recommendations.append("🏜️ Low humidity - increase irrigation")
             
             # Wind-based recommendations
             if wind_speed > 25:
-                recommendations.append("ðŸ’¨ Strong winds - secure plant supports")
-                recommendations.append("ðŸ›¡ï¸ Consider windbreaks for protection")
+                recommendations.append("💨 Strong winds - secure plant supports")
+                recommendations.append("🛡️ Consider windbreaks for protection")
             
             if not recommendations:
-                recommendations.append("âœ… Weather conditions are favorable for most agricultural activities")
+                recommendations.append("✅ Weather conditions are favorable for most agricultural activities")
             
             for rec in recommendations:
                 st.write(rec)
@@ -380,25 +380,20 @@ with tab4:
         if crop_type in crop_requirements:
             req = crop_requirements[crop_type]
             st.write(f"**{crop_type} Requirements:**")
-            st.write(f"â€¢ Temperature: {req['min_temp']}Â°C - {req['max_temp']}Â°C")
-            st.write(f"â€¢ Water needs: {req['rainfall']}")
+            st.write(f"• Temperature: {req['min_temp']}°C - {req['max_temp']}°C")
+            st.write(f"• Water needs: {req['rainfall']}")
     
     with col2:
         st.markdown("**Weather Alerts**")
         
         # Configurable weather alerts
-        temp_threshold = st.slider("Temperature Alert (Â°C)", -10, 45, 35)
+        temp_threshold = st.slider("Temperature Alert (°C)", -10, 45, 35)
         precip_threshold = st.slider("Precipitation Alert (mm)", 0, 100, 50)
         
         if 'current_weather' in st.session_state:
             current_temp = st.session_state.current_weather.get('temperature', 0)
             
             if current_temp > temp_threshold:
-                st.warning(f"ðŸš¨ Temperature alert: {current_temp}Â°C exceeds threshold of {temp_threshold}Â°C")
+                st.warning(f"🚨 Temperature alert: {current_temp}°C exceeds threshold of {temp_threshold}°C")
             else:
-                st.success("âœ… Temperature within acceptable range")
-
-
-
-
-
+                st.success("✅ Temperature within acceptable range")

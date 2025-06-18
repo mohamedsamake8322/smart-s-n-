@@ -1,16 +1,16 @@
-﻿from typing import Dict, List, Any
+from typing import Dict, List, Any
 import os
 import numpy as np # type: ignore
 import tensorflow as tf # type: ignore
 import logging
-import cv2  # type: ignore # ðŸš€ Ajout de l'importation OpenCV
+import cv2  # type: ignore # 🚀 Ajout de l'importation OpenCV
 from reportlab.lib.pagesizes import A4 # type: ignore
 from reportlab.pdfgen import canvas # type: ignore
 
 
 class ExtendedDiseaseDatabase:
     """
-    Base de donnÃ©es Ã©tendue avec 100+ maladies agricoles
+    Base de données étendue avec 100+ maladies agricoles
     Couvre toutes les cultures principales et maladies mondiales
     """
 
@@ -23,62 +23,62 @@ class ExtendedDiseaseDatabase:
 
 def _initialize_extended_disease_database() -> Dict[str, Dict]:
     """
-    Base de donnÃ©es Ã©tendue avec 100+ maladies.
+    Base de données étendue avec 100+ maladies.
     """
     return {
         "Maladie1": {
-            "symptÃ´mes": ["FiÃ¨vre", "Douleurs"],
+            "symptômes": ["Fièvre", "Douleurs"],
             "traitement": "Antibiotiques",
         },
-        "Maladie2": {"symptÃ´mes": ["Toux", "Fatigue"], "traitement": "Repos"},
+        "Maladie2": {"symptômes": ["Toux", "Fatigue"], "traitement": "Repos"},
     }
 
 
-# âœ… Base globale des maladies (aprÃ¨s l'initialisation)
+# ✅ Base globale des maladies (après l'initialisation)
 DISEASE_DATABASE = _initialize_extended_disease_database(None)
 
-# ðŸš€ Configuration du logger
+# 🚀 Configuration du logger
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-print("âœ… Script `diseases_infos.py` exÃ©cutÃ© avec succÃ¨s !")
+print("✅ Script `diseases_infos.py` exécuté avec succès !")
 
 logger = logging.getLogger(__name__)
 
 
 class DiseaseManager:
     def __init__(self, model_path):
-        """Initialisation du gestionnaire de maladies et chargement du modÃ¨le CNN."""
+        """Initialisation du gestionnaire de maladies et chargement du modèle CNN."""
         self.model_path = model_path
         self.model = None
 
-        if os.path.exists(self.model_path):  # âœ… VÃ©rifie si le modÃ¨le existe
+        if os.path.exists(self.model_path):  # ✅ Vérifie si le modèle existe
             self.load_model(self.model_path)
         else:
             raise FileNotFoundError(
-                f"ðŸš¨ ModÃ¨le introuvable : {self.model_path}"
+                f"🚨 Modèle introuvable : {self.model_path}"
             )
 
     def load_model(self, model_path):
-        """Charge le modÃ¨le CNN et l'attache Ã  l'instance."""
+        """Charge le modèle CNN et l'attache à l'instance."""
         if not os.path.exists(model_path):
             logger.error(
-                f"ðŸš¨ Erreur : Le fichier modÃ¨le {model_path} est introuvable."
+                f"🚨 Erreur : Le fichier modèle {model_path} est introuvable."
             )
-            raise FileNotFoundError(f"ðŸš¨ ModÃ¨le non trouvÃ© : {model_path}")
+            raise FileNotFoundError(f"🚨 Modèle non trouvé : {model_path}")
 
         try:
             self.model = tf.keras.models.load_model(model_path)
-            logger.info(f"âœ… ModÃ¨le chargÃ© avec succÃ¨s : {model_path}")
+            logger.info(f"✅ Modèle chargé avec succès : {model_path}")
         except Exception as e:
-            logger.error(f"ðŸš¨ Impossible de charger le modÃ¨le : {e}")
-            raise RuntimeError(f"ðŸš¨ Ã‰chec du chargement du modÃ¨le : {e}")
+            logger.error(f"🚨 Impossible de charger le modèle : {e}")
+            raise RuntimeError(f"🚨 Échec du chargement du modèle : {e}")
 
     def add_disease(
         self, name, hosts, overview, symptoms, management, insecticides
     ):
-        """Ajoute une maladie avec ses dÃ©tails."""
+        """Ajoute une maladie avec ses détails."""
         self.diseases[name] = {
             "hosts": hosts,
             "overview": overview,
@@ -88,12 +88,12 @@ class DiseaseManager:
         }
         DISEASE_DATABASE[name] = self.diseases[
             name
-        ]  # âœ… Enregistrement global
+        ]  # ✅ Enregistrement global
 
     def get_disease_info(self, disease_name):
-        """Retourne les informations complÃ¨tes sur une maladie en fonction de son nom."""
+        """Retourne les informations complètes sur une maladie en fonction de son nom."""
         return self.diseases.get(
-            disease_name, "ðŸš¨ Aucune information trouvÃ©e sur cette maladie."
+            disease_name, "🚨 Aucune information trouvée sur cette maladie."
         )
 
     def upload_image(self, image_file, save_path="uploads/"):
@@ -105,7 +105,7 @@ class DiseaseManager:
         file_extension = image_file.name.split(".")[-1].lower()
 
         if file_extension not in allowed_extensions:
-            return "ðŸš¨ Format d'image non pris en charge."
+            return "🚨 Format d'image non pris en charge."
 
         file_path = os.path.join(save_path, image_file.name)
 
@@ -115,26 +115,26 @@ class DiseaseManager:
         return file_path
 
     def analyze_image(self, image_path):
-        """Analyse une image pour dÃ©tecter une maladie en utilisant le modÃ¨le CNN."""
+        """Analyse une image pour détecter une maladie en utilisant le modèle CNN."""
         if not os.path.exists(image_path):
-            return "ðŸš¨ Erreur : Image introuvable"
+            return "🚨 Erreur : Image introuvable"
 
         image = cv2.imread(image_path)
         if image is None:
-            return "ðŸš¨ Erreur : Image non valide"
+            return "🚨 Erreur : Image non valide"
 
         processed_image = cv2.resize(image, (224, 224))
         processed_image = np.expand_dims(processed_image, axis=0) / 255.0
 
-        prediction = self.model.predict(processed_image)  # PrÃ©diction par CNN
+        prediction = self.model.predict(processed_image)  # Prédiction par CNN
         detected_disease = self.decode_prediction(
             prediction
-        )  # ðŸ“Œ Traduction du label IA
+        )  # 📌 Traduction du label IA
 
         return detected_disease
 
     def decode_prediction(self, prediction):
-        """Transforme la prÃ©diction du modÃ¨le en un label comprÃ©hensible."""
+        """Transforme la prédiction du modèle en un label compréhensible."""
         disease_labels = list(self.diseases.keys())
         return (
             disease_labels[prediction.argmax()]
@@ -145,9 +145,9 @@ class DiseaseManager:
     def export_to_pdf(
         self, disease_name, user_name="Unknown", save_path="reports/"
     ):
-        """GÃ©nÃ¨re un rapport PDF avec les informations sur la maladie."""
+        """Génère un rapport PDF avec les informations sur la maladie."""
         if disease_name not in self.diseases:
-            return "ðŸš¨ Maladie introuvable"
+            return "🚨 Maladie introuvable"
 
         if not os.path.exists(save_path):
             os.makedirs(save_path)
@@ -162,7 +162,7 @@ class DiseaseManager:
     def _generate_pdf_report(
         self, user_name, disease_name, disease, save_path
     ):
-        """CrÃ©e un PDF avec les dÃ©tails de la maladie."""
+        """Crée un PDF avec les détails de la maladie."""
         buffer = os.path.join(save_path, f"{disease_name}_report.pdf")
         c = canvas.Canvas(buffer, pagesize=A4)
         width, height = A4
@@ -174,7 +174,7 @@ class DiseaseManager:
         c.drawString(50, height - 80, f"User: {user_name}")
         c.drawString(50, height - 100, f"Disease Detected: {disease_name}")
 
-        # ðŸ“Œ Ajout des informations sur la maladie
+        # 📌 Ajout des informations sur la maladie
         y = height - 140
         for key, value in disease.items():
             c.drawString(70, y, f"{key}: {value}")
@@ -185,7 +185,7 @@ class DiseaseManager:
         return buffer
 
 
-# âœ… Ajout des maladies
+# ✅ Ajout des maladies
 disease_manager = DiseaseManager()
 disease_manager.add_disease(
     "Aphids on Vegetables",
@@ -217,7 +217,7 @@ disease_manager.add_disease(
     ],
 )
 
-print("ðŸš€ Disease Manager is fully operational!")
+print("🚀 Disease Manager is fully operational!")
 
 disease_manager.add_disease(
     "Armyworms on Vegetables",
@@ -261,7 +261,7 @@ disease_manager.add_disease(
         "Blister beetle populations are influenced "
         "by grasshopper populations..."
     ),
-    [],  # Ajout de la liste vide pour Ã©viter l'erreur
+    [],  # Ajout de la liste vide pour éviter l'erreur
 )
 
 disease_manager.add_disease(
@@ -649,7 +649,7 @@ disease_manager.add_disease(
 disease_manager.add_disease(
     "Bacterial Speck",
     ["Tomato"],
-    "Bacterial speck (Pseudomonas syringae pv. tomato) infections occur during cool (63 to 75Â°F) wet conditions...",
+    "Bacterial speck (Pseudomonas syringae pv. tomato) infections occur during cool (63 to 75°F) wet conditions...",
     "Brown to black spots with a yellow halo on leaves, scabby pinpoint-like spots on fruit, damage does not penetrate into flesh...",
     "Start examining undersides of leaves soon after planting, delay planting until wet conditions pass, avoid overhead irrigation, rotate crops...",
     ["Crop rotation", "Avoid overhead irrigation"],
@@ -780,7 +780,7 @@ disease_manager.add_disease(
     "Powdery mildew is easily identifiable as white, powdery patches on leaves. It thrives in warm temperatures, humid canopies, and poor airflow...",
     "White, powdery fungal growth on leaves, stems, and petioles; yellowing and wilting of leaves, potential fruit sunscald and yield loss...",
     "Plant resistant varieties, remove infected plant material after harvest, improve air circulation, use morning irrigation, switch to drip irrigation...",
-    ["Fungicides available, repeated applications every 7â€“10 days"],
+    ["Fungicides available, repeated applications every 7–10 days"],
 )
 disease_manager.add_disease(
     "Tobacco Mosaic Virus & Tomato Mosaic Virus",
@@ -849,7 +849,7 @@ disease_manager.add_disease(
     ["Protectant fungicide sprays recommended"],
 )
 
-# âœ… Correction du dictionnaire pour "Healthy"
+# ✅ Correction du dictionnaire pour "Healthy"
 DISEASE_DATABASE = {
     "Healthy": {
         "name": "Plante Saine",
@@ -864,22 +864,22 @@ DISEASE_DATABASE = {
 
 
 def _initialize_extended_treatments_database(self) -> Dict[str, List[Dict]]:
-    """Traitements pour les maladies Ã©tendues"""
+    """Traitements pour les maladies étendues"""
     return {
         # Ajouter tous les traitements pour chaque maladie
-        # Structure similaire mais Ã©tendue pour 100+ maladies
+        # Structure similaire mais étendue pour 100+ maladies
     }
 
 
 def _initialize_extended_prevention_database(self) -> Dict[str, List[str]]:
-    """PrÃ©ventions pour les maladies Ã©tendues"""
+    """Préventions pour les maladies étendues"""
     return {
-        # Ajouter toutes les prÃ©ventions pour chaque maladie
+        # Ajouter toutes les préventions pour chaque maladie
     }
 
 
 def _initialize_regional_disease_data(self) -> Dict[str, List[str]]:
-    """DonnÃ©es rÃ©gionales des maladies"""
+    """Données régionales des maladies"""
     return {
         "Europe": ["Wheat_Stripe_rust", "Apple_Scab", "Grape_Downy_mildew"],
         "Asie": [
@@ -892,12 +892,12 @@ def _initialize_regional_disease_data(self) -> Dict[str, List[str]]:
             "Cocoa_Black_pod",
             "Rice_Brown_spot",
         ],
-        "AmÃ©riques": [
+        "Amériques": [
             "Tomato_Late_blight",
             "Corn_Common_rust",
             "Citrus_Greening",
         ],
-        "OcÃ©anie": ["Wheat_Stem_rust", "Grape_Powdery_mildew"],
+        "Océanie": ["Wheat_Stem_rust", "Grape_Powdery_mildew"],
     }
 
 
@@ -907,7 +907,7 @@ def get_disease_count(self) -> int:
 
 
 def get_diseases_by_severity(self, severity: str) -> List[Dict]:
-    """RÃ©cupÃ¨re les maladies par niveau de sÃ©vÃ©ritÃ©"""
+    """Récupère les maladies par niveau de sévérité"""
     return [
         {**disease_data, "id": disease_id}
         for disease_id, disease_data in self.diseases_data.items()
@@ -916,7 +916,7 @@ def get_diseases_by_severity(self, severity: str) -> List[Dict]:
 
 
 def get_diseases_by_region(self, region: str) -> List[Dict]:
-    """RÃ©cupÃ¨re les maladies par rÃ©gion"""
+    """Récupère les maladies par région"""
     regional_diseases = self.regional_data.get(region, [])
     return [
         {**self.diseases_data[disease_id], "id": disease_id}
@@ -926,7 +926,7 @@ def get_diseases_by_region(self, region: str) -> List[Dict]:
 
 
 def get_economic_impact_analysis(self) -> Dict[str, Any]:
-    """Analyse de l'impact Ã©conomique des maladies"""
+    """Analyse de l'impact économique des maladies"""
     impact_counts = {}
     for disease_data in self.diseases_data.values():
         impact = disease_data.get("economic_impact", "Unknown")
@@ -941,4 +941,3 @@ def get_economic_impact_analysis(self) -> Dict[str, Any]:
             if data.get("economic_impact") == "Catastrophique"
         ],
     }
-

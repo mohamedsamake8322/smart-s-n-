@@ -1,4 +1,4 @@
-﻿
+
 import json
 from typing import Dict, Any
 translations = {}
@@ -103,80 +103,80 @@ class TranslationManager:
                 'subtitle': 'Plateforme d\'Intelligence Agricole IA',
                 'navigation': 'Navigation',
                 'dashboard': 'Tableau de Bord',
-                'yield_prediction': 'PrÃ©diction de Rendement',
-                'weather_data': 'DonnÃ©es MÃ©tÃ©o',
+                'yield_prediction': 'Prédiction de Rendement',
+                'weather_data': 'Données Météo',
                 'soil_monitoring': 'Surveillance du Sol',
-                'data_upload': 'TÃ©lÃ©chargement de DonnÃ©es',
-                'disease_detection': 'DÃ©tection de Maladies',
+                'data_upload': 'Téléchargement de Données',
+                'disease_detection': 'Détection de Maladies',
                 'drone_imagery': 'Imagerie Drone',
-                'climate_forecasting': 'PrÃ©vision Climatique',
-                'marketplace': 'MarchÃ© Agricole',
-                'social_network': 'RÃ©seau Social Agricole',
+                'climate_forecasting': 'Prévision Climatique',
+                'marketplace': 'Marché Agricole',
+                'social_network': 'Réseau Social Agricole',
                 'iot_monitoring': 'Surveillance IoT',
                 'voice_assistant': 'Assistant Vocal',
-                'blockchain_traceability': 'TraÃ§abilitÃ© Blockchain',
-                'profitability_analysis': 'Analyse de RentabilitÃ©',
-                'scenario_modeling': 'ModÃ©lisation de ScÃ©narios',
+                'blockchain_traceability': 'Traçabilité Blockchain',
+                'profitability_analysis': 'Analyse de Rentabilité',
+                'scenario_modeling': 'Modélisation de Scénarios',
                 
                 # Tableau de Bord
-                'key_metrics': 'Indicateurs ClÃ©s de Performance',
+                'key_metrics': 'Indicateurs Clés de Performance',
                 'total_farms': 'Total Fermes',
                 'average_yield': 'Rendement Moyen (tonnes/ha)',
                 'total_area': 'Surface Totale (hectares)',
-                'crop_varieties': 'VariÃ©tÃ©s de Cultures',
+                'crop_varieties': 'Variétés de Cultures',
                 'total_profit': 'Profit Total ($)',
-                'weather_status': 'Ã‰tat MÃ©tÃ©o',
-                'predictions_made': 'PrÃ©dictions EffectuÃ©es',
+                'weather_status': 'État Météo',
+                'predictions_made': 'Prédictions Effectuées',
                 
                 # Actions Communes
-                'upload': 'TÃ©lÃ©charger',
-                'download': 'TÃ©lÃ©charger',
+                'upload': 'Télécharger',
+                'download': 'Télécharger',
                 'export': 'Exporter',
                 'save': 'Sauvegarder',
                 'delete': 'Supprimer',
                 'edit': 'Modifier',
                 'view': 'Voir',
                 'analyze': 'Analyser',
-                'predict': 'PrÃ©dire',
+                'predict': 'Prédire',
                 'optimize': 'Optimiser'
             },
             'es': {
-                'title': 'Plataforma de AnÃ¡lisis AgrÃ­cola',
-                'subtitle': 'Plataforma de Inteligencia AgrÃ­cola IA',
-                'navigation': 'NavegaciÃ³n',
+                'title': 'Plataforma de Análisis Agrícola',
+                'subtitle': 'Plataforma de Inteligencia Agrícola IA',
+                'navigation': 'Navegación',
                 'dashboard': 'Panel de Control',
-                'yield_prediction': 'PredicciÃ³n de Rendimiento',
-                'weather_data': 'Datos MeteorolÃ³gicos',
+                'yield_prediction': 'Predicción de Rendimiento',
+                'weather_data': 'Datos Meteorológicos',
                 'soil_monitoring': 'Monitoreo del Suelo',
                 'data_upload': 'Carga de Datos',
-                'disease_detection': 'DetecciÃ³n de Enfermedades',
-                'drone_imagery': 'ImÃ¡genes de Drones',
-                'climate_forecasting': 'PronÃ³stico ClimÃ¡tico',
-                'marketplace': 'Mercado AgrÃ­cola',
-                'social_network': 'Red Social AgrÃ­cola',
+                'disease_detection': 'Detección de Enfermedades',
+                'drone_imagery': 'Imágenes de Drones',
+                'climate_forecasting': 'Pronóstico Climático',
+                'marketplace': 'Mercado Agrícola',
+                'social_network': 'Red Social Agrícola',
                 'iot_monitoring': 'Monitoreo IoT'
             },
             'de': {
                 'title': 'Landwirtschaftliche Analyseplattform',
-                'subtitle': 'KI-gestÃ¼tzte Landwirtschaftliche Intelligenzplattform',
+                'subtitle': 'KI-gestützte Landwirtschaftliche Intelligenzplattform',
                 'navigation': 'Navigation',
                 'dashboard': 'Dashboard',
                 'yield_prediction': 'Ertragsvorhersage',
                 'weather_data': 'Wetterdaten',
-                'soil_monitoring': 'BodenÃ¼berwachung',
+                'soil_monitoring': 'Bodenüberwachung',
                 'data_upload': 'Datenupload',
                 'disease_detection': 'Krankheitserkennung'
             },
             'zh': {
-                'title': 'å†œä¸šåˆ†æžå¹³å°',
-                'subtitle': 'AIé©±åŠ¨çš„å†œä¸šæ™ºèƒ½å¹³å°',
-                'navigation': 'å¯¼èˆª',
-                'dashboard': 'ä»ªè¡¨æ¿',
-                'yield_prediction': 'äº§é‡é¢„æµ‹',
-                'weather_data': 'å¤©æ°”æ•°æ®',
-                'soil_monitoring': 'åœŸå£¤ç›‘æµ‹',
-                'data_upload': 'æ•°æ®ä¸Šä¼ ',
-                'disease_detection': 'ç—…å®³æ£€æµ‹'
+                'title': '农业分析平台',
+                'subtitle': 'AI驱动的农业智能平台',
+                'navigation': '导航',
+                'dashboard': '仪表板',
+                'yield_prediction': '产量预测',
+                'weather_data': '天气数据',
+                'soil_monitoring': '土壤监测',
+                'data_upload': '数据上传',
+                'disease_detection': '病害检测'
             }
         }
     
@@ -192,11 +192,11 @@ class TranslationManager:
     
     def get_available_languages(self) -> Dict[str, str]:
         return {
-            'en': 'ðŸ‡ºðŸ‡¸ English',
-            'fr': 'ðŸ‡«ðŸ‡· FranÃ§ais',
-            'es': 'ðŸ‡ªðŸ‡¸ EspaÃ±ol',
-            'de': 'ðŸ‡©ðŸ‡ª Deutsch',
-            'zh': 'ðŸ‡¨ðŸ‡³ ä¸­æ–‡'
+            'en': '🇺🇸 English',
+            'fr': '🇫🇷 Français',
+            'es': '🇪🇸 Español',
+            'de': '🇩🇪 Deutsch',
+            'zh': '🇨🇳 中文'
         }
 
 # Global translation manager instance
@@ -213,7 +213,7 @@ translations.update({
     },
     'create_plan': {
         'en': 'Create Plan',
-        'fr': 'CrÃ©er Plan'
+        'fr': 'Créer Plan'
     },
     'crop_database': {
         'en': 'Crop Database',
@@ -225,11 +225,11 @@ translations.update({
     },
     'cost_analysis': {
         'en': 'Cost Analysis',
-        'fr': 'Analyse CoÃ»ts'
+        'fr': 'Analyse Coûts'
     },
     'iot_integration': {
         'en': 'IoT Integration',
-        'fr': 'IntÃ©gration IoT'
+        'fr': 'Intégration IoT'
     },
     'plan_history': {
         'en': 'Plan History',
@@ -237,7 +237,7 @@ translations.update({
     },
     'create_fertilization_plan': {
         'en': 'Create Fertilization Plan',
-        'fr': 'CrÃ©er Plan de Fertilisation'
+        'fr': 'Créer Plan de Fertilisation'
     },
     'farm_information': {
         'en': 'Farm Information',
@@ -257,7 +257,7 @@ translations.update({
     },
     'farm_name_help': {
         'en': 'Enter the farm or company name',
-        'fr': 'Saisir le nom de l\'exploitation ou sociÃ©tÃ©'
+        'fr': 'Saisir le nom de l\'exploitation ou société'
     },
     'crop_type': {
         'en': 'Crop Type',
@@ -301,47 +301,47 @@ translations.update({
     },
     'organic_matter': {
         'en': 'Organic Matter (%)',
-        'fr': 'MatiÃ¨re Organique (%)'
+        'fr': 'Matière Organique (%)'
     },
     'soil_moisture': {
         'en': 'Soil Moisture (%)',
-        'fr': 'HumiditÃ© Sol (%)'
+        'fr': 'Humidité Sol (%)'
     },
     'moisture_help': {
         'en': 'Current soil moisture percentage',
-        'fr': 'Pourcentage d\'humiditÃ© actuel du sol'
+        'fr': 'Pourcentage d\'humidité actuel du sol'
     },
     'generate_plan': {
         'en': 'Generate Plan',
-        'fr': 'GÃ©nÃ©rer Plan'
+        'fr': 'Générer Plan'
     },
     'generating_plan': {
         'en': 'Generating fertilization plan...',
-        'fr': 'GÃ©nÃ©ration du plan de fertilisation...'
+        'fr': 'Génération du plan de fertilisation...'
     },
     'plan_generated': {
         'en': 'Fertilization plan generated successfully!',
-        'fr': 'Plan de fertilisation gÃ©nÃ©rÃ© avec succÃ¨s !'
+        'fr': 'Plan de fertilisation généré avec succès !'
     },
     'plan_preview': {
         'en': 'Plan Preview',
-        'fr': 'AperÃ§u du Plan'
+        'fr': 'Aperçu du Plan'
     },
     'generate_pdf': {
         'en': 'Generate PDF',
-        'fr': 'GÃ©nÃ©rer PDF'
+        'fr': 'Générer PDF'
     },
     'download_pdf': {
         'en': 'Download PDF',
-        'fr': 'TÃ©lÃ©charger PDF'
+        'fr': 'Télécharger PDF'
     },
     'create_plan_first': {
         'en': 'Create a fertilization plan first to see the preview',
-        'fr': 'CrÃ©ez d\'abord un plan de fertilisation pour voir l\'aperÃ§u'
+        'fr': 'Créez d\'abord un plan de fertilisation pour voir l\'aperçu'
     },
     'select_crop_info': {
         'en': 'Select crop to view information',
-        'fr': 'SÃ©lectionner une culture pour voir les informations'
+        'fr': 'Sélectionner une culture pour voir les informations'
     },
     'quick_actions': {
         'en': 'Quick Actions',
@@ -349,7 +349,6 @@ translations.update({
     },
     'refresh_data': {
         'en': 'Refresh Data',
-        'fr': 'Actualiser DonnÃ©es'
+        'fr': 'Actualiser Données'
     }
 })
-

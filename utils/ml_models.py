@@ -1,4 +1,4 @@
-﻿import pandas as pd
+import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
@@ -524,4 +524,3 @@ def prepare_prediction_data(raw_data: Dict) -> pd.DataFrame:
             df[col] = pd.to_numeric(df[col], errors='coerce')
     
     return df
-

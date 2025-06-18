@@ -1,4 +1,4 @@
-﻿
+
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -18,14 +18,14 @@ from typing import Dict, List, Any
 import base64
 
 class FertilizationPDFGenerator:
-    """GÃ©nÃ©rateur de rapports PDF pour les plans de fertilisation"""
+    """Générateur de rapports PDF pour les plans de fertilisation"""
     
     def __init__(self):
         self.styles = getSampleStyleSheet()
         self.setup_custom_styles()
     
     def setup_custom_styles(self):
-        """DÃ©finit les styles personnalisÃ©s"""
+        """Définit les styles personnalisés"""
         self.styles.add(ParagraphStyle(
             name='CustomTitle',
             parent=self.styles['Title'],
@@ -71,13 +71,13 @@ class FertilizationPDFGenerator:
     
     def generate_fertilization_pdf(self, plan_data: Dict, farmer_info: Dict, 
                                  output_path: str = None) -> str:
-        """GÃ©nÃ¨re le rapport PDF complet"""
+        """Génère le rapport PDF complet"""
         
         if not output_path:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             output_path = f"fertilization_plan_{timestamp}.pdf"
         
-        # CrÃ©ation du document
+        # Création du document
         doc = SimpleDocTemplate(
             output_path,
             pagesize=A4,
@@ -90,10 +90,10 @@ class FertilizationPDFGenerator:
         # Construction du contenu
         story = []
         
-        # En-tÃªte
+        # En-tête
         story.extend(self._create_header(farmer_info, plan_data))
         
-        # RÃ©sumÃ© exÃ©cutif
+        # Résumé exécutif
         story.extend(self._create_executive_summary(plan_data))
         
         # Analyse du sol
@@ -102,13 +102,13 @@ class FertilizationPDFGenerator:
         # Programme de fertilisation
         story.extend(self._create_fertilization_program(plan_data))
         
-        # Calendrier dÃ©taillÃ©
+        # Calendrier détaillé
         story.extend(self._create_detailed_schedule(plan_data))
         
         # Recommandations
         story.extend(self._create_recommendations(plan_data))
         
-        # Estimation des coÃ»ts
+        # Estimation des coûts
         story.extend(self._create_cost_analysis(plan_data))
         
         # Graphiques et visualisations
@@ -117,13 +117,13 @@ class FertilizationPDFGenerator:
         # Annexes
         story.extend(self._create_appendices(plan_data))
         
-        # GÃ©nÃ©ration du PDF
+        # Génération du PDF
         doc.build(story)
         
         return output_path
     
     def _create_header(self, farmer_info: Dict, plan_data: Dict) -> List:
-        """CrÃ©e l'en-tÃªte du document"""
+        """Crée l'en-tête du document"""
         elements = []
         
         # Titre principal
@@ -136,8 +136,8 @@ class FertilizationPDFGenerator:
         
         # Informations agriculteur et exploitation
         header_data = [
-            ['Agriculteur:', farmer_info.get('name', 'Non spÃ©cifiÃ©')],
-            ['Exploitation:', farmer_info.get('farm_name', 'Non spÃ©cifiÃ©e')],
+            ['Agriculteur:', farmer_info.get('name', 'Non spécifié')],
+            ['Exploitation:', farmer_info.get('farm_name', 'Non spécifiée')],
             ['Culture:', plan_data['crop_info']['name']],
             ['Superficie:', f"{farmer_info.get('area', 0)} hectares"],
             ['Date du plan:', datetime.now().strftime("%d/%m/%Y")],
@@ -162,20 +162,20 @@ class FertilizationPDFGenerator:
         return elements
     
     def _create_executive_summary(self, plan_data: Dict) -> List:
-        """CrÃ©e le rÃ©sumÃ© exÃ©cutif"""
+        """Crée le résumé exécutif"""
         elements = []
         
-        elements.append(Paragraph("RÃ‰SUMÃ‰ EXÃ‰CUTIF", self.styles['CustomHeading']))
+        elements.append(Paragraph("RÉSUMÉ EXÉCUTIF", self.styles['CustomHeading']))
         
-        # MÃ©triques clÃ©s
+        # Métriques clés
         soil_quality = plan_data['soil_analysis']['soil_quality_score']
         total_cost = plan_data['total_cost_estimate']['total_cost_euros']
         
         summary_text = f"""
-        <b>QualitÃ© du sol:</b> {soil_quality:.1f}/100<br/>
-        <b>CoÃ»t total estimÃ©:</b> {total_cost:.2f} â‚¬<br/>
+        <b>Qualité du sol:</b> {soil_quality:.1f}/100<br/>
+        <b>Coût total estimé:</b> {total_cost:.2f} €<br/>
         <b>Nombre d'applications:</b> {len(plan_data['fertilization_schedule'])} stades<br/>
-        <b>Optimisation IA:</b> {'ActivÃ©e' if plan_data.get('ai_optimization') else 'Non disponible'}
+        <b>Optimisation IA:</b> {'Activée' if plan_data.get('ai_optimization') else 'Non disponible'}
         """
         
         elements.append(Paragraph(summary_text, self.styles['CustomBody']))
@@ -184,15 +184,15 @@ class FertilizationPDFGenerator:
         return elements
     
     def _create_soil_analysis(self, plan_data: Dict) -> List:
-        """CrÃ©e la section d'analyse du sol"""
+        """Crée la section d'analyse du sol"""
         elements = []
         
         elements.append(Paragraph("ANALYSE DU SOL", self.styles['CustomHeading']))
         
         soil_analysis = plan_data['soil_analysis']
         
-        # Tableau des disponibilitÃ©s
-        availability_data = [['Nutriment', 'DisponibilitÃ© (%)', 'Statut']]
+        # Tableau des disponibilités
+        availability_data = [['Nutriment', 'Disponibilité (%)', 'Statut']]
         
         for nutrient, availability in soil_analysis['nutrient_availability'].items():
             percentage = availability * 100
@@ -220,21 +220,21 @@ class FertilizationPDFGenerator:
         elements.append(availability_table)
         elements.append(Spacer(1, 15))
         
-        # Score de qualitÃ©
-        quality_text = f"<b>Score de qualitÃ© global:</b> {soil_analysis['soil_quality_score']:.1f}/100"
+        # Score de qualité
+        quality_text = f"<b>Score de qualité global:</b> {soil_analysis['soil_quality_score']:.1f}/100"
         elements.append(Paragraph(quality_text, self.styles['CustomBody']))
         elements.append(Spacer(1, 20))
         
         return elements
     
     def _create_fertilization_program(self, plan_data: Dict) -> List:
-        """CrÃ©e le programme de fertilisation"""
+        """Crée le programme de fertilisation"""
         elements = []
         
         elements.append(Paragraph("PROGRAMME DE FERTILISATION", self.styles['CustomHeading']))
         
         # Tableau des besoins totaux
-        nutrients_data = [['Nutriment', 'Besoin total (kg/ha)', 'Besoin ajustÃ© (kg/ha)']]
+        nutrients_data = [['Nutriment', 'Besoin total (kg/ha)', 'Besoin ajusté (kg/ha)']]
         
         adjusted_nutrients = plan_data['adjusted_nutrients']
         
@@ -261,7 +261,7 @@ class FertilizationPDFGenerator:
         return elements
     
     def _create_detailed_schedule(self, plan_data: Dict) -> List:
-        """CrÃ©e le calendrier dÃ©taillÃ©"""
+        """Crée le calendrier détaillé"""
         elements = []
         
         elements.append(Paragraph("CALENDRIER D'APPLICATION", self.styles['CustomHeading']))
@@ -296,7 +296,7 @@ class FertilizationPDFGenerator:
             # Recommandations de timing
             timing_text = "<b>Recommandations:</b><br/>"
             for rec in stage['timing_recommendations']:
-                timing_text += f"â€¢ {rec}<br/>"
+                timing_text += f"• {rec}<br/>"
             
             elements.append(Paragraph(timing_text, self.styles['Recommendation']))
             elements.append(Spacer(1, 15))
@@ -304,10 +304,10 @@ class FertilizationPDFGenerator:
         return elements
     
     def _create_recommendations(self, plan_data: Dict) -> List:
-        """CrÃ©e la section des recommandations"""
+        """Crée la section des recommandations"""
         elements = []
         
-        elements.append(Paragraph("RECOMMANDATIONS SPÃ‰CIFIQUES", self.styles['CustomHeading']))
+        elements.append(Paragraph("RECOMMANDATIONS SPÉCIFIQUES", self.styles['CustomHeading']))
         
         recommendations_text = ""
         for i, rec in enumerate(plan_data['recommendations'], 1):
@@ -319,21 +319,21 @@ class FertilizationPDFGenerator:
         return elements
     
     def _create_cost_analysis(self, plan_data: Dict) -> List:
-        """CrÃ©e l'analyse des coÃ»ts"""
+        """Crée l'analyse des coûts"""
         elements = []
         
-        elements.append(Paragraph("ANALYSE DES COÃ›TS", self.styles['CustomHeading']))
+        elements.append(Paragraph("ANALYSE DES COÛTS", self.styles['CustomHeading']))
         
         cost_data = plan_data['total_cost_estimate']
         
-        # Tableau des coÃ»ts
-        cost_table_data = [['Poste', 'CoÃ»t (â‚¬)']]
+        # Tableau des coûts
+        cost_table_data = [['Poste', 'Coût (€)']]
         
         for nutrient, cost in cost_data['cost_breakdown'].items():
             cost_table_data.append([f'Engrais {nutrient}', f"{cost:.2f}"])
         
         cost_table_data.append(['TOTAL', f"{cost_data['total_cost_euros']:.2f}"])
-        cost_table_data.append(['CoÃ»t par hectare', f"{cost_data['cost_per_hectare']:.2f}"])
+        cost_table_data.append(['Coût par hectare', f"{cost_data['cost_per_hectare']:.2f}"])
         
         cost_table = Table(cost_table_data, colWidths=[6*cm, 4*cm])
         cost_table.setStyle(TableStyle([
@@ -353,13 +353,13 @@ class FertilizationPDFGenerator:
         return elements
     
     def _create_charts(self, plan_data: Dict) -> List:
-        """CrÃ©e les graphiques et visualisations"""
+        """Crée les graphiques et visualisations"""
         elements = []
         
         elements.append(PageBreak())
         elements.append(Paragraph("VISUALISATIONS", self.styles['CustomHeading']))
         
-        # Graphique de rÃ©partition des nutriments
+        # Graphique de répartition des nutriments
         chart_buffer = self._create_nutrients_chart(plan_data)
         if chart_buffer:
             img = Image(chart_buffer, width=15*cm, height=10*cm)
@@ -369,25 +369,25 @@ class FertilizationPDFGenerator:
         return elements
     
     def _create_nutrients_chart(self, plan_data: Dict) -> io.BytesIO:
-        """CrÃ©e un graphique de rÃ©partition des nutriments"""
+        """Crée un graphique de répartition des nutriments"""
         try:
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
             
-            # Graphique 1: RÃ©partition des nutriments
+            # Graphique 1: Répartition des nutriments
             nutrients = list(plan_data['adjusted_nutrients'].keys())
             amounts = list(plan_data['adjusted_nutrients'].values())
             
             ax1.pie(amounts, labels=nutrients, autopct='%1.1f%%', startangle=90)
-            ax1.set_title('RÃ©partition des Nutriments (%)')
+            ax1.set_title('Répartition des Nutriments (%)')
             
-            # Graphique 2: CoÃ»ts par nutriment
+            # Graphique 2: Coûts par nutriment
             cost_breakdown = plan_data['total_cost_estimate']['cost_breakdown']
             cost_nutrients = list(cost_breakdown.keys())
             cost_amounts = list(cost_breakdown.values())
             
             ax2.bar(cost_nutrients, cost_amounts, color=['#4CAF50', '#2196F3', '#FF9800'])
-            ax2.set_title('CoÃ»ts par Nutriment (â‚¬)')
-            ax2.set_ylabel('CoÃ»t (â‚¬)')
+            ax2.set_title('Coûts par Nutriment (€)')
+            ax2.set_ylabel('Coût (€)')
             
             plt.tight_layout()
             
@@ -400,30 +400,30 @@ class FertilizationPDFGenerator:
             return buffer
             
         except Exception as e:
-            print(f"Erreur crÃ©ation graphique: {e}")
+            print(f"Erreur création graphique: {e}")
             return None
     
     def _create_appendices(self, plan_data: Dict) -> List:
-        """CrÃ©e les annexes"""
+        """Crée les annexes"""
         elements = []
         
         elements.append(PageBreak())
         elements.append(Paragraph("ANNEXES", self.styles['CustomHeading']))
         
-        # MÃ©thodologie
+        # Méthodologie
         methodology_text = """
-        <b>MÃ©thodologie de calcul:</b><br/>
-        Ce plan de fertilisation a Ã©tÃ© gÃ©nÃ©rÃ© en utilisant:<br/>
-        â€¢ Analyse des besoins spÃ©cifiques de la culture<br/>
-        â€¢ Ã‰valuation de la disponibilitÃ© des nutriments dans le sol<br/>
-        â€¢ Correction basÃ©e sur les conditions pÃ©doclimatiques<br/>
-        â€¢ Optimisation par intelligence artificielle (si disponible)<br/><br/>
+        <b>Méthodologie de calcul:</b><br/>
+        Ce plan de fertilisation a été généré en utilisant:<br/>
+        • Analyse des besoins spécifiques de la culture<br/>
+        • Évaluation de la disponibilité des nutriments dans le sol<br/>
+        • Correction basée sur les conditions pédoclimatiques<br/>
+        • Optimisation par intelligence artificielle (si disponible)<br/><br/>
         
-        <b>Sources des donnÃ©es:</b><br/>
-        â€¢ Base de donnÃ©es des exigences culturales<br/>
-        â€¢ Analyses de sol fournies<br/>
-        â€¢ PrÃ©visions mÃ©tÃ©orologiques<br/>
-        â€¢ Historique des pratiques agricoles
+        <b>Sources des données:</b><br/>
+        • Base de données des exigences culturales<br/>
+        • Analyses de sol fournies<br/>
+        • Prévisions météorologiques<br/>
+        • Historique des pratiques agricoles
         """
         
         elements.append(Paragraph(methodology_text, self.styles['CustomBody']))
@@ -433,11 +433,11 @@ class FertilizationPDFGenerator:
         contact_text = """
         <b>Support technique:</b><br/>
         Pour toute question concernant ce plan de fertilisation,<br/>
-        contactez notre Ã©quipe d'agronomes.<br/><br/>
+        contactez notre équipe d'agronomes.<br/><br/>
         
         <b>Avertissement:</b><br/>
-        Ce plan est gÃ©nÃ©rÃ© automatiquement et doit Ãªtre validÃ©<br/>
-        par un agronome qualifiÃ© avant application.
+        Ce plan est généré automatiquement et doit être validé<br/>
+        par un agronome qualifié avant application.
         """
         
         elements.append(Paragraph(contact_text, self.styles['CustomBody']))
@@ -446,4 +446,3 @@ class FertilizationPDFGenerator:
 
 # Instance globale
 pdf_generator = FertilizationPDFGenerator()
-

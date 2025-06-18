@@ -1,6 +1,6 @@
 """
-Serveur FastAPI ultra-optimisÃ© pour l'analyse agricole
-API haute performance avec intÃ©gration ML et IoT temps rÃ©el
+Serveur FastAPI ultra-optimisé pour l'analyse agricole
+API haute performance avec intégration ML et IoT temps réel
 """
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends
@@ -31,13 +31,13 @@ from utils.data_processing import validate_agricultural_data
 # Configuration FastAPI
 app = FastAPI(
     title="Agricultural Analytics API",
-    description="API ultra-performante pour l'analyse agricole avec IA avancÃ©e",
+    description="API ultra-performante pour l'analyse agricole avec IA avancée",
     version="2.0.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc"
 )
 
-# Configuration CORS pour l'intÃ©gration frontend
+# Configuration CORS pour l'intégration frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -46,7 +46,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configuration Base de donnÃ©es
+# Configuration Base de données
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/agriculture_db")
 engine = create_engine(DATABASE_URL, pool_size=20, max_overflow=30)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -63,7 +63,7 @@ try:
 except:
     redis_client = None
 
-# ModÃ¨les de donnÃ©es
+# Modèles de données
 class Base(declarative_base()):
     pass
 
@@ -92,15 +92,15 @@ class PredictionResult(Base):
     input_data = Column(JSON)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-# ModÃ¨les Pydantic pour validation
+# Modèles Pydantic pour validation
 class YieldPredictionInput(BaseModel):
     crop_type: str = Field(..., description="Type de culture")
     area: float = Field(..., gt=0, description="Surface en hectares")
     soil_ph: float = Field(..., ge=0, le=14, description="pH du sol")
     soil_nitrogen: float = Field(..., ge=0, description="Azote du sol (ppm)")
-    temperature: float = Field(..., description="TempÃ©rature moyenne (Â°C)")
-    rainfall: float = Field(..., ge=0, description="PrÃ©cipitations totales (mm)")
-    humidity: float = Field(..., ge=0, le=100, description="HumiditÃ© (%)")
+    temperature: float = Field(..., description="Température moyenne (°C)")
+    rainfall: float = Field(..., ge=0, description="Précipitations totales (mm)")
+    humidity: float = Field(..., ge=0, le=100, description="Humidité (%)")
     sunlight: float = Field(..., ge=0, le=24, description="Heures de soleil/jour")
 
 class WeatherDataInput(BaseModel):
@@ -121,7 +121,7 @@ class SoilDataInput(BaseModel):
 yield_predictor = YieldPredictor()
 weather_api = WeatherAPI()
 
-# DÃ©pendance pour la session DB
+# Dépendance pour la session DB
 def get_db():
     db = SessionLocal()
     try:
@@ -148,11 +148,11 @@ def cache_result(expiration: int = 300):
         return wrapper
     return decorator
 
-# Routes API optimisÃ©es
+# Routes API optimisées
 
 @app.get("/api/health")
 async def health_check():
-    """VÃ©rification de l'Ã©tat de l'API"""
+    """Vérification de l'état de l'API"""
     return {
         "status": "operational",
         "timestamp": datetime.utcnow(),
@@ -170,18 +170,18 @@ async def predict_yield(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
-    """PrÃ©diction de rendement ultra-rapide avec IA avancÃ©e"""
+    """Prédiction de rendement ultra-rapide avec IA avancée"""
     try:
         # Conversion en dictionnaire
         input_data = prediction_input.dict()
 
-        # PrÃ©diction avec modÃ¨le optimisÃ©
+        # Prédiction avec modèle optimisé
         prediction_result = yield_predictor.predict(input_data, model_type='xgboost')
 
         if not prediction_result:
-            raise HTTPException(status_code=500, detail="Erreur lors de la prÃ©diction")
+            raise HTTPException(status_code=500, detail="Erreur lors de la prédiction")
 
-        # Sauvegarde asynchrone en arriÃ¨re-plan
+        # Sauvegarde asynchrone en arrière-plan
         background_tasks.add_task(
             save_prediction_async,
             prediction_result,
@@ -197,17 +197,17 @@ async def predict_yield(
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur de prÃ©diction: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur de prédiction: {str(e)}")
 
 @app.get("/api/weather/current/{location}")
 @cache_result(expiration=600)  # Cache 10 minutes
 async def get_current_weather(location: str):
-    """DonnÃ©es mÃ©tÃ©o temps rÃ©el avec cache haute performance"""
+    """Données météo temps réel avec cache haute performance"""
     try:
         weather_data = weather_api.get_current_weather(location)
 
         if not weather_data:
-            raise HTTPException(status_code=404, detail="DonnÃ©es mÃ©tÃ©o indisponibles")
+            raise HTTPException(status_code=404, detail="Données météo indisponibles")
 
         # Calcul des indices agricoles
         agricultural_indices = weather_api.get_agricultural_weather_index(location)
@@ -219,20 +219,20 @@ async def get_current_weather(location: str):
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur mÃ©tÃ©o: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur météo: {str(e)}")
 
 @app.get("/api/weather/forecast/{location}/{days}")
 @cache_result(expiration=1800)  # Cache 30 minutes
 async def get_weather_forecast(location: str, days: int = 5):
-    """PrÃ©visions mÃ©tÃ©o avec cache optimisÃ©"""
+    """Prévisions météo avec cache optimisé"""
     try:
         if days > 10:
-            raise HTTPException(status_code=400, detail="Maximum 10 jours de prÃ©visions")
+            raise HTTPException(status_code=400, detail="Maximum 10 jours de prévisions")
 
         forecast_data = weather_api.get_forecast(location, days)
 
         if not forecast_data:
-            raise HTTPException(status_code=404, detail="PrÃ©visions indisponibles")
+            raise HTTPException(status_code=404, detail="Prévisions indisponibles")
 
         return {
             "forecast": forecast_data,
@@ -242,7 +242,7 @@ async def get_weather_forecast(location: str, days: int = 5):
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur prÃ©visions: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur prévisions: {str(e)}")
 
 @app.post("/api/data/upload")
 async def upload_agricultural_data(
@@ -251,12 +251,12 @@ async def upload_agricultural_data(
     db: Session = Depends(get_db),
     data_type: str = "agricultural"
 ):
-    """Upload et traitement ultra-rapide des donnÃ©es agricoles"""
+    """Upload et traitement ultra-rapide des données agricoles"""
     try:
         # Conversion en DataFrame
         df = pd.DataFrame(data)
 
-        # Validation des donnÃ©es
+        # Validation des données
         validation_result = validate_agricultural_data(df, data_type.title() + " Data")
 
         if not validation_result["is_valid"]:
@@ -266,7 +266,7 @@ async def upload_agricultural_data(
                 "warnings": validation_result["warnings"]
             }
 
-        # Traitement asynchrone en arriÃ¨re-plan
+        # Traitement asynchrone en arrière-plan
         background_tasks.add_task(process_data_async, df, data_type, db)
 
         return {
@@ -283,9 +283,9 @@ async def upload_agricultural_data(
 @app.get("/api/analytics/dashboard")
 @cache_result(expiration=300)  # Cache 5 minutes
 async def get_dashboard_analytics(db: Session = Depends(get_db)):
-    """Analytics en temps rÃ©el pour dashboard"""
+    """Analytics en temps réel pour dashboard"""
     try:
-        # RequÃªtes optimisÃ©es avec agrÃ©gations
+        # Requêtes optimisées avec agrégations
         total_crops = db.query(CropData).count()
         avg_yield = db.query(CropData.yield_value).filter(CropData.yield_value.isnot(None)).all()
         recent_predictions = db.query(PredictionResult).filter(
@@ -310,7 +310,7 @@ async def get_dashboard_analytics(db: Session = Depends(get_db)):
 
 @app.get("/api/models/performance")
 async def get_model_performance():
-    """MÃ©triques de performance des modÃ¨les IA"""
+    """Métriques de performance des modèles IA"""
     try:
         performance_data = {}
 
@@ -326,7 +326,7 @@ async def get_model_performance():
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur mÃ©triques: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur métriques: {str(e)}")
 
 @app.post("/api/models/train")
 async def train_model(
@@ -334,15 +334,15 @@ async def train_model(
     background_tasks: BackgroundTasks = None,
     db: Session = Depends(get_db)
 ):
-    """EntraÃ®nement de modÃ¨le en arriÃ¨re-plan"""
+    """Entraînement de modèle en arrière-plan"""
     try:
-        # RÃ©cupÃ©ration des donnÃ©es d'entraÃ®nement
+        # Récupération des données d'entraînement
         training_data = db.query(CropData).all()
 
         if len(training_data) < 50:
             raise HTTPException(
                 status_code=400,
-                detail="DonnÃ©es insuffisantes pour l'entraÃ®nement (minimum 50 Ã©chantillons)"
+                detail="Données insuffisantes pour l'entraînement (minimum 50 échantillons)"
             )
 
         # Conversion en DataFrame
@@ -361,23 +361,23 @@ async def train_model(
 
         df = pd.DataFrame(df_data)
 
-        # EntraÃ®nement asynchrone
+        # Entraînement asynchrone
         if background_tasks:
             background_tasks.add_task(train_model_async, df, model_type)
 
         return {
             "success": True,
-            "message": "EntraÃ®nement dÃ©marrÃ© en arriÃ¨re-plan",
+            "message": "Entraînement démarré en arrière-plan",
             "model_type": model_type,
             "training_samples": len(df)
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur entraÃ®nement: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur entraînement: {str(e)}")
 
 # Fonctions utilitaires asynchrones
 async def save_prediction_async(prediction_result: Dict, input_data: Dict, db: Session):
-    """Sauvegarde asynchrone des prÃ©dictions"""
+    """Sauvegarde asynchrone des prédictions"""
     try:
         prediction_record = PredictionResult(
             predicted_yield=prediction_result.get("yield"),
@@ -388,10 +388,10 @@ async def save_prediction_async(prediction_result: Dict, input_data: Dict, db: S
         db.add(prediction_record)
         db.commit()
     except Exception as e:
-        print(f"Erreur sauvegarde prÃ©diction: {e}")
+        print(f"Erreur sauvegarde prédiction: {e}")
 
 async def process_data_async(df: pd.DataFrame, data_type: str, db: Session):
-    """Traitement asynchrone des donnÃ©es"""
+    """Traitement asynchrone des données"""
     try:
         for _, row in df.iterrows():
             if data_type == "agricultural":
@@ -410,28 +410,28 @@ async def process_data_async(df: pd.DataFrame, data_type: str, db: Session):
 
         db.commit()
     except Exception as e:
-        print(f"Erreur traitement donnÃ©es: {e}")
+        print(f"Erreur traitement données: {e}")
 
 async def train_model_async(df: pd.DataFrame, model_type: str):
-    """EntraÃ®nement asynchrone des modÃ¨les"""
+    """Entraînement asynchrone des modèles"""
     try:
         training_result = yield_predictor.train_model(df, model_type)
 
         if training_result:
-            # Sauvegarde du modÃ¨le
+            # Sauvegarde du modèle
             model_path = f"models/{model_type}_model.joblib"
             yield_predictor.save_model(model_type, model_path)
-            print(f"ModÃ¨le {model_type} entraÃ®nÃ© et sauvegardÃ© avec succÃ¨s")
+            print(f"Modèle {model_type} entraîné et sauvegardé avec succès")
 
     except Exception as e:
-        print(f"Erreur entraÃ®nement asynchrone: {e}")
+        print(f"Erreur entraînement asynchrone: {e}")
 
 # Configuration serveur haute performance
 if __name__ == "__main__":
-    # CrÃ©ation des tables
+    # Création des tables
     Base.metadata.create_all(bind=engine)
 
-    # DÃ©marrage serveur ultra-optimisÃ©
+    # Démarrage serveur ultra-optimisé
     uvicorn.run(
         "fastapi_server:app",
         host="0.0.0.0",
@@ -442,8 +442,3 @@ if __name__ == "__main__":
         access_log=False,
         reload=False
     )
-
-
-
-
-

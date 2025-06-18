@@ -7,9 +7,9 @@ from datetime import datetime, timedelta
 from utils.visualization import create_overview_charts, create_trend_analysis
 from utils.data_processing import get_sample_agricultural_data
 
-st.set_page_config(page_title="Dashboard", page_icon="ðŸ“Š", layout="wide")
+st.set_page_config(page_title="Dashboard", page_icon="📊", layout="wide")
 
-st.title("ðŸ“Š Agricultural Dashboard")
+st.title("📊 Agricultural Dashboard")
 st.markdown("### Comprehensive overview of your agricultural operations")
 
 # Check if data exists in session state
@@ -235,18 +235,13 @@ st.subheader("Export Options")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    if st.button("ðŸ“Š Export Dashboard Report", use_container_width=True):
+    if st.button("📊 Export Dashboard Report", use_container_width=True):
         st.info("Report export functionality would be implemented here")
 
 with col2:
-    if st.button("ðŸ“ˆ Export Charts", use_container_width=True):
+    if st.button("📈 Export Charts", use_container_width=True):
         st.info("Chart export functionality would be implemented here")
 
 with col3:
-    if st.button("ðŸ“‹ Export Data Summary", use_container_width=True):
+    if st.button("📋 Export Data Summary", use_container_width=True):
         st.info("Data summary export functionality would be implemented here")
-
-
-
-
-

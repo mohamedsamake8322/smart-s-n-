@@ -1,4 +1,4 @@
-﻿import json
+import json
 import pandas as pd
 from typing import Dict, List, Optional, Any
 from datetime import datetime
@@ -6,8 +6,8 @@ from datetime import datetime
 
 class DiseaseDatabase:
     """
-    Base de donnÃ©es complÃ¨te des maladies agricoles
-    Contient informations, symptÃ´mes, traitements et prÃ©ventions
+    Base de données complète des maladies agricoles
+    Contient informations, symptômes, traitements et préventions
     """
 
     def __init__(self):
@@ -17,28 +17,28 @@ class DiseaseDatabase:
 
     def _initialize_disease_database(self) -> Dict[str, Dict]:
         """
-        Initialise la base de donnÃ©es des maladies
+        Initialise la base de données des maladies
         """
         return {
             "Tomato_Late_blight": {
                 "name": "Mildiou de la Tomate",
                 "scientific_name": "Phytophthora infestans",
                 "category": "Fongiques",
-                "cause": "OomycÃ¨te pathogÃ¨ne",
+                "cause": "Oomycète pathogène",
                 "description": "Maladie destructrice causant des taches brunes sur feuilles, tiges et fruits",
-                "severity": "Ã‰levÃ©e",
+                "severity": "Élevée",
                 "season": "Temps humide et frais",
                 "affected_crops": ["Tomate", "Pomme de terre"],
                 "symptoms": [
-                    "Taches brunes irrÃ©guliÃ¨res sur les feuilles",
-                    "FlÃ©trissement rapide des feuilles",
+                    "Taches brunes irrégulières sur les feuilles",
+                    "Flétrissement rapide des feuilles",
                     "Taches sombres sur les tiges",
                     "Pourriture des fruits",
                     "Duvet blanc sous les feuilles par temps humide",
                 ],
                 "favorable_conditions": [
-                    "TempÃ©rature 15-20Â°C",
-                    "HumiditÃ© Ã©levÃ©e (>85%)",
+                    "Température 15-20°C",
+                    "Humidité élevée (>85%)",
                     "Temps pluvieux",
                     "Mauvaise circulation d'air",
                 ],
@@ -47,175 +47,175 @@ class DiseaseDatabase:
                 "name": "Alternariose de la Tomate",
                 "scientific_name": "Alternaria solani",
                 "category": "Fongiques",
-                "cause": "Champignon pathogÃ¨ne",
-                "description": "Maladie fongique causant des taches concentriques caractÃ©ristiques",
-                "severity": "ModÃ©rÃ©e",
-                "season": "Ã‰tÃ© chaud et humide",
+                "cause": "Champignon pathogène",
+                "description": "Maladie fongique causant des taches concentriques caractéristiques",
+                "severity": "Modérée",
+                "season": "Été chaud et humide",
                 "affected_crops": ["Tomate", "Pomme de terre", "Aubergine"],
                 "symptoms": [
                     "Taches circulaires brunes avec anneaux concentriques",
-                    "Jaunissement et flÃ©trissement des feuilles infÃ©rieures",
-                    "Taches sur les tiges et pÃ©tioles",
-                    "Pourriture des fruits prÃ¨s du pÃ©doncule",
+                    "Jaunissement et flétrissement des feuilles inférieures",
+                    "Taches sur les tiges et pétioles",
+                    "Pourriture des fruits près du pédoncule",
                 ],
                 "favorable_conditions": [
-                    "TempÃ©rature 24-29Â°C",
-                    "Alternance humiditÃ©/sÃ©cheresse",
+                    "Température 24-29°C",
+                    "Alternance humidité/sécheresse",
                     "Stress hydrique",
                     "Plants affaiblis",
                 ],
             },
             "Tomato_Bacterial_spot": {
-                "name": "Tache BactÃ©rienne de la Tomate",
+                "name": "Tache Bactérienne de la Tomate",
                 "scientific_name": "Xanthomonas spp.",
-                "category": "BactÃ©riennes",
-                "cause": "BactÃ©rie pathogÃ¨ne",
-                "description": "Infection bactÃ©rienne causant des petites taches noires sur feuilles et fruits",
-                "severity": "ModÃ©rÃ©e",
+                "category": "Bactériennes",
+                "cause": "Bactérie pathogène",
+                "description": "Infection bactérienne causant des petites taches noires sur feuilles et fruits",
+                "severity": "Modérée",
                 "season": "Temps chaud et humide",
                 "affected_crops": ["Tomate", "Poivron"],
                 "symptoms": [
                     "Petites taches noires avec halo jaune",
                     "Taches sur feuilles, tiges et fruits",
-                    "DÃ©foliation en cas d'infection sÃ©vÃ¨re",
-                    "Fruits craquelÃ©s et dÃ©formÃ©s",
+                    "Défoliation en cas d'infection sévère",
+                    "Fruits craquelés et déformés",
                 ],
                 "favorable_conditions": [
-                    "TempÃ©rature 25-30Â°C",
-                    "HumiditÃ© Ã©levÃ©e",
+                    "Température 25-30°C",
+                    "Humidité élevée",
                     "Blessures sur les plants",
-                    "Propagation par Ã©claboussures",
+                    "Propagation par éclaboussures",
                 ],
             },
             "Potato_Late_blight": {
                 "name": "Mildiou de la Pomme de Terre",
                 "scientific_name": "Phytophthora infestans",
                 "category": "Fongiques",
-                "cause": "OomycÃ¨te pathogÃ¨ne",
+                "cause": "Oomycète pathogène",
                 "description": "Maladie la plus destructrice de la pomme de terre",
-                "severity": "TrÃ¨s Ã‰levÃ©e",
+                "severity": "Très Élevée",
                 "season": "Temps frais et humide",
                 "affected_crops": ["Pomme de terre", "Tomate"],
                 "symptoms": [
                     "Taches brunes aqueuses sur feuilles",
                     "Pourriture noire des tubercules",
-                    "FlÃ©trissement rapide du feuillage",
-                    "Odeur dÃ©sagrÃ©able des tubercules infectÃ©s",
+                    "Flétrissement rapide du feuillage",
+                    "Odeur désagréable des tubercules infectés",
                 ],
                 "favorable_conditions": [
-                    "TempÃ©rature 10-20Â°C",
-                    "HumiditÃ© >90%",
-                    "Temps pluvieux prolongÃ©",
-                    "RosÃ©e persistante",
+                    "Température 10-20°C",
+                    "Humidité >90%",
+                    "Temps pluvieux prolongé",
+                    "Rosée persistante",
                 ],
             },
             "Corn_Common_rust": {
-                "name": "Rouille Commune du MaÃ¯s",
+                "name": "Rouille Commune du Maïs",
                 "scientific_name": "Puccinia sorghi",
                 "category": "Fongiques",
-                "cause": "Champignon pathogÃ¨ne",
-                "description": "Maladie fongique caractÃ©risÃ©e par des pustules orange-brun",
-                "severity": "ModÃ©rÃ©e",
-                "season": "Ã‰tÃ© frais et humide",
-                "affected_crops": ["MaÃ¯s"],
+                "cause": "Champignon pathogène",
+                "description": "Maladie fongique caractérisée par des pustules orange-brun",
+                "severity": "Modérée",
+                "season": "Été frais et humide",
+                "affected_crops": ["Maïs"],
                 "symptoms": [
                     "Pustules orange-brun sur les feuilles",
-                    "Pustules ovales Ã  circulaires",
+                    "Pustules ovales à circulaires",
                     "Jaunissement des feuilles",
-                    "RÃ©duction du rendement en grains",
+                    "Réduction du rendement en grains",
                 ],
                 "favorable_conditions": [
-                    "TempÃ©rature 16-23Â°C",
-                    "HumiditÃ© Ã©levÃ©e",
-                    "RosÃ©e matinale",
-                    "VariÃ©tÃ©s sensibles",
+                    "Température 16-23°C",
+                    "Humidité élevée",
+                    "Rosée matinale",
+                    "Variétés sensibles",
                 ],
             },
             "Wheat_Leaf_rust": {
-                "name": "Rouille Brune du BlÃ©",
+                "name": "Rouille Brune du Blé",
                 "scientific_name": "Puccinia triticina",
                 "category": "Fongiques",
-                "cause": "Champignon pathogÃ¨ne",
-                "description": "Maladie importante du blÃ© causant des pertes de rendement",
-                "severity": "Ã‰levÃ©e",
-                "season": "Printemps et dÃ©but Ã©tÃ©",
-                "affected_crops": ["BlÃ©", "Orge"],
+                "cause": "Champignon pathogène",
+                "description": "Maladie importante du blé causant des pertes de rendement",
+                "severity": "Élevée",
+                "season": "Printemps et début été",
+                "affected_crops": ["Blé", "Orge"],
                 "symptoms": [
                     "Pustules orange-brun sur les feuilles",
-                    "Taches circulaires Ã  ovales",
-                    "Jaunissement prÃ©maturÃ©",
-                    "RÃ©duction du poids des grains",
+                    "Taches circulaires à ovales",
+                    "Jaunissement prématuré",
+                    "Réduction du poids des grains",
                 ],
                 "favorable_conditions": [
-                    "TempÃ©rature 15-22Â°C",
-                    "HumiditÃ© Ã©levÃ©e",
+                    "Température 15-22°C",
+                    "Humidité élevée",
                     "Irrigation par aspersion",
-                    "DensitÃ© de plantation Ã©levÃ©e",
+                    "Densité de plantation élevée",
                 ],
             },
             "Rice_Blast": {
                 "name": "Pyriculariose du Riz",
                 "scientific_name": "Magnaporthe oryzae",
                 "category": "Fongiques",
-                "cause": "Champignon pathogÃ¨ne",
+                "cause": "Champignon pathogène",
                 "description": "Maladie la plus destructrice du riz dans le monde",
-                "severity": "TrÃ¨s Ã‰levÃ©e",
+                "severity": "Très Élevée",
                 "season": "Saison des pluies",
                 "affected_crops": ["Riz"],
                 "symptoms": [
                     "Taches losangiques gris-brun sur feuilles",
-                    "LÃ©sions sur le col de la panicule",
-                    "Ã‰chaudage des grains",
+                    "Lésions sur le col de la panicule",
+                    "Échaudage des grains",
                     "Cassure des tiges",
                 ],
                 "favorable_conditions": [
-                    "TempÃ©rature 25-28Â°C",
-                    "HumiditÃ© Ã©levÃ©e",
-                    "Fertilisation azotÃ©e excessive",
-                    "VariÃ©tÃ©s sensibles",
+                    "Température 25-28°C",
+                    "Humidité élevée",
+                    "Fertilisation azotée excessive",
+                    "Variétés sensibles",
                 ],
             },
             "Grape_Powdery_mildew": {
-                "name": "OÃ¯dium de la Vigne",
+                "name": "Oïdium de la Vigne",
                 "scientific_name": "Erysiphe necator",
                 "category": "Fongiques",
-                "cause": "Champignon pathogÃ¨ne",
+                "cause": "Champignon pathogène",
                 "description": "Maladie fongique formant un duvet blanc sur les organes verts",
-                "severity": "Ã‰levÃ©e",
-                "season": "Printemps et Ã©tÃ©",
+                "severity": "Élevée",
+                "season": "Printemps et été",
                 "affected_crops": ["Vigne", "Raisin"],
                 "symptoms": [
                     "Duvet blanc poudreux sur feuilles",
                     "Taches blanches sur les grappes",
-                    "DÃ©formation des feuilles",
-                    "Ã‰clatement des baies",
+                    "Déformation des feuilles",
+                    "Éclatement des baies",
                 ],
                 "favorable_conditions": [
-                    "TempÃ©rature 20-27Â°C",
-                    "HumiditÃ© modÃ©rÃ©e",
-                    "Temps sec aprÃ¨s rosÃ©e",
-                    "Mauvaise aÃ©ration",
+                    "Température 20-27°C",
+                    "Humidité modérée",
+                    "Temps sec après rosée",
+                    "Mauvaise aération",
                 ],
             },
             "Pepper_Bacterial_spot": {
-                "name": "Tache BactÃ©rienne du Poivron",
+                "name": "Tache Bactérienne du Poivron",
                 "scientific_name": "Xanthomonas campestris",
-                "category": "BactÃ©riennes",
-                "cause": "BactÃ©rie pathogÃ¨ne",
-                "description": "Infection bactÃ©rienne affectant feuilles et fruits du poivron",
-                "severity": "ModÃ©rÃ©e",
+                "category": "Bactériennes",
+                "cause": "Bactérie pathogène",
+                "description": "Infection bactérienne affectant feuilles et fruits du poivron",
+                "severity": "Modérée",
                 "season": "Temps chaud et humide",
                 "affected_crops": ["Poivron", "Piment", "Tomate"],
                 "symptoms": [
                     "Petites taches brunes avec halo jaune",
-                    "Taches liÃ©geuses sur les fruits",
-                    "DÃ©foliation sÃ©vÃ¨re",
-                    "RÃ©duction de la qualitÃ© des fruits",
+                    "Taches liégeuses sur les fruits",
+                    "Défoliation sévère",
+                    "Réduction de la qualité des fruits",
                 ],
                 "favorable_conditions": [
-                    "TempÃ©rature 24-30Â°C",
-                    "HumiditÃ© Ã©levÃ©e",
-                    "Blessures mÃ©caniques",
+                    "Température 24-30°C",
+                    "Humidité élevée",
+                    "Blessures mécaniques",
                     "Propagation par eau",
                 ],
             },
@@ -224,20 +224,20 @@ class DiseaseDatabase:
                 "scientific_name": "N/A",
                 "category": "Aucune",
                 "cause": "Aucune",
-                "description": "Plant en bonne santÃ© sans signes de maladie",
+                "description": "Plant en bonne santé sans signes de maladie",
                 "severity": "Aucune",
                 "season": "N/A",
                 "affected_crops": ["Toutes"],
                 "symptoms": [
                     "Feuillage vert et vigoureux",
                     "Croissance normale",
-                    "Absence de taches ou lÃ©sions",
-                    "SystÃ¨me racinaire sain",
+                    "Absence de taches ou lésions",
+                    "Système racinaire sain",
                 ],
                 "favorable_conditions": [
-                    "Nutrition Ã©quilibrÃ©e",
-                    "Irrigation adÃ©quate",
-                    "Bonne aÃ©ration",
+                    "Nutrition équilibrée",
+                    "Irrigation adéquate",
+                    "Bonne aération",
                     "Conditions climatiques favorables",
                 ],
             },
@@ -245,49 +245,49 @@ class DiseaseDatabase:
 
     def _initialize_treatments_database(self) -> Dict[str, List[Dict]]:
         """
-        Initialise la base de donnÃ©es des traitements
+        Initialise la base de données des traitements
         """
         return {
             "Tomato_Late_blight": [
                 {
-                    "type": "Fongicide prÃ©ventif",
-                    "description": "Application de fongicides cupriques avant l'apparition des symptÃ´mes",
+                    "type": "Fongicide préventif",
+                    "description": "Application de fongicides cupriques avant l'apparition des symptômes",
                     "products": [
                         "Bouillie bordelaise",
                         "Oxychlorure de cuivre",
-                        "MancozÃ¨be",
+                        "Mancozèbe",
                     ],
-                    "application": "PulvÃ©risation foliaire tous les 7-10 jours",
-                    "timing": "Avant et pendant les pÃ©riodes Ã  risque",
+                    "application": "Pulvérisation foliaire tous les 7-10 jours",
+                    "timing": "Avant et pendant les périodes à risque",
                 },
                 {
                     "type": "Fongicide curatif",
-                    "description": "Traitement systÃ©mique dÃ¨s les premiers symptÃ´mes",
-                    "products": ["MÃ©talaxyl", "Cymoxanil", "Fluazinam"],
-                    "application": "PulvÃ©risation avec adjuvant",
-                    "timing": "DÃ¨s dÃ©tection des premiers symptÃ´mes",
+                    "description": "Traitement systémique dès les premiers symptômes",
+                    "products": ["Métalaxyl", "Cymoxanil", "Fluazinam"],
+                    "application": "Pulvérisation avec adjuvant",
+                    "timing": "Dès détection des premiers symptômes",
                 },
                 {
                     "type": "Mesures culturales",
-                    "description": "AmÃ©lioration des conditions de culture",
+                    "description": "Amélioration des conditions de culture",
                     "products": [
                         "Paillis plastique",
-                        "SystÃ¨me d'irrigation goutte-Ã -goutte",
+                        "Système d'irrigation goutte-à-goutte",
                     ],
-                    "application": "Installation en dÃ©but de culture",
+                    "application": "Installation en début de culture",
                     "timing": "Avant plantation",
                 },
             ],
             "Tomato_Early_blight": [
                 {
-                    "type": "Fongicide prÃ©ventif",
-                    "description": "Protection avant apparition des symptÃ´mes",
-                    "products": ["Chlorothalonil", "MancozÃ¨be", "Azoxystrobine"],
-                    "application": "PulvÃ©risation rÃ©guliÃ¨re",
-                    "timing": "DÃ¨s la formation des premiers fruits",
+                    "type": "Fongicide préventif",
+                    "description": "Protection avant apparition des symptômes",
+                    "products": ["Chlorothalonil", "Mancozèbe", "Azoxystrobine"],
+                    "application": "Pulvérisation régulière",
+                    "timing": "Dès la formation des premiers fruits",
                 },
                 {
-                    "type": "BiocontrÃ´le",
+                    "type": "Biocontrôle",
                     "description": "Utilisation d'agents biologiques",
                     "products": ["Bacillus subtilis", "Trichoderma harzianum"],
                     "application": "Traitement des semences et sol",
@@ -296,62 +296,62 @@ class DiseaseDatabase:
             ],
             "Tomato_Bacterial_spot": [
                 {
-                    "type": "BactÃ©ricide cuivre",
+                    "type": "Bactéricide cuivre",
                     "description": "Application de produits cupriques",
                     "products": ["Sulfate de cuivre", "Hydroxyde de cuivre"],
-                    "application": "PulvÃ©risation prÃ©ventive",
-                    "timing": "Conditions favorables prÃ©vues",
+                    "application": "Pulvérisation préventive",
+                    "timing": "Conditions favorables prévues",
                 },
                 {
-                    "type": "RÃ©sistance variÃ©tale",
-                    "description": "Utilisation de variÃ©tÃ©s rÃ©sistantes",
-                    "products": ["VariÃ©tÃ©s certifiÃ©es rÃ©sistantes"],
-                    "application": "Choix variÃ©tal",
+                    "type": "Résistance variétale",
+                    "description": "Utilisation de variétés résistantes",
+                    "products": ["Variétés certifiées résistantes"],
+                    "application": "Choix variétal",
                     "timing": "Avant plantation",
                 },
             ],
             "Corn_Common_rust": [
                 {
                     "type": "Fongicide foliaire",
-                    "description": "Traitement prÃ©ventif des feuilles",
-                    "products": ["TÃ©buconazole", "Propiconazole", "Azoxystrobine"],
-                    "application": "PulvÃ©risation aÃ©rienne ou terrestre",
+                    "description": "Traitement préventif des feuilles",
+                    "products": ["Tébuconazole", "Propiconazole", "Azoxystrobine"],
+                    "application": "Pulvérisation aérienne ou terrestre",
                     "timing": "Avant floraison",
                 }
             ],
             "Wheat_Leaf_rust": [
                 {
-                    "type": "Fongicide systÃ©mique",
-                    "description": "Protection systÃ©mique de la plante",
-                    "products": ["TÃ©buconazole", "Propiconazole", "Ã‰poxiconazole"],
-                    "application": "PulvÃ©risation foliaire",
-                    "timing": "Montaison Ã  Ã©piaison",
+                    "type": "Fongicide systémique",
+                    "description": "Protection systémique de la plante",
+                    "products": ["Tébuconazole", "Propiconazole", "Époxiconazole"],
+                    "application": "Pulvérisation foliaire",
+                    "timing": "Montaison à épiaison",
                 }
             ],
             "Rice_Blast": [
                 {
-                    "type": "Fongicide systÃ©mique",
-                    "description": "Traitement prÃ©ventif et curatif",
+                    "type": "Fongicide systémique",
+                    "description": "Traitement préventif et curatif",
                     "products": ["Tricyclazole", "Carbendazime", "Isoprothiolane"],
-                    "application": "PulvÃ©risation ou granulÃ©s",
-                    "timing": "Stades critiques de dÃ©veloppement",
+                    "application": "Pulvérisation ou granulés",
+                    "timing": "Stades critiques de développement",
                 }
             ],
             "Grape_Powdery_mildew": [
                 {
-                    "type": "Fongicide prÃ©ventif",
+                    "type": "Fongicide préventif",
                     "description": "Protection avant infection",
-                    "products": ["Soufre", "Kresoxim-mÃ©thyl", "Myclobutanil"],
-                    "application": "Poudrage ou pulvÃ©risation",
-                    "timing": "DÃ©bourrement Ã  vÃ©raison",
+                    "products": ["Soufre", "Kresoxim-méthyl", "Myclobutanil"],
+                    "application": "Poudrage ou pulvérisation",
+                    "timing": "Débourrement à véraison",
                 }
             ],
             "Pepper_Bacterial_spot": [
                 {
-                    "type": "BactÃ©ricide prÃ©ventif",
-                    "description": "Protection contre l'infection bactÃ©rienne",
+                    "type": "Bactéricide préventif",
+                    "description": "Protection contre l'infection bactérienne",
                     "products": ["Streptomycine", "Kasugamycine", "Cuivre"],
-                    "application": "PulvÃ©risation prÃ©ventive",
+                    "application": "Pulvérisation préventive",
                     "timing": "Conditions favorables",
                 }
             ],
@@ -359,89 +359,89 @@ class DiseaseDatabase:
 
     def _initialize_prevention_database(self) -> Dict[str, List[str]]:
         """
-        Initialise la base de donnÃ©es des mesures prÃ©ventives
+        Initialise la base de données des mesures préventives
         """
         return {
             "Tomato_Late_blight": [
-                "Ã‰viter l'irrigation par aspersion",
-                "Assurer une bonne aÃ©ration entre les plants",
-                "Ã‰liminer les rÃ©sidus de culture infectÃ©s",
+                "Éviter l'irrigation par aspersion",
+                "Assurer une bonne aération entre les plants",
+                "Éliminer les résidus de culture infectés",
                 "Rotation des cultures (3-4 ans)",
-                "Utiliser des semences certifiÃ©es",
+                "Utiliser des semences certifiées",
                 "Drainage efficace des parcelles",
-                "Ã‰viter l'excÃ¨s d'azote",
-                "Surveillance mÃ©tÃ©orologique",
+                "Éviter l'excès d'azote",
+                "Surveillance météorologique",
             ],
             "Tomato_Early_blight": [
                 "Rotation des cultures",
-                "Ã‰limination des dÃ©bris vÃ©gÃ©taux",
+                "Élimination des débris végétaux",
                 "Irrigation au pied des plants",
-                "Ã‰viter le stress hydrique",
-                "Fertilisation Ã©quilibrÃ©e",
-                "Espacement adÃ©quat des plants",
+                "Éviter le stress hydrique",
+                "Fertilisation équilibrée",
+                "Espacement adéquat des plants",
                 "Utilisation de paillis",
-                "VariÃ©tÃ©s rÃ©sistantes",
+                "Variétés résistantes",
             ],
             "Tomato_Bacterial_spot": [
-                "Semences traitÃ©es et certifiÃ©es",
-                "DÃ©sinfection des outils",
-                "Ã‰viter la manipulation par temps humide",
-                "ContrÃ´le des insectes vecteurs",
-                "Irrigation localisÃ©e",
-                "Ã‰limination des plants infectÃ©s",
-                "Rotation avec cultures non-hÃ´tes",
-                "HygiÃ¨ne stricte en serre",
+                "Semences traitées et certifiées",
+                "Désinfection des outils",
+                "Éviter la manipulation par temps humide",
+                "Contrôle des insectes vecteurs",
+                "Irrigation localisée",
+                "Élimination des plants infectés",
+                "Rotation avec cultures non-hôtes",
+                "Hygiène stricte en serre",
             ],
             "Corn_Common_rust": [
-                "Utilisation de variÃ©tÃ©s rÃ©sistantes",
+                "Utilisation de variétés résistantes",
                 "Rotation des cultures",
-                "Ã‰limination des rÃ©sidus infectÃ©s",
-                "Ã‰viter les semis tardifs",
-                "Fertilisation azotÃ©e modÃ©rÃ©e",
-                "Surveillance rÃ©guliÃ¨re",
+                "Élimination des résidus infectés",
+                "Éviter les semis tardifs",
+                "Fertilisation azotée modérée",
+                "Surveillance régulière",
                 "Espacement optimal des plants",
             ],
             "Wheat_Leaf_rust": [
-                "VariÃ©tÃ©s rÃ©sistantes ou tolÃ©rantes",
+                "Variétés résistantes ou tolérantes",
                 "Rotation des cultures",
-                "Ã‰limination des repousses",
-                "Semis Ã  la date optimale",
-                "Fertilisation Ã©quilibrÃ©e",
+                "Élimination des repousses",
+                "Semis à la date optimale",
+                "Fertilisation équilibrée",
                 "Surveillance des bulletins d'alerte",
-                "Ã‰viter les densitÃ©s excessives",
+                "Éviter les densités excessives",
             ],
             "Rice_Blast": [
-                "VariÃ©tÃ©s rÃ©sistantes",
+                "Variétés résistantes",
                 "Gestion de l'eau d'irrigation",
-                "Fertilisation azotÃ©e raisonnÃ©e",
-                "Ã‰limination des chaumes infectÃ©s",
-                "Rotation avec cultures sÃ¨ches",
+                "Fertilisation azotée raisonnée",
+                "Élimination des chaumes infectés",
+                "Rotation avec cultures sèches",
                 "Semences saines",
-                "Ã‰viter l'excÃ¨s d'humiditÃ©",
+                "Éviter l'excès d'humidité",
             ],
             "Grape_Powdery_mildew": [
-                "Taille pour aÃ©rer la vÃ©gÃ©tation",
-                "Ã‰limination des sarments infectÃ©s",
-                "Palissage pour Ã©viter l'ombrage",
-                "Ã‰viter l'excÃ¨s d'azote",
-                "VariÃ©tÃ©s moins sensibles",
-                "Surveillance mÃ©tÃ©orologique",
+                "Taille pour aérer la végétation",
+                "Élimination des sarments infectés",
+                "Palissage pour éviter l'ombrage",
+                "Éviter l'excès d'azote",
+                "Variétés moins sensibles",
+                "Surveillance météorologique",
                 "Nettoyage d'hiver rigoureux",
             ],
             "Pepper_Bacterial_spot": [
-                "Semences certifiÃ©es",
-                "Rotation avec cultures non-solanacÃ©es",
-                "Ã‰viter l'irrigation par aspersion",
-                "DÃ©sinfection des outils et structures",
-                "Ã‰limination des plants infectÃ©s",
-                "ContrÃ´le de l'humiditÃ© en serre",
-                "Ã‰viter les blessures mÃ©caniques",
+                "Semences certifiées",
+                "Rotation avec cultures non-solanacées",
+                "Éviter l'irrigation par aspersion",
+                "Désinfection des outils et structures",
+                "Élimination des plants infectés",
+                "Contrôle de l'humidité en serre",
+                "Éviter les blessures mécaniques",
             ],
         }
 
     def get_disease_info(self, disease_name: str) -> Optional[Dict]:
         """
-        RÃ©cupÃ¨re les informations complÃ¨tes d'une maladie
+        Récupère les informations complètes d'une maladie
         """
         return self.diseases_data.get(
             disease_name, None
@@ -449,19 +449,19 @@ class DiseaseDatabase:
 
     def get_treatment_info(self, disease_name: str) -> List[Dict]:
         """
-        RÃ©cupÃ¨re les informations de traitement d'une maladie
+        Récupère les informations de traitement d'une maladie
         """
         return self.treatments_data.get(disease_name, [])
 
     def get_prevention_info(self, disease_name: str) -> List[str]:
         """
-        RÃ©cupÃ¨re les mesures prÃ©ventives d'une maladie
+        Récupère les mesures préventives d'une maladie
         """
         return self.prevention_data.get(disease_name, [])
 
     def get_all_diseases(self) -> List[Dict]:
         """
-        RÃ©cupÃ¨re la liste de toutes les maladies
+        Récupère la liste de toutes les maladies
         """
         diseases = []
         return list(
@@ -470,7 +470,7 @@ class DiseaseDatabase:
 
     def search_diseases(self, query: str, category: str = None) -> List[Dict]:
         """
-        Recherche des maladies par nom ou symptÃ´me
+        Recherche des maladies par nom ou symptôme
         """
         query_lower = query.lower()
         results = []
@@ -495,7 +495,7 @@ class DiseaseDatabase:
 
     def get_diseases_by_crop(self, crop_name: str) -> List[Dict]:
         """
-        RÃ©cupÃ¨re les maladies affectant une culture spÃ©cifique
+        Récupère les maladies affectant une culture spécifique
         """
         crop_diseases = []
 
@@ -513,7 +513,7 @@ class DiseaseDatabase:
 
     def get_disease_statistics(self) -> Dict[str, Any]:
         """
-        GÃ©nÃ¨re des statistiques sur la base de donnÃ©es des maladies
+        Génère des statistiques sur la base de données des maladies
         """
         total_diseases = len(self.diseases_data)
 
@@ -545,7 +545,7 @@ class DiseaseDatabase:
             "database_version": datetime.now().strftime("%Y-%m-%d"),
             "coverage": {
                 "fungal_diseases": category_counts.get("Fongiques", 0),
-                "bacterial_diseases": category_counts.get("BactÃ©riennes", 0),
+                "bacterial_diseases": category_counts.get("Bactériennes", 0),
                 "viral_diseases": category_counts.get("Virales", 0),
                 "parasitic_diseases": category_counts.get("Parasitaires", 0),
             },
@@ -554,10 +554,10 @@ class DiseaseDatabase:
 
 def export_database(self, format_type: str = "json") -> str:
     """
-    Exporte la base de donnÃ©es au format spÃ©cifiÃ©.
+    Exporte la base de données au format spécifié.
     """
     if not self.diseases_data:
-        raise ValueError("ðŸš¨ La base de donnÃ©es est vide, impossible d'exporter.")
+        raise ValueError("🚨 La base de données est vide, impossible d'exporter.")
 
     if format_type == "json":
         export_data = {
@@ -584,11 +584,11 @@ def export_database(self, format_type: str = "json") -> str:
         return df.to_csv(index=False)
 
     else:
-        raise ValueError(f"ðŸš¨ Format non supportÃ©: {format_type}")
+        raise ValueError(f"🚨 Format non supporté: {format_type}")
 
     def add_disease(self, disease_id: str, disease_data: Dict) -> bool:
         """
-        Ajoute une nouvelle maladie Ã  la base de donnÃ©es
+        Ajoute une nouvelle maladie à la base de données
         """
         try:
             if disease_id not in self.diseases_data:
@@ -602,7 +602,7 @@ def export_database(self, format_type: str = "json") -> str:
 
     def update_disease(self, disease_id: str, updated_data: Dict) -> bool:
         """
-        Met Ã  jour les informations d'une maladie existante
+        Met à jour les informations d'une maladie existante
         """
         try:
             if disease_id in self.diseases_data:
@@ -611,6 +611,5 @@ def export_database(self, format_type: str = "json") -> str:
             else:
                 return False  # Disease not found
         except Exception as e:
-            print(f"Erreur lors de la mise Ã  jour de la maladie: {e}")
+            print(f"Erreur lors de la mise à jour de la maladie: {e}")
             return False
-

@@ -9,7 +9,7 @@ from utils.voice_assistant import voice_assistant, expert_chatbot
 from utils.translations import translator
 import json
 
-st.set_page_config(page_title="Voice Assistant", page_icon="ðŸ—£ï¸", layout="wide")
+st.set_page_config(page_title="Voice Assistant", page_icon="🗣️", layout="wide")
 
 # Language selection
 if 'language' not in st.session_state:
@@ -30,7 +30,7 @@ with col_lang2:
 
 lang = st.session_state.language
 
-st.title(f"ðŸ—£ï¸ {translator.get_text('voice_assistant', lang)}")
+st.title(f"🗣️ {translator.get_text('voice_assistant', lang)}")
 st.markdown(f"### {translator.get_text('expert_chatbot', lang)} & {translator.get_text('voice_reports', lang)}")
 
 # Initialize chat history
@@ -48,7 +48,7 @@ if 'voice_settings' not in st.session_state:
 # Sidebar for voice settings
 st.sidebar.title(translator.get_text('voice_assistant', lang))
 
-st.sidebar.subheader("ðŸ”§ Voice Settings")
+st.sidebar.subheader("🔧 Voice Settings")
 st.session_state.voice_settings['speech_speed'] = st.sidebar.slider(
     "Speech Speed", 0.5, 2.0, 1.0, 0.1
 )
@@ -62,15 +62,15 @@ st.session_state.voice_settings['auto_play'] = st.sidebar.checkbox(
 
 # Main content tabs
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "ðŸ¤– AI Chatbot",
-    "ðŸŽ™ï¸ Voice Commands", 
-    "ðŸ“Š Daily Reports",
-    "ðŸ”” Audio Alerts",
-    "âš™ï¸ Assistant Settings"
+    "🤖 AI Chatbot",
+    "🎙️ Voice Commands", 
+    "📊 Daily Reports",
+    "🔔 Audio Alerts",
+    "⚙️ Assistant Settings"
 ])
 
 with tab1:
-    st.subheader("ðŸ¤– Expert Agricultural Chatbot")
+    st.subheader("🤖 Expert Agricultural Chatbot")
     
     # Chat interface
     st.markdown("**Ask me anything about farming, crops, diseases, soil, weather, or agricultural best practices!**")
@@ -81,9 +81,9 @@ with tab1:
     with chat_container:
         for i, message in enumerate(st.session_state.chat_history):
             if message['type'] == 'user':
-                st.markdown(f"**ðŸ§‘â€ðŸŒ¾ You:** {message['content']}")
+                st.markdown(f"**🧑‍🌾 You:** {message['content']}")
             else:
-                st.markdown(f"**ðŸ¤– AI Expert:** {message['content']}")
+                st.markdown(f"**🤖 AI Expert:** {message['content']}")
                 
                 if 'confidence' in message:
                     confidence_color = "green" if message['confidence'] > 80 else "orange" if message['confidence'] > 60 else "red"
@@ -92,7 +92,7 @@ with tab1:
                 if 'follow_up_questions' in message:
                     st.markdown("**Suggested follow-up questions:**")
                     for j, question in enumerate(message['follow_up_questions']):
-                        if st.button(f"â“ {question}", key=f"followup_{i}_{j}"):
+                        if st.button(f"❓ {question}", key=f"followup_{i}_{j}"):
                             # Add follow-up question to chat
                             st.session_state.chat_history.append({
                                 'type': 'user',
@@ -116,7 +116,7 @@ with tab1:
     
     # Chat input
     user_input = st.text_input(
-        "ðŸ’¬ Ask your agricultural question:",
+        "💬 Ask your agricultural question:",
         placeholder="e.g., 'My wheat crops have yellow spots on the leaves, what could be wrong?'",
         key="chat_input"
     )
@@ -124,7 +124,7 @@ with tab1:
     col1, col2, col3 = st.columns([1, 1, 2])
     
     with col1:
-        if st.button("ðŸ“¤ Send", use_container_width=True) and user_input:
+        if st.button("📤 Send", use_container_width=True) and user_input:
             # Add user message
             st.session_state.chat_history.append({
                 'type': 'user',
@@ -147,12 +147,12 @@ with tab1:
             st.rerun()
     
     with col2:
-        if st.button("ðŸ—‘ï¸ Clear Chat", use_container_width=True):
+        if st.button("🗑️ Clear Chat", use_container_width=True):
             st.session_state.chat_history = []
             st.rerun()
     
     with col3:
-        if st.button("ðŸ’¾ Export Chat History", use_container_width=True):
+        if st.button("💾 Export Chat History", use_container_width=True):
             chat_export = {
                 'export_date': datetime.now().isoformat(),
                 'total_messages': len(st.session_state.chat_history),
@@ -166,15 +166,15 @@ with tab1:
             )
 
 with tab2:
-    st.subheader("ðŸŽ™ï¸ Voice Command Interface")
+    st.subheader("🎙️ Voice Command Interface")
     
-    st.info("ðŸŽ¤ Voice recognition feature would be implemented here using Web Speech API or similar technology.")
+    st.info("🎤 Voice recognition feature would be implemented here using Web Speech API or similar technology.")
     
     # Simulate voice command interface
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("**ðŸŽ¯ Quick Voice Commands:**")
+        st.markdown("**🎯 Quick Voice Commands:**")
         
         voice_commands = [
             "What's today's weather?",
@@ -188,7 +188,7 @@ with tab2:
         ]
         
         for cmd in voice_commands:
-            if st.button(f"ðŸŽ¤ '{cmd}'", key=f"voice_cmd_{cmd}"):
+            if st.button(f"🎤 '{cmd}'", key=f"voice_cmd_{cmd}"):
                 # Process voice command
                 response = voice_assistant.process_voice_command(cmd)
                 
@@ -199,7 +199,7 @@ with tab2:
                     st.markdown(f"**Suggested actions:** {', '.join(response['actions'])}")
     
     with col2:
-        st.markdown("**ðŸ”Š Voice Response Preview:**")
+        st.markdown("**🔊 Voice Response Preview:**")
         
         sample_text = st.text_area(
             "Enter text to hear AI voice response:",
@@ -207,22 +207,22 @@ with tab2:
             height=100
         )
         
-        if st.button("ðŸ”Š Play Voice Response"):
+        if st.button("🔊 Play Voice Response"):
             st.audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAAAAQABAAA...", format="audio/wav")
-            st.success("ðŸŽµ Voice synthesis would play here")
+            st.success("🎵 Voice synthesis would play here")
         
-        st.markdown("**ðŸŽ›ï¸ Voice Customization:**")
+        st.markdown("**🎛️ Voice Customization:**")
         voice_speed = st.slider("Speech Speed", 0.5, 2.0, 1.0, 0.1, key="voice_speed_tab2")
         voice_pitch = st.slider("Voice Pitch", 0.5, 2.0, 1.0, 0.1)
         voice_volume = st.slider("Volume", 0.1, 1.0, 0.8, 0.1)
 
 with tab3:
-    st.subheader("ðŸ“Š Daily Voice Reports")
+    st.subheader("📊 Daily Voice Reports")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("**ðŸ“ˆ Today's Farm Report:**")
+        st.markdown("**📈 Today's Farm Report:**")
         
         # Generate sample daily report
         sample_farm_data = {
@@ -244,15 +244,15 @@ with tab3:
         
         col_a, col_b = st.columns(2)
         with col_a:
-            if st.button("ðŸ”Š Play Daily Report", use_container_width=True):
-                st.success("ðŸŽµ Daily report would be played via text-to-speech")
+            if st.button("🔊 Play Daily Report", use_container_width=True):
+                st.success("🎵 Daily report would be played via text-to-speech")
         
         with col_b:
-            if st.button("ðŸ“§ Email Report", use_container_width=True):
-                st.success("ðŸ“§ Report sent to your email!")
+            if st.button("📧 Email Report", use_container_width=True):
+                st.success("📧 Report sent to your email!")
     
     with col2:
-        st.markdown("**â° Report Schedule:**")
+        st.markdown("**⏰ Report Schedule:**")
         
         report_time = st.time_input("Daily Report Time", datetime.now().time())
         
@@ -275,10 +275,10 @@ with tab3:
             default=["Weather Summary", "Soil Conditions", "Disease Alerts"]
         )
         
-        if st.button("ðŸ’¾ Save Report Settings", use_container_width=True):
-            st.success("âœ… Report settings saved!")
+        if st.button("💾 Save Report Settings", use_container_width=True):
+            st.success("✅ Report settings saved!")
         
-        st.markdown("**ðŸ“ Recent Reports:**")
+        st.markdown("**📝 Recent Reports:**")
         recent_reports = [
             {"date": "2024-06-12", "type": "Daily", "status": "Delivered"},
             {"date": "2024-06-11", "type": "Daily", "status": "Delivered"},
@@ -286,15 +286,15 @@ with tab3:
         ]
         
         for report in recent_reports:
-            st.markdown(f"â€¢ **{report['date']}** - {report['type']} ({report['status']})")
+            st.markdown(f"• **{report['date']}** - {report['type']} ({report['status']})")
 
 with tab4:
-    st.subheader("ðŸ”” Smart Audio Alerts")
+    st.subheader("🔔 Smart Audio Alerts")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("**âš ï¸ Active Alerts:**")
+        st.markdown("**⚠️ Active Alerts:**")
         
         alerts = [
             {
@@ -318,22 +318,22 @@ with tab4:
         ]
         
         for alert in alerts:
-            priority_color = {"high": "ðŸ”´", "medium": "ðŸŸ¡", "low": "ðŸŸ¢"}
+            priority_color = {"high": "🔴", "medium": "🟡", "low": "🟢"}
             st.markdown(f"{priority_color[alert['priority']]} **{alert['type']}:** {alert['message']}")
-            st.caption(f"â° {alert['time']}")
+            st.caption(f"⏰ {alert['time']}")
             
             col_play, col_dismiss = st.columns(2)
             with col_play:
-                if st.button(f"ðŸ”Š Play", key=f"play_{alert['message'][:10]}"):
-                    st.success("ðŸŽµ Alert audio played")
+                if st.button(f"🔊 Play", key=f"play_{alert['message'][:10]}"):
+                    st.success("🎵 Alert audio played")
             with col_dismiss:
-                if st.button(f"âœ… Dismiss", key=f"dismiss_{alert['message'][:10]}"):
+                if st.button(f"✅ Dismiss", key=f"dismiss_{alert['message'][:10]}"):
                     st.success("Alert dismissed")
             
             st.markdown("---")
     
     with col2:
-        st.markdown("**ðŸ”§ Alert Settings:**")
+        st.markdown("**🔧 Alert Settings:**")
         
         alert_types = st.multiselect(
             "Enable Audio Alerts For:",
@@ -357,16 +357,16 @@ with tab4:
             quiet_start = st.time_input("Quiet hours start", datetime.strptime("22:00", "%H:%M").time())
             quiet_end = st.time_input("Quiet hours end", datetime.strptime("06:00", "%H:%M").time())
         
-        if st.button("ðŸ’¾ Save Alert Settings", use_container_width=True):
-            st.success("âœ… Alert settings saved!")
+        if st.button("💾 Save Alert Settings", use_container_width=True):
+            st.success("✅ Alert settings saved!")
 
 with tab5:
-    st.subheader("âš™ï¸ Assistant Configuration")
+    st.subheader("⚙️ Assistant Configuration")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("**ðŸŽ¯ AI Assistant Personality:**")
+        st.markdown("**🎯 AI Assistant Personality:**")
         
         personality = st.selectbox(
             "Assistant Personality",
@@ -396,7 +396,7 @@ with tab5:
         multilingual_support = st.checkbox("Enable multilingual responses", True)
     
     with col2:
-        st.markdown("**ðŸ”„ Learning & Adaptation:**")
+        st.markdown("**🔄 Learning & Adaptation:**")
         
         learning_mode = st.checkbox("Enable continuous learning", True)
         feedback_collection = st.checkbox("Collect response feedback", True)
@@ -418,28 +418,23 @@ with tab5:
                     key=f"rating_{response[:10]}"
                 )
         
-        st.markdown("**ðŸ“Š Usage Statistics:**")
+        st.markdown("**📊 Usage Statistics:**")
         st.metric("Questions Answered", "247")
         st.metric("Average Response Time", "1.2s")
         st.metric("User Satisfaction", "94%")
         
-        if st.button("ðŸ”„ Reset Assistant", use_container_width=True):
+        if st.button("🔄 Reset Assistant", use_container_width=True):
             st.warning("This will reset all learning data and preferences.")
-            if st.button("âš ï¸ Confirm Reset"):
+            if st.button("⚠️ Confirm Reset"):
                 st.success("Assistant has been reset to default settings.")
 
 # Footer with voice assistant tips
 st.markdown("---")
 st.markdown("""
-### ðŸ’¡ Voice Assistant Tips:
+### 💡 Voice Assistant Tips:
 - **Ask specific questions** for better responses (e.g., "My tomato leaves are yellowing, what nutrients might be lacking?")
 - **Provide context** about your location, crop type, and current conditions  
 - **Use follow-up questions** to get more detailed explanations
 - **Enable daily reports** to stay informed about your farm conditions
 - **Set up audio alerts** for critical situations that need immediate attention
 """)
-
-
-
-
-

@@ -1,4 +1,4 @@
-﻿import time
+import time
 import streamlit as st
 
 def typewriting_effect(placeholder, text, delay=0.04):

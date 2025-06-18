@@ -7,36 +7,36 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import json
 
-st.set_page_config(page_title="Agricultural Marketplace", page_icon="ðŸ›’", layout="wide")
+st.set_page_config(page_title="Agricultural Marketplace", page_icon="🛒", layout="wide")
 
-st.title("ðŸ›’ Marketplace Agricole IntÃ©grÃ©e")
-st.markdown("### Plateforme d'achat/vente d'intrants et prÃ©visions de rentabilitÃ©")
+st.title("🛒 Marketplace Agricole Intégrée")
+st.markdown("### Plateforme d'achat/vente d'intrants et prévisions de rentabilité")
 
 # Sidebar controls
 st.sidebar.title("Navigation Marketplace")
 
 user_type = st.sidebar.selectbox(
     "Type d'utilisateur",
-    ["ðŸŒ¾ Acheteur (Agriculteur)", "ðŸ­ Vendeur (Fournisseur)", "ðŸ“Š Analyste MarchÃ©"]
+    ["🌾 Acheteur (Agriculteur)", "🏭 Vendeur (Fournisseur)", "📊 Analyste Marché"]
 )
 
 region = st.sidebar.selectbox(
-    "RÃ©gion",
-    ["ÃŽle-de-France", "Nouvelle-Aquitaine", "Occitanie", "Grand Est", "Hauts-de-France", "Toutes rÃ©gions"]
+    "Région",
+    ["Île-de-France", "Nouvelle-Aquitaine", "Occitanie", "Grand Est", "Hauts-de-France", "Toutes régions"]
 )
 
 currency = st.sidebar.selectbox(
     "Devise",
-    ["EUR (â‚¬)", "USD ($)", "GBP (Â£)"]
+    ["EUR (€)", "USD ($)", "GBP (£)"]
 )
 
 # Main content tabs
-if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
+if user_type == "🌾 Acheteur (Agriculteur)":
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "Catalogue Intrants",
         "Comparateur Prix",
         "Mes Commandes",
-        "PrÃ©visions CoÃ»ts",
+        "Prévisions Coûts",
         "Recommandations IA"
     ])
     
@@ -48,25 +48,25 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
         
         with col1:
             category = st.selectbox(
-                "CatÃ©gorie",
-                ["Toutes", "Semences", "Engrais", "Pesticides", "MatÃ©riel", "Ã‰quipements"]
+                "Catégorie",
+                ["Toutes", "Semences", "Engrais", "Pesticides", "Matériel", "Équipements"]
             )
         
         with col2:
             crop_type = st.selectbox(
                 "Type de culture",
-                ["Toutes", "CÃ©rÃ©ales", "LÃ©gumineuses", "OlÃ©agineux", "MaraÃ®chage", "Arboriculture"]
+                ["Toutes", "Céréales", "Légumineuses", "Oléagineux", "Maraîchage", "Arboriculture"]
             )
         
         with col3:
             price_range = st.selectbox(
                 "Gamme de prix",
-                ["Toutes", "< 50â‚¬", "50-200â‚¬", "200-500â‚¬", "500-1000â‚¬", "> 1000â‚¬"]
+                ["Toutes", "< 50€", "50-200€", "200-500€", "500-1000€", "> 1000€"]
             )
         
-        # GÃ©nÃ©ration de donnÃ©es produits simulÃ©es
+        # Génération de données produits simulées
         products_data = []
-        categories = ["Semences", "Engrais", "Pesticides", "MatÃ©riel"]
+        categories = ["Semences", "Engrais", "Pesticides", "Matériel"]
         
         for i in range(20):
             product = {
@@ -74,7 +74,7 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
                 "nom": f"Produit {i+1}",
                 "categorie": np.random.choice(categories),
                 "prix": np.random.uniform(25, 800),
-                "unite": np.random.choice(["kg", "L", "unitÃ©", "sac"]),
+                "unite": np.random.choice(["kg", "L", "unité", "sac"]),
                 "stock": np.random.randint(0, 500),
                 "fournisseur": f"Fournisseur {np.random.randint(1, 10)}",
                 "rating": np.random.uniform(3.5, 5.0),
@@ -92,28 +92,28 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
                 col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
                 
                 with col1:
-                    promotion_tag = "ðŸ·ï¸ PROMO" if product['promotion'] else ""
-                    bio_tag = "ðŸŒ± BIO" if product['bio'] else ""
+                    promotion_tag = "🏷️ PROMO" if product['promotion'] else ""
+                    bio_tag = "🌱 BIO" if product['bio'] else ""
                     st.markdown(f"**{product['nom']}** {promotion_tag} {bio_tag}")
-                    st.write(f"CatÃ©gorie: {product['categorie']}")
+                    st.write(f"Catégorie: {product['categorie']}")
                     st.write(f"Fournisseur: {product['fournisseur']}")
-                    st.write(f"â­ {product['rating']:.1f}/5")
+                    st.write(f"⭐ {product['rating']:.1f}/5")
                 
                 with col2:
                     if product['promotion']:
                         original_price = product['prix'] * 1.2
-                        st.markdown(f"~~{original_price:.2f}â‚¬~~ **{product['prix']:.2f}â‚¬**/{product['unite']}")
+                        st.markdown(f"~~{original_price:.2f}€~~ **{product['prix']:.2f}€**/{product['unite']}")
                     else:
-                        st.markdown(f"**{product['prix']:.2f}â‚¬**/{product['unite']}")
+                        st.markdown(f"**{product['prix']:.2f}€**/{product['unite']}")
                     
                     stock_color = "green" if product['stock'] > 100 else "orange" if product['stock'] > 0 else "red"
                     st.markdown(f"Stock: :{stock_color}[{product['stock']}]")
                 
                 with col3:
-                    st.write(f"ðŸšš {product['livraison']} jours")
+                    st.write(f"🚚 {product['livraison']} jours")
                     
                     quantity = st.number_input(
-                        "QuantitÃ©",
+                        "Quantité",
                         min_value=1,
                         max_value=min(100, product['stock']),
                         value=1,
@@ -121,7 +121,7 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
                     )
                 
                 with col4:
-                    if st.button("ðŸ›’ Ajouter", key=f"add_{product['id']}"):
+                    if st.button("🛒 Ajouter", key=f"add_{product['id']}"):
                         if 'cart' not in st.session_state:
                             st.session_state.cart = []
                         
@@ -131,23 +131,23 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
                             'quantity': quantity,
                             'total': product['prix'] * quantity
                         })
-                        st.success(f"AjoutÃ© au panier!")
+                        st.success(f"Ajouté au panier!")
                     
-                    if st.button("ðŸ‘ï¸ DÃ©tails", key=f"details_{product['id']}"):
-                        st.info(f"DÃ©tails de {product['nom']}")
+                    if st.button("👁️ Détails", key=f"details_{product['id']}"):
+                        st.info(f"Détails de {product['nom']}")
                 
                 st.markdown("---")
     
     with tab2:
-        st.subheader("Comparateur de Prix en Temps RÃ©el")
+        st.subheader("Comparateur de Prix en Temps Réel")
         
-        # SÃ©lection du produit Ã  comparer
+        # Sélection du produit à comparer
         product_to_compare = st.selectbox(
-            "Produit Ã  comparer",
-            ["Engrais NPK 15-15-15", "Semences BlÃ© Tendre", "Pesticide Glyphosate", "Fuel Agricole"]
+            "Produit à comparer",
+            ["Engrais NPK 15-15-15", "Semences Blé Tendre", "Pesticide Glyphosate", "Fuel Agricole"]
         )
         
-        # DonnÃ©es de comparaison simulÃ©es
+        # Données de comparaison simulées
         suppliers_data = []
         for i in range(8):
             supplier = {
@@ -170,42 +170,42 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
             x='fournisseur',
             y=['prix', 'frais_port'],
             title=f"Comparaison Prix - {product_to_compare}",
-            labels={'value': 'Prix (â‚¬)', 'variable': 'Composante'},
+            labels={'value': 'Prix (€)', 'variable': 'Composante'},
             color_discrete_map={'prix': 'lightblue', 'frais_port': 'orange'}
         )
         
         st.plotly_chart(fig_comparison, use_container_width=True)
         
-        # Tableau de comparaison dÃ©taillÃ©
-        st.markdown("**Comparaison DÃ©taillÃ©e**")
+        # Tableau de comparaison détaillé
+        st.markdown("**Comparaison Détaillée**")
         
         for i, supplier in suppliers_df.iterrows():
             col1, col2, col3, col4, col5 = st.columns([2, 1, 1, 1, 1])
             
             with col1:
-                certification_icon = {"Bio": "ðŸŒ±", "Standard": "ðŸ“¦", "Premium": "â­"}.get(supplier['certification'], "")
+                certification_icon = {"Bio": "🌱", "Standard": "📦", "Premium": "⭐"}.get(supplier['certification'], "")
                 st.write(f"**{supplier['fournisseur']}** {certification_icon}")
-                st.write(f"â­ {supplier['rating']:.1f}/5")
+                st.write(f"⭐ {supplier['rating']:.1f}/5")
             
             with col2:
-                st.metric("Prix Unitaire", f"{supplier['prix']:.2f}â‚¬")
+                st.metric("Prix Unitaire", f"{supplier['prix']:.2f}€")
             
             with col3:
                 st.metric("Livraison", f"{supplier['livraison']} jours")
-                st.write(f"Port: {supplier['frais_port']:.2f}â‚¬")
+                st.write(f"Port: {supplier['frais_port']:.2f}€")
             
             with col4:
-                st.metric("Total", f"{supplier['prix_total']:.2f}â‚¬")
+                st.metric("Total", f"{supplier['prix_total']:.2f}€")
                 
                 if i == 0:
-                    st.success("ðŸ† Meilleur prix")
+                    st.success("🏆 Meilleur prix")
             
             with col5:
-                if st.button("SÃ©lectionner", key=f"select_{i}"):
-                    st.success(f"SÃ©lectionnÃ©: {supplier['fournisseur']}")
+                if st.button("Sélectionner", key=f"select_{i}"):
+                    st.success(f"Sélectionné: {supplier['fournisseur']}")
         
-        # Ã‰volution des prix
-        st.markdown("**ðŸ“ˆ Ã‰volution des Prix (30 jours)**")
+        # Évolution des prix
+        st.markdown("**📈 Évolution des Prix (30 jours)**")
         
         dates = pd.date_range(end=datetime.now(), periods=30, freq='D')
         base_price = 65
@@ -214,8 +214,8 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
         fig_price_evolution = px.line(
             x=dates,
             y=price_evolution,
-            title=f"Ã‰volution Prix - {product_to_compare}",
-            labels={'x': 'Date', 'y': 'Prix (â‚¬)'}
+            title=f"Évolution Prix - {product_to_compare}",
+            labels={'x': 'Date', 'y': 'Prix (€)'}
         )
         
         fig_price_evolution.add_hline(
@@ -236,18 +236,18 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
         with col1:
             st.metric("Commandes en cours", "3", delta="1")
         with col2:
-            st.metric("Total ce mois", "2,458â‚¬", delta="15.2%")
+            st.metric("Total ce mois", "2,458€", delta="15.2%")
         with col3:
-            st.metric("Ã‰conomies rÃ©alisÃ©es", "347â‚¬", delta="12.8%")
+            st.metric("Économies réalisées", "347€", delta="12.8%")
         
-        # Commandes rÃ©centes
-        st.markdown("**Commandes RÃ©centes**")
+        # Commandes récentes
+        st.markdown("**Commandes Récentes**")
         
         orders_data = [
             {
                 "id": "CMD_001",
                 "date": "2024-06-10",
-                "produits": "Engrais NPK, Semences BlÃ©",
+                "produits": "Engrais NPK, Semences Blé",
                 "montant": 456.78,
                 "statut": "En livraison",
                 "livraison_prevue": "2024-06-14"
@@ -255,9 +255,9 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
             {
                 "id": "CMD_002", 
                 "date": "2024-06-08",
-                "produits": "Pesticide Bio, MatÃ©riel",
+                "produits": "Pesticide Bio, Matériel",
                 "montant": 234.50,
-                "statut": "LivrÃ©",
+                "statut": "Livré",
                 "livraison_prevue": "2024-06-12"
             },
             {
@@ -265,7 +265,7 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
                 "date": "2024-06-05",
                 "produits": "Fuel Agricole",
                 "montant": 189.32,
-                "statut": "En prÃ©paration",
+                "statut": "En préparation",
                 "livraison_prevue": "2024-06-15"
             }
         ]
@@ -282,28 +282,28 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
                     st.write(order['produits'])
                 
                 with col3:
-                    st.write(f"**{order['montant']:.2f}â‚¬**")
+                    st.write(f"**{order['montant']:.2f}€**")
                     
                     status_color = {
-                        "LivrÃ©": "green",
+                        "Livré": "green",
                         "En livraison": "orange", 
-                        "En prÃ©paration": "blue"
+                        "En préparation": "blue"
                     }.get(order['statut'], "gray")
                     
                     st.markdown(f":{status_color}[{order['statut']}]")
                 
                 with col4:
-                    st.write(f"ðŸ“… {order['livraison_prevue']}")
+                    st.write(f"📅 {order['livraison_prevue']}")
                     
-                    if order['statut'] != "LivrÃ©":
-                        if st.button("ðŸ“ Suivre", key=f"track_{order['id']}"):
-                            st.info("Suivi de commande activÃ©")
+                    if order['statut'] != "Livré":
+                        if st.button("📍 Suivre", key=f"track_{order['id']}"):
+                            st.info("Suivi de commande activé")
                 
                 st.markdown("---")
         
         # Panier actuel
         if 'cart' in st.session_state and st.session_state.cart:
-            st.markdown("**ðŸ›’ Panier Actuel**")
+            st.markdown("**🛒 Panier Actuel**")
             
             total_cart = sum(item['total'] for item in st.session_state.cart)
             
@@ -313,33 +313,33 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
                 with col1:
                     st.write(f"{item['product']} x{item['quantity']}")
                 with col2:
-                    st.write(f"{item['price']:.2f}â‚¬ / unitÃ©")
+                    st.write(f"{item['price']:.2f}€ / unité")
                 with col3:
-                    st.write(f"**{item['total']:.2f}â‚¬**")
+                    st.write(f"**{item['total']:.2f}€**")
             
-            st.markdown(f"**Total: {total_cart:.2f}â‚¬**")
+            st.markdown(f"**Total: {total_cart:.2f}€**")
             
             col1, col2 = st.columns(2)
             with col1:
-                if st.button("ðŸ—‘ï¸ Vider Panier"):
+                if st.button("🗑️ Vider Panier"):
                     st.session_state.cart = []
                     st.rerun()
             
             with col2:
-                if st.button("âœ… Confirmer Commande"):
-                    st.success("Commande confirmÃ©e!")
+                if st.button("✅ Confirmer Commande"):
+                    st.success("Commande confirmée!")
                     st.session_state.cart = []
     
     with tab4:
-        st.subheader("PrÃ©visions de CoÃ»ts et RentabilitÃ©")
+        st.subheader("Prévisions de Coûts et Rentabilité")
         
         # Configuration de la simulation
         col1, col2 = st.columns(2)
         
         with col1:
             simulation_crop = st.selectbox(
-                "Culture Ã  analyser",
-                ["BlÃ© Tendre", "MaÃ¯s Grain", "Colza", "Tournesol", "Orge"]
+                "Culture à analyser",
+                ["Blé Tendre", "Maïs Grain", "Colza", "Tournesol", "Orge"]
             )
             
             surface_hectares = st.number_input(
@@ -359,82 +359,82 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
         
         with col2:
             market_price = st.number_input(
-                "Prix de vente prÃ©vu (â‚¬/t)",
+                "Prix de vente prévu (€/t)",
                 min_value=100,
                 max_value=500,
                 value=220
             )
             
             scenario = st.selectbox(
-                "ScÃ©nario Ã©conomique",
-                ["Optimiste", "RÃ©aliste", "Pessimiste"]
+                "Scénario économique",
+                ["Optimiste", "Réaliste", "Pessimiste"]
             )
             
             # Facteurs de risque
             risk_factors = st.multiselect(
                 "Facteurs de risque",
-                ["SÃ©cheresse", "Maladies", "Prix volatils", "Retard livraison"],
+                ["Sécheresse", "Maladies", "Prix volatils", "Retard livraison"],
                 default=["Prix volatils"]
             )
         
-        # Calcul des coÃ»ts prÃ©visionnels
+        # Calcul des coûts prévisionnels
         base_costs = {
             "Semences": 120 * surface_hectares,
             "Engrais": 180 * surface_hectares,
             "Phytosanitaires": 95 * surface_hectares,
             "Fuel": 85 * surface_hectares,
-            "Main d'Å“uvre": 150 * surface_hectares,
-            "MatÃ©riel": 200 * surface_hectares
+            "Main d'œuvre": 150 * surface_hectares,
+            "Matériel": 200 * surface_hectares
         }
         
-        # Ajustements selon le scÃ©nario
+        # Ajustements selon le scénario
         scenario_multipliers = {
             "Optimiste": 0.9,
-            "RÃ©aliste": 1.0,
+            "Réaliste": 1.0,
             "Pessimiste": 1.15
         }
         
         multiplier = scenario_multipliers[scenario]
         adjusted_costs = {k: v * multiplier for k, v in base_costs.items()}
         
-        # Graphique des coÃ»ts
+        # Graphique des coûts
         fig_costs = px.pie(
             values=list(adjusted_costs.values()),
             names=list(adjusted_costs.keys()),
-            title=f"RÃ©partition des CoÃ»ts - {simulation_crop} ({scenario})"
+            title=f"Répartition des Coûts - {simulation_crop} ({scenario})"
         )
         
         st.plotly_chart(fig_costs, use_container_width=True)
         
-        # Calcul de rentabilitÃ©
+        # Calcul de rentabilité
         total_costs = sum(adjusted_costs.values())
         total_revenue = surface_hectares * yield_target * market_price
         gross_margin = total_revenue - total_costs
         margin_percentage = (gross_margin / total_revenue) * 100 if total_revenue > 0 else 0
         
-        # MÃ©triques financiÃ¨res
+        # Métriques financières
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            st.metric("CoÃ»ts Totaux", f"{total_costs:,.0f}â‚¬", help="Tous coÃ»ts inclus")
+            st.metric("Coûts Totaux", f"{total_costs:,.0f}€", help="Tous coûts inclus")
         
         with col2:
-            st.metric("Revenus PrÃ©vus", f"{total_revenue:,.0f}â‚¬", help="Surface Ã— Rendement Ã— Prix")
+            st.metric("Revenus Prévus", f"{total_revenue:,.0f}€", help="Surface × Rendement × Prix")
         
         with col3:
             margin_color = "normal" if gross_margin > 0 else "inverse"
             st.metric(
                 "Marge Brute", 
-                f"{gross_margin:,.0f}â‚¬", 
+                f"{gross_margin:,.0f}€", 
                 delta=f"{margin_percentage:.1f}%"
             )
         
         with col4:
             cost_per_ha = total_costs / surface_hectares
-            st.metric("CoÃ»t/ha", f"{cost_per_ha:.0f}â‚¬", help="CoÃ»t moyen par hectare")
+            st.metric("Coût/ha", f"{cost_per_ha:.0f}€", help="Coût moyen par hectare")
         
-        # Analyse de sensibilitÃ©
-        st.markdown("**ðŸ“Š Analyse de SensibilitÃ©**")
+        # Analyse de sensibilité
+        st.markdown("**📊 Analyse de Sensibilité**")
         
         # Variation des prix
         price_variations = np.arange(0.8, 1.3, 0.05)
@@ -459,30 +459,30 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
             y=0,
             line_dash="dash",
             line_color="red",
-            annotation_text="Seuil de rentabilitÃ©"
+            annotation_text="Seuil de rentabilité"
         )
         
         fig_sensitivity.update_layout(
-            title="SensibilitÃ© de la Marge aux Variations de Prix",
+            title="Sensibilité de la Marge aux Variations de Prix",
             xaxis_title="Variation Prix (%)",
-            yaxis_title="Marge Brute (â‚¬)",
+            yaxis_title="Marge Brute (€)",
             height=400
         )
         
         st.plotly_chart(fig_sensitivity, use_container_width=True)
     
     with tab5:
-        st.subheader("Recommandations IA PersonnalisÃ©es")
+        st.subheader("Recommandations IA Personnalisées")
         
         # Profil de l'exploitation
-        st.markdown("**ðŸŽ¯ Profil de votre Exploitation**")
+        st.markdown("**🎯 Profil de votre Exploitation**")
         
         col1, col2 = st.columns(2)
         
         with col1:
             farm_type = st.selectbox(
                 "Type d'exploitation",
-                ["Grandes Cultures", "Ã‰levage + Cultures", "MaraÃ®chage", "Arboriculture", "Bio DiversifiÃ©e"]
+                ["Grandes Cultures", "Élevage + Cultures", "Maraîchage", "Arboriculture", "Bio Diversifiée"]
             )
             
             farm_size = st.selectbox(
@@ -493,54 +493,54 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
         with col2:
             budget_annual = st.selectbox(
                 "Budget annuel intrants",
-                ["< 25kâ‚¬", "25-75kâ‚¬", "75-150kâ‚¬", "150-300kâ‚¬", "> 300kâ‚¬"]
+                ["< 25k€", "25-75k€", "75-150k€", "150-300k€", "> 300k€"]
             )
             
             sustainability_focus = st.selectbox(
-                "Orientation durabilitÃ©",
-                ["Conventionnel", "RaisonnÃ©e", "Bio en conversion", "Bio certifiÃ©", "RÃ©gÃ©nÃ©ratrice"]
+                "Orientation durabilité",
+                ["Conventionnel", "Raisonnée", "Bio en conversion", "Bio certifié", "Régénératrice"]
             )
         
-        # Recommandations IA basÃ©es sur le profil
-        st.markdown("**ðŸ¤– Recommandations PersonnalisÃ©es**")
+        # Recommandations IA basées sur le profil
+        st.markdown("**🤖 Recommandations Personnalisées**")
         
         if farm_type == "Grandes Cultures" and "150-300" in farm_size:
             recommendations = [
                 {
-                    "type": "ðŸ’° Optimisation Achats",
+                    "type": "💰 Optimisation Achats",
                     "title": "Groupement d'Achat Engrais",
-                    "description": "Ã‰conomies estimÃ©es: 12-18% sur achats engrais via coopÃ©rative rÃ©gionale",
+                    "description": "Économies estimées: 12-18% sur achats engrais via coopérative régionale",
                     "priority": "Haute",
-                    "savings": "8,500â‚¬/an"
+                    "savings": "8,500€/an"
                 },
                 {
-                    "type": "ðŸ“… Timing Optimal",
-                    "title": "Achat Carburant - FenÃªtre Favorable",
-                    "description": "Prix fuel agricole en baisse prÃ©vue dans 2-3 semaines",
+                    "type": "📅 Timing Optimal",
+                    "title": "Achat Carburant - Fenêtre Favorable",
+                    "description": "Prix fuel agricole en baisse prévue dans 2-3 semaines",
                     "priority": "Moyenne",
-                    "savings": "2,100â‚¬"
+                    "savings": "2,100€"
                 },
                 {
-                    "type": "ðŸŒ± Alternative Bio",
-                    "title": "Engrais Organiques SubventionnÃ©s",
-                    "description": "Aide rÃ©gion disponible pour transition vers engrais organiques",
+                    "type": "🌱 Alternative Bio",
+                    "title": "Engrais Organiques Subventionnés",
+                    "description": "Aide région disponible pour transition vers engrais organiques",
                     "priority": "Moyenne",
-                    "savings": "3,200â‚¬"
+                    "savings": "3,200€"
                 }
             ]
         else:
             recommendations = [
                 {
-                    "type": "ðŸ’¡ Innovation",
+                    "type": "💡 Innovation",
                     "title": "Capteurs Sol IoT",
-                    "description": "Optimisation fertilisation avec capteurs connectÃ©s",
+                    "description": "Optimisation fertilisation avec capteurs connectés",
                     "priority": "Haute",
                     "savings": "15-25%"
                 },
                 {
-                    "type": "ðŸ¤ Partenariat",
-                    "title": "Ã‰change Local",
-                    "description": "Plateforme d'Ã©change avec exploitations voisines",
+                    "type": "🤝 Partenariat",
+                    "title": "Échange Local",
+                    "description": "Plateforme d'échange avec exploitations voisines",
                     "priority": "Moyenne",
                     "savings": "Variable"
                 }
@@ -557,66 +557,66 @@ if user_type == "ðŸŒ¾ Acheteur (Agriculteur)":
                     st.write(rec['description'])
                 
                 with col2:
-                    st.metric("Ã‰conomies", rec['savings'])
+                    st.metric("Économies", rec['savings'])
                 
                 with col3:
-                    if st.button("âœ… IntÃ©ressÃ©", key=f"rec_{rec['title']}"):
-                        st.success("Recommandation sauvegardÃ©e!")
+                    if st.button("✅ Intéressé", key=f"rec_{rec['title']}"):
+                        st.success("Recommandation sauvegardée!")
                     
-                    if st.button("â„¹ï¸ DÃ©tails", key=f"details_rec_{rec['title']}"):
+                    if st.button("ℹ️ Détails", key=f"details_rec_{rec['title']}"):
                         st.info(f"Plus d'infos sur: {rec['title']}")
                 
                 st.markdown("---")
         
-        # Alertes de marchÃ©
-        st.markdown("**ðŸ“ˆ Alertes MarchÃ©**")
+        # Alertes de marché
+        st.markdown("**📈 Alertes Marché**")
         
         market_alerts = [
-            "ðŸš¨ Prix blÃ© +8% cette semaine - OpportunitÃ© de vente",
-            "ðŸ“‰ Engrais azotÃ©s -5% attendu mois prochain",
-            "âš ï¸ PÃ©nurie phytos prÃ©vue - Anticiper commandes",
-            "ðŸ’¡ Nouveau produit bio: -20% prix lancement"
+            "🚨 Prix blé +8% cette semaine - Opportunité de vente",
+            "📉 Engrais azotés -5% attendu mois prochain",
+            "⚠️ Pénurie phytos prévue - Anticiper commandes",
+            "💡 Nouveau produit bio: -20% prix lancement"
         ]
         
         for alert in market_alerts:
             st.warning(alert)
 
-elif user_type == "ðŸ­ Vendeur (Fournisseur)":
+elif user_type == "🏭 Vendeur (Fournisseur)":
     tab1, tab2, tab3, tab4 = st.tabs([
         "Mon Catalogue", 
-        "Commandes ReÃ§ues", 
+        "Commandes Reçues", 
         "Analytics Ventes", 
         "Gestion Stocks"
     ])
     
     with tab1:
         st.subheader("Gestion de Mon Catalogue")
-        st.info("Interface vendeur en dÃ©veloppement - FonctionnalitÃ©s complÃ¨tes disponibles prochainement")
+        st.info("Interface vendeur en développement - Fonctionnalités complètes disponibles prochainement")
     
     with tab2:
-        st.subheader("Commandes ReÃ§ues")
-        st.info("Tableau de bord des commandes en dÃ©veloppement")
+        st.subheader("Commandes Reçues")
+        st.info("Tableau de bord des commandes en développement")
     
     with tab3:
         st.subheader("Analytics des Ventes")
-        st.info("Analyses de performance des ventes en dÃ©veloppement")
+        st.info("Analyses de performance des ventes en développement")
     
     with tab4:
         st.subheader("Gestion des Stocks")
-        st.info("SystÃ¨me de gestion des stocks en dÃ©veloppement")
+        st.info("Système de gestion des stocks en développement")
 
-else:  # Analyste MarchÃ©
-    st.subheader("Analyses de MarchÃ© AvancÃ©es")
-    st.info("Module d'analyse de marchÃ© en dÃ©veloppement - DonnÃ©es Ã©conomiques et tendances")
+else:  # Analyste Marché
+    st.subheader("Analyses de Marché Avancées")
+    st.info("Module d'analyse de marché en développement - Données économiques et tendances")
 
 # Sidebar market info
 st.sidebar.markdown("---")
-st.sidebar.markdown("**ðŸ“Š Info MarchÃ©**")
+st.sidebar.markdown("**📊 Info Marché**")
 
-# Prix du jour simulÃ©s
+# Prix du jour simulés
 daily_prices = {
-    "BlÃ©": 218.50,
-    "MaÃ¯s": 195.20,
+    "Blé": 218.50,
+    "Maïs": 195.20,
     "Colza": 425.80,
     "Fuel": 0.67
 }
@@ -626,8 +626,8 @@ for commodity, price in daily_prices.items():
     delta_color = "normal" if change >= 0 else "inverse"
     st.sidebar.metric(
         commodity,
-        f"{price:.2f}â‚¬",
-        delta=f"{change:+.1f}â‚¬"
+        f"{price:.2f}€",
+        delta=f"{change:+.1f}€"
     )
 
 st.sidebar.metric("Transactions/jour", "1,247")
@@ -635,9 +635,4 @@ st.sidebar.metric("Utilisateurs actifs", "8,932")
 
 # Footer
 st.markdown("---")
-st.markdown("**ðŸ›’ Marketplace Agricole** - Plateforme intÃ©grÃ©e d'achat/vente avec IA prÃ©dictive")
-
-
-
-
-
+st.markdown("**🛒 Marketplace Agricole** - Plateforme intégrée d'achat/vente avec IA prédictive")
