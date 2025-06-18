@@ -1,4 +1,4 @@
-﻿"""
+"""
 Service d'optimisation des modÃ¨les IA pour performances maximales
 Optimisation automatique des hyperparamÃ¨tres et pipeline ML
 """

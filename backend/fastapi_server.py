@@ -1,4 +1,4 @@
-﻿"""
+"""
 Serveur FastAPI ultra-optimisÃ© pour l'analyse agricole
 API haute performance avec intÃ©gration ML et IoT temps rÃ©el
 """

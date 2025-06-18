@@ -1,4 +1,4 @@
-﻿"""
+"""
 GÃ©nÃ©rateur de jeux de donnÃ©es d'exemple pour dÃ©monstration
 Note: Ces donnÃ©es sont uniquement pour les tests et dÃ©monstrations
 """

@@ -1,4 +1,4 @@
-﻿import os
+import os
 import requests # type: ignore
 import tensorflow as tf # type: ignore
 import numpy as np # type: ignore
