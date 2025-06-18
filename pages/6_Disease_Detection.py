@@ -10,6 +10,8 @@ from io import BytesIO
 from tensorflow.keras.applications.efficientnet import preprocess_input # type: ignore
 import plotly.express as px  # type: ignore # Corrige l'erreur F821 pour `px`
 from utils.disease_detector import DiseaseDetector
+from tensorflow.keras.applications.efficientnet import preprocess_input
+
 # ✅ Définition des variables manquantes
 detector = DiseaseDetector()
 model_type = "default"
