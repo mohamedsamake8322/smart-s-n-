@@ -18,16 +18,12 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-# ✅ Création du conteneur pour le titre animé
-title_placeholder = st.empty()
 
-# ✅ Affichage du titre avec effet machine à écrire et style
-typewriting_effect(
-    title_placeholder,
-    "<h1 style='font-size: 72px; color:#2E7D32; font-family: Arial Black, sans-serif; font-weight: 900;'>🌾 SènèSmart Yield Predictor</h1>"
-)
-# ✅ Pulsation sur le titre <h1>
-pulsing_title(components)
+# ✅ Effet d’apparition progressif sur le titre
+title_placeholder = st.empty()
+typewriting_effect(title_placeholder, "🌾 SènèSmart Yield Predictor")
+
+
 # ✅ Effet de "typewriting" sur le sous-titre
 subtitle_placeholder = st.empty()
 typewriting_effect(subtitle_placeholder, "### 🚀 SènèSmart Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SènèSmart Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈.")
