@@ -1,4 +1,4 @@
-import pandas as pd
+﻿import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Any
@@ -87,7 +87,7 @@ def validate_agricultural_data(data: pd.DataFrame, data_type: str) -> Dict:
                 validation_result['is_valid'] = False
                 validation_result['checks']['area_validation'] = {
                     'passed': False,
-                    'message': f'Found {len(invalid_areas)} records with invalid area values (≤0)'
+                    'message': f'Found {len(invalid_areas)} records with invalid area values (â‰¤0)'
                 }
             else:
                 validation_result['checks']['area_validation'] = {
@@ -552,3 +552,4 @@ def prepare_data_for_analysis(data: pd.DataFrame, analysis_type: str = 'yield_pr
         df['crop_type'] = df['crop_type'].str.title()
     
     return df
+

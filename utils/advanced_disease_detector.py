@@ -1,4 +1,4 @@
-
+﻿
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.applications import EfficientNetB4, ResNet152V2, DenseNet201
@@ -9,7 +9,7 @@ import joblib
 
 class AdvancedDiseaseDetector:
     """
-    Détecteur avancé supportant 100+ maladies avec ensemble de modèles
+    DÃ©tecteur avancÃ© supportant 100+ maladies avec ensemble de modÃ¨les
     """
     
     def __init__(self):
@@ -22,7 +22,7 @@ class AdvancedDiseaseDetector:
         self._initialize_ensemble_models()
     
     def _get_extended_disease_classes(self) -> List[str]:
-        """Liste étendue de 100+ classes de maladies"""
+        """Liste Ã©tendue de 100+ classes de maladies"""
         return [
             # Tomates (15)
             'Tomato_Healthy', 'Tomato_Late_blight', 'Tomato_Early_blight',
@@ -37,14 +37,14 @@ class AdvancedDiseaseDetector:
             'Potato_Soft_rot', 'Potato_Dry_rot', 'Potato_Silver_scurf',
             'Potato_Powdery_scab', 'Potato_Wart', 'Potato_Blackleg',
             
-            # Maïs (15)
+            # MaÃ¯s (15)
             'Corn_Healthy', 'Corn_Common_rust', 'Corn_Southern_rust',
             'Corn_Northern_leaf_blight', 'Corn_Gray_leaf_spot', 'Corn_Anthracnose',
             'Corn_Smut', 'Corn_Tar_spot', 'Corn_Eyespot', 'Corn_Diplodia_ear_rot',
             'Corn_Gibberella_ear_rot', 'Corn_Aspergillus_ear_rot', 'Corn_Stewarts_wilt',
             'Corn_Bacterial_leaf_streak', 'Corn_Crazy_top',
             
-            # Blé (18)
+            # BlÃ© (18)
             'Wheat_Healthy', 'Wheat_Leaf_rust', 'Wheat_Stripe_rust', 'Wheat_Stem_rust',
             'Wheat_Powdery_mildew', 'Wheat_Fusarium_head_blight', 'Wheat_Septoria_tritici',
             'Wheat_Tan_spot', 'Wheat_Eyespot', 'Wheat_Sharp_eyespot', 'Wheat_Crown_rot',
@@ -65,7 +65,7 @@ class AdvancedDiseaseDetector:
             'Citrus_Healthy', 'Citrus_Canker', 'Citrus_Greening', 'Citrus_Melanose',
             'Citrus_Scab', 'Citrus_Anthracnose', 'Citrus_Gummosis',
             
-            # Légumes (15)
+            # LÃ©gumes (15)
             'Pepper_Healthy', 'Pepper_Bacterial_spot', 'Pepper_Anthracnose',
             'Cucumber_Healthy', 'Cucumber_Downy_mildew', 'Cucumber_Powdery_mildew',
             'Lettuce_Healthy', 'Lettuce_Drop', 'Lettuce_Downy_mildew',
@@ -90,10 +90,10 @@ class AdvancedDiseaseDetector:
             # Model 3: DenseNet201 (Feature reuse)
             self.ensemble_models['densenet'] = self._create_densenet_model()
             
-            print(f"✅ Ensemble de 3 modèles initialisé pour {len(self.disease_classes)} classes")
+            print(f"âœ… Ensemble de 3 modÃ¨les initialisÃ© pour {len(self.disease_classes)} classes")
             
         except Exception as e:
-            print(f"❌ Erreur initialisation: {e}")
+            print(f"âŒ Erreur initialisation: {e}")
             self._initialize_fallback_model()
     
     def _create_efficientnet_model(self) -> tf.keras.Model:
@@ -220,7 +220,7 @@ class AdvancedDiseaseDetector:
                         'disease': self.disease_classes[top_idx],
                         'confidence': float(ensemble_pred[top_idx]) * 100,
                         'severity': 'Inconnue',
-                        'urgency': 'À vérifier',
+                        'urgency': 'Ã€ vÃ©rifier',
                         'model_used': 'ensemble'
                     })
                 
@@ -247,9 +247,9 @@ class AdvancedDiseaseDetector:
         if 'Healthy' in disease_name:
             return 'Aucune'
         elif any(term in disease_name for term in ['blight', 'rust', 'wilt', 'rot']):
-            return 'Élevée'
+            return 'Ã‰levÃ©e'
         elif any(term in disease_name for term in ['spot', 'mildew', 'scab']):
-            return 'Modérée'
+            return 'ModÃ©rÃ©e'
         else:
             return 'Faible'
     
@@ -260,11 +260,11 @@ class AdvancedDiseaseDetector:
         
         severity = self._assess_severity(disease_name)
         
-        if severity == 'Élevée' and confidence > 85:
-            return 'Immédiate'
-        elif severity == 'Élevée' or confidence > 90:
+        if severity == 'Ã‰levÃ©e' and confidence > 85:
+            return 'ImmÃ©diate'
+        elif severity == 'Ã‰levÃ©e' or confidence > 90:
             return 'Haute'
-        elif severity == 'Modérée':
+        elif severity == 'ModÃ©rÃ©e':
             return 'Moyenne'
         else:
             return 'Faible'
@@ -279,3 +279,4 @@ class AdvancedDiseaseDetector:
             'processing_time': '0.8-1.2s per image',
             'memory_usage': '2.1GB'
         }
+

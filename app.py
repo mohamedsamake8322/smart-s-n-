@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import pandas as pd
 import numpy as np
 import time
@@ -11,24 +11,24 @@ from datetime import datetime
 from utils.voice_assistant import voice_assistant
 from utils.micro_input import get_voice_input
 from utils.animations import typewriting_effect, pulsing_title
-# ✅ Configuration de la page (doit être la première commande Streamlit)
+# âœ… Configuration de la page (doit Ãªtre la premiÃ¨re commande Streamlit)
 st.set_page_config(
-    page_title="SènèSmart Yield Predictor",
-    page_icon="🌾",
+    page_title="SÃ¨nÃ¨Smart Yield Predictor",
+    page_icon="ðŸŒ¾",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# ✅ Effet d’apparition progressif sur le titre
+# âœ… Effet dâ€™apparition progressif sur le titre
 title_placeholder = st.empty()
-typewriting_effect(title_placeholder, "🌾 SènèSmart Yield Predictor")
+typewriting_effect(title_placeholder, "ðŸŒ¾ SÃ¨nÃ¨Smart Yield Predictor")
 
 
-# ✅ Effet de "typewriting" sur le sous-titre
+# âœ… Effet de "typewriting" sur le sous-titre
 subtitle_placeholder = st.empty()
-typewriting_effect(subtitle_placeholder, "### 🚀 SènèSmart Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SènèSmart Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈.")
+typewriting_effect(subtitle_placeholder, "### ðŸš€ SÃ¨nÃ¨Smart Yield Predictor: Cultivating the Future with AI!ðŸŒ¾ðŸŒ ðŸŒ±Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SÃ¨nÃ¨Smart Yield Predictor, transform agricultural data into smart decisions and maximize your yields ðŸ“ˆ.")
 pulsing_title(components)
-# 🔹 Sidebar
+# ðŸ”¹ Sidebar
 st.sidebar.title("Navigation")
 st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
 st.sidebar.markdown("- **Dashboard**: Overview of your agricultural data")
@@ -37,11 +37,11 @@ st.sidebar.markdown("- **Weather Data**: Real-time and historical weather inform
 st.sidebar.markdown("- **Soil Monitoring**: Soil condition analysis")
 st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 
-# ✅ Indicateur de démarrage
-st.write("🚀 Smart Fertilization App is running!")
+# âœ… Indicateur de dÃ©marrage
+st.write("ðŸš€ Smart Fertilization App is running!")
 
 
- # 🔧 Forcer Streamlit Cloud à utiliser le bon port
+ # ðŸ”§ Forcer Streamlit Cloud Ã  utiliser le bon port
 # Main dashboard overview
 col1, col2, col3, col4 = st.columns(4)
 
@@ -81,22 +81,22 @@ tab1, tab2, tab3 = st.tabs(["Features", "Getting Started", "Recent Activity"])
 
 with tab1:
     st.markdown("""
-    **🔬 Advanced Analytics**
+    **ðŸ”¬ Advanced Analytics**
     - Machine learning-powered yield predictions
     - Statistical analysis of agricultural metrics
     - Trend analysis and forecasting
 
-    **🌤️ Weather Intelligence**
+    **ðŸŒ¤ï¸ Weather Intelligence**
     - Real-time weather data integration
     - Historical weather pattern analysis
     - Weather-based risk assessment
 
-    **📊 Data Visualization**
+    **ðŸ“Š Data Visualization**
     - Interactive charts and graphs
     - Customizable dashboards
     - Export capabilities for reports
 
-    **🌱 Soil Monitoring**
+    **ðŸŒ± Soil Monitoring**
     - Soil condition analysis
     - Nutrient level tracking
     - pH and moisture monitoring
@@ -135,34 +135,34 @@ st.subheader("Quick Actions")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    if st.button("🔮 Make Yield Prediction", use_container_width=True):
+    if st.button("ðŸ”® Make Yield Prediction", use_container_width=True):
         st.switch_page("pages/2_Yield_Prediction.py")
 
 with col2:
-    if st.button("📊 View Dashboard", use_container_width=True):
+    if st.button("ðŸ“Š View Dashboard", use_container_width=True):
         st.switch_page("pages/1_Dashboard.py")
 
 with col3:
-    if st.button("📁 Upload Data", use_container_width=True):
+    if st.button("ðŸ“ Upload Data", use_container_width=True):
         st.switch_page("pages/5_Data_Upload.py")
-st.title("🧠 Smart Voice Assistant for Farmers")
+st.title("ðŸ§  Smart Voice Assistant for Farmers")
 
 user_message = st.text_input("Ask your question here (in text)")
 
 if user_message:
     response = voice_assistant.get_response(user_message)
-    st.markdown("### 🤖 Assistant's Response:")
+    st.markdown("### ðŸ¤– Assistant's Response:")
     st.write(response['text'])
 
     # Handle actions
     if response['action'] == "open_weather_dashboard":
-        st.info("📡 Opening the weather module… (to be implemented)")
+        st.info("ðŸ“¡ Opening the weather moduleâ€¦ (to be implemented)")
     elif response['action'] == "analyze_image":
-        st.warning("🖼️ Image analysis awaiting your photo…")
+        st.warning("ðŸ–¼ï¸ Image analysis awaiting your photoâ€¦")
 
-if st.button("🎙️ Speak now"):
+if st.button("ðŸŽ™ï¸ Speak now"):
     user_message = get_voice_input()
-    st.write(f"🗣️ You said: {user_message}")
+    st.write(f"ðŸ—£ï¸ You said: {user_message}")
     response = voice_assistant.get_response(user_message)
     st.write(response['text'])
 
@@ -171,9 +171,10 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666666; padding: 20px;'>
-    🌾 SènèSmart Yield Predictor - Empowering African farmers with AI-driven insights
-    🚀 Developed by <strong>plateforme-agricole-complete-v2 SAMAKE</strong> | Precision farming for a better future
+    ðŸŒ¾ SÃ¨nÃ¨Smart Yield Predictor - Empowering African farmers with AI-driven insights
+    ðŸš€ Developed by <strong>plateforme-agricole-complete-v2 SAMAKE</strong> | Precision farming for a better future
     </div>
     """,
     unsafe_allow_html=True
 )
+

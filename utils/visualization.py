@@ -1,4 +1,4 @@
-import pandas as pd
+﻿import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
@@ -189,7 +189,7 @@ def create_weather_charts(weather_data: pd.DataFrame) -> Dict[str, go.Figure]:
                     x=weather_data['date'],
                     y=weather_data['temperature'],
                     mode='lines',
-                    name='Temperature (°C)',
+                    name='Temperature (Â°C)',
                     line=dict(color='red')
                 ),
                 row=1, col=1
@@ -221,7 +221,7 @@ def create_weather_charts(weather_data: pd.DataFrame) -> Dict[str, go.Figure]:
             x='temperature',
             y='humidity',
             title="Temperature vs Humidity Relationship",
-            labels={'temperature': 'Temperature (°C)', 'humidity': 'Humidity (%)'}
+            labels={'temperature': 'Temperature (Â°C)', 'humidity': 'Humidity (%)'}
         )
         charts['temp_humidity'].update_layout(height=400)
     
@@ -629,3 +629,4 @@ def create_time_series_forecast_chart(historical_data: pd.DataFrame,
     )
     
     return fig
+

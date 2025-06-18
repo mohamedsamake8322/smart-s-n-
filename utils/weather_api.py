@@ -1,18 +1,18 @@
-import requests
+﻿import requests
 import json
 import os
-import streamlit as st  # Ajout pour gérer les secrets sur Streamlit Cloud
+import streamlit as st  # Ajout pour gÃ©rer les secrets sur Streamlit Cloud
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Union
 from dotenv import load_dotenv
 
-# ✅ Charger les variables d'environnement
+# âœ… Charger les variables d'environnement
 load_dotenv()
 
-# 🔎 Vérification immédiate (uniquement en local)
+# ðŸ”Ž VÃ©rification immÃ©diate (uniquement en local)
 if "STREAMLIT_CLOUD" not in os.environ:  
-    print("🔎 OPENWEATHER_API_KEY :", os.getenv("OPENWEATHER_API_KEY"))
-    print("🔎 WEATHERAPI_KEY :", os.getenv("WEATHERAPI_KEY"))
+    print("ðŸ”Ž OPENWEATHER_API_KEY :", os.getenv("OPENWEATHER_API_KEY"))
+    print("ðŸ”Ž WEATHERAPI_KEY :", os.getenv("WEATHERAPI_KEY"))
 
 class WeatherAPI:
     """
@@ -21,22 +21,22 @@ class WeatherAPI:
     """
     
     def __init__(self):
-        # 📌 Charger les variables d'environnement
+        # ðŸ“Œ Charger les variables d'environnement
         load_dotenv()
 
-        # ✅ Vérifier les API Keys localement et sur Streamlit Cloud
+        # âœ… VÃ©rifier les API Keys localement et sur Streamlit Cloud
         self.openweather_api_key = os.getenv("OPENWEATHER_API_KEY", st.secrets.get("OPENWEATHER_API_KEY"))
         self.weatherapi_key = os.getenv("WEATHERAPI_KEY", st.secrets.get("WEATHERAPI_KEY"))
 
-        # 🚨 Si aucune clé API n'est trouvée, générer une erreur
+        # ðŸš¨ Si aucune clÃ© API n'est trouvÃ©e, gÃ©nÃ©rer une erreur
         if not self.openweather_api_key or not self.weatherapi_key:
-            raise ValueError("❌ API keys are missing! Add them in Streamlit Cloud Secrets.")
+            raise ValueError("âŒ API keys are missing! Add them in Streamlit Cloud Secrets.")
 
-        # ✅ URLs des services météo
+        # âœ… URLs des services mÃ©tÃ©o
         self.openweather_base_url = "https://api.openweathermap.org/data/2.5"
         self.weatherapi_base_url = "https://api.weatherapi.com/v1"
 
-        # ✅ Cache des requêtes
+        # âœ… Cache des requÃªtes
         self._cache = {}
         self._cache_duration = 600  # 10 minutes
 
@@ -61,15 +61,15 @@ class WeatherAPI:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.HTTPError as e:
-            print(f"❌ HTTP Error: {e}")
+            print(f"âŒ HTTP Error: {e}")
         except requests.exceptions.ConnectionError:
-            print("❌ Connection error! Check your network.")
+            print("âŒ Connection error! Check your network.")
         except requests.exceptions.Timeout:
-            print("❌ Timeout error! Server took too long to respond.")
+            print("âŒ Timeout error! Server took too long to respond.")
         except requests.exceptions.RequestException as e:
-            print(f"❌ API request failed: {e}")
+            print(f"âŒ API request failed: {e}")
         except json.JSONDecodeError as e:
-            print(f"❌ Failed to parse JSON response: {e}")
+            print(f"âŒ Failed to parse JSON response: {e}")
         
         return None
     def get_current_weather(self, location: str) -> Optional[Dict]:
@@ -400,7 +400,7 @@ class WeatherAPI:
         # Heat Index (simplified)
         heat_index = temp + 0.5 * (humidity - 50)
         
-        # Growing Degree Days (base temperature 10°C)
+        # Growing Degree Days (base temperature 10Â°C)
         gdd = max(0, temp - 10)
         
         # Evapotranspiration estimate (simplified Penman equation)
@@ -455,3 +455,4 @@ class WeatherAPI:
             return "Fair"
         else:
             return "Poor"
+

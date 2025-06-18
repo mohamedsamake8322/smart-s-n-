@@ -1,8 +1,8 @@
-import time
+﻿import time
 import streamlit as st
 
 def typewriting_effect(placeholder, text, delay=0.04):
-    """ Affiche le texte progressivement pour un effet machine à écrire """
+    """ Affiche le texte progressivement pour un effet machine Ã  Ã©crire """
     for i in range(len(text)):
         placeholder.markdown(text[:i+1])
         time.sleep(delay)
@@ -21,3 +21,4 @@ def pulsing_title(components):
     </style>
     """
     components.html(css_code, height=0)
+

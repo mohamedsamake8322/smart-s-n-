@@ -1,4 +1,4 @@
-import tensorflow as tf
+﻿import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications import EfficientNetB4, ResNet50
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Input, Concatenate, Flatten
@@ -7,28 +7,28 @@ from tensorflow.keras.optimizers import Adam
 import os
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 
-# 🔹 Désactivation des optimisations CPU pour éviter l’OOM
+# ðŸ”¹ DÃ©sactivation des optimisations CPU pour Ã©viter lâ€™OOM
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
-# 🔹 Définition des chemins
+# ðŸ”¹ DÃ©finition des chemins
 DATASET_PATH = "C:/plateforme-agricole-complete-v2/plant_disease_dataset"
 MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
 
-# 🔍 Vérification et création du dossier modèle
+# ðŸ” VÃ©rification et crÃ©ation du dossier modÃ¨le
 os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 
-# ✅ **Création du modèle EfficientNetB4 + ResNet50**
+# âœ… **CrÃ©ation du modÃ¨le EfficientNetB4 + ResNet50**
 def create_model():
     input_layer = Input(shape=(224, 224, 3), name="input_layer")
 
-    # 🔹 Connexion des modèles sans Rescaling
+    # ðŸ”¹ Connexion des modÃ¨les sans Rescaling
     base_model_efficient = EfficientNetB4(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
     base_model_resnet = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
 
     x1 = base_model_efficient(input_layer)
     x2 = base_model_resnet(input_layer)
 
-    # 🔹 Ajout de Flatten pour améliorer la fusion des features
+    # ðŸ”¹ Ajout de Flatten pour amÃ©liorer la fusion des features
     x1 = GlobalAveragePooling2D()(x1)
     x2 = GlobalAveragePooling2D()(x2)
     x1 = Flatten()(x1)
@@ -36,7 +36,7 @@ def create_model():
 
     merged = Concatenate()([x1, x2])
 
-    # 🔹 Couches fully connected
+    # ðŸ”¹ Couches fully connected
     x = Dense(256, activation="relu")(merged)
     x = Dense(128, activation="relu")(x)
     output = Dense(45, activation="softmax", name="output_layer")(x)
@@ -44,13 +44,13 @@ def create_model():
     model = Model(inputs=input_layer, outputs=output)
     return model
 
-# 🚀 Création et compilation du modèle
+# ðŸš€ CrÃ©ation et compilation du modÃ¨le
 model = create_model()
 model.compile(optimizer=Adam(learning_rate=0.0001), loss="categorical_crossentropy", metrics=["accuracy"])
 
-# 🔹 Chargement et prétraitement des images
+# ðŸ”¹ Chargement et prÃ©traitement des images
 train_datagen = ImageDataGenerator(
-    preprocessing_function=tf.keras.applications.efficientnet.preprocess_input,  # ✅ Correction
+    preprocessing_function=tf.keras.applications.efficientnet.preprocess_input,  # âœ… Correction
     rotation_range=20,
     zoom_range=0.15,
     horizontal_flip=True,
@@ -60,7 +60,7 @@ train_datagen = ImageDataGenerator(
 train_generator = train_datagen.flow_from_directory(
     os.path.join(DATASET_PATH, "train"),
     target_size=(224, 224),
-    batch_size=4,  # ✅ Réduction du batch pour éviter l'OOM
+    batch_size=4,  # âœ… RÃ©duction du batch pour Ã©viter l'OOM
     class_mode="categorical"
 )
 
@@ -71,21 +71,22 @@ val_generator = train_datagen.flow_from_directory(
     class_mode="categorical"
 )
 
-# 🔹 Ajout d'un callback pour ajuster le taux d’apprentissage
+# ðŸ”¹ Ajout d'un callback pour ajuster le taux dâ€™apprentissage
 lr_callback = ReduceLROnPlateau(monitor="val_loss", factor=0.3, patience=3, verbose=1)
 
-# 🚀 **Entraînement du modèle**
+# ðŸš€ **EntraÃ®nement du modÃ¨le**
 history = model.fit(
     train_generator,
     validation_data=val_generator,
-    epochs=10,  # ✅ Réduction des epochs pour tester la stabilité
+    epochs=10,  # âœ… RÃ©duction des epochs pour tester la stabilitÃ©
     batch_size=4,
     callbacks=[lr_callback]
 )
 
-# 💾 **Sauvegarde du modèle avec gestion d'erreur**
+# ðŸ’¾ **Sauvegarde du modÃ¨le avec gestion d'erreur**
 try:
     model.save(MODEL_PATH, save_format="keras")
-    print(f"✅ Modèle entraîné et enregistré sous {MODEL_PATH}")
+    print(f"âœ… ModÃ¨le entraÃ®nÃ© et enregistrÃ© sous {MODEL_PATH}")
 except Exception as e:
-    print(f"🚨 Erreur de sauvegarde : {e}")
+    print(f"ðŸš¨ Erreur de sauvegarde : {e}")
+

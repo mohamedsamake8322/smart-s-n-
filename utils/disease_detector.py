@@ -1,4 +1,4 @@
-import os
+﻿import os
 import requests # type: ignore
 import numpy as np  # type: ignore
 from PIL import Image  # type: ignore
@@ -11,7 +11,7 @@ import cv2 # type: ignore
 
 class DiseaseDetector:
     """
-    Détecteur de maladies agricoles utilisant EfficientNet-ResNet.
+    DÃ©tecteur de maladies agricoles utilisant EfficientNet-ResNet.
     """
 
     def __init__(self):
@@ -19,22 +19,22 @@ class DiseaseDetector:
         self.preprocessors = {}
         self.class_labels = {}
 
-        # 🔄 Chemin du modèle et lien Google Drive
+        # ðŸ”„ Chemin du modÃ¨le et lien Google Drive
         MODEL_URL = "https://drive.google.com/uc?export=download&id=1mBKbOYqB6db3KDneEtSpcH9ywC55qfW_"
         MODEL_PATH = os.path.join("model", "efficientnet_resnet.keras")
 
-        # 📥 Télécharger le modèle s’il est manquant
+        # ðŸ“¥ TÃ©lÃ©charger le modÃ¨le sâ€™il est manquant
         if not os.path.exists(MODEL_PATH):
-            print("📦 Modèle non trouvé localement. Téléchargement depuis Google Drive...")
+            print("ðŸ“¦ ModÃ¨le non trouvÃ© localement. TÃ©lÃ©chargement depuis Google Drive...")
             os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
             with requests.get(MODEL_URL, stream=True) as r:
                 with open(MODEL_PATH, "wb") as f:
                     for chunk in r.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
-            print("✅ Modèle téléchargé avec succès.")
+            print("âœ… ModÃ¨le tÃ©lÃ©chargÃ© avec succÃ¨s.")
 
-        # 🔍 Chargement du modèle entraîné
+        # ðŸ” Chargement du modÃ¨le entraÃ®nÃ©
         self.models["efficientnet_resnet"] = tf.keras.models.load_model(MODEL_PATH)
         self.preprocessors["efficientnet_resnet"] = efficientnet_preprocess
         self.class_labels["efficientnet_resnet"] = [
@@ -58,14 +58,14 @@ class DiseaseDetector:
 
     def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
         """
-        Préprocessing de l'image pour EfficientNet-ResNet.
+        PrÃ©processing de l'image pour EfficientNet-ResNet.
         """
         try:
             img_resized = image_pil.resize((380, 380)).convert("RGB")
             img_array = np.expand_dims(np.array(img_resized), axis=0)
             return efficientnet_preprocess(img_array)
         except Exception as e:
-            print(f"🚨 Erreur lors du preprocessing: {e}")
+            print(f"ðŸš¨ Erreur lors du preprocessing: {e}")
             return np.zeros((1, 380, 380, 3))
 
 
@@ -73,13 +73,13 @@ class DiseaseDetector:
         self, image_pil: Image.Image, confidence_threshold: float = 0.7
     ) -> List[Dict]:
         """
-        Prédiction de maladie sur une image avec EfficientNet-ResNet.
+        PrÃ©diction de maladie sur une image avec EfficientNet-ResNet.
         """
         try:
             model = self.models.get("efficientnet_resnet", None)
             if model is None:
                 raise ValueError(
-                    "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible."
+                    "ðŸš¨ ModÃ¨le non chargÃ©: VÃ©rifie que efficientnet_resnet.keras est bien disponible."
                 )
 
             class_labels = self.class_labels["efficientnet_resnet"]
@@ -110,17 +110,17 @@ class DiseaseDetector:
             return results
 
         except Exception as e:
-            print(f"🚨 Erreur lors de la prédiction: {e}")
+            print(f"ðŸš¨ Erreur lors de la prÃ©diction: {e}")
             return []
 
     def _assess_disease_severity(self, disease_name: str, confidence: float) -> str:
         """
-        Évalue la sévérité d'une maladie en fonction du niveau de confiance.
+        Ã‰value la sÃ©vÃ©ritÃ© d'une maladie en fonction du niveau de confiance.
         """
         if confidence > 90:
-            return "Élevée"
+            return "Ã‰levÃ©e"
         elif confidence > 75:
-            return "Modérée"
+            return "ModÃ©rÃ©e"
         else:
             return "Faible"
 
@@ -128,13 +128,13 @@ def _heuristic_disease_detection(
     self, image_pil: Image.Image, crop_filter: List[str] = None
 ) -> List[Dict]:
     """
-    Détection basée sur EfficientNet-ResNet au lieu des heuristiques visuelles.
+    DÃ©tection basÃ©e sur EfficientNet-ResNet au lieu des heuristiques visuelles.
     """
     try:
         model = self.models.get("efficientnet_resnet", None)
         if model is None:
             raise ValueError(
-                "🚨 Modèle non chargé: Vérifie que efficientnet_resnet.keras est bien disponible."
+                "ðŸš¨ ModÃ¨le non chargÃ©: VÃ©rifie que efficientnet_resnet.keras est bien disponible."
             )
 
         class_labels = self.class_labels["efficientnet_resnet"]
@@ -164,7 +164,7 @@ def _heuristic_disease_detection(
                 }
             )
 
-        # ✅ Si aucun résultat ne dépasse le seuil, prendre la meilleure prédiction
+        # âœ… Si aucun rÃ©sultat ne dÃ©passe le seuil, prendre la meilleure prÃ©diction
         if not results and sorted_indices:
             top_idx = sorted_indices[0]
             confidence = float(predictions[top_idx]) * 100
@@ -184,23 +184,23 @@ def _heuristic_disease_detection(
         return results
 
     except Exception as e:
-        print(f"🚨 Erreur lors de la détection heuristique: {e}")
+        print(f"ðŸš¨ Erreur lors de la dÃ©tection heuristique: {e}")
         return []
 def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
     """
-    Analyse les caractéristiques de l'image pour un passage optimisé au modèle EfficientNet-ResNet.
+    Analyse les caractÃ©ristiques de l'image pour un passage optimisÃ© au modÃ¨le EfficientNet-ResNet.
     """
     try:
-        # ✅ Conversion en niveaux de gris pour une analyse robuste
+        # âœ… Conversion en niveaux de gris pour une analyse robuste
         gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
 
-        # ✅ Extraction des statistiques de texture
+        # âœ… Extraction des statistiques de texture
         texture_variance = np.var(gray) / 10000  # Normalisation
 
-        # ✅ Calcul du contraste global
+        # âœ… Calcul du contraste global
         contrast = cv2.Laplacian(gray, cv2.CV_64F).var() / 10000
 
-        # ✅ Évaluation préliminaire de la santé via la texture
+        # âœ… Ã‰valuation prÃ©liminaire de la santÃ© via la texture
         overall_health = max(0.0, min(1.0, 1.0 - texture_variance))
 
         return {
@@ -210,13 +210,13 @@ def _analyze_image_features(self, img_cv: np.ndarray) -> Dict[str, float]:
         }
 
     except Exception as e:
-        print(f"🚨 Erreur dans l'analyse des caractéristiques: {e}")
+        print(f"ðŸš¨ Erreur dans l'analyse des caractÃ©ristiques: {e}")
         return {"texture_variance": 0.0, "contrast": 0.0, "overall_health": 0.5}
 
 
 def _disease_matches_crops(self, disease_name: str, crop_filter: List[str]) -> bool:
     """
-    Vérifie si une maladie correspond aux cultures filtrées
+    VÃ©rifie si une maladie correspond aux cultures filtrÃ©es
     """
     if not crop_filter:
         return True
@@ -225,8 +225,8 @@ def _disease_matches_crops(self, disease_name: str, crop_filter: List[str]) -> b
     disease_crop_mapping = {
         "Tomato": ["tomato"],
         "Potato": ["potato", "pomme de terre"],
-        "Corn": ["corn", "maïs"],
-        "Wheat": ["wheat", "blé"],
+        "Corn": ["corn", "maÃ¯s"],
+        "Wheat": ["wheat", "blÃ©"],
         "Rice": ["rice", "riz"],
         "Pepper": ["pepper", "poivron"],
         "Grape": ["grape", "raisin"],
@@ -246,9 +246,9 @@ def _assess_disease_severity(
     self, disease_name: str, confidence: float
 ) -> Tuple[str, str]:
     """
-    Évalue la sévérité et l'urgence d'une maladie en fonction de son type et du niveau de confiance.
+    Ã‰value la sÃ©vÃ©ritÃ© et l'urgence d'une maladie en fonction de son type et du niveau de confiance.
     """
-    # ✅ Maladies à forte sévérité
+    # âœ… Maladies Ã  forte sÃ©vÃ©ritÃ©
     high_severity_diseases = [
         "Late_blight",
         "Black_rot",
@@ -258,7 +258,7 @@ def _assess_disease_severity(
         "Root_Rot",
     ]
 
-    # ✅ Maladies à sévérité modérée
+    # âœ… Maladies Ã  sÃ©vÃ©ritÃ© modÃ©rÃ©e
     moderate_severity_diseases = [
         "Early_blight",
         "Bacterial_spot",
@@ -268,30 +268,30 @@ def _assess_disease_severity(
         "Powdery_mildew",
     ]
 
-    # ✅ Cas sain
+    # âœ… Cas sain
     if disease_name == "Healthy":
         return "Aucune", "Aucune"
 
-    # ✅ Détermination initiale
+    # âœ… DÃ©termination initiale
     severity = "Faible"
     urgency = "Faible"
 
-    # ✅ Vérification des maladies graves
+    # âœ… VÃ©rification des maladies graves
     for high_disease in high_severity_diseases:
         if high_disease in disease_name:
-            severity = "Élevée"
+            severity = "Ã‰levÃ©e"
             urgency = "Haute"
             break
 
-    # ✅ Vérification des maladies modérées
+    # âœ… VÃ©rification des maladies modÃ©rÃ©es
     if severity == "Faible":
         for mod_disease in moderate_severity_diseases:
             if mod_disease in disease_name:
-                severity = "Modérée"
+                severity = "ModÃ©rÃ©e"
                 urgency = "Moyenne"
                 break
 
-    # ✅ Ajustement selon la confiance du modèle
+    # âœ… Ajustement selon la confiance du modÃ¨le
     if confidence > 90:
         if urgency == "Moyenne":
             urgency = "Haute"
@@ -302,13 +302,13 @@ def _assess_disease_severity(
 
 def get_model_info(self) -> Dict[str, Any]:
     """
-    Retourne les informations sur le modèle EfficientNet-ResNet.
+    Retourne les informations sur le modÃ¨le EfficientNet-ResNet.
     """
     model = self.models.get("efficientnet_resnet", None)
     if model is None:
         return {
             "status": "error",
-            "message": "🚨 Modèle non chargé: Vérifie efficientnet_resnet.keras",
+            "message": "ðŸš¨ ModÃ¨le non chargÃ©: VÃ©rifie efficientnet_resnet.keras",
         }
 
     return {
@@ -321,13 +321,13 @@ def get_model_info(self) -> Dict[str, Any]:
 
 def benchmark_model(self, test_images: List[Image.Image]) -> Dict[str, Any]:
     """
-    Benchmark du modèle EfficientNet-ResNet sur un ensemble d'images test.
+    Benchmark du modÃ¨le EfficientNet-ResNet sur un ensemble d'images test.
     """
     model = self.models.get("efficientnet_resnet", None)
     if model is None:
         return {
             "status": "error",
-            "message": "🚨 Modèle non chargé: Vérifie efficientnet_resnet.keras",
+            "message": "ðŸš¨ ModÃ¨le non chargÃ©: VÃ©rifie efficientnet_resnet.keras",
         }
 
     print("Benchmarking EfficientNet-ResNet...")
@@ -341,7 +341,7 @@ def benchmark_model(self, test_images: List[Image.Image]) -> Dict[str, Any]:
 
     end_time = datetime.now()
 
-    # ✅ Calcul des métriques
+    # âœ… Calcul des mÃ©triques
     processing_time = (end_time - start_time).total_seconds()
     avg_time_per_image = processing_time / len(test_images)
 
@@ -364,55 +364,56 @@ def preprocess_image(
     image_pil: Image.Image, target_size: Tuple[int, int] = (380, 380)
 ) -> np.ndarray:
     """
-    Fonction de preprocessing adaptée à EfficientNet-ResNet
+    Fonction de preprocessing adaptÃ©e Ã  EfficientNet-ResNet
     """
     try:
-        # ✅ Redimensionnement en conservant l’aspect ratio
+        # âœ… Redimensionnement en conservant lâ€™aspect ratio
         image_pil.thumbnail(target_size, Image.Resampling.LANCZOS)
 
-        # ✅ Création d'une image RGB avec fond blanc
+        # âœ… CrÃ©ation d'une image RGB avec fond blanc
         new_image = Image.new("RGB", target_size, (255, 255, 255))
 
-        # ✅ Centrage de l’image
+        # âœ… Centrage de lâ€™image
         x = (target_size[0] - image_pil.width) // 2
         y = (target_size[1] - image_pil.height) // 2
         new_image.paste(image_pil, (x, y))
 
-        # ✅ Conversion en tableau NumPy
+        # âœ… Conversion en tableau NumPy
         img_array = np.array(new_image, dtype=np.float32)
 
-        # ✅ Ajout de la dimension batch
+        # âœ… Ajout de la dimension batch
         img_array = np.expand_dims(img_array, axis=0)
 
-        # ✅ Appliquer le prétraitement officiel EfficientNet
+        # âœ… Appliquer le prÃ©traitement officiel EfficientNet
         img_array = efficientnet_preprocess(img_array)
 
         return img_array
 
     except Exception as e:
-        print(f"🚨 Erreur dans le preprocessing: {e}")
+        print(f"ðŸš¨ Erreur dans le preprocessing: {e}")
         return np.zeros((1, 380, 380, 3))
 
 
 def enhance_image_quality(image_pil: Image.Image) -> Image.Image:
     """
-    Améliore la qualité de l'image avant analyse par EfficientNet-ResNet
+    AmÃ©liore la qualitÃ© de l'image avant analyse par EfficientNet-ResNet
     """
     try:
-        # ✅ Augmentation du contraste
+        # âœ… Augmentation du contraste
         enhancer = ImageEnhance.Contrast(image_pil)
         image_pil = enhancer.enhance(1.3)
 
-        # ✅ Augmentation de la netteté
+        # âœ… Augmentation de la nettetÃ©
         enhancer = ImageEnhance.Sharpness(image_pil)
         image_pil = enhancer.enhance(1.2)
 
-        # ✅ Amélioration des couleurs
+        # âœ… AmÃ©lioration des couleurs
         enhancer = ImageEnhance.Color(image_pil)
         image_pil = enhancer.enhance(1.15)
 
         return image_pil
 
     except Exception as e:
-        print(f"🚨 Erreur dans l'amélioration de l'image: {e}")
+        print(f"ðŸš¨ Erreur dans l'amÃ©lioration de l'image: {e}")
         return image_pil
+

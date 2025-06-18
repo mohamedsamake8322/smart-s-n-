@@ -1,4 +1,4 @@
-
+﻿
 import hashlib
 import json
 from datetime import datetime
@@ -260,3 +260,4 @@ class AgriculturalBlockchain:
 
 # Global blockchain instance
 agricultural_blockchain = AgriculturalBlockchain()
+

@@ -1,4 +1,4 @@
-
+﻿
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -11,37 +11,37 @@ import warnings
 warnings.filterwarnings('ignore')
 
 class CropDatabase:
-    """Base de données des cultures et stades de croissance"""
+    """Base de donnÃ©es des cultures et stades de croissance"""
     
     def __init__(self):
         self.crops_data = {
             'wheat': {
-                'name': 'Blé',
+                'name': 'BlÃ©',
                 'growth_stages': {
                     'germination': {
                         'duration_days': 7,
                         'nutrients': {'N': 15, 'P': 20, 'K': 10},
-                        'description': 'Émergence et établissement'
+                        'description': 'Ã‰mergence et Ã©tablissement'
                     },
                     'tallage': {
                         'duration_days': 30,
                         'nutrients': {'N': 40, 'P': 15, 'K': 20},
-                        'description': 'Développement des talles'
+                        'description': 'DÃ©veloppement des talles'
                     },
                     'montaison': {
                         'duration_days': 45,
                         'nutrients': {'N': 60, 'P': 10, 'K': 30},
-                        'description': 'Élongation des tiges'
+                        'description': 'Ã‰longation des tiges'
                     },
                     'epiaison': {
                         'duration_days': 20,
                         'nutrients': {'N': 30, 'P': 25, 'K': 40},
-                        'description': 'Formation des épis'
+                        'description': 'Formation des Ã©pis'
                     },
                     'floraison': {
                         'duration_days': 15,
                         'nutrients': {'N': 20, 'P': 30, 'K': 35},
-                        'description': 'Floraison et fécondation'
+                        'description': 'Floraison et fÃ©condation'
                     },
                     'maturation': {
                         'duration_days': 35,
@@ -53,22 +53,22 @@ class CropDatabase:
                 'micro_elements': {'Zn': 2, 'Mn': 1.5, 'Cu': 1, 'B': 0.5}
             },
             'corn': {
-                'name': 'Maïs',
+                'name': 'MaÃ¯s',
                 'growth_stages': {
                     'emergence': {
                         'duration_days': 10,
                         'nutrients': {'N': 20, 'P': 25, 'K': 15},
-                        'description': 'Émergence et première feuille'
+                        'description': 'Ã‰mergence et premiÃ¨re feuille'
                     },
                     'vegetatif': {
                         'duration_days': 50,
                         'nutrients': {'N': 80, 'P': 20, 'K': 40},
-                        'description': 'Croissance végétative'
+                        'description': 'Croissance vÃ©gÃ©tative'
                     },
                     'floraison': {
                         'duration_days': 20,
                         'nutrients': {'N': 60, 'P': 30, 'K': 60},
-                        'description': 'Floraison mâle et femelle'
+                        'description': 'Floraison mÃ¢le et femelle'
                     },
                     'remplissage': {
                         'duration_days': 45,
@@ -100,7 +100,7 @@ class CropDatabase:
                     'montaison': {
                         'duration_days': 30,
                         'nutrients': {'N': 50, 'P': 15, 'K': 45},
-                        'description': 'Élongation des tiges'
+                        'description': 'Ã‰longation des tiges'
                     },
                     'paniculation': {
                         'duration_days': 25,
@@ -122,12 +122,12 @@ class CropDatabase:
                     'emergence': {
                         'duration_days': 8,
                         'nutrients': {'N': 10, 'P': 25, 'K': 15},
-                        'description': 'Émergence des cotylédons'
+                        'description': 'Ã‰mergence des cotylÃ©dons'
                     },
                     'croissance': {
                         'duration_days': 40,
                         'nutrients': {'N': 20, 'P': 30, 'K': 40},
-                        'description': 'Croissance végétative'
+                        'description': 'Croissance vÃ©gÃ©tative'
                     },
                     'floraison': {
                         'duration_days': 25,
@@ -151,11 +151,11 @@ class CropDatabase:
         }
     
     def get_crop_info(self, crop_type: str) -> Dict:
-        """Récupère les informations d'une culture"""
+        """RÃ©cupÃ¨re les informations d'une culture"""
         return self.crops_data.get(crop_type.lower(), {})
     
     def get_current_stage(self, crop_type: str, planting_date: str) -> Dict:
-        """Détermine le stade actuel de la culture"""
+        """DÃ©termine le stade actuel de la culture"""
         crop_info = self.get_crop_info(crop_type)
         if not crop_info:
             return {}
@@ -176,7 +176,7 @@ class CropDatabase:
                     }
                 current_days += stage_duration
             
-            # Si au-delà de tous les stades
+            # Si au-delÃ  de tous les stades
             return {
                 'stage_name': 'mature',
                 'stage_info': {'nutrients': {'N': 0, 'P': 0, 'K': 0}},
@@ -188,7 +188,7 @@ class CropDatabase:
             return {}
 
 class SmartFertilizationSystem:
-    """Système de fertilisation intelligent avec IA"""
+    """SystÃ¨me de fertilisation intelligent avec IA"""
     
     def __init__(self):
         self.crop_db = CropDatabase()
@@ -206,14 +206,14 @@ class SmartFertilizationSystem:
         organic_matter = soil_data.get('organic_matter', 3.0)
         moisture = soil_data.get('moisture', 55)
         
-        # Évaluation de la disponibilité des nutriments
+        # Ã‰valuation de la disponibilitÃ© des nutriments
         nutrient_availability = {
             'N': self._calculate_n_availability(ph, organic_matter, moisture),
             'P': self._calculate_p_availability(ph, phosphorus),
             'K': self._calculate_k_availability(ph, potassium)
         }
         
-        # Facteurs de correction basés sur les conditions
+        # Facteurs de correction basÃ©s sur les conditions
         correction_factors = {
             'ph_factor': self._get_ph_correction(ph),
             'moisture_factor': self._get_moisture_correction(moisture),
@@ -227,7 +227,7 @@ class SmartFertilizationSystem:
         }
     
     def _calculate_n_availability(self, ph: float, om: float, moisture: float) -> float:
-        """Calcule la disponibilité de l'azote"""
+        """Calcule la disponibilitÃ© de l'azote"""
         base_availability = 0.7
         
         # Correction pH
@@ -238,41 +238,41 @@ class SmartFertilizationSystem:
         else:
             ph_factor = 0.9 - (ph - 7.5) * 0.05
         
-        # Correction matière organique
+        # Correction matiÃ¨re organique
         om_factor = min(1.2, 0.6 + om * 0.15)
         
-        # Correction humidité
+        # Correction humiditÃ©
         moisture_factor = 1.0 if 40 <= moisture <= 70 else 0.8
         
         return base_availability * ph_factor * om_factor * moisture_factor
     
     def _calculate_p_availability(self, ph: float, p_content: float) -> float:
-        """Calcule la disponibilité du phosphore"""
+        """Calcule la disponibilitÃ© du phosphore"""
         base_availability = 0.6
         
-        # Le phosphore est mieux disponible à pH neutre
+        # Le phosphore est mieux disponible Ã  pH neutre
         if 6.5 <= ph <= 7.0:
             ph_factor = 1.0
         else:
             ph_factor = 0.7 - abs(ph - 6.75) * 0.1
         
-        # Facteur basé sur le contenu
+        # Facteur basÃ© sur le contenu
         content_factor = min(1.5, p_content / 30)
         
         return base_availability * ph_factor * content_factor
     
     def _calculate_k_availability(self, ph: float, k_content: float) -> float:
-        """Calcule la disponibilité du potassium"""
+        """Calcule la disponibilitÃ© du potassium"""
         base_availability = 0.8
         
-        # Le potassium est généralement bien disponible
+        # Le potassium est gÃ©nÃ©ralement bien disponible
         ph_factor = 0.95 if ph < 5.5 else 1.0
         content_factor = min(1.3, k_content / 200)
         
         return base_availability * ph_factor * content_factor
     
     def _get_ph_correction(self, ph: float) -> float:
-        """Facteur de correction basé sur le pH"""
+        """Facteur de correction basÃ© sur le pH"""
         if 6.0 <= ph <= 7.5:
             return 1.0
         elif ph < 6.0:
@@ -281,7 +281,7 @@ class SmartFertilizationSystem:
             return 0.9 - (ph - 7.5) * 0.03
     
     def _get_moisture_correction(self, moisture: float) -> float:
-        """Facteur de correction basé sur l'humidité"""
+        """Facteur de correction basÃ© sur l'humiditÃ©"""
         if 40 <= moisture <= 70:
             return 1.0
         elif moisture < 40:
@@ -290,11 +290,11 @@ class SmartFertilizationSystem:
             return 1.1 - (moisture - 70) * 0.005
     
     def _get_om_correction(self, organic_matter: float) -> float:
-        """Facteur de correction basé sur la matière organique"""
+        """Facteur de correction basÃ© sur la matiÃ¨re organique"""
         return min(1.2, 0.8 + organic_matter * 0.1)
     
     def _calculate_soil_quality(self, soil_data: Dict) -> float:
-        """Calcule un score de qualité du sol (0-100)"""
+        """Calcule un score de qualitÃ© du sol (0-100)"""
         ph = soil_data.get('ph', 6.5)
         organic_matter = soil_data.get('organic_matter', 3.0)
         moisture = soil_data.get('moisture', 55)
@@ -307,10 +307,10 @@ class SmartFertilizationSystem:
         else:
             ph_score = max(0, 60 - abs(ph - 6.75) * 20)
         
-        # Score matière organique (optimal >3%)
+        # Score matiÃ¨re organique (optimal >3%)
         om_score = min(100, organic_matter * 25)
         
-        # Score humidité (optimal 40-70%)
+        # Score humiditÃ© (optimal 40-70%)
         if 40 <= moisture <= 70:
             moisture_score = 100
         else:
@@ -325,7 +325,7 @@ class SmartFertilizationSystem:
                                   soil_data: Dict,
                                   weather_forecast: List[Dict] = None,
                                   target_yield: float = None) -> Dict:
-        """Génère un plan de fertilisation personnalisé"""
+        """GÃ©nÃ¨re un plan de fertilisation personnalisÃ©"""
         
         # Analyse du sol
         soil_analysis = self.analyze_soil_conditions(soil_data)
@@ -337,17 +337,17 @@ class SmartFertilizationSystem:
         if not crop_info or not current_stage:
             return {'error': 'Culture ou stade non reconnu'}
         
-        # Calcul des besoins ajustés
+        # Calcul des besoins ajustÃ©s
         adjusted_nutrients = self._calculate_adjusted_nutrients(
             crop_info, current_stage, soil_analysis, target_yield
         )
         
-        # Génération du calendrier de fertilisation
+        # GÃ©nÃ©ration du calendrier de fertilisation
         fertilization_schedule = self._create_fertilization_schedule(
             crop_info, current_stage, adjusted_nutrients, area, weather_forecast
         )
         
-        # Recommandations spécifiques
+        # Recommandations spÃ©cifiques
         recommendations = self._generate_recommendations(
             soil_analysis, current_stage, weather_forecast
         )
@@ -368,14 +368,14 @@ class SmartFertilizationSystem:
     
     def _calculate_adjusted_nutrients(self, crop_info: Dict, current_stage: Dict, 
                                     soil_analysis: Dict, target_yield: float = None) -> Dict:
-        """Calcule les besoins en nutriments ajustés"""
+        """Calcule les besoins en nutriments ajustÃ©s"""
         base_nutrients = crop_info['total_nutrients'].copy()
         availability = soil_analysis['nutrient_availability']
         
-        # Ajustement basé sur la disponibilité
+        # Ajustement basÃ© sur la disponibilitÃ©
         adjusted = {}
         for nutrient, base_amount in base_nutrients.items():
-            # Facteur de disponibilité
+            # Facteur de disponibilitÃ©
             avail_factor = availability.get(nutrient, 0.7)
             
             # Ajustement pour le rendement cible
@@ -391,14 +391,14 @@ class SmartFertilizationSystem:
     def _create_fertilization_schedule(self, crop_info: Dict, current_stage: Dict,
                                      adjusted_nutrients: Dict, area: float,
                                      weather_forecast: List[Dict] = None) -> List[Dict]:
-        """Crée le calendrier de fertilisation"""
+        """CrÃ©e le calendrier de fertilisation"""
         schedule = []
         
-        # Répartition des nutriments par stade
+        # RÃ©partition des nutriments par stade
         for stage_name, stage_info in crop_info['growth_stages'].items():
             stage_nutrients = stage_info['nutrients']
             
-            # Calcul des quantités par hectare
+            # Calcul des quantitÃ©s par hectare
             applications = []
             for nutrient, stage_need in stage_nutrients.items():
                 if nutrient in adjusted_nutrients:
@@ -406,7 +406,7 @@ class SmartFertilizationSystem:
                     percentage = stage_need / crop_info['total_nutrients'][nutrient]
                     total_needed = adjusted_nutrients[nutrient] * percentage
                     
-                    # Répartition en plusieurs applications si nécessaire
+                    # RÃ©partition en plusieurs applications si nÃ©cessaire
                     if nutrient == 'N' and total_needed > 60:
                         # Azote : fractionner si > 60 kg/ha
                         num_apps = min(3, int(total_needed / 40) + 1)
@@ -443,9 +443,9 @@ class SmartFertilizationSystem:
         """Recommande le type d'engrais"""
         fertilizer_types = {
             'N': {
-                'early': 'Urée (46-0-0)',
+                'early': 'UrÃ©e (46-0-0)',
                 'mid': 'Nitrate d\'ammonium (33-0-0)',
-                'late': 'Solution azotée (30-0-0)'
+                'late': 'Solution azotÃ©e (30-0-0)'
             },
             'P': {
                 'early': 'Superphosphate (0-45-0)',
@@ -468,50 +468,50 @@ class SmartFertilizationSystem:
         """Recommandations de timing pour l'application"""
         recommendations = {
             'germination': ['Appliquer 2-3 jours avant semis', 'Incorporer au sol'],
-            'tallage': ['Appliquer en début de stade', 'Éviter les périodes de gel'],
-            'montaison': ['Fractionner les apports', 'Surveiller les prévisions météo'],
-            'floraison': ['Application foliaire possible', 'Éviter les heures chaudes'],
-            'remplissage': ['Derniers apports avant arrêt', 'Privilégier le matin'],
-            'maturation': ['Arrêter la fertilisation azotée', 'Favoriser K et P']
+            'tallage': ['Appliquer en dÃ©but de stade', 'Ã‰viter les pÃ©riodes de gel'],
+            'montaison': ['Fractionner les apports', 'Surveiller les prÃ©visions mÃ©tÃ©o'],
+            'floraison': ['Application foliaire possible', 'Ã‰viter les heures chaudes'],
+            'remplissage': ['Derniers apports avant arrÃªt', 'PrivilÃ©gier le matin'],
+            'maturation': ['ArrÃªter la fertilisation azotÃ©e', 'Favoriser K et P']
         }
         
-        return recommendations.get(stage, ['Suivre les recommandations générales'])
+        return recommendations.get(stage, ['Suivre les recommandations gÃ©nÃ©rales'])
     
     def _generate_recommendations(self, soil_analysis: Dict, current_stage: Dict, 
                                 weather_forecast: List[Dict] = None) -> List[str]:
-        """Génère des recommandations spécifiques"""
+        """GÃ©nÃ¨re des recommandations spÃ©cifiques"""
         recommendations = []
         
-        # Recommandations basées sur le sol
+        # Recommandations basÃ©es sur le sol
         soil_quality = soil_analysis['soil_quality_score']
         if soil_quality < 60:
-            recommendations.append("⚠️ Qualité du sol faible - Considérer un amendement organique")
+            recommendations.append("âš ï¸ QualitÃ© du sol faible - ConsidÃ©rer un amendement organique")
         
         availability = soil_analysis['nutrient_availability']
         for nutrient, avail in availability.items():
             if avail < 0.6:
-                recommendations.append(f"📉 Faible disponibilité {nutrient} - Augmenter les doses")
+                recommendations.append(f"ðŸ“‰ Faible disponibilitÃ© {nutrient} - Augmenter les doses")
         
-        # Recommandations basées sur le stade
+        # Recommandations basÃ©es sur le stade
         stage_name = current_stage['stage_name']
         if stage_name in ['floraison', 'remplissage']:
-            recommendations.append("🌸 Stade critique - Surveiller étroitement la nutrition")
+            recommendations.append("ðŸŒ¸ Stade critique - Surveiller Ã©troitement la nutrition")
         
-        # Recommandations météo
+        # Recommandations mÃ©tÃ©o
         if weather_forecast:
             for forecast in weather_forecast[:7]:  # 7 prochains jours
                 if forecast.get('rainfall', 0) > 20:
-                    recommendations.append("🌧️ Pluies prévues - Reporter l'application d'engrais")
+                    recommendations.append("ðŸŒ§ï¸ Pluies prÃ©vues - Reporter l'application d'engrais")
                     break
         
-        recommendations.append("📅 Programmer des analyses de sol régulières")
-        recommendations.append("🔄 Ajuster selon l'évolution de la culture")
+        recommendations.append("ðŸ“… Programmer des analyses de sol rÃ©guliÃ¨res")
+        recommendations.append("ðŸ”„ Ajuster selon l'Ã©volution de la culture")
         
         return recommendations
     
     def _estimate_costs(self, schedule: List[Dict]) -> Dict:
-        """Estime les coûts de fertilisation"""
-        # Prix approximatifs par kg de nutriment (€)
+        """Estime les coÃ»ts de fertilisation"""
+        # Prix approximatifs par kg de nutriment (â‚¬)
         nutrient_prices = {'N': 1.2, 'P': 2.5, 'K': 1.0}
         
         total_cost = 0
@@ -538,12 +538,12 @@ class SmartFertilizationSystem:
         }
     
     def train_optimization_model(self, historical_data: List[Dict]):
-        """Entraîne le modèle IA d'optimisation"""
+        """EntraÃ®ne le modÃ¨le IA d'optimisation"""
         if len(historical_data) < 10:
             return False
         
         try:
-            # Préparation des données d'entraînement
+            # PrÃ©paration des donnÃ©es d'entraÃ®nement
             features = []
             targets = []
             
@@ -567,14 +567,14 @@ class SmartFertilizationSystem:
             X = self.scaler.fit_transform(features)
             y = np.array(targets)
             
-            # Entraînement
+            # EntraÃ®nement
             self.ml_model.fit(X, y)
             self.is_trained = True
             
             return True
             
         except Exception as e:
-            print(f"Erreur d'entraînement: {e}")
+            print(f"Erreur d'entraÃ®nement: {e}")
             return False
     
     def optimize_fertilization_ai(self, base_plan: Dict, soil_data: Dict, 
@@ -584,7 +584,7 @@ class SmartFertilizationSystem:
             return base_plan
         
         try:
-            # Prédiction avec le modèle actuel
+            # PrÃ©diction avec le modÃ¨le actuel
             current_features = [
                 soil_data.get('ph', 6.5),
                 soil_data.get('nitrogen', 40),
@@ -604,12 +604,12 @@ class SmartFertilizationSystem:
             # Optimisation simple par ajustement des doses
             optimized_nutrients = base_plan['adjusted_nutrients'].copy()
             
-            # Si le rendement prédit est faible, augmenter légèrement les doses
+            # Si le rendement prÃ©dit est faible, augmenter lÃ©gÃ¨rement les doses
             if predicted_yield < 4.0:
                 for nutrient in optimized_nutrients:
                     optimized_nutrients[nutrient] *= 1.1
             elif predicted_yield > 7.0:
-                # Si très bon rendement prédit, peut-être réduire
+                # Si trÃ¨s bon rendement prÃ©dit, peut-Ãªtre rÃ©duire
                 for nutrient in optimized_nutrients:
                     optimized_nutrients[nutrient] *= 0.95
             
@@ -628,3 +628,4 @@ class SmartFertilizationSystem:
 
 # Instance globale
 smart_fertilization = SmartFertilizationSystem()
+

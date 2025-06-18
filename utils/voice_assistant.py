@@ -1,4 +1,4 @@
-
+﻿
 import json
 import re
 from typing import Dict, List, Any
@@ -42,21 +42,21 @@ class VoiceAssistant:
                     'harvest_time': '90-120 days',
                     'water_needs': 'Moderate',
                     'common_diseases': ['rust', 'blight', 'smut'],
-                    'optimal_temp': '15-25°C'
+                    'optimal_temp': '15-25Â°C'
                 },
                 'corn': {
                     'planting_season': 'Spring',
                     'harvest_time': '100-130 days',
                     'water_needs': 'High',
                     'common_diseases': ['corn borer', 'rust', 'blight'],
-                    'optimal_temp': '20-30°C'
+                    'optimal_temp': '20-30Â°C'
                 },
                 'rice': {
                     'planting_season': 'Spring/Summer',
                     'harvest_time': '120-150 days',
                     'water_needs': 'Very High',
                     'common_diseases': ['blast', 'blight', 'sheath rot'],
-                    'optimal_temp': '25-35°C'
+                    'optimal_temp': '25-35Â°C'
                 }
             },
             'diseases': {
@@ -200,7 +200,7 @@ class VoiceAssistant:
     def _generate_voice_response(self, text: str) -> str:
         """Generate voice-friendly response text"""
         # Simplify technical terms for voice synthesis
-        voice_text = text.replace('°C', ' degrees Celsius')
+        voice_text = text.replace('Â°C', ' degrees Celsius')
         voice_text = voice_text.replace('%', ' percent')
         voice_text = voice_text.replace('&', ' and ')
 
@@ -374,3 +374,4 @@ class ExpertChatbot:
 # Global instances
 voice_assistant = VoiceAssistant()
 expert_chatbot = ExpertChatbot()
+

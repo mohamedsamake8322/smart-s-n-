@@ -1,4 +1,4 @@
-
+﻿
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
@@ -54,7 +54,7 @@ class AdvancedYieldPredictor:
         # Advanced agricultural features
         if all(col in df.columns for col in ['temperature', 'rainfall', 'humidity']):
             # Growing Degree Days (GDD)
-            df['gdd'] = np.maximum(0, df['temperature'] - 10)  # Base temperature 10°C
+            df['gdd'] = np.maximum(0, df['temperature'] - 10)  # Base temperature 10Â°C
             
             # Water stress index
             df['water_stress'] = df['rainfall'] / (df['temperature'] + 1)
@@ -339,3 +339,4 @@ class ScenarioModeler:
             'predicted_yield': best_yield,
             'improvement': best_yield - model.predict_advanced(base_conditions).get('ensemble_prediction', 0)
         }
+
