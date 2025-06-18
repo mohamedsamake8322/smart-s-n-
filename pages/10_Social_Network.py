@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -9,14 +9,14 @@ import streamlit.components.v1 as components
 import folium
 from streamlit_folium import st_folium
 
-# ✅ Configuration de la page
-st.set_page_config(page_title="African Agricultural Network", page_icon="🌍", layout="wide")
+# âœ… Configuration de la page
+st.set_page_config(page_title="African Agricultural Network", page_icon="ðŸŒ", layout="wide")
 
-st.title("🌍 African Agricultural Social Network")
+st.title("ðŸŒ African Agricultural Social Network")
 st.markdown("### A platform for African farmers and experts to share insights and innovations")
 
-# ✅ Sidebar - Profil utilisateur
-st.sidebar.title("🌱 My Farming Profile")
+# âœ… Sidebar - Profil utilisateur
+st.sidebar.title("ðŸŒ± My Farming Profile")
 
 if 'user_profile' not in st.session_state:
     st.session_state.user_profile = {
@@ -34,8 +34,8 @@ profile = st.session_state.user_profile
 
 st.sidebar.markdown(f"**{profile['name']}**")
 st.sidebar.markdown(f"{profile['type']} - {profile['specialty']}")
-st.sidebar.markdown(f"📍 {profile['region']}")
-st.sidebar.markdown(f"🎯 {profile['experience']} of experience")
+st.sidebar.markdown(f"ðŸ“ {profile['region']}")
+st.sidebar.markdown(f"ðŸŽ¯ {profile['experience']} of experience")
 
 col1, col2, col3 = st.sidebar.columns(3)
 with col1:
@@ -45,7 +45,7 @@ with col2:
 with col3:
     st.metric("Following", profile['following'])
 
-# ✅ Tabs - Sections principales
+# âœ… Tabs - Sections principales
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Community Feed",
     "African Farming Groups",
@@ -54,9 +54,9 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Local Markets"
 ])
 
-# ✅ 🌍 **Farming Groups & Discussion Forums**
+# âœ… ðŸŒ **Farming Groups & Discussion Forums**
 with tab2:
-    st.subheader("🌿 Farming Communities in Africa")
+    st.subheader("ðŸŒ¿ Farming Communities in Africa")
 
     col1, col2 = st.columns([2, 1])
 
@@ -72,17 +72,17 @@ with tab2:
             with st.container():
                 col_info, col_stats, col_action = st.columns([2, 1, 1])
                 with col_info:
-                    st.markdown(f"**{group['name']}** 🌱")
+                    st.markdown(f"**{group['name']}** ðŸŒ±")
                     st.markdown(f"*{group['category']}*")
                 with col_stats:
                     st.metric("Members", group['members'])
                 with col_action:
-                    if st.button("📖 Join Group", key=f"join_{group['name']}"):
+                    if st.button("ðŸ“– Join Group", key=f"join_{group['name']}"):
                         st.success(f"You've joined {group['name']}!")
                 st.markdown("---")
 
     with col2:
-        st.markdown("**🔍 Discover More Groups**")
+        st.markdown("**ðŸ” Discover More Groups**")
         search_term = st.text_input("Search for a group")
         group_categories = st.multiselect(
             "Categories",
@@ -90,22 +90,22 @@ with tab2:
             default=["Agroecology"]
         )
 
-# ✅ 📊 **Tracking African Crops**
+# âœ… ðŸ“Š **Tracking African Crops**
 with tab3:
-    st.subheader("📊 Crop Monitoring in Africa")
+    st.subheader("ðŸ“Š Crop Monitoring in Africa")
 
-    st.sidebar.subheader("📈 Key African Crops")
+    st.sidebar.subheader("ðŸ“ˆ Key African Crops")
     crop_data = {
-        "🌾 Millet": {"region": "Sahel & West Africa", "yield": "1.2 T/ha"},
-        "🌿 Cassava": {"region": "Central & West Africa", "yield": "12 T/ha"},
-        "🍫 Cocoa": {"region": "Ivory Coast, Ghana", "yield": "0.8 T/ha"},
-        "🌰 Groundnuts": {"region": "Senegal, Nigeria", "yield": "2.5 T/ha"}
+        "ðŸŒ¾ Millet": {"region": "Sahel & West Africa", "yield": "1.2 T/ha"},
+        "ðŸŒ¿ Cassava": {"region": "Central & West Africa", "yield": "12 T/ha"},
+        "ðŸ« Cocoa": {"region": "Ivory Coast, Ghana", "yield": "0.8 T/ha"},
+        "ðŸŒ° Groundnuts": {"region": "Senegal, Nigeria", "yield": "2.5 T/ha"}
     }
 
     for crop, details in crop_data.items():
-        st.markdown(f"🔹 **{crop}** - {details['region']} - Yield: {details['yield']}")
+        st.markdown(f"ðŸ”¹ **{crop}** - {details['region']} - Yield: {details['yield']}")
 
-# ✅ 🌍 **Carte interactive des cultures africaines**
+# âœ… ðŸŒ **Carte interactive des cultures africaines**
 m = folium.Map(location=[7, 20], zoom_start=4)
 
 cultures = {
@@ -118,11 +118,11 @@ cultures = {
 for crop, coord in cultures.items():
     folium.Marker(location=coord, popup=crop, icon=folium.Icon(color="green")).add_to(m)
 
-st.subheader("🌍 Map of Major African Crops")
+st.subheader("ðŸŒ Map of Major African Crops")
 st_folium(m, width=700)
 
-# ✅ 🔥 **Trending Topics**
-st.sidebar.subheader("🔥 Agricultural Trends in Africa")
+# âœ… ðŸ”¥ **Trending Topics**
+st.sidebar.subheader("ðŸ”¥ Agricultural Trends in Africa")
 african_trends = [
     {"tag": "#SahelDrought", "posts": 134},
     {"tag": "#MilPrice2025", "posts": 98},
@@ -138,16 +138,17 @@ for trend in african_trends:
     with col_count:
         st.markdown(f"{trend['posts']} posts")
 
-# ✅ 🛒 **Agricultural Marketplace**
-st.subheader("🛒 African Agricultural Marketplace")
+# âœ… ðŸ›’ **Agricultural Marketplace**
+st.subheader("ðŸ›’ African Agricultural Marketplace")
 
 market_items = [
     {"name": "Mil Organic Seeds", "price": "5,000 CFA/kg", "location": "Senegal"},
-    {"name": "Natural Fertilizer for Cassava", "price": "8,000 CFA/bag", "location": "Côte d'Ivoire"},
+    {"name": "Natural Fertilizer for Cassava", "price": "8,000 CFA/bag", "location": "CÃ´te d'Ivoire"},
     {"name": "Solar Irrigation Pump", "price": "120,000 CFA", "location": "Mali"}
 ]
 
 for item in market_items:
     st.markdown(f"**{item['name']}** - {item['price']} ({item['location']})")
-    if st.button("🛍️ Buy", key=item["name"]):
+    if st.button("ðŸ›ï¸ Buy", key=item["name"]):
         st.success(f"Transaction initiated for {item['name']}")
+

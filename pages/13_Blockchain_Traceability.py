@@ -1,4 +1,4 @@
-
+﻿
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -9,7 +9,7 @@ from utils.blockchain_system import agricultural_blockchain
 from utils.translations import translator
 import json
 
-st.set_page_config(page_title="Blockchain Traceability", page_icon="🔗", layout="wide")
+st.set_page_config(page_title="Blockchain Traceability", page_icon="ðŸ”—", layout="wide")
 
 # Language selection
 if 'language' not in st.session_state:
@@ -30,7 +30,7 @@ with col_lang2:
 
 lang = st.session_state.language
 
-st.title(f"🔗 {translator.get_text('blockchain_traceability', lang)}")
+st.title(f"ðŸ”— {translator.get_text('blockchain_traceability', lang)}")
 st.markdown(f"### {translator.get_text('product_authenticity', lang)} & {translator.get_text('supply_chain', lang)}")
 
 # Initialize blockchain data
@@ -61,7 +61,7 @@ if 'blockchain_initialized' not in st.session_state:
         'date': '2024-05-20',
         'amount': 2.5,
         'method': 'broadcast',
-        'weather': 'clear, 18°C',
+        'weather': 'clear, 18Â°C',
         'applicator': 'John Smith',
         'compliant': True
     })
@@ -71,7 +71,7 @@ if 'blockchain_initialized' not in st.session_state:
     st.session_state.sample_crop_id = crop_id
 
 # Sidebar for blockchain operations
-st.sidebar.title("🔗 Blockchain Operations")
+st.sidebar.title("ðŸ”— Blockchain Operations")
 
 operation = st.sidebar.selectbox(
     "Select Operation",
@@ -80,20 +80,20 @@ operation = st.sidebar.selectbox(
 
 # Main content tabs
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "🏪 Product Verification",
-    "🏭 Farm Registration", 
-    "🌱 Crop Records",
-    "📊 Supply Chain Analytics",
-    "🏆 Certification & Premiums"
+    "ðŸª Product Verification",
+    "ðŸ­ Farm Registration", 
+    "ðŸŒ± Crop Records",
+    "ðŸ“Š Supply Chain Analytics",
+    "ðŸ† Certification & Premiums"
 ])
 
 with tab1:
-    st.subheader("🔍 Product Authentication & Traceability")
+    st.subheader("ðŸ” Product Authentication & Traceability")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("**🔎 Verify Product Authenticity:**")
+        st.markdown("**ðŸ”Ž Verify Product Authenticity:**")
         
         product_id_input = st.text_input(
             "Enter Product ID:",
@@ -101,14 +101,14 @@ with tab1:
             help="Scan QR code or enter product ID"
         )
         
-        if st.button("🔍 Verify Product", use_container_width=True) and product_id_input:
+        if st.button("ðŸ” Verify Product", use_container_width=True) and product_id_input:
             verification_result = agricultural_blockchain.verify_product_authenticity(product_id_input)
             
             if verification_result['verified']:
-                st.success("✅ Product Verified - Authentic!")
+                st.success("âœ… Product Verified - Authentic!")
                 
                 # Display traceability information
-                st.markdown("**📋 Product Information:**")
+                st.markdown("**ðŸ“‹ Product Information:**")
                 crop_data = verification_result['crop_data']
                 
                 col_a, col_b = st.columns(2)
@@ -125,7 +125,7 @@ with tab1:
                 
                 # Farm information
                 if verification_result['farm_info']:
-                    st.markdown("**🏭 Farm Information:**")
+                    st.markdown("**ðŸ­ Farm Information:**")
                     farm_info = verification_result['farm_info']
                     
                     col_c, col_d = st.columns(2)
@@ -138,7 +138,7 @@ with tab1:
                 
                 # Treatment history
                 if verification_result['treatments']:
-                    st.markdown("**💊 Treatment History:**")
+                    st.markdown("**ðŸ’Š Treatment History:**")
                     treatments_df = pd.DataFrame([
                         {
                             'Date': t['application_date'],
@@ -146,7 +146,7 @@ with tab1:
                             'Product': t['product_name'],
                             'Amount': f"{t['amount_applied']} kg/ha",
                             'Method': t['application_method'],
-                            'Compliant': '✅' if t['certification_compliant'] else '❌'
+                            'Compliant': 'âœ…' if t['certification_compliant'] else 'âŒ'
                         }
                         for t in verification_result['treatments']
                     ])
@@ -154,7 +154,7 @@ with tab1:
                 
                 # Harvest information
                 if verification_result['harvest_data']:
-                    st.markdown("**🌾 Harvest Information:**")
+                    st.markdown("**ðŸŒ¾ Harvest Information:**")
                     harvest = verification_result['harvest_data']
                     
                     col_e, col_f = st.columns(2)
@@ -166,25 +166,25 @@ with tab1:
                         st.info(f"**Moisture:** {harvest['moisture_content']}%")
             
             else:
-                st.error("❌ Product verification failed!")
+                st.error("âŒ Product verification failed!")
                 if 'error' in verification_result:
                     st.error(f"Error: {verification_result['error']}")
     
     with col2:
-        st.markdown("**📱 QR Code Scanner:**")
+        st.markdown("**ðŸ“± QR Code Scanner:**")
         
         # QR Code display (placeholder)
         st.markdown("""
         <div style='text-align: center; padding: 20px; border: 2px dashed #ccc; border-radius: 10px;'>
-            <h3>📱 QR Code Scanner</h3>
+            <h3>ðŸ“± QR Code Scanner</h3>
             <p>In a real implementation, this would be a camera interface for scanning QR codes on products</p>
             <button style='padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px;'>
-                📷 Open Camera
+                ðŸ“· Open Camera
             </button>
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("**🎯 Quick Product Lookup:**")
+        st.markdown("**ðŸŽ¯ Quick Product Lookup:**")
         
         quick_products = [
             "Organic Wheat Batch #2024-001",
@@ -193,16 +193,16 @@ with tab1:
         ]
         
         for product in quick_products:
-            if st.button(f"🔍 {product}", key=f"quick_{product}"):
+            if st.button(f"ðŸ” {product}", key=f"quick_{product}"):
                 st.info(f"Looking up: {product}")
 
 with tab2:
-    st.subheader("🏭 Farm Registration & Certification")
+    st.subheader("ðŸ­ Farm Registration & Certification")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("**📝 Register New Farm:**")
+        st.markdown("**ðŸ“ Register New Farm:**")
         
         with st.form("farm_registration"):
             farm_name = st.text_input("Farm Name *", placeholder="e.g., Green Valley Organic Farm")
@@ -225,7 +225,7 @@ with tab2:
                 placeholder="Brief description of farming practices, specialties, etc."
             )
             
-            submitted = st.form_submit_button("🏭 Register Farm")
+            submitted = st.form_submit_button("ðŸ­ Register Farm")
             
             if submitted and farm_name and farm_owner and farm_location:
                 farm_data = {
@@ -240,12 +240,12 @@ with tab2:
                 
                 farm_id = agricultural_blockchain.register_farm(farm_data)
                 
-                st.success(f"✅ Farm registered successfully!")
+                st.success(f"âœ… Farm registered successfully!")
                 st.info(f"**Farm ID:** `{farm_id}`")
                 st.info("Save this ID for future crop registrations.")
                 
                 # Generate QR code info
-                st.markdown("**📱 Farm QR Code Information:**")
+                st.markdown("**ðŸ“± Farm QR Code Information:**")
                 qr_data = {
                     'type': 'farm',
                     'id': farm_id,
@@ -255,7 +255,7 @@ with tab2:
                 st.code(json.dumps(qr_data, indent=2))
     
     with col2:
-        st.markdown("**🏆 Registered Farms:**")
+        st.markdown("**ðŸ† Registered Farms:**")
         
         # Display registered farms
         if agricultural_blockchain.certified_farms:
@@ -269,7 +269,7 @@ with tab2:
                     'Location': farm_data['location'],
                     'Size (ha)': farm_data['size_hectares'],
                     'Certification': farm_data['certification_type'].title(),
-                    'Status': '✅ Verified' if farm_info['verified'] else '⏳ Pending'
+                    'Status': 'âœ… Verified' if farm_info['verified'] else 'â³ Pending'
                 })
             
             farms_df = pd.DataFrame(farms_data)
@@ -277,7 +277,7 @@ with tab2:
         else:
             st.info("No farms registered yet.")
         
-        st.markdown("**📊 Certification Statistics:**")
+        st.markdown("**ðŸ“Š Certification Statistics:**")
         
         # Create sample stats
         cert_stats = {
@@ -296,12 +296,12 @@ with tab2:
         st.plotly_chart(fig_certs, use_container_width=True)
 
 with tab3:
-    st.subheader("🌱 Crop Production Records")
+    st.subheader("ðŸŒ± Crop Production Records")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("**📝 Create Crop Record:**")
+        st.markdown("**ðŸ“ Create Crop Record:**")
         
         with st.form("crop_record"):
             # Farm selection
@@ -344,7 +344,7 @@ with tab3:
                 placeholder="Special practices, soil preparation, etc."
             )
             
-            submitted = st.form_submit_button("🌱 Create Crop Record")
+            submitted = st.form_submit_button("ðŸŒ± Create Crop Record")
             
             if submitted and selected_farm and crop_type and seeds_source:
                 crop_data = {
@@ -361,12 +361,12 @@ with tab3:
                 
                 crop_id = agricultural_blockchain.create_crop_record(crop_data)
                 
-                st.success(f"✅ Crop record created successfully!")
+                st.success(f"âœ… Crop record created successfully!")
                 st.info(f"**Crop ID:** `{crop_id}`")
                 st.info("Use this ID to add treatments and harvest records.")
     
     with col2:
-        st.markdown("**🌾 Production Records:**")
+        st.markdown("**ðŸŒ¾ Production Records:**")
         
         if agricultural_blockchain.product_records:
             records_data = []
@@ -378,8 +378,8 @@ with tab3:
                     'Variety': crop_data['variety'],
                     'Planting Date': crop_data['planting_date'],
                     'Area (ha)': crop_data['area_planted'],
-                    'Organic': '✅' if crop_data['organic_certified'] else '❌',
-                    'GMO Free': '✅' if crop_data['gmo_free'] else '❌'
+                    'Organic': 'âœ…' if crop_data['organic_certified'] else 'âŒ',
+                    'GMO Free': 'âœ…' if crop_data['gmo_free'] else 'âŒ'
                 })
             
             records_df = pd.DataFrame(records_data)
@@ -387,7 +387,7 @@ with tab3:
         else:
             st.info("No crop records created yet.")
         
-        st.markdown("**📈 Production Analytics:**")
+        st.markdown("**ðŸ“ˆ Production Analytics:**")
         
         # Sample production data
         production_data = {
@@ -407,12 +407,12 @@ with tab3:
         st.plotly_chart(fig_production, use_container_width=True)
 
 with tab4:
-    st.subheader("📊 Supply Chain Analytics")
+    st.subheader("ðŸ“Š Supply Chain Analytics")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("**🔗 Blockchain Network Stats:**")
+        st.markdown("**ðŸ”— Blockchain Network Stats:**")
         
         # Blockchain statistics
         total_blocks = len(agricultural_blockchain.chain)
@@ -430,11 +430,11 @@ with tab4:
         # Chain validity check
         is_valid = agricultural_blockchain.is_chain_valid()
         if is_valid:
-            st.success("✅ Blockchain integrity verified")
+            st.success("âœ… Blockchain integrity verified")
         else:
-            st.error("❌ Blockchain integrity compromised")
+            st.error("âŒ Blockchain integrity compromised")
         
-        st.markdown("**📈 Network Growth:**")
+        st.markdown("**ðŸ“ˆ Network Growth:**")
         
         # Sample growth data
         dates = pd.date_range(start='2024-01-01', end='2024-06-12', freq='W')
@@ -449,7 +449,7 @@ with tab4:
         st.plotly_chart(fig_growth, use_container_width=True)
     
     with col2:
-        st.markdown("**🌍 Supply Chain Transparency:**")
+        st.markdown("**ðŸŒ Supply Chain Transparency:**")
         
         # Sample supply chain data
         supply_chain_data = [
@@ -468,7 +468,7 @@ with tab4:
         )
         st.plotly_chart(fig_supply_chain, use_container_width=True)
         
-        st.markdown("**🎯 Traceability Coverage:**")
+        st.markdown("**ðŸŽ¯ Traceability Coverage:**")
         
         coverage_data = {
             'Fully Traceable': 15,
@@ -489,12 +489,12 @@ with tab4:
         st.plotly_chart(fig_coverage, use_container_width=True)
 
 with tab5:
-    st.subheader("🏆 Environmental Certification & Premium Pricing")
+    st.subheader("ðŸ† Environmental Certification & Premium Pricing")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("**🌱 Environmental Score Calculator:**")
+        st.markdown("**ðŸŒ± Environmental Score Calculator:**")
         
         product_id_for_score = st.selectbox(
             "Select Product for Environmental Assessment:",
@@ -503,7 +503,7 @@ with tab5:
         )
         
         if product_id_for_score != "No products available":
-            if st.button("🧮 Calculate Environmental Score", use_container_width=True):
+            if st.button("ðŸ§® Calculate Environmental Score", use_container_width=True):
                 score_result = agricultural_blockchain.get_environmental_score(product_id_for_score)
                 
                 if 'error' not in score_result:
@@ -511,37 +511,37 @@ with tab5:
                     
                     # Display score with color coding
                     if score >= 90:
-                        st.success(f"🌟 **Environmental Score: {score}/100** - Premium Eligible!")
+                        st.success(f"ðŸŒŸ **Environmental Score: {score}/100** - Premium Eligible!")
                     elif score >= 80:
-                        st.success(f"🌱 **Environmental Score: {score}/100** - Certification Eligible!")
+                        st.success(f"ðŸŒ± **Environmental Score: {score}/100** - Certification Eligible!")
                     elif score >= 60:
-                        st.warning(f"⚠️ **Environmental Score: {score}/100** - Needs Improvement")
+                        st.warning(f"âš ï¸ **Environmental Score: {score}/100** - Needs Improvement")
                     else:
-                        st.error(f"❌ **Environmental Score: {score}/100** - Major Improvements Needed")
+                        st.error(f"âŒ **Environmental Score: {score}/100** - Major Improvements Needed")
                     
                     # Certification eligibility
                     col_cert, col_premium = st.columns(2)
                     with col_cert:
                         if score_result['certification_eligible']:
-                            st.success("✅ Certification Eligible")
+                            st.success("âœ… Certification Eligible")
                         else:
-                            st.error("❌ Not Certification Eligible")
+                            st.error("âŒ Not Certification Eligible")
                     
                     with col_premium:
                         if score_result['premium_eligible']:
-                            st.success("💰 Premium Pricing Eligible")
+                            st.success("ðŸ’° Premium Pricing Eligible")
                         else:
-                            st.info("💰 Standard Pricing")
+                            st.info("ðŸ’° Standard Pricing")
                     
                     # Recommendations
                     if score_result['recommendations']:
-                        st.markdown("**💡 Improvement Recommendations:**")
+                        st.markdown("**ðŸ’¡ Improvement Recommendations:**")
                         for rec in score_result['recommendations']:
-                            st.write(f"• {rec}")
+                            st.write(f"â€¢ {rec}")
                 else:
                     st.error(f"Error: {score_result['error']}")
         
-        st.markdown("**🎯 Certification Programs:**")
+        st.markdown("**ðŸŽ¯ Certification Programs:**")
         
         cert_programs = [
             {"name": "Organic Premium", "min_score": 85, "premium": "15-25%"},
@@ -551,10 +551,10 @@ with tab5:
         ]
         
         for program in cert_programs:
-            st.info(f"**{program['name']}**: Min Score {program['min_score']} → {program['premium']} price premium")
+            st.info(f"**{program['name']}**: Min Score {program['min_score']} â†’ {program['premium']} price premium")
     
     with col2:
-        st.markdown("**💰 Premium Pricing Calculator:**")
+        st.markdown("**ðŸ’° Premium Pricing Calculator:**")
         
         base_price = st.number_input("Base Market Price ($/ton)", min_value=0.0, value=400.0, step=10.0)
         
@@ -594,7 +594,7 @@ with tab5:
             st.metric("Final Price", f"${final_price:.2f}")
         
         # Annual revenue projection
-        st.markdown("**📈 Revenue Projection:**")
+        st.markdown("**ðŸ“ˆ Revenue Projection:**")
         
         annual_production = st.number_input("Annual Production (tons)", min_value=0.0, value=100.0, step=10.0)
         
@@ -611,16 +611,17 @@ with tab5:
             st.metric("Additional Revenue", f"${additional_revenue:,.0f}")
         
         if additional_revenue > 0:
-            st.success(f"💰 Potential additional annual revenue: ${additional_revenue:,.0f}")
+            st.success(f"ðŸ’° Potential additional annual revenue: ${additional_revenue:,.0f}")
 
 # Footer
 st.markdown("---")
 st.markdown("""
-### 🔗 Blockchain Benefits:
-- **🔒 Immutable Records**: All data is permanently recorded and cannot be altered
-- **🌍 Full Traceability**: Track products from farm to consumer
-- **✅ Instant Verification**: Verify authenticity in seconds  
-- **💰 Premium Pricing**: Earn premiums for sustainable practices
-- **🏆 Certifications**: Streamlined certification processes
-- **🤝 Trust Building**: Build consumer confidence in your products
+### ðŸ”— Blockchain Benefits:
+- **ðŸ”’ Immutable Records**: All data is permanently recorded and cannot be altered
+- **ðŸŒ Full Traceability**: Track products from farm to consumer
+- **âœ… Instant Verification**: Verify authenticity in seconds  
+- **ðŸ’° Premium Pricing**: Earn premiums for sustainable practices
+- **ðŸ† Certifications**: Streamlined certification processes
+- **ðŸ¤ Trust Building**: Build consumer confidence in your products
 """)
+

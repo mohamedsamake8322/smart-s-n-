@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -9,9 +9,9 @@ from sklearn.metrics import mean_absolute_error, r2_score
 from utils.ml_models import YieldPredictor, prepare_prediction_data
 from utils.data_processing import get_sample_agricultural_data
 
-st.set_page_config(page_title="Yield Prediction", page_icon="🔮", layout="wide")
+st.set_page_config(page_title="Yield Prediction", page_icon="ðŸ”®", layout="wide")
 
-st.title("🔮 Crop Yield Prediction")
+st.title("ðŸ”® Crop Yield Prediction")
 st.markdown("### ML-powered agricultural yield forecasting")
 
 # Initialize predictor
@@ -77,7 +77,7 @@ with tab1:
         with col2:
             st.markdown("**Environmental Conditions**")
             temperature = st.number_input(
-                "Average Temperature (°C)",
+                "Average Temperature (Â°C)",
                 min_value=-10.0,
                 max_value=50.0,
                 value=25.0,
@@ -109,7 +109,7 @@ with tab1:
                 help="Average daily sunlight hours"
             )
         
-        submitted = st.form_submit_button("🔮 Generate Prediction", use_container_width=True)
+        submitted = st.form_submit_button("ðŸ”® Generate Prediction", use_container_width=True)
         
         if submitted:
             # Prepare input data
@@ -160,17 +160,17 @@ with tab1:
                     
                     # Risk assessment
                     if prediction_result['yield'] < 2.0:
-                        st.warning("⚠️ Low yield predicted. Consider reviewing soil conditions and weather factors.")
+                        st.warning("âš ï¸ Low yield predicted. Consider reviewing soil conditions and weather factors.")
                     elif prediction_result['yield'] > 8.0:
-                        st.success("🌟 High yield predicted! Excellent growing conditions.")
+                        st.success("ðŸŒŸ High yield predicted! Excellent growing conditions.")
                     else:
-                        st.info("📊 Moderate yield predicted. Standard agricultural practices recommended.")
+                        st.info("ðŸ“Š Moderate yield predicted. Standard agricultural practices recommended.")
                     
                     # Recommendations
                     st.markdown("**Recommendations:**")
                     recommendations = predictor.get_recommendations(input_data, prediction_result)
                     for rec in recommendations:
-                        st.write(f"• {rec}")
+                        st.write(f"â€¢ {rec}")
                 
                 else:
                     st.error("Unable to generate prediction. Please check your inputs and try again.")
@@ -191,7 +191,7 @@ with tab2:
             test_size = st.slider("Test Set Size", 0.1, 0.4, 0.2, 0.05)
             random_state = st.number_input("Random State", 0, 100, 42)
             
-            if st.button("🔄 Train Model", use_container_width=True):
+            if st.button("ðŸ”„ Train Model", use_container_width=True):
                 with st.spinner("Training model..."):
                     training_result = predictor.train_model(data, model_type, test_size, random_state)
                     
@@ -225,7 +225,7 @@ with tab3:
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.metric("R² Score", f"{results['r2_score']:.3f}")
+            st.metric("RÂ² Score", f"{results['r2_score']:.3f}")
         with col2:
             st.metric("MAE", f"{results['mae']:.3f}")
         with col3:
@@ -358,3 +358,4 @@ with tab4:
     
     else:
         st.warning("No historical data available for analysis.")
+

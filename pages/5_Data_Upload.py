@@ -1,13 +1,13 @@
-import streamlit as st
+﻿import streamlit as st
 import pandas as pd
 import numpy as np
 import io
 from datetime import datetime
 from utils.data_processing import validate_agricultural_data, clean_agricultural_data
 
-st.set_page_config(page_title="Data Upload", page_icon="📁", layout="wide")
+st.set_page_config(page_title="Data Upload", page_icon="ðŸ“", layout="wide")
 
-st.title("📁 Data Upload & Management")
+st.title("ðŸ“ Data Upload & Management")
 st.markdown("### Import and manage your agricultural datasets")
 
 # Sidebar for upload options
@@ -125,7 +125,7 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        if st.button("📊 Agricultural Data Template", use_container_width=True):
+        if st.button("ðŸ“Š Agricultural Data Template", use_container_width=True):
             sample_ag_data = pd.DataFrame({
                 'crop_type': ['Wheat', 'Corn', 'Rice', 'Soybeans'],
                 'yield': [4.5, 8.2, 6.1, 3.8],
@@ -144,7 +144,7 @@ with tab1:
             )
     
     with col2:
-        if st.button("🌤️ Weather Data Template", use_container_width=True):
+        if st.button("ðŸŒ¤ï¸ Weather Data Template", use_container_width=True):
             sample_weather_data = pd.DataFrame({
                 'date': pd.date_range('2024-01-01', periods=30, freq='D'),
                 'temperature': np.random.normal(25, 5, 30),
@@ -162,7 +162,7 @@ with tab1:
             )
     
     with col3:
-        if st.button("🌱 Soil Data Template", use_container_width=True):
+        if st.button("ðŸŒ± Soil Data Template", use_container_width=True):
             sample_soil_data = pd.DataFrame({
                 'field_id': ['Field_1', 'Field_2', 'Field_3', 'Field_4'],
                 'date': ['2024-01-15', '2024-01-15', '2024-01-15', '2024-01-15'],
@@ -181,7 +181,7 @@ with tab1:
             )
     
     with col4:
-        if st.button("📈 Yield Records Template", use_container_width=True):
+        if st.button("ðŸ“ˆ Yield Records Template", use_container_width=True):
             sample_yield_data = pd.DataFrame({
                 'crop_type': ['Wheat', 'Corn', 'Rice'],
                 'yield': [4.2, 7.9, 5.8],
@@ -258,16 +258,16 @@ with tab3:
             st.markdown("**Validation Results:**")
             
             if validation_results['is_valid']:
-                st.success("✅ Data validation passed!")
+                st.success("âœ… Data validation passed!")
             else:
-                st.error("❌ Data validation failed!")
+                st.error("âŒ Data validation failed!")
             
             # Display validation details
             for check, result in validation_results['checks'].items():
                 if result['passed']:
-                    st.success(f"✅ {check}: {result['message']}")
+                    st.success(f"âœ… {check}: {result['message']}")
                 else:
-                    st.error(f"❌ {check}: {result['message']}")
+                    st.error(f"âŒ {check}: {result['message']}")
         
         with col2:
             st.markdown("**Data Quality Issues:**")
@@ -298,7 +298,7 @@ with tab3:
                     st.warning(f"Found {len(outliers)} outliers in {col}")
             
             if not issues_found:
-                st.success("✅ No data quality issues detected!")
+                st.success("âœ… No data quality issues detected!")
         
         # Data cleaning options
         if not validation_results['is_valid'] or issues_found:
@@ -308,19 +308,19 @@ with tab3:
             col1, col2, col3 = st.columns(3)
             
             with col1:
-                if st.button("🧹 Clean Missing Values", use_container_width=True):
+                if st.button("ðŸ§¹ Clean Missing Values", use_container_width=True):
                     cleaned_df = clean_agricultural_data(df, method='missing_values')
                     st.session_state.cleaned_data = cleaned_df
                     st.success("Missing values cleaned!")
             
             with col2:
-                if st.button("🔄 Remove Duplicates", use_container_width=True):
+                if st.button("ðŸ”„ Remove Duplicates", use_container_width=True):
                     cleaned_df = clean_agricultural_data(df, method='duplicates')
                     st.session_state.cleaned_data = cleaned_df
                     st.success("Duplicates removed!")
             
             with col3:
-                if st.button("📊 Handle Outliers", use_container_width=True):
+                if st.button("ðŸ“Š Handle Outliers", use_container_width=True):
                     cleaned_df = clean_agricultural_data(df, method='outliers')
                     st.session_state.cleaned_data = cleaned_df
                     st.success("Outliers handled!")
@@ -328,7 +328,7 @@ with tab3:
         # Accept data for use in application
         st.markdown("---")
         if validation_results['is_valid']:
-            if st.button("✅ Accept Data for Analysis", use_container_width=True):
+            if st.button("âœ… Accept Data for Analysis", use_container_width=True):
                 # Store the data based on type
                 if upload_type == "Agricultural Data":
                     st.session_state.agricultural_data = df
@@ -339,10 +339,10 @@ with tab3:
                 elif upload_type == "Yield Records":
                     st.session_state.yield_data = df
                 
-                st.success(f"✅ {upload_type} accepted and ready for analysis!")
+                st.success(f"âœ… {upload_type} accepted and ready for analysis!")
                 st.balloons()
         else:
-            st.warning("⚠️ Please fix validation issues before accepting the data.")
+            st.warning("âš ï¸ Please fix validation issues before accepting the data.")
     
     else:
         st.info("No data uploaded yet. Please upload a file first.")
@@ -385,7 +385,7 @@ with tab4:
                     # Export dataset
                     csv = dataset.to_csv(index=False)
                     st.download_button(
-                        f"📥 Export {dataset_name}",
+                        f"ðŸ“¥ Export {dataset_name}",
                         data=csv,
                         file_name=f"{dataset_name.lower().replace(' ', '_')}.csv",
                         mime="text/csv",
@@ -394,12 +394,12 @@ with tab4:
                 
                 with col2:
                     # View full dataset
-                    if st.button(f"👁️ View Full Data", key=f"view_{dataset_name}", use_container_width=True):
+                    if st.button(f"ðŸ‘ï¸ View Full Data", key=f"view_{dataset_name}", use_container_width=True):
                         st.session_state.view_dataset = dataset_name
                 
                 with col3:
                     # Delete dataset
-                    if st.button(f"🗑️ Delete", key=f"delete_{dataset_name}", use_container_width=True):
+                    if st.button(f"ðŸ—‘ï¸ Delete", key=f"delete_{dataset_name}", use_container_width=True):
                         # Remove from session state
                         if dataset_name == "Agricultural Data":
                             del st.session_state.agricultural_data
@@ -461,7 +461,7 @@ with tab4:
     
     with col1:
         st.markdown("**Bulk Operations:**")
-        if st.button("📤 Export All Data", use_container_width=True):
+        if st.button("ðŸ“¤ Export All Data", use_container_width=True):
             if active_datasets:
                 # Create a zip file with all datasets
                 st.info("Bulk export functionality would be implemented here")
@@ -470,9 +470,10 @@ with tab4:
     
     with col2:
         st.markdown("**Data Backup:**")
-        if st.button("💾 Create Backup", use_container_width=True):
+        if st.button("ðŸ’¾ Create Backup", use_container_width=True):
             if active_datasets:
                 backup_time = datetime.now().strftime("%Y%m%d_%H%M%S")
                 st.success(f"Backup created: backup_{backup_time}")
             else:
                 st.warning("No data to backup")
+

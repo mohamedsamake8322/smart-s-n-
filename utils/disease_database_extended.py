@@ -1,11 +1,11 @@
 from typing import Dict, List, Any
 import os
-import numpy as np
-import tensorflow as tf
+import numpy as np # type: ignore
+import tensorflow as tf # type: ignore
 import logging
-import cv2  # 🚀 Ajout de l'importation OpenCV
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
+import cv2  # type: ignore # 🚀 Ajout de l'importation OpenCV
+from reportlab.lib.pagesizes import A4 # type: ignore
+from reportlab.pdfgen import canvas # type: ignore
 
 
 class ExtendedDiseaseDatabase:

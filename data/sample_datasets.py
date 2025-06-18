@@ -1,6 +1,6 @@
-"""
-Générateur de jeux de données d'exemple pour démonstration
-Note: Ces données sont uniquement pour les tests et démonstrations
+﻿"""
+GÃ©nÃ©rateur de jeux de donnÃ©es d'exemple pour dÃ©monstration
+Note: Ces donnÃ©es sont uniquement pour les tests et dÃ©monstrations
 """
 
 import pandas as pd
@@ -9,21 +9,21 @@ from datetime import datetime, timedelta
 import json
 
 def create_agricultural_sample_dataset():
-    """Génère un jeu de données agricoles d'exemple"""
+    """GÃ©nÃ¨re un jeu de donnÃ©es agricoles d'exemple"""
     np.random.seed(42)
     
-    crop_types = ['Blé', 'Maïs', 'Riz', 'Soja', 'Orge', 'Coton', 'Tournesol', 'Colza']
+    crop_types = ['BlÃ©', 'MaÃ¯s', 'Riz', 'Soja', 'Orge', 'Coton', 'Tournesol', 'Colza']
     regions = ['Normandie', 'Bretagne', 'Beauce', 'Champagne', 'Bourgogne', 'Picardie']
     
     n_samples = 500
     
     data = []
     for i in range(n_samples):
-        # Données de base
+        # DonnÃ©es de base
         crop = np.random.choice(crop_types)
         region = np.random.choice(regions)
         
-        # Paramètres environnementaux
+        # ParamÃ¨tres environnementaux
         temperature = np.random.normal(20, 6)
         rainfall = np.random.exponential(400)
         humidity = np.random.normal(65, 12)
@@ -32,12 +32,12 @@ def create_agricultural_sample_dataset():
         soil_phosphorus = np.random.normal(25, 8)
         soil_potassium = np.random.normal(180, 40)
         
-        # Surface cultivée
+        # Surface cultivÃ©e
         area = np.random.uniform(5, 100)
         
-        # Calcul du rendement basé sur les conditions
+        # Calcul du rendement basÃ© sur les conditions
         base_yields = {
-            'Blé': 7.2, 'Maïs': 10.5, 'Riz': 8.8, 'Soja': 3.2,
+            'BlÃ©': 7.2, 'MaÃ¯s': 10.5, 'Riz': 8.8, 'Soja': 3.2,
             'Orge': 6.8, 'Coton': 2.1, 'Tournesol': 2.8, 'Colza': 3.5
         }
         
@@ -49,19 +49,19 @@ def create_agricultural_sample_dataset():
         ph_factor = 1.0 if 6.0 <= soil_ph <= 7.5 else 0.88
         nitrogen_factor = min(1.2, soil_nitrogen / 40)
         
-        # Calcul final avec variabilité
+        # Calcul final avec variabilitÃ©
         yield_value = base_yield * temp_factor * rain_factor * ph_factor * nitrogen_factor
-        yield_value *= np.random.normal(1.0, 0.15)  # Variabilité naturelle
-        yield_value = max(0.5, yield_value)  # Minimum réaliste
+        yield_value *= np.random.normal(1.0, 0.15)  # VariabilitÃ© naturelle
+        yield_value = max(0.5, yield_value)  # Minimum rÃ©aliste
         
-        # Données économiques
+        # DonnÃ©es Ã©conomiques
         cost_per_hectare = np.random.uniform(800, 1800)
         price_per_ton = np.random.uniform(180, 450)
         total_cost = cost_per_hectare * area
         total_revenue = yield_value * area * price_per_ton
         profit = total_revenue - total_cost
         
-        # Date de récolte
+        # Date de rÃ©colte
         harvest_date = datetime.now() - timedelta(days=np.random.randint(0, 365))
         
         record = {
@@ -88,20 +88,20 @@ def create_agricultural_sample_dataset():
     return pd.DataFrame(data)
 
 def create_weather_sample_dataset():
-    """Génère un jeu de données météorologiques d'exemple"""
+    """GÃ©nÃ¨re un jeu de donnÃ©es mÃ©tÃ©orologiques d'exemple"""
     np.random.seed(42)
     
-    # 365 jours de données météo
+    # 365 jours de donnÃ©es mÃ©tÃ©o
     start_date = datetime.now() - timedelta(days=365)
     dates = [start_date + timedelta(days=x) for x in range(365)]
     
     data = []
     for date in dates:
-        # Variation saisonnière
+        # Variation saisonniÃ¨re
         day_of_year = date.timetuple().tm_yday
         seasonal_temp = 15 + 10 * np.sin(2 * np.pi * (day_of_year - 80) / 365)
         
-        # Données météo avec variabilité
+        # DonnÃ©es mÃ©tÃ©o avec variabilitÃ©
         temperature = seasonal_temp + np.random.normal(0, 5)
         humidity = np.random.normal(65, 15)
         rainfall = np.random.exponential(2) if np.random.random() < 0.3 else 0
@@ -109,13 +109,13 @@ def create_weather_sample_dataset():
         pressure = np.random.normal(1013, 20)
         uv_index = max(0, np.random.normal(5, 3))
         
-        # Conditions météo
+        # Conditions mÃ©tÃ©o
         if rainfall > 10:
             condition = 'Pluvieux'
         elif humidity > 80:
             condition = 'Nuageux'
         elif temperature > 25:
-            condition = 'Ensoleillé'
+            condition = 'EnsoleillÃ©'
         else:
             condition = 'Partiellement nuageux'
         
@@ -134,18 +134,18 @@ def create_weather_sample_dataset():
     return pd.DataFrame(data)
 
 def create_soil_sample_dataset():
-    """Génère un jeu de données de surveillance du sol d'exemple"""
+    """GÃ©nÃ¨re un jeu de donnÃ©es de surveillance du sol d'exemple"""
     np.random.seed(42)
     
     field_ids = ['Champ_A', 'Champ_B', 'Champ_C', 'Champ_D', 'Champ_E']
     
-    # 30 jours de données pour chaque champ
+    # 30 jours de donnÃ©es pour chaque champ
     end_date = datetime.now()
     start_date = end_date - timedelta(days=30)
     
     data = []
     for field_id in field_ids:
-        # Caractéristiques de base du champ
+        # CaractÃ©ristiques de base du champ
         base_ph = np.random.normal(6.5, 0.5)
         base_nitrogen = np.random.normal(45, 10)
         base_phosphorus = np.random.normal(25, 5)
@@ -154,7 +154,7 @@ def create_soil_sample_dataset():
         for day in range(31):
             date = start_date + timedelta(days=day)
             
-            # Variations journalières
+            # Variations journaliÃ¨res
             ph = base_ph + np.random.normal(0, 0.2)
             moisture = np.random.normal(55, 12)
             temperature = np.random.normal(18, 4)
@@ -183,9 +183,9 @@ def create_soil_sample_dataset():
     return pd.DataFrame(data)
 
 def export_all_sample_datasets():
-    """Exporte tous les jeux de données d'exemple"""
+    """Exporte tous les jeux de donnÃ©es d'exemple"""
     
-    # Création des datasets
+    # CrÃ©ation des datasets
     agricultural_data = create_agricultural_sample_dataset()
     weather_data = create_weather_sample_dataset()
     soil_data = create_soil_sample_dataset()
@@ -202,11 +202,11 @@ def export_all_sample_datasets():
     
     # Export Excel
     with pd.ExcelWriter('complete_agricultural_dataset.xlsx') as writer:
-        agricultural_data.to_excel(writer, sheet_name='Données Agricoles', index=False)
-        weather_data.to_excel(writer, sheet_name='Données Météo', index=False)
-        soil_data.to_excel(writer, sheet_name='Données Sol', index=False)
+        agricultural_data.to_excel(writer, sheet_name='DonnÃ©es Agricoles', index=False)
+        weather_data.to_excel(writer, sheet_name='DonnÃ©es MÃ©tÃ©o', index=False)
+        soil_data.to_excel(writer, sheet_name='DonnÃ©es Sol', index=False)
     
-    print("Tous les jeux de données d'exemple ont été exportés avec succès!")
+    print("Tous les jeux de donnÃ©es d'exemple ont Ã©tÃ© exportÃ©s avec succÃ¨s!")
     return {
         'agricultural': len(agricultural_data),
         'weather': len(weather_data), 
@@ -216,6 +216,6 @@ def export_all_sample_datasets():
 if __name__ == "__main__":
     stats = export_all_sample_datasets()
     print(f"Statistiques des exports:")
-    print(f"- Données agricoles: {stats['agricultural']} enregistrements")
-    print(f"- Données météo: {stats['weather']} enregistrements")
-    print(f"- Données sol: {stats['soil']} enregistrements")
+    print(f"- DonnÃ©es agricoles: {stats['agricultural']} enregistrements")
+    print(f"- DonnÃ©es mÃ©tÃ©o: {stats['weather']} enregistrements")
+    print(f"- DonnÃ©es sol: {stats['soil']} enregistrements")

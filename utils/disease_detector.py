@@ -1,13 +1,13 @@
 import os
-import requests
+import requests # type: ignore
 import numpy as np  # type: ignore
 from PIL import Image  # type: ignore
 import tensorflow as tf  # type: ignore
 from tensorflow.keras.applications.efficientnet import preprocess_input as efficientnet_preprocess  # type: ignore
 from typing import List, Dict, Tuple, Any
 import datetime
-from PIL import Image, ImageEnhance
-import cv2
+from PIL import Image, ImageEnhance # type: ignore
+import cv2 # type: ignore
 
 class DiseaseDetector:
     """

@@ -1,4 +1,4 @@
-
+﻿
 import os
 import json
 import requests
@@ -9,7 +9,7 @@ from typing import List, Dict
 
 def create_sample_disease_images():
     """
-    Crée des images d'exemple pour tester la détection de maladies
+    CrÃ©e des images d'exemple pour tester la dÃ©tection de maladies
     """
     
     # Create directories
@@ -209,9 +209,9 @@ def _add_natural_variation(img):
 
 def create_disease_training_dataset():
     """
-    Crée un dataset d'entraînement plus large pour les modèles
+    CrÃ©e un dataset d'entraÃ®nement plus large pour les modÃ¨les
     """
-    print("Création du dataset d'entraînement...")
+    print("CrÃ©ation du dataset d'entraÃ®nement...")
     
     # Create sample images
     sample_images = create_sample_disease_images()
@@ -231,10 +231,11 @@ def create_disease_training_dataset():
     with open('data/disease_images/training_info.json', 'w', encoding='utf-8') as f:
         json.dump(training_info, f, ensure_ascii=False, indent=2)
     
-    print(f"Dataset créé avec {len(sample_images)} images")
+    print(f"Dataset crÃ©Ã© avec {len(sample_images)} images")
     print(f"Classes: {training_info['classes']}")
     
     return sample_images, training_info
 
 if __name__ == "__main__":
     create_disease_training_dataset()
+
