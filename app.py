@@ -12,28 +12,29 @@ from utils.voice_assistant import voice_assistant
 from utils.micro_input import get_voice_input
 from utils.animations import typewriting_effect, pulsing_title
 
-# ✅ Configuration de la page (doit être la première commande Streamlit)
-st.set_page_config(
-    page_title="SènèSmart Yield Predictor",
-    page_icon="🌾",
-    layout="wide",
-    initial_sidebar_state="expanded"
+# ✅ HERO HEADER stylé avec message de bienvenue
+st.markdown(
+    """
+    <div style='text-align: center; padding: 35px 0 20px 0;'>
+        <h1 style='font-size: 64px; color: #2E7D32; font-weight: 900; margin-bottom: 10px;'>
+            🌾 SènèSmart Yield Predictor
+        </h1>
+        <h4 style='color:#555; font-style: italic; margin-bottom: 25px;'>
+            👋🏽 Welcome to your smart farming assistant.
+        </h4>
+        <p style='font-size: 17px; color: #333; max-width: 850px; margin: auto; line-height: 1.6;'>
+            🚀 SènèSmart Yield Predictor: Cultivating the Future with AI! 🌿🌍<br>
+            🌱 Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence.<br>
+            📈 Transform agricultural data into smart decisions and maximize your yields.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
-# ✅ HERO HEADER animé et stylé
-title_placeholder = st.empty()
-typewriting_effect(
-    title_placeholder,
-    "<h1 style='font-size: 46px; color:#2E7D32; font-weight: 800; margin-bottom: 0;'>🌾 SènèSmart Yield Predictor</h1>"
-)
-
-subtitle_placeholder = st.empty()
-typewriting_effect(
-    subtitle_placeholder,
-    "<h3 style='color:#555; font-style: italic;'> 🚀 SènèSmart Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SènèSmart Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈.</h3>"
-)
-
+# ✅ Effet de pulsation doux (optionnel)
 pulsing_title(components)
+
 # 🔹 Sidebar
 st.sidebar.title("Navigation")
 st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
