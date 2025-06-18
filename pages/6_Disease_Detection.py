@@ -1,14 +1,14 @@
 import os
-import requests
-import tensorflow as tf
-import numpy as np
-import pandas as pd
-import streamlit as st
-from PIL import Image, ImageEnhance
+import requests # type: ignore
+import tensorflow as tf # type: ignore
+import numpy as np # type: ignore
+import pandas as pd # type: ignore
+import streamlit as st # type: ignore
+from PIL import Image, ImageEnhance # type: ignore
 from datetime import datetime
 from io import BytesIO
-from tensorflow.keras.applications.efficientnet import preprocess_input
-import plotly.express as px  # Corrige l'erreur F821 pour `px`
+from tensorflow.keras.applications.efficientnet import preprocess_input # type: ignore
+import plotly.express as px  # type: ignore # Corrige l'erreur F821 pour `px`
 from utils.disease_detector import DiseaseDetector
 # ✅ Définition des variables manquantes
 detector = DiseaseDetector()

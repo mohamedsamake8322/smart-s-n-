@@ -1,17 +1,13 @@
-import numpy as np
-from PIL import Image, ImageEnhance
-import tensorflow as tf
-from tensorflow.keras.applications.efficientnet import (
-    preprocess_input as efficientnet_preprocess,
-)
 import os
-from typing import Dict, List
-from datetime import datetime  # ✅ Importation de datetime
-from typing import Tuple, Any  # ✅ Importation de Tuple et Any
-try:
-    import cv2
-except ImportError:
-    print("🚨 Erreur : OpenCV (`cv2`) ne peut pas être chargé. Vérifie ton installation.")
+import requests
+import numpy as np  # type: ignore
+from PIL import Image  # type: ignore
+import tensorflow as tf  # type: ignore
+from tensorflow.keras.applications.efficientnet import preprocess_input as efficientnet_preprocess  # type: ignore
+from typing import List, Dict, Tuple, Any
+import datetime
+from PIL import Image, ImageEnhance
+import cv2
 
 class DiseaseDetector:
     """
@@ -19,16 +15,26 @@ class DiseaseDetector:
     """
 
     def __init__(self):
-        # ✅ Initialisation des variables
         self.models = {}
         self.preprocessors = {}
         self.class_labels = {}
 
-        # ✅ Chargement du modèle entraîné
-        MODEL_PATH = (
-            "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
-        )
-        print(f"🚀 Modèle chargé : {self.models.get('efficientnet_resnet', None)}")  # ✅ Affiche si le modèle est bien chargé
+        # 🔄 Chemin du modèle et lien Google Drive
+        MODEL_URL = "https://drive.google.com/uc?export=download&id=1mBKbOYqB6db3KDneEtSpcH9ywC55qfW_"
+        MODEL_PATH = os.path.join("model", "efficientnet_resnet.keras")
+
+        # 📥 Télécharger le modèle s’il est manquant
+        if not os.path.exists(MODEL_PATH):
+            print("📦 Modèle non trouvé localement. Téléchargement depuis Google Drive...")
+            os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+            with requests.get(MODEL_URL, stream=True) as r:
+                with open(MODEL_PATH, "wb") as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+            print("✅ Modèle téléchargé avec succès.")
+
+        # 🔍 Chargement du modèle entraîné
         self.models["efficientnet_resnet"] = tf.keras.models.load_model(MODEL_PATH)
         self.preprocessors["efficientnet_resnet"] = efficientnet_preprocess
         self.class_labels["efficientnet_resnet"] = [
@@ -55,20 +61,13 @@ class DiseaseDetector:
         Préprocessing de l'image pour EfficientNet-ResNet.
         """
         try:
-            img_resized = image_pil.resize((380, 380))
-
-            if img_resized.mode != "RGB":
-                img_resized = img_resized.convert("RGB")
-
-            img_array = np.array(img_resized)
-            img_array = np.expand_dims(img_array, axis=0)
-            img_array = efficientnet_preprocess(img_array)
-
-            return img_array
-
+            img_resized = image_pil.resize((380, 380)).convert("RGB")
+            img_array = np.expand_dims(np.array(img_resized), axis=0)
+            return efficientnet_preprocess(img_array)
         except Exception as e:
             print(f"🚨 Erreur lors du preprocessing: {e}")
             return np.zeros((1, 380, 380, 3))
+
 
     def predict_disease(
         self, image_pil: Image.Image, confidence_threshold: float = 0.7
