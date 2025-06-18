@@ -1,4 +1,4 @@
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model # type: ignore
 import os
 
 # ðŸ”¹ DÃ©finition des chemins
