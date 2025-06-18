@@ -638,3 +638,5 @@ st.markdown("---")
 st.markdown("**ðŸ›’ Marketplace Agricole** - Plateforme intÃ©grÃ©e d'achat/vente avec IA prÃ©dictive")
 
 
+
+

@@ -220,3 +220,5 @@ if __name__ == "__main__":
     print(f"- DonnÃ©es mÃ©tÃ©o: {stats['weather']} enregistrements")
     print(f"- DonnÃ©es sol: {stats['soil']} enregistrements")
 
+
+

@@ -724,3 +724,5 @@ st.markdown("---")
 st.markdown("**ðŸ“¡ Module PrÃ©vision Climatique** - IA avancÃ©e pour anticipation mÃ©tÃ©orologique et alertes agricoles")
 
 
+
+
