@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,8 +6,13 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import json
 
-st.set_page_config(page_title="Agricultural Marketplace", page_icon="🛒", layout="wide")
+# 🔐 Initialisation sûre du panier
+if 'cart' not in st.session_state:
+    st.session_state.cart = []
 
+st.set_page_config(page_title="Agricultural Marketplace", page_icon="🛒", layout="wide")
+# 🛒 Affichage dynamique du contenu du panier
+st.sidebar.markdown(f"🛒 Panier : {len(st.session_state.cart)} article(s)")
 st.title("🛒 Marketplace Agricole Intégrée")
 st.markdown("### Plateforme d'achat/vente d'intrants et prévisions de rentabilité")
 
@@ -124,10 +128,7 @@ if user_type == "🌾 Acheteur (Agriculteur)":
                 with col4:
                     if product['stock'] > 0:
                         if st.button("🛒 Ajouter", key=f"add_{product['id']}"):
-                            if 'cart' not in st.session_state:
-                                st.session_state.cart = []
-
-                        st.session_state.cart.append({
+                            st.session_state.cart.append({
                             'product': product['nom'],
                             'price': product['prix'],
                             'quantity': quantity,
