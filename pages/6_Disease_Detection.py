@@ -98,12 +98,8 @@ def load_disease_model(model_path):
     except Exception as e:
         st.error(f"🛑 Erreur : {e}")
         return None
-
-
 disease_model = load_disease_model(MODEL_PATH)
 # 🔍 Prétraitement de l’image
-
-
 def preprocess_image(image_file):
     """Prépare l’image et applique le prétraitement EfficientNet."""
     try:
@@ -144,6 +140,8 @@ def predict_disease(image):
                 "name": f"{disease_icon} {disease_name}",
                 "confidence": round(predictions[idx] * 100, 1),  # ✅ Arrondi propre
                 "progression_stage": estimate_progression(predictions[idx] * 100),
+                "symptoms": "Symptômes à compléter 🔍",
+                "recommendations": "Recommandations à compléter 💊",
             }
         )
 
@@ -248,8 +246,8 @@ if uploaded_file is not None:
     image_pil = Image.open(uploaded_file)
 
     # ✅ Effectuer la prédiction
-    results = detector.predict_disease(image_pil)
-
+    results = predict_disease(image_pil)
+    st.json(results)  # pour voir exactement le contenu retourné
     # ✅ Afficher les résultats
     st.write("📊 Résultats de la prédiction :")
     st.json(results)
@@ -361,10 +359,9 @@ if TENSORFLOW_AVAILABLE:
                 if detector:
                     detection_results = detector.predict_disease(
                         processed_image)
-                    if detection_results:
-                        main_result = detection_results[0]
-                        st.metric("Maladie Détectée", main_result["disease"])
-                        st.metric("Confiance",
+                    main_result = detection_results[0]
+                    st.metric("Maladie Détectée", main_result["disease"])
+                    st.metric("Confiance",
                                   f"{main_result['confidence']:.1f}%")
                 else:
                     st.error("🚨 Le détecteur n'est pas disponible.")
@@ -375,7 +372,7 @@ st.markdown("**Graphique de Confiance**")
 
 chart_data = pd.DataFrame(
     [
-        {"Maladie": r["disease"], "Confiance": r["confidence"]}
+        {"Maladie": r["name"], "Confiance": r["confidence"]}
         for r in detection_results[:5]
     ]
 )
@@ -400,7 +397,7 @@ if st.button("💾 Sauvegarder ce Diagnostic"):
         "confidence": main_result["confidence"],
         "model_used": model_type,
         "all_predictions": detection_results[:5],
-        "image_name": (f"diagnosis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"),
+        "image_name": f"{main_result['name'].split(' ', 1)[1].replace(' ', '_')}.jpg",
     }
     # ✅ Vérification de la session state
     if "diagnosis_history" not in st.session_state:
@@ -473,11 +470,10 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
         batch_results.append(
             {
                 "filename": uploaded_file.name,
-                "main_disease": results[0]["disease"] if results else "Unknown",
+                "main_disease": results[0]["name"] if results else "Unknown",
                 "confidence": results[0]["confidence"] if results else 0,
                 "status": (
-                    "Healthy" if results and results[0]["disease"] == "Healthy"
-                    else "Diseased"
+                "Healthy" if results and results[0]["name"].endswith("Healthy") else "Diseased"
                 ),
                 "all_results": results[:3],
             }
@@ -541,7 +537,7 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
             if "all_predictions" in diagnosis:
                 st.markdown("**Top 3 Prédictions:**")
                 for j, pred in enumerate(diagnosis["all_predictions"][:3], 1):
-                  st.write(f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
+                  st.write(f"{j}. {pred['name']}: {pred['confidence']:.1f}%")
 # ✅ Résumé des statistiques
 st.markdown("---")
 st.subheader("Statistiques de l'Historique")
