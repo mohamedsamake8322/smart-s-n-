@@ -145,6 +145,8 @@ def predict_disease(image):
                 "name": f"{disease_icon} {disease_name}",
                 "confidence": round(predictions[idx] * 100, 1),  # ✅ Arrondi propre
                 "progression_stage": estimate_progression(predictions[idx] * 100),
+                "symptoms": "Symptômes à compléter 🔍",
+                "recommendations": "Recommandations à compléter 💊",
             }
         )
 
@@ -362,10 +364,9 @@ if TENSORFLOW_AVAILABLE:
                 if detector:
                     detection_results = detector.predict_disease(
                         processed_image)
-                    if detection_results:
-                        main_result = detection_results[0]
-                        st.metric("Maladie Détectée", main_result["disease"])
-                        st.metric("Confiance",
+                    main_result = detection_results[0]
+                    st.metric("Maladie Détectée", main_result["disease"])
+                    st.metric("Confiance",
                                   f"{main_result['confidence']:.1f}%")
                 else:
                     st.error("🚨 Le détecteur n'est pas disponible.")
@@ -376,7 +377,7 @@ st.markdown("**Graphique de Confiance**")
 
 chart_data = pd.DataFrame(
     [
-        {"Maladie": r["disease"], "Confiance": r["confidence"]}
+        {"Maladie": r["name"], "Confiance": r["confidence"]}
         for r in detection_results[:5]
     ]
 )
@@ -401,7 +402,7 @@ if st.button("💾 Sauvegarder ce Diagnostic"):
         "confidence": main_result["confidence"],
         "model_used": model_type,
         "all_predictions": detection_results[:5],
-        "image_name": (f"diagnosis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"),
+        "image_name": f"{main_result['name'].split(' ', 1)[1].replace(' ', '_')}.jpg",
     }
     # ✅ Vérification de la session state
     if "diagnosis_history" not in st.session_state:
