@@ -251,7 +251,7 @@ if uploaded_file is not None:
     image_pil = Image.open(uploaded_file)
 
     # ✅ Effectuer la prédiction
-    results = detector.predict_disease(image_pil)
+    results = predict_disease(image_pil)
     st.json(results)  # pour voir exactement le contenu retourné
     # ✅ Afficher les résultats
     st.write("📊 Résultats de la prédiction :")
