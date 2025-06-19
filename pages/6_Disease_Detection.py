@@ -475,11 +475,10 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
         batch_results.append(
             {
                 "filename": uploaded_file.name,
-                "main_disease": results[0]["disease"] if results else "Unknown",
+                "main_disease": results[0]["name"] if results else "Unknown",
                 "confidence": results[0]["confidence"] if results else 0,
                 "status": (
-                    "Healthy" if results and results[0]["disease"] == "Healthy"
-                    else "Diseased"
+                "Healthy" if results and results[0]["name"].endswith("Healthy") else "Diseased"
                 ),
                 "all_results": results[:3],
             }
@@ -543,7 +542,7 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
             if "all_predictions" in diagnosis:
                 st.markdown("**Top 3 Prédictions:**")
                 for j, pred in enumerate(diagnosis["all_predictions"][:3], 1):
-                  st.write(f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
+                  st.write(f"{j}. {pred['name']}: {pred['confidence']:.1f}%")
 # ✅ Résumé des statistiques
 st.markdown("---")
 st.subheader("Statistiques de l'Historique")
