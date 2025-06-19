@@ -11,8 +11,19 @@ from tensorflow.keras.applications.efficientnet import preprocess_input # type: 
 import plotly.express as px  # type: ignore # Corrige l'erreur F821 pour `px`
 from utils.disease_detector import DiseaseDetector
 from utils.config_model import MODEL_URL, MODEL_PATH
-
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+import os, sys
+
+sys.path.append(os.path.abspath("."))  # Pour accéder au dossier racine du projet
+
+st.write("✅ Fichier Disease_Detection chargé avec succès.")
+
+try:
+    from utils.disease_detector import DiseaseDetector
+    from utils.config_model import MODEL_PATH
+except Exception as e:
+    st.error(f"❌ Erreur au chargement du module : {e}")
+    st.stop()
 
 # ✅ Définition des variables manquantes
 detector = DiseaseDetector()
