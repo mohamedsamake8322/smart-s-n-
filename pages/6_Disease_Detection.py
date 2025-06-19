@@ -10,6 +10,8 @@ from io import BytesIO
 from tensorflow.keras.applications.efficientnet import preprocess_input # type: ignore
 import plotly.express as px  # type: ignore # Corrige l'erreur F821 pour `px`
 from utils.disease_detector import DiseaseDetector
+from utils.config_model import MODEL_URL, MODEL_PATH
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 # ✅ Définition des variables manquantes
@@ -77,11 +79,6 @@ DISEASE_ICONS = {
     "Gray Leaf Spot": "🌿🔘",
     "Phomopsis Blight": "🌿🔥",
 }
-
-# ✅ Chargement du modèle IA
-MODEL_URL = "https://drive.google.com/uc?export=download&id=1mBKbOYqB6db3KDneEtSpcH9ywC55qfW_"
-MODEL_PATH = os.path.join("model", "efficientnet_resnet.keras")
-
 # 📥 Télécharger le modèle si nécessaire
 if not os.path.exists(MODEL_PATH):
     st.info("📦 Téléchargement du modèle IA depuis Google Drive...")

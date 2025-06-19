@@ -8,6 +8,7 @@ from typing import List, Dict, Tuple, Any
 import datetime
 from PIL import Image, ImageEnhance # type: ignore
 import cv2 # type: ignore
+from utils.config_model import MODEL_URL, MODEL_PATH
 
 class DiseaseDetector:
     """
@@ -18,11 +19,6 @@ class DiseaseDetector:
         self.models = {}
         self.preprocessors = {}
         self.class_labels = {}
-
-        # 🔄 Chemin du modèle et lien Google Drive
-        MODEL_URL = "https://drive.google.com/uc?export=download&id=1mBKbOYqB6db3KDneEtSpcH9ywC55qfW_"
-        MODEL_PATH = os.path.join("model", "efficientnet_resnet.keras")
-
         # 📥 Télécharger le modèle s’il est manquant
         if not os.path.exists(MODEL_PATH):
             print("📦 Modèle non trouvé localement. Téléchargement depuis Google Drive...")
