@@ -35,7 +35,7 @@ def _initialize_extended_disease_database() -> Dict[str, Dict]:
 
 
 # ✅ Base globale des maladies (après l'initialisation)
-DISEASE_DATABASE = _initialize_extended_disease_database(None)
+DISEASE_DATABASE = _initialize_extended_disease_database()
 
 # 🚀 Configuration du logger
 logging.basicConfig(
