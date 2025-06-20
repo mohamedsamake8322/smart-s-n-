@@ -17,10 +17,13 @@ from PIL import Image, ImageEnhance  # type: ignore
 from tensorflow.keras.applications.efficientnet import preprocess_input  # type: ignore
 import plotly.express as px  # type: ignore
 import traceback  # 💡 Ajout pour suivi d’erreur
-from utils.config_model import MODEL_PATH, check_model_presence
-from tensorflow import keras
-check_model_presence()
-model = keras.models.load_model(MODEL_PATH, compile=False)
+from utils.config_model import load_model
+
+try:
+    model = load_model()
+except Exception as e:
+    st.error(f"❌ Échec du chargement du modèle : {e}")
+    st.stop()
 
 # 🛠️ Réduction du bruit TensorFlow
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"

@@ -6,14 +6,6 @@ import logging
 import cv2  # type: ignore # 🚀 Ajout de l'importation OpenCV
 from reportlab.lib.pagesizes import A4 # type: ignore
 from reportlab.pdfgen import canvas # type: ignore
-from utils.config_model import MODEL_URL, MODEL_PATH
-from utils.config_model import MODEL_PATH, check_model_presence
-from tensorflow import keras
-
-check_model_presence()
-model = keras.models.load_model(MODEL_PATH, compile=False)
-
-
 class ExtendedDiseaseDatabase:
     """
     Base de données étendue avec 100+ maladies agricoles

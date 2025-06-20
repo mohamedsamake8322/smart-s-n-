@@ -2,14 +2,6 @@ import json
 import pandas as pd
 from typing import Dict, List, Optional, Any
 from datetime import datetime
-from utils.config_model import MODEL_PATH, check_model_presence
-from tensorflow import keras
-
-check_model_presence()
-model = keras.models.load_model(MODEL_PATH, compile=False)
-
-
-
 class DiseaseDatabase:
     """
     Base de données complète des maladies agricoles
