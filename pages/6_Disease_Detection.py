@@ -1,29 +1,33 @@
 import os
-import requests # type: ignore
-import tensorflow as tf # type: ignore
-import numpy as np # type: ignore
-import pandas as pd # type: ignore
-import streamlit as st # type: ignore
-from PIL import Image, ImageEnhance # type: ignore
+import sys
+import requests  # type: ignore
+import tensorflow as tf  # type: ignore
+import numpy as np  # type: ignore
+import pandas as pd  # type: ignore
+import streamlit as st  # type: ignore
+from PIL import Image, ImageEnhance  # type: ignore
 from datetime import datetime
 from io import BytesIO
-from tensorflow.keras.applications.efficientnet import preprocess_input # type: ignore
-import plotly.express as px  # type: ignore # Corrige l'erreur F821 pour `px`
-from utils.disease_detector import DiseaseDetector
-from utils.config_model import MODEL_URL, MODEL_PATH
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-import os, sys
+from tensorflow.keras.applications.efficientnet import preprocess_input  # type: ignore
+import plotly.express as px  # type: ignore
 
+# ✅ Assure-toi que les chemins sont définis avant les imports custom
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 sys.path.append(os.path.abspath("."))  # Pour accéder au dossier racine du projet
 
-st.write("✅ Fichier Disease_Detection chargé avec succès.")
-
+# ✅ Import des modules personnalisés après path fixing
 try:
     from utils.disease_detector import DiseaseDetector
-    from utils.config_model import MODEL_PATH
+    from utils.config_model import MODEL_URL, MODEL_PATH
 except Exception as e:
     st.error(f"❌ Erreur au chargement du module : {e}")
     st.stop()
+
+# ✅ Réduction du bruit des logs TensorFlow
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
+st.write("✅ Fichier Disease_Detection chargé avec succès.")
+
 
 # ✅ Définition des variables manquantes
 detector = DiseaseDetector()
