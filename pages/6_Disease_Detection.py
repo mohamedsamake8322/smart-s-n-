@@ -1,21 +1,27 @@
+# 📦 Imports standard
 import os
 import sys
+from datetime import datetime
+from io import BytesIO
+
+# 📦 Imports externes
 import requests  # type: ignore
 import tensorflow as tf  # type: ignore
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 import streamlit as st  # type: ignore
 from PIL import Image, ImageEnhance  # type: ignore
-from datetime import datetime
-from io import BytesIO
 from tensorflow.keras.applications.efficientnet import preprocess_input  # type: ignore
 import plotly.express as px  # type: ignore
 
-# ✅ Assure-toi que les chemins sont définis avant les imports custom
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-sys.path.append(os.path.abspath("."))  # Pour accéder au dossier racine du projet
+# 🛠️ Réduction du bruit TensorFlow
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
-# ✅ Import des modules personnalisés après path fixing
+# 📂 Fix chemin vers racine du projet avant imports personnalisés
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.append(os.path.abspath("."))
+
+# 📥 Imports personnalisés
 try:
     from utils.disease_detector import DiseaseDetector
     from utils.config_model import MODEL_URL, MODEL_PATH
@@ -23,14 +29,18 @@ except Exception as e:
     st.error(f"❌ Erreur au chargement du module : {e}")
     st.stop()
 
-# ✅ Réduction du bruit des logs TensorFlow
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-
+# ✅ Chargement initial
 st.write("✅ Fichier Disease_Detection chargé avec succès.")
 
+# 🧠 Instanciation sécurisée du détecteur
+try:
+    detector = DiseaseDetector()
+    st.success("🧠 DiseaseDetector instancié avec succès")
+except Exception as e:
+    st.error(f"❌ Erreur à l’instanciation du DiseaseDetector : {e}")
+    st.stop()
 
-# ✅ Définition des variables manquantes
-detector = DiseaseDetector()
+# ⚙️ Variables globales
 model_type = "default"
 DISEASE_CLASSES = {}
 uploaded_files = []
@@ -40,19 +50,10 @@ disease_freq = {}
 search_term = ""
 category = "Toutes"
 
-# 🔹 Désactiver les warnings inutiles TensorFlow
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+# ✅ Vérification TensorFlow
+TENSORFLOW_AVAILABLE = True
 
-# 🔹 Vérification de TensorFlow
-try:
-    TENSORFLOW_AVAILABLE = True
-except ImportError:
-    st.error("🚫 TensorFlow non disponible")
-    TENSORFLOW_AVAILABLE = False
-
-# 🔹 Import des modules internes
-
-# ✅ Dictionnaire des icônes pour chaque maladie
+# 🌿 Dictionnaire d’icônes pour les maladies
 DISEASE_ICONS = {
     "Healthy": "✅",
     "Aphids on Vegetables": "🐛🥦",
@@ -94,7 +95,8 @@ DISEASE_ICONS = {
     "Gray Leaf Spot": "🌿🔘",
     "Phomopsis Blight": "🌿🔥",
 }
-# 📥 Télécharger le modèle si nécessaire
+
+# 📥 Téléchargement du modèle si besoin
 if not os.path.exists(MODEL_PATH):
     st.info("📦 Téléchargement du modèle IA depuis Google Drive...")
     os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
@@ -104,6 +106,7 @@ if not os.path.exists(MODEL_PATH):
                 if chunk:
                     f.write(chunk)
     st.success("✅ Modèle IA téléchargé avec succès.")
+
 
 @st.cache_resource
 def load_disease_model(model_path):
