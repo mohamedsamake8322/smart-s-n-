@@ -1,10 +1,10 @@
 import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.applications import EfficientNetB4, ResNet50
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Input, Concatenate, Flatten
-from tensorflow.keras.models import Model
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.preprocessing.image import ImageDataGenerator # type: ignore
+from tensorflow.keras.applications import EfficientNetB4, ResNet50 # type: ignore
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Input, Concatenate, Flatten # type: ignore
+from tensorflow.keras.models import Model # type: ignore
+from tensorflow.keras.optimizers import Adam # type: ignore
+from tensorflow.keras.callbacks import ReduceLROnPlateau # type: ignore
 import os
 
 # 🔹 1. Optimisation CPU désactivée
