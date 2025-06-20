@@ -1,4 +1,4 @@
-from huggingface_hub import create_repo, upload_file
+from huggingface_hub import create_repo, upload_file # type: ignore
 
 REPO_ID = "mohamedsamake8322/smartagro-efficientnet-resnet"
 
