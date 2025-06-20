@@ -1,11 +1,13 @@
 import json
 import pandas as pd
-from tensorflow import keras
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from utils.config_model import MODEL_PATH, download_model_if_missing
+from tensorflow import keras
+
 download_model_if_missing()
 model = keras.models.load_model(MODEL_PATH, compile=False)
+
 
 
 class DiseaseDatabase:

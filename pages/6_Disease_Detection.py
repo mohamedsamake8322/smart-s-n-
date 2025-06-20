@@ -3,8 +3,6 @@ import os
 import sys
 from datetime import datetime
 from io import BytesIO
-from tensorflow import keras
-
 # 📦 Imports externes
 import requests  # type: ignore
 import tensorflow as tf  # type: ignore
@@ -20,8 +18,11 @@ from tensorflow.keras.applications.efficientnet import preprocess_input  # type:
 import plotly.express as px  # type: ignore
 import traceback  # 💡 Ajout pour suivi d’erreur
 from utils.config_model import MODEL_PATH, download_model_if_missing
+from tensorflow import keras
+
 download_model_if_missing()
 model = keras.models.load_model(MODEL_PATH, compile=False)
+
 
 # 🛠️ Réduction du bruit TensorFlow
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"

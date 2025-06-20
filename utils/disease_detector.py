@@ -1,6 +1,5 @@
 import os
 import requests # type: ignore
-from tensorflow import keras
 import numpy as np  # type: ignore
 from PIL import Image  # type: ignore
 import tensorflow as tf  # type: ignore
@@ -11,8 +10,11 @@ from PIL import Image, ImageEnhance # type: ignore
 import cv2 # type: ignore
 from utils.config_model import MODEL_URL, MODEL_PATH
 from utils.config_model import MODEL_PATH, download_model_if_missing
+from tensorflow import keras
+
 download_model_if_missing()
 model = keras.models.load_model(MODEL_PATH, compile=False)
+
 class DiseaseDetector:
     def __init__(self):
         import streamlit as st
