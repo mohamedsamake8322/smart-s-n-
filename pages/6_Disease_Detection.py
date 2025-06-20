@@ -13,6 +13,7 @@ import streamlit as st  # type: ignore
 from PIL import Image, ImageEnhance  # type: ignore
 from tensorflow.keras.applications.efficientnet import preprocess_input  # type: ignore
 import plotly.express as px  # type: ignore
+import traceback  # 💡 Ajout pour suivi d’erreur
 
 # 🛠️ Réduction du bruit TensorFlow
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
@@ -31,14 +32,6 @@ except Exception as e:
 
 # ✅ Chargement initial
 st.write("✅ Fichier Disease_Detection chargé avec succès.")
-
-# 🧠 Instanciation sécurisée du détecteur
-try:
-    detector = DiseaseDetector()
-    st.success("🧠 DiseaseDetector instancié avec succès")
-except Exception as e:
-    st.error(f"❌ Erreur à l’instanciation du DiseaseDetector : {e}")
-    st.stop()
 
 # ⚙️ Variables globales
 model_type = "default"
@@ -107,7 +100,16 @@ if not os.path.exists(MODEL_PATH):
                     f.write(chunk)
     st.success("✅ Modèle IA téléchargé avec succès.")
 
-
+# 🧠 Instanciation sécurisée du détecteur
+try:
+    st.info("🧠 Chargement du modèle .keras...")
+    detector = DiseaseDetector()  # Le modèle est chargé dans le __init__
+    st.success("🧠 DiseaseDetector instancié avec succès")
+except Exception as e:
+    st.error("❌ Échec à l’instanciation du DiseaseDetector.")
+    st.exception(e)
+    st.text(traceback.format_exc())
+    st.stop()
 @st.cache_resource
 def load_disease_model(model_path):
     try:
