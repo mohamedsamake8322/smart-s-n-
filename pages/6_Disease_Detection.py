@@ -3,44 +3,36 @@ import os
 import sys
 from datetime import datetime
 from io import BytesIO
+
 # 📦 Imports externes
 import requests  # type: ignore
 import tensorflow as tf  # type: ignore
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 import streamlit as st  # type: ignore
-st.set_page_config(
-    page_title="Disease Detector Ultra",
-    page_icon="🌿",
-    layout="wide")
 from PIL import Image, ImageEnhance  # type: ignore
 from tensorflow.keras.applications.efficientnet import preprocess_input  # type: ignore
 import plotly.express as px  # type: ignore
-import traceback  # 💡 Ajout pour suivi d’erreur
-from utils.config_model import load_model
-from utils.config_model import load_labels
-class_mapping = load_labels()
+import traceback  # 💡 Pour le débogage si nécessaire
 
-try:
-    model = load_model()
-except Exception as e:
-    st.error(f"❌ Échec du chargement du modèle : {e}")
-    st.stop()
+# ⚙️ Configuration de la page Streamlit
+st.set_page_config(
+    page_title="Disease Detector Ultra",
+    page_icon="🌿",
+    layout="wide"
+)
 
-# 🛠️ Réduction du bruit TensorFlow
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-
-# 📂 Fix chemin vers racine du projet avant imports personnalisés
+# 📂 Ajout du chemin racine pour les imports personnalisés
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 sys.path.append(os.path.abspath("."))
 
 # 📥 Imports personnalisés
-try:
-    from utils.disease_detector import DiseaseDetector
-    from utils.config_model import MODEL_URL, MODEL_PATH
-except Exception as e:
-    st.error(f"❌ Erreur au chargement du module : {e}")
-    st.stop()
+from utils.config_model import load_labels
+from utils.disease_detector import DiseaseDetector
+
+# 📦 Initialisation du détecteur et des étiquettes
+class_mapping = load_labels()
+detector = DiseaseDetector()
 
 # ✅ Chargement initial
 st.write("✅ Fichier Disease_Detection chargé avec succès.")
@@ -101,17 +93,6 @@ DISEASE_ICONS = {
     "Phomopsis Blight": "🌿🔥",
 }
 
-# 📥 Téléchargement du modèle si besoin
-if not os.path.exists(MODEL_PATH):
-    st.info("📦 Téléchargement du modèle IA depuis Google Drive...")
-    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-    with requests.get(MODEL_URL, stream=True) as response:
-        with open(MODEL_PATH, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-    st.success("✅ Modèle IA téléchargé avec succès.")
-
 # 🧠 Instanciation sécurisée du détecteur
 try:
     st.info("🧠 Chargement du modèle .keras...")
@@ -123,13 +104,6 @@ except Exception as e:
     st.text(traceback.format_exc())
     st.stop()
 @st.cache_resource
-def load_disease_model(model_path):
-    try:
-        return tf.keras.models.load_model(model_path)
-    except Exception as e:
-        st.error(f"🛑 Erreur : {e}")
-        return None
-disease_model = load_disease_model(MODEL_PATH)
 # 🔍 Prétraitement de l’image
 def preprocess_image(image_file):
     """Prépare l’image et applique le prétraitement EfficientNet."""
@@ -144,43 +118,38 @@ def preprocess_image(image_file):
         return None
 
 # 🔍 Prédiction multi-maladies avec tri des résultats
-def predict_disease(image, return_raw=False):
-    """Analyse l’image et retourne plusieurs maladies avec leur score."""
-    if disease_model is None:
-        raise ValueError("🚨 Modèle non chargé. Assure-toi qu'il est bien initialisé.")
+def predict_disease(image_pil, return_raw=False, top_k=5, confidence_threshold=0.7):
+    """Analyse une image et retourne les prédictions principales."""
+    try:
+        results = detector.predict(image_pil, confidence_threshold=confidence_threshold)
 
-    img_array = preprocess_image(image)
-    if img_array is None:
-        return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
+        if not results:
+            return [{"error": "🚨 Aucune maladie détectée avec confiance suffisante."}]
 
-    predictions = disease_model.predict(img_array)[0]  # Première prédiction
-    print("🔢 Prédictions brutes :", predictions[:10])  # Debug console
+        top_labels = []
 
-    # ✅ Initialiser la liste des résultats
-    top_labels = []
+        for res in results[:top_k]:
+            disease_name = res["disease"]
+            confidence = res["confidence"]
+            icon = DISEASE_ICONS.get(disease_name, "❓")
 
-    # ✅ Récupération sécurisée des classes
-    labels = detector.class_labels.get("efficientnet_resnet", [])
+            top_labels.append({
+                "name": f"{icon} {disease_name}",
+                "confidence": confidence,
+                "progression_stage": estimate_progression(confidence),
+                "symptoms": "Symptômes à compléter 🔍",
+                "recommendations": "Recommandations à compléter 💊",
+            })
 
-    # ✅ Trier les résultats par confiance
-    sorted_indices = np.argsort(predictions)[::-1]
+        if return_raw:
+            return top_labels, results
+        else:
+            return top_labels
 
-    for idx in sorted_indices[:5]:  # Top 5 résultats
-        disease_name = labels[idx] if idx < len(labels) else "🔍 Maladie inconnue"
-        disease_icon = DISEASE_ICONS.get(disease_name, "❓")
+    except Exception as e:
+        st.error(f"❌ Erreur lors de la prédiction : {e}")
+        return [{"error": str(e)}]
 
-        top_labels.append({
-            "name": f"{disease_icon} {disease_name}",
-            "confidence": round(predictions[idx] * 100, 1),
-            "progression_stage": estimate_progression(predictions[idx] * 100),
-            "symptoms": "Symptômes à compléter 🔍",
-            "recommendations": "Recommandations à compléter 💊",
-        })
-
-    if return_raw:
-        return top_labels, predictions
-
-    return top_labels
 # 🔍 Détermination du stade de progression
 def estimate_progression(confidence):
     """Détermine le stade de la maladie."""
