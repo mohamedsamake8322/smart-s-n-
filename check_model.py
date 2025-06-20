@@ -1,7 +1,7 @@
 from tensorflow import keras
 import json
 
-MODEL_PATH = "model/efficientnet_resnet.keras"
+MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_resnet.keras"
 
 try:
     model = keras.models.load_model(MODEL_PATH, compile=False)
