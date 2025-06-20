@@ -11,27 +11,33 @@ import cv2 # type: ignore
 from utils.config_model import MODEL_URL, MODEL_PATH
 
 class DiseaseDetector:
-    """
-    Détecteur de maladies agricoles utilisant EfficientNet-ResNet.
-    """
-
     def __init__(self):
+        import streamlit as st
+        st.warning("🚨 Début __init__")
+
         self.models = {}
         self.preprocessors = {}
         self.class_labels = {}
-        # 📥 Télécharger le modèle s’il est manquant
+
+        st.warning("🔍 Vérification du modèle...")
         if not os.path.exists(MODEL_PATH):
-            print("📦 Modèle non trouvé localement. Téléchargement depuis Google Drive...")
+            st.info("📦 Téléchargement du modèle...")
             os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
             with requests.get(MODEL_URL, stream=True) as r:
                 with open(MODEL_PATH, "wb") as f:
                     for chunk in r.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
-            print("✅ Modèle téléchargé avec succès.")
+            st.success("✅ Modèle téléchargé")
 
-        # 🔍 Chargement du modèle entraîné
-        self.models["efficientnet_resnet"] = tf.keras.models.load_model(MODEL_PATH)
+        try:
+            st.info("🧠 Chargement du modèle .keras...")
+            self.models["efficientnet_resnet"] = tf.keras.models.load_model(MODEL_PATH)
+            st.success("✅ Modèle chargé avec succès")
+        except Exception as e:
+            st.error(f"❌ Échec du chargement du modèle : {e}")
+            return
+
         self.preprocessors["efficientnet_resnet"] = efficientnet_preprocess
         self.class_labels["efficientnet_resnet"] = [
             "Healthy",
@@ -51,6 +57,9 @@ class DiseaseDetector:
             "Grape_Black_rot",
             "Grape_Powdery_mildew",
         ]
+
+        st.success("🚀 DiseaseDetector initialisé 🎉")
+
 
     def preprocess_image(self, image_pil: Image.Image) -> np.ndarray:
         """
