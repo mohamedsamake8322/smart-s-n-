@@ -10,6 +10,10 @@ import tensorflow as tf  # type: ignore
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 import streamlit as st  # type: ignore
+st.set_page_config(
+    page_title="Disease Detector Ultra",
+    page_icon="🌿",
+    layout="wide")
 from PIL import Image, ImageEnhance  # type: ignore
 from tensorflow.keras.applications.efficientnet import preprocess_input  # type: ignore
 import plotly.express as px  # type: ignore
@@ -237,10 +241,7 @@ def get_weather_risk(crop):
 
 
 # 📊 Interface utilisateur optimisée avec Streamlit
-st.set_page_config(
-    page_title="Disease Detector Ultra",
-    page_icon="🌿",
-    layout="wide")
+
 st.title("🌿 Détection de Maladies Agricoles - Ultra IA")
 # 🖥️ Mode collaboratif : Upload et partage des résultats
 st.markdown("### 🧑‍🌾 Partagez votre diagnostic avec la communauté")
