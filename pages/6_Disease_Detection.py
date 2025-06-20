@@ -10,21 +10,6 @@ from io import BytesIO
 from tensorflow.keras.applications.efficientnet import preprocess_input # type: ignore
 import plotly.express as px  # type: ignore # Corrige l'erreur F821 pour `px`
 from utils.disease_detector import DiseaseDetector
-from utils.config_model import MODEL_URL, MODEL_PATH
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-import os, sys
-
-sys.path.append(os.path.abspath("."))  # Pour accéder au dossier racine du projet
-
-st.write("✅ Fichier Disease_Detection chargé avec succès.")
-
-try:
-    from utils.disease_detector import DiseaseDetector
-    from utils.config_model import MODEL_PATH
-except Exception as e:
-    st.error(f"❌ Erreur au chargement du module : {e}")
-    st.stop()
-
 # ✅ Définition des variables manquantes
 detector = DiseaseDetector()
 model_type = "default"
@@ -90,6 +75,11 @@ DISEASE_ICONS = {
     "Gray Leaf Spot": "🌿🔘",
     "Phomopsis Blight": "🌿🔥",
 }
+
+# ✅ Chargement du modèle IA
+MODEL_URL = "https://drive.google.com/uc?export=download&id=1mBKbOYqB6db3KDneEtSpcH9ywC55qfW_"
+MODEL_PATH = os.path.join("model", "efficientnet_resnet.keras")
+
 # 📥 Télécharger le modèle si nécessaire
 if not os.path.exists(MODEL_PATH):
     st.info("📦 Téléchargement du modèle IA depuis Google Drive...")
@@ -108,8 +98,12 @@ def load_disease_model(model_path):
     except Exception as e:
         st.error(f"🛑 Erreur : {e}")
         return None
+
+
 disease_model = load_disease_model(MODEL_PATH)
 # 🔍 Prétraitement de l’image
+
+
 def preprocess_image(image_file):
     """Prépare l’image et applique le prétraitement EfficientNet."""
     try:
@@ -123,7 +117,7 @@ def preprocess_image(image_file):
         return None
 
 # 🔍 Prédiction multi-maladies avec tri des résultats
-def predict_disease(image, return_raw=False):
+def predict_disease(image):
     """Analyse l’image et retourne plusieurs maladies avec leur score."""
     if disease_model is None:
         raise ValueError("🚨 Modèle non chargé. Assure-toi qu'il est bien initialisé.")
@@ -132,34 +126,29 @@ def predict_disease(image, return_raw=False):
     if img_array is None:
         return [{"error": "🚨 Erreur dans le prétraitement de l’image"}]
 
-    predictions = disease_model.predict(img_array)[0]  # Première prédiction
-    print("🔢 Prédictions brutes :", predictions[:10])  # Debug console
+    predictions = disease_model.predict(img_array)[0]  # Prendre uniquement la première prédiction
 
     # ✅ Initialiser la liste des résultats
     top_labels = []
 
-    # ✅ Récupération sécurisée des classes
-    labels = detector.class_labels.get("efficientnet_resnet", [])
-
     # ✅ Trier les résultats par confiance
     sorted_indices = np.argsort(predictions)[::-1]
 
-    for idx in sorted_indices[:5]:  # Top 5 résultats
-        disease_name = labels[idx] if idx < len(labels) else "🔍 Maladie inconnue"
-        disease_icon = DISEASE_ICONS.get(disease_name, "❓")
+    # ✅ Afficher uniquement les 5 meilleurs résultats
+    for idx in sorted_indices[:5]:
+        disease_name = detector.class_labels["efficientnet_resnet"][idx] if idx < len(detector.class_labels["efficientnet_resnet"]) else "🔍 Maladie inconnue"
+        disease_icon = DISEASE_ICONS.get(disease_name, "❓")  # Icône par défaut si inconnue
 
-        top_labels.append({
-            "name": f"{disease_icon} {disease_name}",
-            "confidence": round(predictions[idx] * 100, 1),
-            "progression_stage": estimate_progression(predictions[idx] * 100),
-            "symptoms": "Symptômes à compléter 🔍",
-            "recommendations": "Recommandations à compléter 💊",
-        })
-
-    if return_raw:
-        return top_labels, predictions
+        top_labels.append(
+            {
+                "name": f"{disease_icon} {disease_name}",
+                "confidence": round(predictions[idx] * 100, 1),  # ✅ Arrondi propre
+                "progression_stage": estimate_progression(predictions[idx] * 100),
+            }
+        )
 
     return top_labels
+
 # 🔍 Détermination du stade de progression
 def estimate_progression(confidence):
     """Détermine le stade de la maladie."""
@@ -233,6 +222,43 @@ st.set_page_config(
     page_icon="🌿",
     layout="wide")
 st.title("🌿 Détection de Maladies Agricoles - Ultra IA")
+
+uploaded_file = st.file_uploader(
+    "🖼️ Importer une image", type=["jpg", "jpeg", "png", "webp"]
+)
+if uploaded_file:
+    st.image(uploaded_file, width=250)
+
+    with st.spinner("🔬 Analyse IA en cours..."):
+        results = predict_disease(uploaded_file)
+
+    if "error" in results:
+        st.error(results["error"])
+    else:
+        for disease in results:
+            st.subheader(f"🦠 {disease['name']}")
+            st.write(f"🔹 Confiance IA : {disease['confidence']:.2f}%")
+            st.write(f"🩺 Stade de progression : {disease['progression_stage']}")
+            st.write(f"🔎 Symptômes : {disease['symptoms']}")
+            st.write(f"🩺 Recommandations : {disease['recommendations']}")
+# ✅ Charger l’image
+uploaded_file = st.file_uploader("Téléchargez une image pour la prédiction")
+
+if uploaded_file is not None:
+    image_pil = Image.open(uploaded_file)
+
+    # ✅ Effectuer la prédiction
+    results = detector.predict_disease(image_pil)
+
+    # ✅ Afficher les résultats
+    st.write("📊 Résultats de la prédiction :")
+    st.json(results)
+
+    # 📌 Affichage du risque climatique
+    crop = "Tomate"
+    weather_risk = get_weather_risk(crop)
+    st.warning(f"🌍 Facteur climatique : {weather_risk}")
+
 # 🖥️ Mode collaboratif : Upload et partage des résultats
 st.markdown("### 🧑‍🌾 Partagez votre diagnostic avec la communauté")
 user_feedback = st.text_area("💡 Ajoutez votre retour ou des observations")
@@ -268,84 +294,80 @@ else:
 # Vérification de TensorFlow
 if TENSORFLOW_AVAILABLE:
     with tab1:
+        # 🔹 Déplacé hors du container
         st.subheader("Diagnostic d'Image Unique")
 
-    col1, col2 = st.columns([1, 1])
+        col1, col2 = st.columns([1, 1])
 
-    with col1:
-        st.markdown("**Upload de l'Image**")
-        upload_method = st.radio(
-            "Méthode d'upload", ["Fichier", "Caméra", "URL"], horizontal=True
-        )
-        uploaded_image = None
-
-        if upload_method == "Fichier":
-            uploaded_file = st.file_uploader(
-                "Choisissez une image", type=["png", "jpg", "jpeg", "webp"]
+        with col1:
+            st.markdown("**Upload de l'Image**")
+            upload_method = st.radio(
+                "Méthode d'upload", ["Fichier", "Caméra", "URL"], horizontal=True
             )
-            if uploaded_file:
-                uploaded_image = Image.open(uploaded_file)
+            uploaded_image = None
 
-        elif upload_method == "Caméra":
-            camera_image = st.camera_input("Prenez une photo de la plante")
-            if camera_image:
-                uploaded_image = Image.open(camera_image)
+            if upload_method == "Fichier":
+                uploaded_file = st.file_uploader(
+                    "Choisissez une image", type=["png", "jpg", "jpeg", "webp"]
+                )
+                if uploaded_file:
+                    uploaded_image = Image.open(uploaded_file)
 
-        elif upload_method == "URL":
-            image_url = st.text_input("URL de l'image")
-            if image_url:
-                try:
-                    response = requests.get(image_url)
-                    uploaded_image = Image.open(BytesIO(response.content))
-                except Exception as e:
-                    st.error(f"Erreur de chargement: {e}")
+            elif upload_method == "Caméra":
+                camera_image = st.camera_input("Prenez une photo de la plante")
+                if camera_image:
+                    uploaded_image = Image.open(camera_image)
 
-    with col2:
-        st.markdown("**Résultats du Diagnostic**")
+            elif upload_method == "URL":
+                image_url = st.text_input("URL de l'image")
+                if image_url:
+                    try:
+                        response = requests.get(image_url)
+                        uploaded_image = Image.open(BytesIO(response.content))
+                    except Exception as e:
+                        st.error(f"Erreur de chargement: {e}")
 
-    if uploaded_image:
-        st.markdown("**Options de Préprocessing**")
-        enhance_contrast = st.checkbox("🔆 Améliorer le contraste", value=True)
-        enhance_brightness = st.checkbox("💡 Ajuster la luminosité", value=False)
+        with col2:
+            st.markdown("**Résultats du Diagnostic**")
 
-        processed_image = uploaded_image.convert("RGB")
-        if enhance_contrast:
-            processed_image = ImageEnhance.Contrast(processed_image).enhance(1.2)
-        if enhance_brightness:
-            processed_image = ImageEnhance.Brightness(processed_image).enhance(1.1)
+        # ✅ Déplacer `st.columns()` en dehors de `st.expander()`
+        if uploaded_image:
+            st.markdown("**Options de Préprocessing**")
+            enhance_contrast = st.checkbox(
+                "Améliorer le contraste", value=True)
+            enhance_brightness = st.checkbox(
+                "Ajuster la luminosité", value=False)
 
-        st.markdown("**Comparaison des Images**")
-        col_img1, col_img2 = st.columns(2)
-        with col_img1:
-            st.image(uploaded_image, caption="🌱 Image originale", width=250)
-        with col_img2:
-            st.image(processed_image, caption="🧪 Image traitée", width=250)
+            processed_image = uploaded_image.convert("RGB")
 
-        with st.spinner("🔬 Analyse IA en cours..."):
-            results, raw_preds = predict_disease(processed_image, return_raw=True)
+            if enhance_contrast:
+                enhancer = ImageEnhance.Contrast(processed_image)
+                processed_image = enhancer.enhance(1.2)
 
-        st.subheader("🔢 Prédictions brutes (top 10)")
-        st.write(raw_preds[:10])
+            if enhance_brightness:
+                enhancer = ImageEnhance.Brightness(processed_image)
+                processed_image = enhancer.enhance(1.1)
 
-        st.subheader("📚 Labels détectés par le modèle :")
-        st.write(detector.class_labels.get("efficientnet_resnet"))
+            st.markdown("**Comparaison des Images**")
+            col_img1, col_img2 = st.columns(2)
 
-        if isinstance(results, list) and results:
-            for disease in results:
-                st.subheader(f"🦠 {disease['name']}")
-                st.write(f"🔹 Confiance IA : {disease['confidence']}%")
-                st.write(f"🩺 Stade de progression : {disease['progression_stage']}")
-                st.write(f"🔎 Symptômes : {disease['symptoms']}")
-                st.write(f"🧪 Recommandations : {disease['recommendations']}")
-        elif isinstance(results, dict) and "error" in results:
-            st.error(results["error"])
-        else:
-            st.warning("⚠️ Aucun résultat détecté. Vérifie l’image ou le modèle.")
+            with col_img1:
+                st.image(uploaded_image, width=250)
 
-        crop = "Tomate"
-        weather_risk = get_weather_risk(crop)
-        st.warning(f"🌍 Facteur climatique : {weather_risk}")
+            with col_img2:
+                st.image(processed_image, width=250)
 
+            with st.spinner("Analyse en cours..."):
+                if detector:
+                    detection_results = detector.predict_disease(
+                        processed_image)
+                    if detection_results:
+                        main_result = detection_results[0]
+                        st.metric("Maladie Détectée", main_result["disease"])
+                        st.metric("Confiance",
+                                  f"{main_result['confidence']:.1f}%")
+                else:
+                    st.error("🚨 Le détecteur n'est pas disponible.")
 
                     # Confidence chart
 st.markdown("---")
@@ -353,10 +375,11 @@ st.markdown("**Graphique de Confiance**")
 
 chart_data = pd.DataFrame(
     [
-        {"Maladie": r["name"], "Confiance": r["confidence"]}
-        for r in results[:5]
+        {"Maladie": r["disease"], "Confiance": r["confidence"]}
+        for r in detection_results[:5]
     ]
 )
+
 fig = px.bar(
     chart_data,
     x="Confiance",
@@ -371,17 +394,14 @@ st.plotly_chart(fig, use_container_width=True)
 
 # ✅ Sauvegarde des résultats
 if st.button("💾 Sauvegarder ce Diagnostic"):
-    main = results[0] if results else {"name": "Inconnu", "confidence": 0}
     diagnosis_data = {
         "timestamp": datetime.now().isoformat(),
-        "main_disease": main["name"],
-        "confidence": main["confidence"],
-        "model_used": "EfficientNet-ResNet",
-        "all_predictions": results,
-        "image_name": f"{main['name'].split(' ', 1)[1].replace(' ', '_')}.jpg" if 'name' in main else "image.jpg",
+        "main_disease": main_result["disease"],
+        "confidence": main_result["confidence"],
+        "model_used": model_type,
+        "all_predictions": detection_results[:5],
+        "image_name": (f"diagnosis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"),
     }
-    st.success("📝 Diagnostic sauvegardé avec succès")
-    st.json(diagnosis_data)
     # ✅ Vérification de la session state
     if "diagnosis_history" not in st.session_state:
         st.session_state.diagnosis_history = []
@@ -453,10 +473,11 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
         batch_results.append(
             {
                 "filename": uploaded_file.name,
-                "main_disease": results[0]["name"] if results else "Unknown",
+                "main_disease": results[0]["disease"] if results else "Unknown",
                 "confidence": results[0]["confidence"] if results else 0,
                 "status": (
-                "Healthy" if results and results[0]["name"].endswith("Healthy") else "Diseased"
+                    "Healthy" if results and results[0]["disease"] == "Healthy"
+                    else "Diseased"
                 ),
                 "all_results": results[:3],
             }
@@ -520,7 +541,7 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
             if "all_predictions" in diagnosis:
                 st.markdown("**Top 3 Prédictions:**")
                 for j, pred in enumerate(diagnosis["all_predictions"][:3], 1):
-                  st.write(f"{j}. {pred['name']}: {pred['confidence']:.1f}%")
+                  st.write(f"{j}. {pred['disease']}: {pred['confidence']:.1f}%")
 # ✅ Résumé des statistiques
 st.markdown("---")
 st.subheader("Statistiques de l'Historique")
