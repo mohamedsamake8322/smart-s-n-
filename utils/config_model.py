@@ -23,3 +23,17 @@ def load_model():
     """Charge le modèle avec cache une fois téléchargé."""
     download_model()
     return keras.models.load_model(MODEL_PATH, compile=False)
+import json
+
+LABELS_URL = "https://huggingface.co/mohamedsamake8322/smartagro-efficientnet-resnet/resolve/main/labels.json"
+LABELS_PATH = "model/labels.json"
+
+def load_labels():
+    if not os.path.exists(LABELS_PATH):
+        try:
+            urllib.request.urlretrieve(LABELS_URL, LABELS_PATH)
+        except Exception as e:
+            st.error(f"❌ Impossible de télécharger labels.json : {e}")
+            st.stop()
+    with open(LABELS_PATH, "r") as f:
+        return json.load(f)

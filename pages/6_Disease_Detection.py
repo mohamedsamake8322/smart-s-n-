@@ -18,6 +18,8 @@ from tensorflow.keras.applications.efficientnet import preprocess_input  # type:
 import plotly.express as px  # type: ignore
 import traceback  # 💡 Ajout pour suivi d’erreur
 from utils.config_model import load_model
+from utils.config_model import load_labels
+class_mapping = load_labels()
 
 try:
     model = load_model()
