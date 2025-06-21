@@ -3,13 +3,14 @@ import numpy as np
 from typing import List, Dict, Tuple
 from PIL import Image, ImageEnhance
 import streamlit as st
-
+import tensorflow as tf
 from utils.config_model import load_model, load_labels
 
+# Dans disease_detector.py
 class DiseaseDetector:
-    def __init__(self):
-        self.model = load_model()
-        self.class_labels = load_labels()
+    def __init__(self, model_path="model/default_model.keras"):
+        self.model = tf.keras.models.load_model(model_path)
+
 
     def preprocess_image(self, image_pil: Image.Image, target_size: Tuple[int, int] = (224, 224)) -> np.ndarray:
         try:
