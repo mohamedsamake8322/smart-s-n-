@@ -184,10 +184,8 @@ class DiseaseManager:
         c.showPage()
         c.save()
         return buffer
-
-
 # ✅ Ajout des maladies
-disease_manager = DiseaseManager()
+disease_manager = DiseaseManager(model_path="dummy_model.keras")
 disease_manager.add_disease(
     "Aphids on Vegetables",
     [
