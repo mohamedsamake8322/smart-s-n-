@@ -296,22 +296,29 @@ if TENSORFLOW_AVAILABLE:
             processed_image = ImageEnhance.Contrast(processed_image).enhance(1.2)
         if enhance_brightness:
             processed_image = ImageEnhance.Brightness(processed_image).enhance(1.1)
+if uploaded_image and processed_image:
+    st.markdown("**🖼️ Comparaison des Images**")
+    col_img1, col_img2 = st.columns(2)
 
-st.markdown("**🖼️ Comparaison des Images**")
-col_img1, col_img2 = st.columns(2)
+    with col_img1:
+        st.image(uploaded_image, caption="🌱 Image originale", width=250)
 
-with col_img1:
-    st.image(uploaded_image, caption="🌱 Image originale", width=250)
+    with col_img2:
+        st.image(processed_image, caption="🧪 Image traitée", width=250)
 
-with col_img2:
-    st.image(processed_image, caption="🧪 Image traitée", width=250)
+    with st.spinner("🔬 Analyse IA en cours..."):
+        single_results, raw_preds = predict_disease(processed_image, return_raw=True)
+for file in uploaded_files:
+    img = Image.open(file)
+    st.image(img, caption="🖼️ Image analysée", use_column_width=True)
 
-with st.spinner("🔬 Analyse IA en cours..."):
-    single_results, raw_preds = predict_disease(processed_image, return_raw=True)
-if uploaded_files:
-    for file in uploaded_files:
-        img = Image.open(file)
-        st.image(img, caption="🖼️ Image analysée", use_column_width=True)
+    uploaded_results = detector.predict(img, confidence_threshold=confidence_filter)
+if uploaded_results:
+    st.subheader("🔢 Prédictions brutes (top 10)")
+    st.json(single_results[:10])
+else:
+    st.warning("🚨 Aucune image n'a été chargée pour l’analyse.")
+
 
 uploaded_results = detector.predict(img, confidence_threshold=confidence_filter)
 
