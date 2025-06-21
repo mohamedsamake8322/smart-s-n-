@@ -328,29 +328,35 @@ if TENSORFLOW_AVAILABLE:
         crop = "Tomate"
         weather_risk = get_weather_risk(crop)
         st.warning(f"🌍 Facteur climatique : {weather_risk}")
+if uploaded_files:
+    for file in uploaded_files:
+        img = Image.open(file)
+        results = detector.predict(img, confidence_threshold=confidence_filter)
 
+        if results:
+            st.image(img, caption="Image analysée", use_column_width=True)
 
-                    # Confidence chart
-st.markdown("---")
-st.markdown("**Graphique de Confiance**")
+            st.markdown("---")
+            st.markdown("**Graphique de Confiance**")
 
-chart_data = pd.DataFrame(
-    [
-        {"Maladie": r["disease"], "Confiance": r["confidence"]}
-        for r in results[:5]
-    ]
-)
-fig = px.bar(
-    chart_data,
-    x="Confiance",
-    y="Maladie",
-    orientation="h",
-    title="Top 5 des Prédictions",
-    color="Confiance",
-    color_continuous_scale="RdYlGn",
-)
-fig.update_layout(height=300)
-st.plotly_chart(fig, use_container_width=True)
+            chart_data = pd.DataFrame(
+                [{"Maladie": r["disease"], "Confiance": r["confidence"]} for r in results[:5]]
+            )
+            fig = px.bar(
+                chart_data,
+                x="Confiance",
+                y="Maladie",
+                orientation="h",
+                title="Top 5 des Prédictions",
+                color="Confiance",
+                color_continuous_scale="RdYlGn",
+            )
+            fig.update_layout(height=300)
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning("Aucune maladie détectée avec la confiance minimale définie.")
+else:
+    st.info("📷 Veuillez charger une image pour détecter une maladie.")
 
 # ✅ Sauvegarde des résultats
 if st.button("💾 Sauvegarder ce Diagnostic"):
