@@ -140,7 +140,7 @@ def predict_disease(image_pil, return_raw=False, top_k=5, confidence_threshold=0
         if return_raw:
             return top_labels, results
         else:
-            return top_labels
+            return top_labels, []  # On retourne une liste vide en 2e position
 
     except Exception as e:
         st.error(f"❌ Erreur lors de la prédiction : {e}")
