@@ -73,10 +73,29 @@ def estimate_progression(conf):
     else: return "🟢 Faible impact"
 
 def predict_disease(image_pil, confidence_threshold=0.6):
+    disease_name_map = {
+        "Late Blight": "Bright",
+        "Early Blight": "Early Blightt",
+        "Phomopsis Blight": "Phomopsis Blightt",
+        "Cercospora Leaf Spot (Frogeye)": "Cercle Leaf Spot (Frogeye)",
+        "Tomato Russet Mite": "Russet Tomato Mite",
+        "Root-Knot Nematodes": "Root-knot nematodes",
+        "Corn Earworm / Tomato Fruitworm": "Corn Earworm / Tomato FruitWorm",
+        "Potato Leafhopper": "Potato leafhopper",
+        "Beet Leafhopper": "Beet leafhopper",
+        "Healthy": "Healthy plant"
+        # tu peux compléter le reste ici si besoin
+    }
+
     results = detector.predict(image_pil, confidence_threshold=confidence_threshold)
     preds = []
+
     for r in results:
-        desc = next((d for d in disease_descriptions if d.get("name") == r["disease"]), {})
+        json_name = disease_name_map.get(r["disease"], r["disease"])  # remplace si mapping trouvé
+        desc = next(
+            (d for d in disease_descriptions if d.get("name", "").strip().lower() == json_name.strip().lower()),
+            {}
+        )
         preds.append({
             "name": f"{DISEASE_ICONS.get(r['disease'], '🦠')} {r['disease']}",
             "confidence": r["confidence"],
@@ -84,7 +103,9 @@ def predict_disease(image_pil, confidence_threshold=0.6):
             "symptoms": desc.get("symptoms", "❌ Non disponibles"),
             "recommendations": desc.get("management", "❌ Aucune recommandation"),
         })
+
     return preds
+
 # 💡 3. Fiche Diagnostique
 def render_diagnostic_card(result):
     color = {
