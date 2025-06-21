@@ -13,6 +13,7 @@ import streamlit as st  # type: ignore
 from PIL import Image, ImageEnhance  # type: ignore
 import plotly.express as px  # type: ignore
 import traceback  # 💡 Pour le débogage si nécessaire
+import json
 
 # ⚙️ Configuration de la page Streamlit
 st.set_page_config(
@@ -32,6 +33,14 @@ from utils.disease_detector import DiseaseDetector
 # 📦 Initialisation du détecteur et des étiquettes
 class_mapping = load_labels()
 detector = DiseaseDetector()
+# 🌍 Chargement des descriptions traduites
+@st.cache_data
+def load_disease_descriptions():
+    with open("data/all_diseases_translated.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+disease_descriptions = load_disease_descriptions()
+
 
 # ✅ Chargement initial
 st.write("✅ Fichier Disease_Detection chargé avec succès.")
@@ -120,10 +129,7 @@ def predict_disease(image_pil, return_raw=False, top_k=5, confidence_threshold=0
         results = detector.predict(image_pil, confidence_threshold=confidence_threshold)
 
         if not results:
-            if return_raw:
-                return [], []  # Rien à afficher
-            else:
-                return [], []
+            return ([], []) if return_raw else ([], [])
 
         top_labels = []
 
@@ -132,22 +138,26 @@ def predict_disease(image_pil, return_raw=False, top_k=5, confidence_threshold=0
             confidence = res["confidence"]
             icon = DISEASE_ICONS.get(disease_name, "❓")
 
+            # 🔍 Recherche dans les descriptions traduites
+            description = next(
+                (d for d in disease_descriptions if d.get("name") == disease_name),
+                {}
+            )
+
             top_labels.append({
                 "name": f"{icon} {disease_name}",
                 "confidence": confidence,
                 "progression_stage": estimate_progression(confidence),
-                "symptoms": "Symptômes à compléter 🔍",
-                "recommendations": "Recommandations à compléter 💊",
+                "symptoms": description.get("symptoms", "❌ Symptômes non disponibles"),
+                "recommendations": description.get("management", "❌ Recommandations manquantes"),
             })
 
-        if return_raw:
-            return top_labels, results
-        else:
-            return top_labels, []  # On retourne une liste vide en 2e position
+        return (top_labels, results) if return_raw else (top_labels, [])
 
     except Exception as e:
         st.error(f"❌ Erreur lors de la prédiction : {e}")
         return [{"error": str(e)}]
+
 
 # 🔍 Détermination du stade de progression
 def estimate_progression(confidence):
