@@ -22,7 +22,7 @@ def load_disease_descriptions():
 
 disease_descriptions = load_disease_descriptions()
 class_mapping = load_labels()
-detector = DiseaseDetector()
+detector = DiseaseDetector(model_path="model/efficientnet_agro_final.keras")
 # 🔍 2. Prédiction + carte résumé
 DISEASE_ICONS = {
     "Healthy": "✅",

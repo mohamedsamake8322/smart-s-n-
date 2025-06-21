@@ -1,0 +1,1031 @@
+[
+  {
+    "name": "Tomato mildew",
+    "scientific_name": "Phytophthora infestans",
+    "category": "Fungal",
+    "cause": "Pathogen",
+    "description": "Destructive disease causing brown spots on leaves, stems and fruit",
+    "severity": "High",
+    "season": "Wet and fresh weather",
+    "affected_crops": [
+      "Tomato",
+      "Potato"
+    ],
+    "symptoms": [
+      "Irregular brown spots on the leaves",
+      "Rapid wilting of leaves",
+      "Dark spots on the stems",
+      "Fruit rot",
+      "White down under the leaves in wet weather"
+    ],
+    "favorable_conditions": [
+      "Temperature 15-20 ° C",
+      "High humidity (> 85%)",
+      "Rainy weather",
+      "Poor air circulation"
+    ]
+  },
+  {
+    "name": "Tomato alternariasis",
+    "scientific_name": "Alternaria Solani",
+    "category": "Fungal",
+    "cause": "Pathogen",
+    "description": "Fungal disease causing characteristic concentric spots",
+    "severity": "Moderate",
+    "season": "Hot and humid summer",
+    "affected_crops": [
+      "Tomato",
+      "Potato",
+      "Eggplant"
+    ],
+    "symptoms": [
+      "Brown circular spots with concentric rings",
+      "Yellowing and wilting the lower leaves",
+      "Spots on rods and petioles",
+      "Fruit rot near the peduncle"
+    ],
+    "favorable_conditions": [
+      "Temperature 24-29 ° C",
+      "Humidity/drought alternation",
+      "Water stress",
+      "Weakened plants"
+    ]
+  },
+  {
+    "name": "Bacterial tomato spot",
+    "scientific_name": "Xanthomonas spp.",
+    "category": "Bacterial",
+    "cause": "Pathogenic bacteria",
+    "description": "Bacterial infection causing black spots on leaves and fruits",
+    "severity": "Moderate",
+    "season": "Hot and humid weather",
+    "affected_crops": [
+      "Tomato",
+      "Bell pepper"
+    ],
+    "symptoms": [
+      "Small black spots with yellow halo",
+      "Spots on leaves, stems and fruits",
+      "Defoliation in case of severe infection",
+      "Frucks cracked and deformed"
+    ],
+    "favorable_conditions": [
+      "Temperature 25-30 ° C",
+      "High humidity",
+      "Plant wounds",
+      "Splashing"
+    ]
+  },
+  {
+    "name": "Mildew of the potato",
+    "scientific_name": "Phytophthora infestans",
+    "category": "Fungal",
+    "cause": "Pathogen",
+    "description": "The most destructive disease of the potato",
+    "severity": "Very high",
+    "season": "Fresh and wet weather",
+    "affected_crops": [
+      "Potato",
+      "Tomato"
+    ],
+    "symptoms": [
+      "Aqueous brown spots on leaves",
+      "Black rot of tubers",
+      "Rapid wilt of foliage",
+      "Unpleasant odor of infected tubers"
+    ],
+    "favorable_conditions": [
+      "Temperature 10-20 ° C",
+      "Humidity> 90%",
+      "Prolonged rainy weather",
+      "Persistent dew"
+    ]
+  },
+  {
+    "name": "Common rust of corn",
+    "scientific_name": "Puccinia Sorghum",
+    "category": "Fungal",
+    "cause": "Pathogen",
+    "description": "Fungal disease characterized by orange-brown pustules",
+    "severity": "Moderate",
+    "season": "Fresh and wet summer",
+    "affected_crops": [
+      "But"
+    ],
+    "symptoms": [
+      "Orange-brown pustules on the leaves",
+      "Oval with circular pustules",
+      "Leaves yellow",
+      "Grain yield reduction"
+    ],
+    "favorable_conditions": [
+      "Temperature 16-23 ° C",
+      "High humidity",
+      "Morning dew",
+      "Sensitive varieties"
+    ]
+  },
+  {
+    "name": "Wheat brunette rust",
+    "scientific_name": "Puccinia Triticina",
+    "category": "Fungal",
+    "cause": "Pathogen",
+    "description": "Significant wheat disease causing yield losses",
+    "severity": "High",
+    "season": "Spring and early summer",
+    "affected_crops": [
+      "Wheat",
+      "Barley"
+    ],
+    "symptoms": [
+      "Orange-brown pustules on the leaves",
+      "Circular stains in Oval",
+      "Premature yellow",
+      "Grain weight reduction"
+    ],
+    "favorable_conditions": [
+      "Temperature 15-22 ° C",
+      "High humidity",
+      "Sprinkling",
+      "High planting density"
+    ]
+  },
+  {
+    "name": "Rice pyriculariosis",
+    "scientific_name": "Magnaporthe Oryzae",
+    "category": "Fungal",
+    "cause": "Pathogen",
+    "description": "The most destructive disease of rice in the world",
+    "severity": "Very high",
+    "season": "Rainy season",
+    "affected_crops": [
+      "Rice"
+    ],
+    "symptoms": [
+      "Gray-brown losang stains on leaves",
+      "Lesions on the neck of the panicle",
+      "Grains",
+      "Breaks"
+    ],
+    "favorable_conditions": [
+      "Temperature 25-28 ° C",
+      "High humidity",
+      "Excessive nitrogen fertilization",
+      "Sensitive varieties"
+    ]
+  },
+  {
+    "name": "Oïdium de la Vine",
+    "scientific_name": "ERYSIPH NECATOR",
+    "category": "Fungal",
+    "cause": "Pathogen",
+    "description": "Fungal disease forming a white down on the green organs",
+    "severity": "High",
+    "season": "Spring and summer",
+    "affected_crops": [
+      "Vine",
+      "Grapes"
+    ],
+    "symptoms": [
+      "White powdery down on leaves",
+      "White spots on clusters",
+      "Leaves",
+      "Berry bursting"
+    ],
+    "favorable_conditions": [
+      "Temperature 20-27 ° C",
+      "Moderate humidity",
+      "Dry time after dew",
+      "Poor ventilation"
+    ]
+  },
+  {
+    "name": "Bacterial pepper spot",
+    "scientific_name": "Xanthomonas Campestris",
+    "category": "Bacterial",
+    "cause": "Pathogenic bacteria",
+    "description": "Bacterial infection affecting pepper leaves and fruits",
+    "severity": "Moderate",
+    "season": "Hot and humid weather",
+    "affected_crops": [
+      "Bell pepper",
+      "Pepper",
+      "Tomato"
+    ],
+    "symptoms": [
+      "Small brown spots with yellow halo",
+      "Liegeous spots on fruit",
+      "Severe defoliation",
+      "Fruit quality reduction"
+    ],
+    "favorable_conditions": [
+      "Temperature 24-30 ° C",
+      "High humidity",
+      "Mechanical wounds",
+      "Water spread"
+    ]
+  },
+  {
+    "name": "Healthy plant",
+    "scientific_name": "N / A",
+    "category": "None",
+    "cause": "None",
+    "description": "Healthy plant without signs of illness",
+    "severity": "None",
+    "season": "N / A",
+    "affected_crops": [
+      "All"
+    ],
+    "symptoms": [
+      "Green and vigorous foliage",
+      "Normal growth",
+      "Absence of stains or lesions",
+      "Healthy root system"
+    ],
+    "favorable_conditions": [
+      "Balanced nutrition",
+      "Adequate irrigation",
+      "Good ventilation",
+      "Favorable climatic conditions"
+    ]
+  },
+  {
+    "hosts": [
+      "Asparagus",
+      "Brassicas",
+      "Vegetables",
+      "Corn",
+      "Solanaceae",
+      "Leafy Greens",
+      "Cucurbit",
+      "Potato",
+      "Root crop"
+    ],
+    "overview": "Aphids are small, soft-bodied insects that suck sap from plant tissues ...",
+    "symptoms": "Aphid Feeding Results in an overall loss of plant vigor ...",
+    "management": "Thoroughly scout crops and wees for signs or symptoms of aphids ...",
+    "insecticides": [
+      "carbaryl",
+      "method",
+      "malathion",
+      "alpha-cypermethrin",
+      "bifethrin",
+      "cyfluthrin",
+      "fenpropathrin",
+      "Lambda-cyhalothrin",
+      "deltamethrin",
+      "allowing"
+    ],
+    "name": "Aphids on Vegetables"
+  },
+  {
+    "hosts": [
+      "Asparagus",
+      "Brassicas",
+      "Cucurbit",
+      "Corn",
+      "Leafy Greens",
+      "Vegetables",
+      "Ones",
+      "Potato",
+      "Solanaceae crops",
+      "Root crop"
+    ],
+    "overview": "Armyworms can be found all over the United States ...",
+    "symptoms": "Larvae Feed on leaves with Chewing Mouthparts ...",
+    "management": "Keep Crop Area Weed-Free, Till Residues and Control Wesss ...",
+    "insecticides": [
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil",
+      "imiclacloprid",
+      "sulfur"
+    ],
+    "name": "Armyworms on Vegetables"
+  },
+  {
+    "hosts": [
+      "Alfalfa",
+      "Vegetables",
+      "Solanaceae",
+      "Potatoes"
+    ],
+    "overview": "Blister Beetles in the genera epicuata are found throughout North America ...",
+    "symptoms": "Adults Feed On Plant Foliage and Blossoms ...",
+    "management": "Blister beetle populations are influenced by grasshopper populations ...",
+    "insecticides": [],
+    "name": "Blister Beetle"
+  },
+  {
+    "hosts": [
+      "Beans",
+      "Beets",
+      "Cucurbit",
+      "Leafy Greens",
+      "Tomato"
+    ],
+    "overview": "Beet Leafhoppers have Wedge-Shaped Bodies Varying in Color from Pale Green, Gray, Or tan ...",
+    "symptoms": "Adults and nymphs feed with piercing cashparts, which can cause shriveled and 'burned' leaves ...",
+    "management": "Excluded Leafhoppers with Floating Row Covers, Shade Tomato and Pepper Plants, Remove Plant Debris ...",
+    "insecticides": [
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil",
+      "imiclacloprid",
+      "sulfur",
+      "method",
+      "fenpropathrin",
+      "allowing"
+    ],
+    "name": "Beet leafhopper"
+  },
+  {
+    "hosts": [
+      "Eggplant",
+      "Pepper",
+      "Potato",
+      "Tomato"
+    ],
+    "overview": "Adults are about the same size and shape as a lady beetle but with Yellow and Black Stripes ...",
+    "symptoms": "Adults and Larvae feed with chewing mouthparts and can defoliate plants ...",
+    "management": "ROTATE CROPS TO NON-SOLANACEOUS CROPS, KEEP CROP Area Free of Solanaceous Weeods ...",
+    "insecticides": [
+      "Beauveria Bassiana",
+      "Edovum puttleri",
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil",
+      "imiclacloprid",
+      "sulfur",
+      "method",
+      "fenpropathrin"
+    ],
+    "name": "Colorado Potato Beetle"
+  },
+  {
+    "hosts": [
+      "Corn",
+      "Cucurbit",
+      "Leafy Greens",
+      "Vegetables",
+      "Potato",
+      "Solanaceae crops"
+    ],
+    "overview": "Adult Western Striped Cucumber Beetles Are About 1/3 Inches Long, With Black Heads and Yellow and Black-Striped Wings ...",
+    "symptoms": "Feeding Scars on Soft Rinds of Fruits, Especially The Undersides. Holes in Stems and Leaves. Destroyed Flowers ...",
+    "management": "Hand-Pick Cucumber Beetles, Plant Resistant Varieties, Use Row Covers and Mulles ...",
+    "insecticides": [
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil",
+      "imiclacloprid",
+      "sulfur",
+      "method",
+      "fenpropathrin"
+    ],
+    "name": "Western Striped and Spotted Cucumber Beetle"
+  },
+  {
+    "hosts": [
+      "Hemp",
+      "Beans",
+      "Corn",
+      "Cucurbit",
+      "Potato",
+      "Tomato",
+      "Small Grains",
+      "Ornamentals",
+      "Oily",
+      "WEDS"
+    ],
+    "overview": "Adults have a black head, legacy, and antennae. They have ovized yellow-green bodies with 12 black spots on the wings ...",
+    "symptoms": "In hemp, adults chew on leaves, creating irregular-shaped holes. Damage is considering minor ...",
+    "management": "Keep CROP Area Weed-Free, Use Plastic OR Organic Mullshles, DESTROY CROP Residues after Harvest ...",
+    "insecticides": [
+      "azadirachtin",
+      "potassium laurate",
+      "Mineral oil",
+      "diatomaceous Earth",
+      "pyrethrins",
+      "Rosemary Oil",
+      "Neem oil",
+      "kaolin"
+    ],
+    "name": "Spotted Cucumber Beetle"
+  },
+  {
+    "hosts": [
+      "Artichoke",
+      "Asparagus",
+      "Brassicas",
+      "Cucurbit",
+      "Corn",
+      "Vegetables",
+      "Leafy Greens",
+      "Onion",
+      "Potato",
+      "Root crop",
+      "Solanaceae crops"
+    ],
+    "overview": "Cutworms Belong to A Large Group of Night-Flying Moths in the Noctuidae Family ...",
+    "symptoms": "Larvae feed with chewing mouthparts and can clip off seedlings at the soil line ...",
+    "management": "Remove Cool-Season WEDS, USE FALL TILLAGE TO Exhibits Overwinting Pupae, Protect Seedlings With Collars ...",
+    "insecticides": [
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil",
+      "imiclacloprid",
+      "sulfur",
+      "method",
+      "fenpropathrin"
+    ],
+    "name": "Cutworms on Vegetables"
+  },
+  {
+    "hosts": [
+      "Alfalfa",
+      "Brassicas",
+      "Cucurbit",
+      "Corn",
+      "Leafy Greens",
+      "Potato",
+      "Root crop",
+      "Solanaceae crops",
+      "Hemp"
+    ],
+    "overview": "On adults, the head, thorax, and anterior portion of the wings are brownish gray and the posterior portion of the wings are whitish-clear ...",
+    "symptoms": "Adults and Nymphs Feed With Piercing-Sucking Mouthparts. Large Numbers of Aggregating Adults can cause Plants to Wilt and Die Rapidly ...",
+    "management": "Scout Field Edges that may contain Mustards, look for aggregations on plants, keep plants well irrigated ...",
+    "insecticides": [
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil",
+      "imiclacloprid",
+      "sulfur",
+      "method",
+      "fenpropathrin"
+    ],
+    "name": "False Chinch Bug"
+  },
+  {
+    "hosts": [
+      "Brassicas",
+      "Leafy Greens",
+      "Solanaceae crops",
+      "Root crop",
+      "Cucurbit",
+      "Potato"
+    ],
+    "overview": "Flea beetles are common and problemmatic in utah, affecting vegetable crops and ornamental plants ...",
+    "symptoms": "Small, round holes or pits in leaves and cotyledons ...",
+    "management": "Adjust Planting Times, Healthy Plant Growth Promote, Use Trap Crops and Row Covers ...",
+    "insecticides": [
+      "LACEWING LARVAE",
+      "Big-Eyed Bugs",
+      "Damsel bugs",
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil"
+    ],
+    "name": "Flea Beetles"
+  },
+  {
+    "hosts": [
+      "Tomato",
+      "Pepper",
+      "Potato"
+    ],
+    "overview": "Adults are large Moths also nown as sphinx, hawk, or hummingbird moths. Larvae are Large, cylindrical and usually green ...",
+    "symptoms": "Larvae use Chewing Mouthparts to Feed On Leaves, Blossoms, Stems, and Fruits, Leaving Behind Dark Green Or Black Frass ...",
+    "management": "Plow Field after Harvest to destroy Pupae, Rotate crops with non-host plants, handpick larvae at dawn or dusk ...",
+    "insecticides": [
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil",
+      "imiclacloprid",
+      "sulfur",
+      "method",
+      "fenpropathrin"
+    ],
+    "name": "Tomato and Tobacco Hornworms"
+  },
+  {
+    "hosts": [
+      "Alfalfa",
+      "Asparagus",
+      "Bean",
+      "Cabbage",
+      "Cauliflower",
+      "Cucumber",
+      "Garlic",
+      "Onion",
+      "Potato",
+      "Small Grains",
+      "Tomato"
+    ],
+    "overview": "Thrips overwinter as adults in plant debris and protected areas. In the Spring, They Become Active and Move Into Fields ...",
+    "symptoms": "White Flecks or Silvery Scars on Foliage, Dark Fecal Spots on Leaves, Distorted Leaf Growth, Reduced Bulb size in Onions ...",
+    "management": "PLOW Plant Debris Under After Harvest, Transplant Inspect for Thrips, Remove Weeeds Within Fields, Place Mulch, plant resistant crop varieties ...",
+    "insecticides": [
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil",
+      "imiclacloprid",
+      "sulfur",
+      "method",
+      "fenpropathrin"
+    ],
+    "name": "Thrips on Vegetables"
+  },
+  {
+    "hosts": [
+      "Alfalfa",
+      "Vegetables",
+      "Potato",
+      "Solanaceae",
+      "Weeds Including Pigweed and Shepherd's Purse"
+    ],
+    "overview": "Adults are Wedge-Shaped, Light Green in Color, and Widest at the Head with an Elongated Body ...",
+    "symptoms": "Adults and Nymphs Feed with piercing-sucking Mouthparts, Causing White-Flecked Injury (Stippling) on ​​Foliage. Heavy Feeding can lead to scorching ...",
+    "management": "Manage Weeds to Reduce Leafhopper Populations, Monitor Symptoms Such As Curling Leaves and Stippling, insecticide application when necessary ...",
+    "insecticides": [
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil",
+      "imiclacloprid",
+      "sulfur",
+      "method",
+      "fenpropathrin"
+    ],
+    "name": "Potato leafhopper"
+  },
+  {
+    "hosts": [
+      "Corn",
+      "Cucurbit",
+      "Hemp",
+      "Vegetables",
+      "Ones",
+      "Root crop",
+      "Solanaceae crops",
+      "Many Weeds and Ornaments"
+    ],
+    "overview": "Adults are tiny, with a yellowish-clear body and two dark spots on eith side of its back ...",
+    "symptoms": "Stippled (Small Yellow Spots) Leaves, Generalized Bronzing Or Reddish Discoloration, Reduced Plant Vigor, Premature Leaf Drop ...",
+    "management": "Keep Plants Healthy, Wash Mites Off Plants With Strong Water Stream, Avoid Malathion and Pyrethroid Insecticides, Attract Predatory Mites ...",
+    "insecticides": [
+      "Predory Mites",
+      "lacewings",
+      "ladybugs",
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil"
+    ],
+    "name": "Two-Spotted Spider Mite"
+  },
+  {
+    "hosts": [
+      "Beans",
+      "Corn",
+      "Eggplant",
+      "Pepper",
+      "Peas",
+      "Tomato"
+    ],
+    "overview": "Corn Earworm Larvae Feed On All Plant Parts, included Fruits and Kernels. Damage can result in decreased pollination and hollow-out fruits ...",
+    "symptoms": "Tunnels in Kernels and Fruits Filleted with Frass, Direct Damage to Stems, Foliage, and Corn Silk, Premature Fruit Ripening, Fruit Rot ...",
+    "management": "AVOID PLANTING SOLNACEUS CROPS CROPS NEAR Post-Silking Corn Fields, Use Clothespins on Corn Silk, Plant Resistant Varishes, Remove Infested Plant Debris ...",
+    "insecticides": [
+      "BT (Bacillus thuringiensis)",
+      "spinosad",
+      "pyrethrins",
+      "chlorantraniliprole",
+      "lacewings",
+      "Big-Eyed Bugs",
+      "Damsel bugs",
+      "minute pirate bugs",
+      "Trichogrammma Pretiosum"
+    ],
+    "name": "Corn Earworm / Tomato FruitWorm"
+  },
+  {
+    "hosts": [
+      "Potato",
+      "Tomato",
+      "Pepper",
+      "Eggplant"
+    ],
+    "overview": "Adults and nymphs have cigar-shaped, yellowish-tan or pink bodies and require a microscope to observe ...",
+    "symptoms": "Bronzing or 'Russeting' of Stems, Leaves, and Fruits, Yellowing, Curling, Deflated Leaves, and Longitudinal Cracks on Fruits ...",
+    "management": "Use clean transplants, avoid planting during hot, dry periods, remove infested debris, clean tools after ...",
+    "insecticides": [
+      "sulfur",
+      "abamectin"
+    ],
+    "name": "Russet Tomato Mite"
+  },
+  {
+    "hosts": [
+      "Field-GROWN and Greenhouse-GROWN HEMP",
+      "Age",
+      "Aster",
+      "Beans",
+      "Begonia",
+      "Calendula",
+      "Cucumber",
+      "Grape",
+      "Hibiscus",
+      "Lantana",
+      "Nicotiana",
+      "Poinsettia",
+      "Squash",
+      "Tomato"
+    ],
+    "overview": "Adults are tiny with bright white wings and yellow-orange heads. Immature internships are pale, transluent, and most motionless ...",
+    "symptoms": "LEAVES Turn Yellow, Appear Dry, or Fall Off Plants. Whiteflies also excrete honeydew, causing sticky surfaces or sooty mold Growth ...",
+    "management": "Attract and keep Natural Enemies, transplant inspect, Remove Heavoy Infested Plants, Use Biocontrol Such as Boursia SP ....",
+    "insecticides": [
+      "azadirachtin",
+      "potassium laurate",
+      "clarified hydrophobic extract of neem oil",
+      "pyrethrins",
+      "Capsicum oleoresin extract",
+      "Encoursia sp.",
+      "bifethrin",
+      "Zeta-cypermethrin",
+      "Lambda-cyhalothrin",
+      "allowing",
+      "deltamethrin",
+      "cyfluthrin",
+      "Pyrethrins + Neem Oil"
+    ],
+    "name": "Whiteflies (Family: Aleyrodidae)"
+  },
+  {
+    "hosts": [
+      "Alfalfa",
+      "Potato",
+      "Pepper",
+      "Tomato",
+      "Hemp",
+      "Many Ornamentals and Weeds"
+    ],
+    "overview": "Alfalfa Mosaic Virus (AMV) is in the genus alfamovirus and is spread by aphids ...",
+    "symptoms": "Yellow Mosaic or Calico patterns on foliage, Stunned Plants, Tuber Necrosis, Bright Yellow Interspersed with Green ...",
+    "management": "AVOID POSTATOR POTATOES OR HEMP Near Alfalfa Fields, Remove Plants With Positive Diagnosis ...",
+    "insecticides": [
+      "Limited Efficacy With Aphid-Targeting Insecticides"
+    ],
+    "name": "Alfalfa Mosaic Virus"
+  },
+  {
+    "hosts": [
+      "Tomato",
+      "Pepper"
+    ],
+    "overview": "BACTERIAL CANKER DIREE is caused by clavibacter michiganensis subsp. Michiganensis. It is primary an Economic concern for tomato ...",
+    "symptoms": "Wilting in Young Plants, Yellow Leaf Margins ('Firing'), White Spots with Dark Centers on Fruit, Vascular Discoloration in Stems ...",
+    "management": "Source Disease-Free Seed, Clean and Disinfect Equipment, Avoid Overwatering, Rotate Crops, Remove Solanaceous Weeds, Deep Plow Soil ...",
+    "insecticides": [
+      "COPPER-BASED Products Effective in Greenhouse Transplant Production"
+    ],
+    "name": "Bacterial Canker"
+  },
+  {
+    "hosts": [
+      "Tomato"
+    ],
+    "overview": "Bacterial Speck (Pseudomonas Syringae Pv. Tomato) Infections Occur During Cool (63 to 75 ° F) Wet Conditions ...",
+    "symptoms": "Brown to black spots with a yellow halo on leaves, scabby pinpoint-like spots on fruit, damage does not penetrate into flesh ...",
+    "management": "Start examining undersides of leaves soon after planting, delay planting unit wet pass conditions pass, avoid overhead irrigation, rotate crops ...",
+    "insecticides": [
+      "Crop rotation",
+      "Avoid Overhead Irrigation"
+    ],
+    "name": "Bacterial Speck"
+  },
+  {
+    "hosts": [
+      "Bean",
+      "Beet",
+      "Cucurbit",
+      "Pepper",
+      "Spinach",
+      "Tomato",
+      "Several Other Wild and Economic Hosts"
+    ],
+    "overview": "Beet Curly Top Virus (BCTV) is a curtovirus in the geminiviridae family, vectored by the beet leafhopper (blh) ...",
+    "symptoms": "Young Infected Plants Usally Die, Stunned Growth, Thick Curled Leaves, DUL Yellow Color with Purple Veins, Prematurely Ripened Fruit ...",
+    "management": "Implement shading, use row covers, double plant to reduce losses, manage wees that serve as alternative hosts for blh ...",
+    "insecticides": [
+      "Integrated Pest Management (IPM)",
+      "Avoid Chemical Treatments due to blh migration"
+    ],
+    "name": "Beet Curly Top Virus"
+  },
+  {
+    "hosts": [
+      "Tomato",
+      "Pepper"
+    ],
+    "overview": "Big Bud is caused by A Small Bacterium Called Phytoplasma, Infecting Plant Vascular Tissue and Causing Abnomal Growth ...",
+    "symptoms": "Swollen Flower Buds, Distorted Flower and Leaf Growth, Short and Thick Apical Stems, Yellow Discoloration of Foliage ...",
+    "management": "Remove Infected Plants, Clear Weeds that host leafhoppers ...",
+    "insecticides": [
+      "Leafhopper Management",
+      "Remove Infected Debris"
+    ],
+    "name": "Big Bud"
+  },
+  {
+    "hosts": [
+      "Cucumbers",
+      "Eggplant",
+      "Pepper",
+      "Squash",
+      "Tomato",
+      "Watermelon"
+    ],
+    "overview": "Blossom-End Rot (BER) is a physiological disorder caused by calcium deficiency and aggravated by month Imbalances ...",
+    "symptoms": "Water-Soaked Discoloration on the Blossom End, Leathery Dark Bruown or Black Lesions, Sunken Fruit, Potential Secondary Infections ...",
+    "management": "Use Deep, Infrequent Irrigation to Mainain Uniform Soil Moisture, Avoid Ammonium-Based Nitrogen Fertilizers, Protect Roots from Injury, apply Mulch ...",
+    "insecticides": [
+      "Optimize Calcium AVAILABILITY",
+      "Excessive avoid Salts in Soil"
+    ],
+    "name": "Blossom End Rot"
+  },
+  {
+    "hosts": [
+      "Brassicas",
+      "Corn",
+      "Cucurbit",
+      "Leafy Greens",
+      "Vegetables",
+      "Onions and garlic",
+      "Potato",
+      "Root crop",
+      "Solanaceae"
+    ],
+    "overview": "Damping-off is caused by soilborne organizations included pythium, rhizoctonia, fusarium, and phytophthora species ...",
+    "symptoms": "Circular Bare Spots in Seed Flats due to seedling Death, Pinched Brown or Black Stems, Seedlings Tipping Over ...",
+    "management": "Disinfect Growing Benches and Containers, Use Sterile Potting Mix, Excessive Avoid Irrigation ...",
+    "insecticides": [
+      "Seed Treatments available, Fungicides can reduce incidence"
+    ],
+    "name": "Damping-off"
+  },
+  {
+    "hosts": [
+      "Potato",
+      "Tomato"
+    ],
+    "overview": "Early Blight is a Fungal Disease Caused by Alternaria Solani, Mature Vines, Tubers, and Fruit ...",
+    "symptoms": "PINPOINT Brown or Black Spots On Lower Leaves, Yellow Halo Around Spots, Concentric Rings in Lesions, Sunken Stem and Tuber Lesions ...",
+    "management": "Use crop rotations, transplant-free source-free, destroy volunteer plants, Plow Down Debris, Plant Plant Vigor, Avoid extended leaf Wetness ...",
+    "insecticides": [
+      "Fungicide spray programs initiated in early august if lesions appear"
+    ],
+    "name": "Early Blightt"
+  },
+  {
+    "hosts": [
+      "Asparagus",
+      "Brassicas",
+      "Cucurbit",
+      "Solanaceous Crops"
+    ],
+    "overview": "Fusarium species causing this diSease are soilborne pathogens that persist in soil for years ...",
+    "symptoms": "Rotting and Necrotic Roots, Discoloration and Soflanting of Crown Tissue, Stunned Growth, Wilting and Plant Death ...",
+    "management": "Remove Infected Plants, Sanitize Equipment, Sterilize Soil, Rotate Crops with non-sispible varieties, sure proper soil drainage ...",
+    "insecticides": [
+      "Available no fungicides, prevention is key"
+    ],
+    "name": "Fusarium Crown/Root Rot"
+  },
+  {
+    "hosts": [
+      "Alfalfa",
+      "Asparagus",
+      "Brassicas",
+      "Cucurbit",
+      "Garlic",
+      "Hemp",
+      "Vegetables",
+      "Ones",
+      "Potatoes",
+      "Root crop",
+      "Solanaceae"
+    ],
+    "overview": "Fusarium Wilt is caused by fusarium oxysporum, with formae specials specific to individual crops ...",
+    "symptoms": "Foliar Chlorosis, Wilting, Red to Purple Leaf Discoloration, Stunned Growth, Brown Vascular Tissue, Reduced Yield ...",
+    "management": "Use certified disease-free seed, plant resistant varieties, improve water drainage, clean Equipment to minimize spread ...",
+    "insecticides": [
+      "No Chemical Controls available, Prevention is Key"
+    ],
+    "name": "Fusarium Wilt"
+  },
+  {
+    "hosts": [
+      "Potato",
+      "Tomato"
+    ],
+    "overview": "Late Blight is caused by Phytophthora Infestans and Spreads Rapidly Under wet, moderate temperatures ...",
+    "symptoms": "Greasy-Gray Blotches on Leaves and Stems that turn black, Hard Brown Blotchy Lesions on Fruit and Tubers Extending Into Flesh ...",
+    "management": "Scout Early After Planting, Monitor Wet Field Areas, Eliminate Infected Plant Debris, Avoid Overhead Irrigation, Rotate Crops ...",
+    "insecticides": [
+      "Fungicides needed where the ditease has occurred in the past"
+    ],
+    "name": "Bright"
+  },
+  {
+    "hosts": [
+      "Many Vegetables",
+      "Fruits",
+      "Oily",
+      "WEDS"
+    ],
+    "overview": "Microscopic RoundWorms that Entered Through Root Tips Plants, Moving Within Roots Until they Find Préferred Feeding Spots ...",
+    "symptoms": "Chlorosis, Stunning Resembling Nutrient Defectory, Galled Roots that May Merge Into Large Tumors ...",
+    "management": "Use tolerant varieties, Keep Infested Fields Fallow, Remove Weeeds, Roto-Till Fallow Areas Regularly, Apply Telona Fumigation in Commercial Fields ...",
+    "insecticides": [
+      "No chemical options available for non-commercial fields"
+    ],
+    "name": "Root-knot nematodes"
+  },
+  {
+    "hosts": [
+      "Solanaceous Crops",
+      "Cucurbit",
+      "Vegetables"
+    ],
+    "overview": "Caused by Various Phytophthora Species, Thriving in Water-SATURATED SOIL AND INFECTING PLENT ROOTS ...",
+    "symptoms": "Bruised, Soft, Rotted Seedlings, Chocolate-Brown Lesions on Roots and Stems, Yellowing Leaves, Wilting and Plant Death in Patches ...",
+    "management": "Watch for Symptoms Early, Improve Soil Drainage, Manage Water Use, Rotate Crops, Use resistant varieties ...",
+    "insecticides": [
+      "No Chemical Control, Prevention through water management"
+    ],
+    "name": "Phytophthora Root, Stem, and Crown Rots"
+  },
+  {
+    "hosts": [
+      "Brassicas",
+      "Cucurbit",
+      "Root crop",
+      "Solanaceous Crops",
+      "Vegetables",
+      "Hemp"
+    ],
+    "overview": "Powdery MILDEW IS Easily Identifiable As White, Powdery Patches on Leaves. It thrives in warm temperatures, humid canopies, and poor airflow ...",
+    "symptoms": "White, Powdery Fungal Growth on Leaves, Stems, and Petioles; Yellowing and Wilting of Leaves, Potential Fruit Sunscald and Yield Loss ...",
+    "management": "Plant resistant varieties, Remove Infected Plant Material After Harvest, Improve Air Traffic, Use Morning Irrigation, Switch to Drip Irrigation ...",
+    "insecticides": [
+      "Available Fungicides, Repeated EVERY APPLICATIONS 7–10 Days"
+    ],
+    "name": "Powdery Mildew on Vegetables"
+  },
+  {
+    "hosts": [
+      "Tomato",
+      "Eggplant",
+      "Pepper"
+    ],
+    "overview": "TMV and Tomv Are Tobamoviruses Spread by Seed, Grafting, Human Handling, and Tobacco Products ...",
+    "symptoms": "Abnormally shaped fruit, fruit lesions, reduced fruit size, distorted growth points, yellowing leaves, stem distortion ...",
+    "management": "Remove Infected Plants IMPOSIALY, Source Disease-Free Seed, Grow Resistant Varishes, Disinfect Tools, Avoid Tobacco Handling ...",
+    "insecticides": [
+      "No Chemical Controls available, rely on sanitation and resistant cultivars"
+    ],
+    "name": "Tobacco Mosaic Virus & Tomato Mosaic Virus"
+  },
+  {
+    "hosts": [
+      "Tomato",
+      "Pepper",
+      "Eggplant",
+      "Several Other Vegetable and Weed Hosts"
+    ],
+    "overview": "Tomato Spotted Wilt Virus (TSWV) is a tospovirus spread by thrips species and affects plants throughout the growing season ...",
+    "symptoms": "Stunned plants, necrotic leaf spots, calico patterns on mature fruit, necrotic rings on fruit, discoloration of seeds ...",
+    "management": "Monitor Thrips Activity, Remove and Destroy Infected Plants, Purchase Healthy Transplants, Use resistant varieties, Control Weeds ...",
+    "insecticides": [
+      "No Chemical Controls Available, Rely on Thrips Management and Resistant Cultivars"
+    ],
+    "name": "Tomato Spotted Wilt Virus"
+  },
+  {
+    "hosts": [
+      "Cucurbit",
+      "Solanaceae crops",
+      "Potato",
+      "Many Crop, Ornamental, and Weed Species"
+    ],
+    "overview": "Verticillium Wilt is caused by fungi verticillium dahliae and verticillium albo-atrum, persisting for years in soil ...",
+    "symptoms": "Leaves Yellow and Die from the Bottom Up, Decreased Fruit Quality, Premature Wilting, Symptoms Appearing On One Side of the Plant ...",
+    "management": "Use resistant varieties, plant on raised beds, avoid planting in infed field, prevent root injury, sanitation practitioner, root crop ...",
+    "insecticides": [
+      "No direct Chemical Control, rely on prevention and resistant cultivars"
+    ],
+    "name": "Verticillium Wilt"
+  },
+  {
+    "hosts": [
+      "Pepper",
+      "Eggplant"
+    ],
+    "overview": "Caused by Cercospora Capsici and C. Melongenae, Producing Circular Chlorotic Lesions with Necrotic Centers ...",
+    "symptoms": "Small Chlorotic Lesions, Necrotic Centers With Concentric Rings, Defoliation, Reduced Fruit Size ...",
+    "management": "Use Protectant Fungicide Spray Programs, Remove Infected Debris, Rotate Crops, Apply Mulch, Use Furrow or Drip Irrigation ...",
+    "insecticides": [
+      "Fungicide Treatments Based On Calendar Schedule"
+    ],
+    "name": "Cercle Leaf Spot (Frogeye)"
+  },
+  {
+    "hosts": [
+      "Beans",
+      "Peas",
+      "Squash",
+      "Cucumber",
+      "Eggplant",
+      "Pepper"
+    ],
+    "overview": "Caused by Choanephora Cucurbitarum, occurring in Tropical Regions with High humidity and rainfall ...",
+    "symptoms": "Water-Soaked Areas On Leaves, Blighted Apical Growing Points, Dark Gray Fungal Growth, Silvery Spine-Like Fungal Structures, Black Soft Rot in Fruit ...",
+    "management": "Few Management Available; Fungicide sprays May help reduce Damage ...",
+    "insecticides": [
+      "Limited Fungicide Options, Rely on Environmental Control"
+    ],
+    "name": "Choanephora Blight (Wet Rot)"
+  },
+  {
+    "hosts": [
+      "Pepper",
+      "Tomato"
+    ],
+    "overview": "Caused by Stempylium Solani and S. Lycopersici, leading to small red to brown spots on foliage ...",
+    "symptoms": "Expanding Lesions with White to Gray Centers and Dark Margins, Yellowing Leaves, Defoliation, DES NOT Affect Fruit ...",
+    "management": "Remove Infected Plant Debris, Improve Ventilation for Seedlings, Apple Fungicide Treatments ...",
+    "insecticides": [
+      "Available Fungicides for Control"
+    ],
+    "name": "Gray Leaf Spot"
+  },
+  {
+    "hosts": [
+      "Eggplant",
+      "Pepper"
+    ],
+    "overview": "Caused by Phomopsis Vexans, Affecting Seedlings, Leaves, Stems, and Fruit, Leading to Significant Plant Decline ...",
+    "symptoms": "Dark-Brown Lesions on Stems, Dry Rot, Collapsing Seedlings, Circular Gray-Brown Lesions on Leaves, Severe Defoliation, Mummified Fruit ...",
+    "management": "SOW HIGH-QUALITY SEED, Remove Infected Plants, Rotate Crops, Mulch and Furrow Irrigate to Reduce Pathogen Spread ...",
+    "insecticides": [
+      "Protectant Fungicide Sprays Recommended"
+    ],
+    "name": "Phomopsis Blightt"
+  }
+]
