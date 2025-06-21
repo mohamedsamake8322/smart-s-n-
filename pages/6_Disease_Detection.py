@@ -336,7 +336,7 @@ st.markdown("**Graphique de Confiance**")
 
 chart_data = pd.DataFrame(
     [
-        {"Maladie": r["name"], "Confiance": r["confidence"]}
+        {"Maladie": r["disease"], "Confiance": r["confidence"]}
         for r in results[:5]
     ]
 )
