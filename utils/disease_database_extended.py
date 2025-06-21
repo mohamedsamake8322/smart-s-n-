@@ -6,6 +6,8 @@ import logging
 import cv2  # type: ignore # 🚀 Ajout de l'importation OpenCV
 from reportlab.lib.pagesizes import A4 # type: ignore
 from reportlab.pdfgen import canvas # type: ignore
+
+
 class ExtendedDiseaseDatabase:
     """
     Base de données étendue avec 100+ maladies agricoles
@@ -33,7 +35,7 @@ def _initialize_extended_disease_database() -> Dict[str, Dict]:
 
 
 # ✅ Base globale des maladies (après l'initialisation)
-DISEASE_DATABASE = _initialize_extended_disease_database()
+DISEASE_DATABASE = _initialize_extended_disease_database(None)
 
 # 🚀 Configuration du logger
 logging.basicConfig(
@@ -44,10 +46,10 @@ print("✅ Script `diseases_infos.py` exécuté avec succès !")
 
 logger = logging.getLogger(__name__)
 
-
 class DiseaseManager:
     def __init__(self, model_path):
         """Initialisation du gestionnaire de maladies et chargement du modèle CNN."""
+        self.diseases = {}  # ✅ On l’ajoute ici
         self.model_path = model_path
         self.model = None
 
@@ -57,6 +59,7 @@ class DiseaseManager:
             raise FileNotFoundError(
                 f"🚨 Modèle introuvable : {self.model_path}"
             )
+
 
     def load_model(self, model_path):
         """Charge le modèle CNN et l'attache à l'instance."""
@@ -184,8 +187,8 @@ class DiseaseManager:
 
 
 # ✅ Ajout des maladies
-# # disease_manager = DiseaseManager()
-# disease_manager.add_disease(
+disease_manager = DiseaseManager()
+disease_manager.add_disease(
     "Aphids on Vegetables",
     [
         "Asparagus",
@@ -213,7 +216,11 @@ class DiseaseManager:
         "deltamethrin",
         "permethrin",
     ],
-# disease_manager.add_disease(
+)
+
+print("🚀 Disease Manager is fully operational!")
+
+disease_manager.add_disease(
     "Armyworms on Vegetables",
     [
         "Asparagus",
@@ -241,8 +248,9 @@ class DiseaseManager:
         "imiclacloprid",
         "sulfur",
     ],
+)
 
-# disease_manager.add_disease(
+disease_manager.add_disease(
     "Blister Beetle",
     ["Alfalfa", "Legumes", "Solanaceae", "Potatoes"],
     (
@@ -255,9 +263,9 @@ class DiseaseManager:
         "by grasshopper populations..."
     ),
     [],  # Ajout de la liste vide pour éviter l'erreur
+)
 
-
-# disease_manager.add_disease(
+disease_manager.add_disease(
     "Beet Leafhopper",
     ["Beans", "Beets", "Cucurbits", "Leafy Greens", "Tomato"],
     "Beet leafhoppers have wedge-shaped bodies varying in color from pale green, gray, or tan...",
@@ -277,9 +285,9 @@ class DiseaseManager:
         "fenpropathrin",
         "permethrin",
     ],
+)
 
-
-# disease_manager.add_disease(
+disease_manager.add_disease(
     "Colorado Potato Beetle",
     ["Eggplant", "Pepper", "Potato", "Tomato"],
     "Adults are about the same size and shape as a lady beetle but with yellow and black stripes...",
@@ -300,9 +308,9 @@ class DiseaseManager:
         "methomyl",
         "fenpropathrin",
     ],
+)
 
-
-# disease_manager.add_disease(
+disease_manager.add_disease(
     "Western Striped and Spotted Cucumber Beetle",
     [
         "Corn",
@@ -328,8 +336,9 @@ class DiseaseManager:
         "methomyl",
         "fenpropathrin",
     ],
+)
 
-# disease_manager.add_disease(
+disease_manager.add_disease(
     "Spotted Cucumber Beetle",
     [
         "Hemp",
@@ -356,8 +365,8 @@ class DiseaseManager:
         "neem oil",
         "kaolin",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Cutworms on Vegetables",
     [
         "Artichoke",
@@ -388,8 +397,8 @@ class DiseaseManager:
         "methomyl",
         "fenpropathrin",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "False Chinch Bug",
     [
         "Alfalfa",
@@ -418,8 +427,8 @@ class DiseaseManager:
         "methomyl",
         "fenpropathrin",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Flea Beetles",
     [
         "Brassicas",
@@ -444,8 +453,8 @@ class DiseaseManager:
         "cyfluthrin",
         "pyrethrins + neem oil",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Tomato and Tobacco Hornworms",
     ["Tomato", "Pepper", "Potato"],
     "Adults are large moths also known as sphinx, hawk, or hummingbird moths. Larvae are large, cylindrical and usually green...",
@@ -464,8 +473,8 @@ class DiseaseManager:
         "methomyl",
         "fenpropathrin",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Thrips on Vegetables",
     [
         "Alfalfa",
@@ -496,8 +505,8 @@ class DiseaseManager:
         "methomyl",
         "fenpropathrin",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Potato Leafhopper",
     [
         "Alfalfa",
@@ -522,8 +531,8 @@ class DiseaseManager:
         "methomyl",
         "fenpropathrin",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Two-Spotted Spider Mite",
     [
         "Corn",
@@ -550,8 +559,8 @@ class DiseaseManager:
         "cyfluthrin",
         "pyrethrins + neem oil",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Corn Earworm / Tomato Fruitworm",
     ["Beans", "Corn", "Eggplant", "Pepper", "Peas", "Tomato"],
     "Corn earworm larvae feed on all plant parts, including fruits and kernels. Damage can result in decreased pollination and hollowed-out fruits...",
@@ -568,16 +577,16 @@ class DiseaseManager:
         "minute pirate bugs",
         "Trichogramma pretiosum",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Tomato Russet Mite",
     ["Potato", "Tomato", "Pepper", "Eggplant"],
     "Adults and nymphs have cigar-shaped, yellowish-tan or pink bodies and require a microscope to observe...",
     "Bronzing or 'russeting' of stems, leaves, and fruits, yellowing, curling, deflated leaves, and longitudinal cracks on fruits...",
     "Use clean transplants, avoid planting during hot, dry periods, remove infested debris, clean tools after use...",
     ["sulfur", "abamectin"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Whiteflies (Family: Aleyrodidae)",
     [
         "Field-grown and greenhouse-grown hemp",
@@ -613,8 +622,8 @@ class DiseaseManager:
         "cyfluthrin",
         "pyrethrins + neem oil",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Alfalfa Mosaic Virus",
     [
         "Alfalfa",
@@ -628,25 +637,25 @@ class DiseaseManager:
     "Yellow mosaic or calico patterns on foliage, stunted plants, tuber necrosis, bright yellow blotches interspersed with green...",
     "Avoid planting potatoes or hemp near alfalfa fields, remove plants with positive diagnosis...",
     ["Limited efficacy with aphid-targeting insecticides"],
+)
 
-
-# disease_manager.add_disease(
+disease_manager.add_disease(
     "Bacterial Canker",
     ["Tomato", "Pepper"],
     "Bacterial canker disease is caused by Clavibacter michiganensis subsp. michiganensis. It is primarily an economic concern for tomato...",
     "Wilting in young plants, yellow leaf margins ('firing'), white spots with dark centers on fruit, vascular discoloration in stems...",
     "Source disease-free seed, clean and disinfect equipment, avoid overwatering, rotate crops, remove solanaceous weeds, deep plow soil...",
     ["Copper-based products effective in greenhouse transplant production"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Bacterial Speck",
     ["Tomato"],
     "Bacterial speck (Pseudomonas syringae pv. tomato) infections occur during cool (63 to 75°F) wet conditions...",
     "Brown to black spots with a yellow halo on leaves, scabby pinpoint-like spots on fruit, damage does not penetrate into flesh...",
     "Start examining undersides of leaves soon after planting, delay planting until wet conditions pass, avoid overhead irrigation, rotate crops...",
     ["Crop rotation", "Avoid overhead irrigation"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Beet Curly Top Virus",
     [
         "Bean",
@@ -664,24 +673,24 @@ class DiseaseManager:
         "Integrated pest management (IPM)",
         "Avoid chemical treatments due to BLH migration",
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Big Bud",
     ["Tomato", "Pepper"],
     "Big bud is caused by a small bacterium called phytoplasma, infecting plant vascular tissue and causing abnormal growth...",
     "Swollen flower buds, distorted flower and leaf growth, short and thick apical stems, yellow discoloration of foliage...",
     "Remove infected plants, clear weeds that host leafhoppers...",
     ["Leafhopper management", "Remove infected debris"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Blossom End Rot",
     ["Cucumbers", "Eggplant", "Pepper", "Squash", "Tomato", "Watermelon"],
     "Blossom-end rot (BER) is a physiological disorder caused by calcium deficiency and aggravated by moisture imbalances...",
     "Water-soaked discoloration on the blossom end, leathery dark brown or black lesions, sunken fruit, potential secondary infections...",
     "Use deep, infrequent irrigation to maintain uniform soil moisture, avoid ammonium-based nitrogen fertilizers, protect roots from injury, apply mulch...",
     ["Optimize calcium availability", "Avoid excessive salts in soil"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Damping-Off",
     [
         "Brassicas",
@@ -698,24 +707,24 @@ class DiseaseManager:
     "Circular bare spots in seed flats due to seedling death, pinched brown or black stems, seedlings tipping over...",
     "Disinfect growing benches and containers, use sterile potting mix, avoid excessive irrigation...",
     ["Seed treatments available, fungicides can reduce incidence"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Early Blight",
     ["Potato", "Tomato"],
     "Early blight is a fungal disease caused by Alternaria solani, affecting mature vines, tubers, and fruit...",
     "Pinpoint brown or black spots on lower leaves, yellow halo around spots, concentric rings in lesions, sunken stem and tuber lesions...",
     "Use crop rotations, source disease-free transplants, destroy volunteer plants, plow down debris, maintain plant vigor, avoid prolonged leaf wetness...",
     ["Fungicide spray programs initiated in early August if lesions appear"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Fusarium Crown/Root Rot",
     ["Asparagus", "Brassicas", "Cucurbits", "Solanaceous Crops"],
     "Fusarium species causing this disease are soilborne pathogens that persist in soil for years...",
     "Rotting and necrotic roots, discoloration and softening of crown tissue, stunted growth, wilting and plant death...",
     "Remove infected plants, sanitize equipment, sterilize soil, rotate crops with non-susceptible varieties, ensure proper soil drainage...",
     ["No fungicides available, prevention is key"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Fusarium Wilt",
     [
         "Alfalfa",
@@ -734,32 +743,32 @@ class DiseaseManager:
     "Foliar chlorosis, wilting, red to purple leaf discoloration, stunted growth, brown vascular tissue, reduced yield...",
     "Use certified disease-free seed, plant resistant varieties, improve water drainage, clean equipment to minimize spread...",
     ["No chemical controls available, prevention is key"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Late Blight",
     ["Potato", "Tomato"],
     "Late blight is caused by Phytophthora infestans and spreads rapidly under wet, moderate temperatures...",
     "Greasy-gray blotches on leaves and stems that turn black, hard brown blotchy lesions on fruit and tubers extending into flesh...",
     "Scout early after planting, monitor wet field areas, eliminate infected plant debris, avoid overhead irrigation, rotate crops...",
     ["Fungicides necessary where the disease has occurred in the past"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Root-Knot Nematodes",
     ["Many vegetables", "Fruits", "Grasses", "Weeds"],
     "Microscopic roundworms that enter plants through root tips, moving within roots until they find preferred feeding spots...",
     "Chlorosis, stunting resembling nutrient deficiency, galled roots that may merge into large tumors...",
     "Use tolerant varieties, keep infested fields fallow, remove weeds, roto-till fallow areas regularly, apply Telone fumigation in commercial fields...",
     ["No chemical options available for non-commercial fields"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Phytophthora Root, Stem, and Crown Rots",
     ["Solanaceous Crops", "Cucurbits", "Legumes"],
     "Caused by various Phytophthora species, thriving in water-saturated soil and infecting plant roots...",
     "Bruised, soft, rotted seedlings, chocolate-brown lesions on roots and stems, yellowing leaves, wilting and plant death in patches...",
     "Watch for symptoms early, improve soil drainage, manage water use, rotate crops, use resistant varieties...",
     ["No chemical control, prevention through water management"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Powdery Mildew on Vegetables",
     [
         "Brassicas",
@@ -773,8 +782,8 @@ class DiseaseManager:
     "White, powdery fungal growth on leaves, stems, and petioles; yellowing and wilting of leaves, potential fruit sunscald and yield loss...",
     "Plant resistant varieties, remove infected plant material after harvest, improve air circulation, use morning irrigation, switch to drip irrigation...",
     ["Fungicides available, repeated applications every 7–10 days"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Tobacco Mosaic Virus & Tomato Mosaic Virus",
     ["Tomato", "Eggplant", "Pepper"],
     "TMV and ToMV are Tobamoviruses spread by seed, grafting, human handling, and tobacco products...",
@@ -783,8 +792,8 @@ class DiseaseManager:
     [
         "No chemical controls available, rely on sanitation and resistant cultivars"
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Tomato Spotted Wilt Virus",
     ["Tomato", "Pepper", "Eggplant", "Several other vegetable and weed hosts"],
     "Tomato Spotted Wilt Virus (TSWV) is a Tospovirus spread by thrips species and affects plants throughout the growing season...",
@@ -793,8 +802,8 @@ class DiseaseManager:
     [
         "No chemical controls available, rely on thrips management and resistant cultivars"
     ],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Verticillium Wilt",
     [
         "Cucurbits",
@@ -806,40 +815,40 @@ class DiseaseManager:
     "Leaves yellow and die from the bottom up, decreased fruit quality, premature wilting, symptoms appearing on one side of the plant...",
     "Use resistant varieties, plant on raised beds, avoid planting in infected fields, prevent root injury, practice sanitation, rotate crops...",
     ["No direct chemical control, rely on prevention and resistant cultivars"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Cercospora Leaf Spot (Frogeye)",
     ["Pepper", "Eggplant"],
     "Caused by Cercospora capsici and C. melongenae, producing circular chlorotic lesions with necrotic centers...",
     "Small chlorotic lesions, necrotic centers with concentric rings, defoliation, reduced fruit size...",
     "Use protectant fungicide spray programs, remove infected debris, rotate crops, apply mulch, use furrow or drip irrigation...",
     ["Fungicide treatments based on a calendar schedule"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Choanephora Blight (Wet Rot)",
     ["Beans", "Peas", "Squash", "Cucumber", "Eggplant", "Pepper"],
     "Caused by Choanephora cucurbitarum, occurring in tropical regions with high humidity and rainfall...",
     "Water-soaked areas on leaves, blighted apical growing points, dark gray fungal growth, silvery spine-like fungal structures, black soft rot in fruit...",
     "Few management techniques available; fungicide sprays may help reduce disease damage...",
     ["Limited fungicide options, rely on environmental control"],
-
-# disease_manager.add_disease(
+)
+disease_manager.add_disease(
     "Gray Leaf Spot",
     ["Pepper", "Tomato"],
     "Caused by Stemphylium solani and S. lycopersici, leading to small red to brown spots on foliage...",
     "Expanding lesions with white to gray centers and dark margins, yellowing leaves, defoliation, does not affect fruit...",
     "Remove infected plant debris, improve ventilation for seedlings, apply fungicide treatments...",
     ["Fungicides available for control"],
-
+)
 # Ajout de la maladie Phomopsis Blight
-# disease_manager.add_disease(
+disease_manager.add_disease(
     "Phomopsis Blight",
     ["Eggplant", "Pepper"],
     "Caused by Phomopsis vexans, affecting seedlings, leaves, stems, and fruit, leading to significant plant decline...",
     "Dark-brown lesions on stems, dry rot, collapsing seedlings, circular gray-brown lesions on leaves, severe defoliation, mummified fruit...",
     "Sow high-quality seed, remove infected plants, rotate crops, mulch and furrow irrigate to reduce pathogen spread...",
     ["Protectant fungicide sprays recommended"],
-
+)
 
 # ✅ Correction du dictionnaire pour "Healthy"
 DISEASE_DATABASE = {
