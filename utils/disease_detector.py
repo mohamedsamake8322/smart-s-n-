@@ -3,7 +3,6 @@ import numpy as np
 from typing import List, Dict, Tuple
 from PIL import Image, ImageEnhance
 import streamlit as st
-from tensorflow.keras.applications.efficientnet import preprocess_input as efficientnet_preprocess # type: ignore
 
 from utils.config_model import load_model, load_labels
 
@@ -12,21 +11,15 @@ class DiseaseDetector:
         self.model = load_model()
         self.class_labels = load_labels()
 
-    def preprocess_image(self, image_pil: Image.Image, target_size: Tuple[int, int] = (380, 380)) -> np.ndarray:
+    def preprocess_image(self, image_pil: Image.Image, target_size: Tuple[int, int] = (224, 224)) -> np.ndarray:
         try:
-            # Redimensionnement avec fond blanc et centrage
             image_pil = image_pil.convert("RGB")
-            image_pil.thumbnail(target_size, Image.Resampling.LANCZOS)
-            new_image = Image.new("RGB", target_size, (255, 255, 255))
-            x = (target_size[0] - image_pil.width) // 2
-            y = (target_size[1] - image_pil.height) // 2
-            new_image.paste(image_pil, (x, y))
-
-            img_array = np.expand_dims(np.array(new_image, dtype=np.float32), axis=0)
-            return efficientnet_preprocess(img_array)
+            image_pil = image_pil.resize(target_size, Image.Resampling.LANCZOS)
+            img_array = np.array(image_pil, dtype=np.float32) / 255.0
+            return np.expand_dims(img_array, axis=0)
         except Exception as e:
-            st.error(f"🚨 Erreur dans le preprocessing : {e}")
-            return np.zeros((1, 380, 380, 3), dtype=np.float32)
+            st.error(f"🚨 Erreur dans le prétraitement : {e}")
+            return np.zeros((1, target_size[0], target_size[1], 3), dtype=np.float32)
 
     def predict(self, image_pil: Image.Image, confidence_threshold: float = 0.7) -> List[Dict[str, str]]:
         try:
@@ -35,7 +28,6 @@ class DiseaseDetector:
             sorted_indices = np.argsort(predictions)[::-1]
 
             results = []
-
             for idx in sorted_indices:
                 confidence = float(predictions[idx]) * 100
                 if confidence < confidence_threshold * 100:
@@ -58,7 +50,6 @@ class DiseaseDetector:
             return []
 
     def _assess_disease_severity(self, label: str, confidence: float) -> Tuple[str, str]:
-        # Mapping basique de sévérité en fonction du nom de la maladie
         high_severity_keywords = ["blight", "rot", "wilt", "rust"]
         moderate_keywords = ["spot", "mildew"]
 
@@ -84,5 +75,5 @@ class DiseaseDetector:
             image_pil = ImageEnhance.Color(image_pil).enhance(1.15)
             return image_pil
         except Exception as e:
-            st.warning(f"⚠️ Amélioration d'image échouée : {e}")
+            st.warning(f"⚠️ Amélioration d’image échouée : {e}")
             return image_pil

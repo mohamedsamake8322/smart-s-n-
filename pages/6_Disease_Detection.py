@@ -11,7 +11,7 @@ import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 import streamlit as st  # type: ignore
 from PIL import Image, ImageEnhance  # type: ignore
-from tensorflow.keras.applications.efficientnet import preprocess_input  # type: ignore
+import preprocess_input  # type: ignore
 import plotly.express as px  # type: ignore
 import traceback  # 💡 Pour le débogage si nécessaire
 
