@@ -53,12 +53,12 @@ class DiseaseManager:
         self.model_path = model_path
         self.model = None
 
-        if os.path.exists(self.model_path):  # ✅ Vérifie si le modèle existe
+        if os.path.exists(self.model_path):
             self.load_model(self.model_path)
         else:
-            raise FileNotFoundError(
-                f"🚨 Modèle introuvable : {self.model_path}"
-            )
+            print(f"⚠️ Modèle introuvable : {self.model_path} — on continue sans le charger.")
+            self.model = None  # Pour éviter d’accéder à un modèle inexistant plus tard
+
 
 
     def load_model(self, model_path):
