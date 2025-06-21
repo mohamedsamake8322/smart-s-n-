@@ -184,7 +184,7 @@ class DiseaseManager:
 
 
 # ✅ Ajout des maladies
-disease_manager = DiseaseManager()
+# disease_manager = DiseaseManager()
 disease_manager.add_disease(
     "Aphids on Vegetables",
     [
