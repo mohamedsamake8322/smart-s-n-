@@ -296,6 +296,7 @@ if TENSORFLOW_AVAILABLE:
             processed_image = ImageEnhance.Contrast(processed_image).enhance(1.2)
         if enhance_brightness:
             processed_image = ImageEnhance.Brightness(processed_image).enhance(1.1)
+# 🔍 Image unique : Comparaison et prédiction
 if uploaded_image and processed_image:
     st.markdown("**🖼️ Comparaison des Images**")
     col_img1, col_img2 = st.columns(2)
@@ -308,125 +309,150 @@ if uploaded_image and processed_image:
 
     with st.spinner("🔬 Analyse IA en cours..."):
         single_results, raw_preds = predict_disease(processed_image, return_raw=True)
-for file in uploaded_files:
-    img = Image.open(file)
-    st.image(img, caption="🖼️ Image analysée", use_column_width=True)
 
-    uploaded_results = detector.predict(img, confidence_threshold=confidence_filter)
-if uploaded_results:
     st.subheader("🔢 Prédictions brutes (top 10)")
     st.json(single_results[:10])
 else:
     st.warning("🚨 Aucune image n'a été chargée pour l’analyse.")
 
+# 🖼️ Images multiples : boucle de prédiction
+if uploaded_files:
+    for file in uploaded_files:
+        img = Image.open(file)
+        st.image(img, caption=f"🖼️ Analyse de : {file.name}", use_column_width=True)
 
-uploaded_results = detector.predict(img, confidence_threshold=confidence_filter)
+        uploaded_results = detector.predict(img, confidence_threshold=confidence_filter)
 
-if uploaded_results:
-    # 🔢 Prédictions brutes
-    st.subheader("🔢 Prédictions brutes (top 10)")
-    st.json(uploaded_results[:10])
+        if uploaded_results:
+            st.subheader("🔢 Prédictions brutes (top 10)")
+            st.json(uploaded_results[:10])
 
-    # 📚 Liste complète des étiquettes
-    st.subheader("📚 Étiquettes connues par le modèle")
-    st.json(detector.class_labels)
+            st.subheader("📚 Étiquettes connues par le modèle")
+            st.json(detector.class_labels)
 
-    # 📊 Graphe des prédictions
-    st.markdown("---")
-    st.markdown("### 📊 Graphique de Confiance")
+            st.markdown("---")
+            st.markdown("### 📊 Graphique de Confiance")
 
-    chart_data = pd.DataFrame([
-        {"Maladie": r["disease"], "Confiance": r["confidence"]}
-        for r in uploaded_results[:5]
-    ])
-    fig = px.bar(
-        chart_data,
-        x="Confiance",
-        y="Maladie",
-        orientation="h",
-        title="Top 5 des Prédictions",
-        color="Confiance",
-        color_continuous_scale="RdYlGn"
-    )
-    fig.update_layout(height=300)
-    st.plotly_chart(fig, use_container_width=True)
-
-    # 🧾 Détails enrichis pour chaque maladie prédite
-    for disease in uploaded_results:
-        st.subheader(f"🦠 {disease['disease']}")
-        st.write(f"🔹 Confiance IA : {disease['confidence']}%")
-        st.write(f"🩺 Sévérité estimée : {disease.get('severity', 'Non précisée')}")
-        st.write(f"⚠️ Urgence : {disease.get('urgency', 'Non précisée')}")
-        st.write(f"🔎 Symptômes : {disease.get('symptoms', 'Indisponibles')}")
-        st.write(f"🧪 Recommandations : {disease.get('recommendations', 'Aucune suggestion disponible')}")
-
-    # 🌤️ Risque météo pour la culture
-    crop = "Tomate"
-    weather_risk = get_weather_risk(crop)
-    st.warning(f"🌍 Risque climatique actuel pour {crop} : {weather_risk}")
-
+            chart_data = pd.DataFrame([
+                {"Maladie": r["disease"], "Confiance": r["confidence"]}
+                for r in uploaded_results[:5]
+            ])
+            fig = px.bar(
+                chart_data,
+                x="Confiance",
+                y="Maladie",
+                orientation="h",
+                title="Top 5 des Prédictions",
+                color="Confiance",
+                color_continuous_scale="RdYlGn"
+            )
+            fig.update_layout(height=300)
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning(f"❌ Aucune prédiction détectée pour {file.name}")
 else:
-    st.warning("⚠️ Aucune maladie détectée avec le seuil de confiance défini.")
+    st.info("📷 Aucune image n’a encore été chargée pour l’analyse multiple.")
+# 📥 Paramètres du modèle par lot (à afficher hors boucle)
+st.markdown("### ⚙️ Paramètres de l'Analyse par Lot")
+col1, col2 = st.columns(2)
 
-    # ✅ Vérification avant utilisation de `st.columns()`
-    col1, col2 = st.columns(2)
+with col1:
+    batch_model = st.selectbox(
+        "Modèle pour l'analyse en lot",
+        ["MobileNetV2 (Rapide)", "ResNet50 (Précis)"],
+        index=0,
+    )
 
-    with col1:
-        batch_model = st.selectbox(
-            "Modèle pour l'analyse en lot",
-            ["MobileNetV2 (Rapide)", "ResNet50 (Précis)"],
-            index=0,
-        )
+with col2:
+    batch_confidence = st.slider(
+        "Seuil de confiance pour le lot", 0.1, 1.0, 0.6, 0.05
+    )
 
-    with col2:
-        batch_confidence = st.slider(
-            "Seuil de confiance pour le lot", 0.1, 1.0, 0.6, 0.05
-        )
-
+# 🚀 Lancement de l’analyse par lot
 if st.button("🚀 Lancer l'Analyse par Lot"):
-    progress_bar = st.progress(0)
-    status_text = st.empty()
-    batch_results = []
+    if not uploaded_files:
+        st.warning("📂 Aucun fichier image n’a été chargé.")
+    else:
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        batch_results = []
 
-    for i, uploaded_file in enumerate(uploaded_files):
-        status_text.text(
-            f"Analyse {i + 1}/{len(uploaded_files)}: {uploaded_file.name}"
-        )
+        for i, uploaded_file in enumerate(uploaded_files):
+            status_text.text(f"Analyse {i + 1}/{len(uploaded_files)}: {uploaded_file.name}")
 
-        try:
-            image_pil = Image.open(uploaded_file)
+            try:
+                image_pil = Image.open(uploaded_file)
 
-            # ✅ Vérification de `detector`
-            if detector:
-                results = detector.predict_disease(
-                    image_pil,
-                    model_type=batch_model.split()[0].lower(),
-                    confidence_threshold=batch_confidence,
+                if detector:
+                    uploaded_results = detector.predict(
+                        image_pil,
+                        confidence_threshold=batch_confidence
+                    )
+                else:
+                    st.error("🚨 Le détecteur n'est pas disponible.")
+                    continue
+
+            except Exception as e:
+                st.error(f"⚠️ Une erreur s'est produite : {e}")
+                continue
+
+            st.image(image_pil, caption=f"🖼️ Image : {uploaded_file.name}", use_column_width=True)
+
+            if uploaded_results:
+                st.subheader("🔢 Prédictions brutes (top 10)")
+                st.json(uploaded_results[:10])
+
+                st.subheader("📚 Étiquettes connues par le modèle")
+                st.json(detector.class_labels)
+
+                st.markdown("### 📊 Graphique de Confiance")
+                chart_data = pd.DataFrame([
+                    {"Maladie": r["disease"], "Confiance": r["confidence"]}
+                    for r in uploaded_results[:5]
+                ])
+                fig = px.bar(
+                    chart_data,
+                    x="Confiance",
+                    y="Maladie",
+                    orientation="h",
+                    title="Top 5 des Prédictions",
+                    color="Confiance",
+                    color_continuous_scale="RdYlGn"
                 )
+                fig.update_layout(height=300)
+                st.plotly_chart(fig, use_container_width=True)
+
+                # 🧾 Détails enrichis
+                for disease in uploaded_results:
+                    st.subheader(f"🦠 {disease['disease']}")
+                    st.write(f"🔹 Confiance IA : {disease['confidence']}%")
+                    st.write(f"🩺 Sévérité estimée : {disease.get('severity', 'Non précisée')}")
+                    st.write(f"⚠️ Urgence : {disease.get('urgency', 'Non précisée')}")
+                    st.write(f"🔎 Symptômes : {disease.get('symptoms', 'Indisponibles')}")
+                    st.write(f"🧪 Recommandations : {disease.get('recommendations', 'Aucune suggestion disponible')}")
+
+                # 🌤️ Risque météo
+                crop = "Tomate"
+                weather_risk = get_weather_risk(crop)
+                st.info(f"🌍 Risque climatique pour {crop} : {weather_risk}")
             else:
-                st.error("🚨 Le détecteur n'est pas disponible.")
-                continue  # ✅ Correct, bien aligné dans la boucle
+                st.warning(f"⚠️ Aucune maladie détectée pour {uploaded_file.name}")
 
-        except Exception as e:
-            st.error(f"⚠️ Une erreur s'est produite : {e}")
-            continue  # ✅ Continue bien placé pour éviter un plantage
-
-        batch_results.append(
-            {
+            # ✅ Enregistrement dans les résultats batch
+            batch_results.append({
                 "filename": uploaded_file.name,
-                "main_disease": results[0]["name"] if results else "Unknown",
-                "confidence": results[0]["confidence"] if results else 0,
+                "main_disease": uploaded_results[0]["disease"] if uploaded_results else "Unknown",
+                "confidence": uploaded_results[0]["confidence"] if uploaded_results else 0,
                 "status": (
-                "Healthy" if results and results[0]["name"].endswith("Healthy") else "Diseased"
+                    "Healthy" if uploaded_results and uploaded_results[0]["disease"].endswith("Healthy") else "Diseased"
                 ),
-                "all_results": results[:3],
-            }
-        )
+                "all_results": uploaded_results[:3] if uploaded_results else [],
+            })
 
-        # ✅ Progression de la barre
-        progress_bar.progress((i + 1) / len(uploaded_files))
+            progress_bar.progress((i + 1) / len(uploaded_files))
 
-    status_text.text("Analyse terminée!")
+        status_text.text("✅ Analyse par lot terminée.")
+
 
     # ✅ Résumé des résultats
     st.markdown("---")
