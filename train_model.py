@@ -9,8 +9,9 @@ EPOCHS = 10
 NUM_CLASSES = None  # Déduit automatiquement
 
 # 📂 Structure : data/train/, data/val/
-train_dir = "data/train"
-val_dir = "data/val"
+train_dir = "plant_disease_dataset/train"
+val_dir = "plant_disease_dataset/val"
+
 model_dir = "model"
 os.makedirs(model_dir, exist_ok=True)
 
