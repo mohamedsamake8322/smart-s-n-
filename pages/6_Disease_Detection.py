@@ -468,6 +468,7 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
 
 
     # ✅ Résumé des résultats
+if 'batch_results' in locals() and batch_results:
     st.markdown("---")
     st.subheader("Résumé des Résultats")
 
@@ -476,38 +477,26 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
     error_count = sum(1 for r in batch_results if r["status"] == "Error")
 
     col1, col2, col3, col4 = st.columns(4)
-
     with col1:
         st.metric("Total Images", len(batch_results))
     with col2:
-        st.metric(
-            "Plantes Saines",
-            healthy_count,
-            delta=f"{(healthy_count / len(batch_results) * 100):.1f}%",
-        )
+        st.metric("Plantes Saines", healthy_count,
+                  delta=f"{(healthy_count / len(batch_results) * 100):.1f}%")
     with col3:
-        st.metric(
-            "Plantes Malades",
-            diseased_count,
-            delta=f"{(diseased_count / len(batch_results) * 100):.1f}%",
-        )
+        st.metric("Plantes Malades", diseased_count,
+                  delta=f"{(diseased_count / len(batch_results) * 100):.1f}%")
     with col4:
         st.metric("Erreurs", error_count)
 
-    # ✅ Filtrage historique optimisé
+    # 🔍 Historique filtré
     filtered_history = st.session_state.get("diagnosis_history", [])
-
     if disease_filter:
-        filtered_history = [
-            d for d in filtered_history if d["main_disease"] in disease_filter
-        ]
+        filtered_history = [d for d in filtered_history if d["main_disease"] in disease_filter]
+    filtered_history = [d for d in filtered_history if d["confidence"] >= confidence_filter]
 
-    filtered_history = [
-        d for d in filtered_history if d["confidence"] >= confidence_filter]
     st.markdown(f"**{len(filtered_history)} diagnostics trouvés**")
 
-    for i, diagnosis in enumerate(
-            reversed(filtered_history[-20:])):  # Last 20 results
+    for i, diagnosis in enumerate(reversed(filtered_history[-20:])):
         expander_label = (
             f"#{len(filtered_history) - i}: {diagnosis['main_disease']} - "
             f"{diagnosis['confidence']:.1f}% - {diagnosis['timestamp'][:19]}"
@@ -520,7 +509,10 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
             if "all_predictions" in diagnosis:
                 st.markdown("**Top 3 Prédictions:**")
                 for j, pred in enumerate(diagnosis["all_predictions"][:3], 1):
-                  st.write(f"{j}. {pred['name']}: {pred['confidence']:.1f}%")
+                    st.write(f"{j}. {pred['name']}: {pred['confidence']:.1f}%")
+else:
+    st.info("ℹ️ Aucune analyse par lot n’a encore été effectuée.")
+
 # ✅ Résumé des statistiques
 st.markdown("---")
 st.subheader("Statistiques de l'Historique")
