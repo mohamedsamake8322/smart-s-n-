@@ -307,41 +307,30 @@ if TENSORFLOW_AVAILABLE:
         with st.spinner("🔬 Analyse IA en cours..."):
             results, raw_preds = predict_disease(processed_image, return_raw=True)
 
-        st.subheader("🔢 Prédictions brutes (top 10)")
-        st.write(raw_preds[:10])
-
-        st.subheader("📚 Labels détectés par le modèle :")
-        st.write(detector.class_labels.get("efficientnet_resnet"))
-
-        if isinstance(results, list) and results:
-            for disease in results:
-                st.subheader(f"🦠 {disease['name']}")
-                st.write(f"🔹 Confiance IA : {disease['confidence']}%")
-                st.write(f"🩺 Stade de progression : {disease['progression_stage']}")
-                st.write(f"🔎 Symptômes : {disease['symptoms']}")
-                st.write(f"🧪 Recommandations : {disease['recommendations']}")
-        elif isinstance(results, dict) and "error" in results:
-            st.error(results["error"])
-        else:
-            st.warning("⚠️ Aucun résultat détecté. Vérifie l’image ou le modèle.")
-
-        crop = "Tomate"
-        weather_risk = get_weather_risk(crop)
-        st.warning(f"🌍 Facteur climatique : {weather_risk}")
 if uploaded_files:
     for file in uploaded_files:
         img = Image.open(file)
+        st.image(img, caption="🖼️ Image analysée", use_column_width=True)
+
         results = detector.predict(img, confidence_threshold=confidence_filter)
 
         if results:
-            st.image(img, caption="Image analysée", use_column_width=True)
+            # 🔢 Prédictions brutes
+            st.subheader("🔢 Prédictions brutes (top 10)")
+            st.json(results[:10])
 
+            # 📚 Liste complète des étiquettes
+            st.subheader("📚 Étiquettes connues par le modèle")
+            st.json(detector.class_labels)
+
+            # 📊 Graphe des prédictions
             st.markdown("---")
-            st.markdown("**Graphique de Confiance**")
+            st.markdown("### 📊 Graphique de Confiance")
 
-            chart_data = pd.DataFrame(
-                [{"Maladie": r["disease"], "Confiance": r["confidence"]} for r in results[:5]]
-            )
+            chart_data = pd.DataFrame([
+                {"Maladie": r["disease"], "Confiance": r["confidence"]}
+                for r in results[:5]
+            ])
             fig = px.bar(
                 chart_data,
                 x="Confiance",
@@ -349,52 +338,64 @@ if uploaded_files:
                 orientation="h",
                 title="Top 5 des Prédictions",
                 color="Confiance",
-                color_continuous_scale="RdYlGn",
+                color_continuous_scale="RdYlGn"
             )
             fig.update_layout(height=300)
             st.plotly_chart(fig, use_container_width=True)
+
+            # 🧾 Détails enrichis pour chaque maladie prédite
+            for disease in results:
+                st.subheader(f"🦠 {disease['disease']}")
+                st.write(f"🔹 Confiance IA : {disease['confidence']}%")
+                st.write(f"🩺 Sévérité estimée : {disease.get('severity', 'Non précisée')}")
+                st.write(f"⚠️ Urgence : {disease.get('urgency', 'Non précisée')}")
+                st.write(f"🔎 Symptômes : {disease.get('symptoms', 'Indisponibles')}")
+                st.write(f"🧪 Recommandations : {disease.get('recommendations', 'Aucune suggestion disponible')}")
+
+            # 🌤️ Risque météo pour la culture
+            crop = "Tomate"
+            weather_risk = get_weather_risk(crop)
+            st.warning(f"🌍 Risque climatique actuel pour {crop} : {weather_risk}")
+
         else:
-            st.warning("Aucune maladie détectée avec la confiance minimale définie.")
+            st.warning("⚠️ Aucune maladie détectée avec le seuil de confiance défini.")
 else:
-    st.info("📷 Veuillez charger une image pour détecter une maladie.")
+    st.info("📷 Veuillez charger une image pour démarrer l’analyse.")
 
-# ✅ Sauvegarde des résultats
-if st.button("💾 Sauvegarder ce Diagnostic"):
-    main = results[0] if results else {"name": "Inconnu", "confidence": 0}
-    diagnosis_data = {
-        "timestamp": datetime.now().isoformat(),
-        "main_disease": main["name"],
-        "confidence": main["confidence"],
-        "model_used": "EfficientNet-ResNet",
-        "all_predictions": results,
-        "image_name": f"{main['name'].split(' ', 1)[1].replace(' ', '_')}.jpg" if 'name' in main else "image.jpg",
-    }
-    st.success("📝 Diagnostic sauvegardé avec succès")
-    st.json(diagnosis_data)
-    # ✅ Vérification de la session state
-    if "diagnosis_history" not in st.session_state:
-        st.session_state.diagnosis_history = []
 
-    diagnosis_data["main_disease"] = DISEASE_CLASSES.get(
-        diagnosis_data["main_disease"], "🔍 Maladie inconnue"
-    )
-    st.session_state.diagnosis_history.append(diagnosis_data)
-    st.success("Diagnostic sauvegardé dans l'historique!")
+# ✅ Sauvegarde des résultats (si des résultats sont disponibles)
+if 'results' in locals() and results:
+    if st.button("💾 Sauvegarder ce Diagnostic"):
+        main = results[0]
+        diagnosis_data = {
+            "timestamp": datetime.now().isoformat(),
+            "main_disease": main["disease"],
+            "confidence": main["confidence"],
+            "model_used": "EfficientNet-ResNet",
+            "all_predictions": results,
+            "image_name": f"{main['disease'].replace(' ', '_')}.jpg"
+        }
 
+        # Init state si vide
+        if "diagnosis_history" not in st.session_state:
+            st.session_state.diagnosis_history = []
+
+        # Enrichissement : remplacement via mapping s’il existe
+        diagnosis_data["main_disease"] = DISEASE_CLASSES.get(
+            diagnosis_data["main_disease"], diagnosis_data["main_disease"]
+        )
+
+        st.session_state.diagnosis_history.append(diagnosis_data)
+        st.success("📝 Diagnostic sauvegardé dans l'historique !")
+        st.json(diagnosis_data)
 else:
-    st.warning("Aucune maladie détectée avec le seuil de confiance défini")
-
-# ✅ Vérification d'image uploadée avant analyse par lot
+    st.warning("Aucun résultat à sauvegarder pour l’instant.")
+# ✅ Vérification d’image uploadée
 if uploaded_files:
-    st.write(f"**{len(uploaded_files)} images sélectionnées**")
-
+    st.write(f"**{len(uploaded_files)} image(s) sélectionnée(s)**")
 else:
-    st.info("Uploadez une image pour commencer le diagnostic")
+    st.info("Uploadez une image pour commencer le diagnostic.")
 
-with tab2:
-    st.subheader("Analyse par Lot")
-    st.markdown(
-        "Analysez plusieurs images simultanément pour un diagnostic de masse.")
 
     # ✅ Vérification avant utilisation de `st.columns()`
     col1, col2 = st.columns(2)
