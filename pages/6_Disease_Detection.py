@@ -316,25 +316,25 @@ if uploaded_image and processed_image:
 
     with col_img1:
         st.image(uploaded_image, caption="🌱 Image originale", width=250)
-
     with col_img2:
         st.image(processed_image, caption="🧪 Image traitée", width=250)
 
     with st.spinner("🔬 Analyse IA en cours..."):
         single_results, raw_preds = predict_disease(processed_image, return_raw=True)
-if single_results:
-    st.subheader("🔢 Prédictions brutes (top 10)")
-    st.json(single_results[:10])
 
-    st.markdown("### 🩺 Résumé Diagnostique")
-    for result in single_results:
-        with st.expander(result["name"]):
-            st.markdown(f"**Confiance :** {result['confidence']:.1f}%")
-            st.markdown(f"**Stade estimé :** {result['progression_stage']}")
-            st.markdown(f"**Symptômes :** {result['symptoms']}")
-            st.markdown(f"**Recommandations :** {result['recommendations']}")
-else:
-    st.info("🚨 Aucune prédiction trouvée pour cette image.")
+    if single_results:
+        st.subheader("🔢 Prédictions brutes (top 10)")
+        st.json(single_results[:10])
+
+        st.markdown("### 🩺 Résumé Diagnostique")
+        for result in single_results:
+            with st.expander(result["name"]):
+                st.markdown(f"**Confiance :** {result['confidence']:.1f}%")
+                st.markdown(f"**Stade estimé :** {result['progression_stage']}")
+                st.markdown(f"**Symptômes :** {result['symptoms']}")
+                st.markdown(f"**Recommandations :** {result['recommendations']}")
+    else:
+        st.info("🚨 Aucune prédiction trouvée pour cette image.")
 
 # 🖼️ Images multiples : boucle de prédiction
 if uploaded_files:
