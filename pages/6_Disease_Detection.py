@@ -297,105 +297,69 @@ if TENSORFLOW_AVAILABLE:
         if enhance_brightness:
             processed_image = ImageEnhance.Brightness(processed_image).enhance(1.1)
 
-        st.markdown("**Comparaison des Images**")
-        col_img1, col_img2 = st.columns(2)
-        with col_img1:
-            st.image(uploaded_image, caption="🌱 Image originale", width=250)
-        with col_img2:
-            st.image(processed_image, caption="🧪 Image traitée", width=250)
+st.markdown("**🖼️ Comparaison des Images**")
+col_img1, col_img2 = st.columns(2)
 
-        with st.spinner("🔬 Analyse IA en cours..."):
-            results, raw_preds = predict_disease(processed_image, return_raw=True)
+with col_img1:
+    st.image(uploaded_image, caption="🌱 Image originale", width=250)
 
+with col_img2:
+    st.image(processed_image, caption="🧪 Image traitée", width=250)
+
+with st.spinner("🔬 Analyse IA en cours..."):
+    single_results, raw_preds = predict_disease(processed_image, return_raw=True)
 if uploaded_files:
     for file in uploaded_files:
         img = Image.open(file)
         st.image(img, caption="🖼️ Image analysée", use_column_width=True)
 
-        results = detector.predict(img, confidence_threshold=confidence_filter)
+uploaded_results = detector.predict(img, confidence_threshold=confidence_filter)
 
-        if results:
-            # 🔢 Prédictions brutes
-            st.subheader("🔢 Prédictions brutes (top 10)")
-            st.json(results[:10])
+if uploaded_results:
+    # 🔢 Prédictions brutes
+    st.subheader("🔢 Prédictions brutes (top 10)")
+    st.json(uploaded_results[:10])
 
-            # 📚 Liste complète des étiquettes
-            st.subheader("📚 Étiquettes connues par le modèle")
-            st.json(detector.class_labels)
+    # 📚 Liste complète des étiquettes
+    st.subheader("📚 Étiquettes connues par le modèle")
+    st.json(detector.class_labels)
 
-            # 📊 Graphe des prédictions
-            st.markdown("---")
-            st.markdown("### 📊 Graphique de Confiance")
+    # 📊 Graphe des prédictions
+    st.markdown("---")
+    st.markdown("### 📊 Graphique de Confiance")
 
-            chart_data = pd.DataFrame([
-                {"Maladie": r["disease"], "Confiance": r["confidence"]}
-                for r in results[:5]
-            ])
-            fig = px.bar(
-                chart_data,
-                x="Confiance",
-                y="Maladie",
-                orientation="h",
-                title="Top 5 des Prédictions",
-                color="Confiance",
-                color_continuous_scale="RdYlGn"
-            )
-            fig.update_layout(height=300)
-            st.plotly_chart(fig, use_container_width=True)
+    chart_data = pd.DataFrame([
+        {"Maladie": r["disease"], "Confiance": r["confidence"]}
+        for r in uploaded_results[:5]
+    ])
+    fig = px.bar(
+        chart_data,
+        x="Confiance",
+        y="Maladie",
+        orientation="h",
+        title="Top 5 des Prédictions",
+        color="Confiance",
+        color_continuous_scale="RdYlGn"
+    )
+    fig.update_layout(height=300)
+    st.plotly_chart(fig, use_container_width=True)
 
-            # 🧾 Détails enrichis pour chaque maladie prédite
-            for disease in results:
-                st.subheader(f"🦠 {disease['disease']}")
-                st.write(f"🔹 Confiance IA : {disease['confidence']}%")
-                st.write(f"🩺 Sévérité estimée : {disease.get('severity', 'Non précisée')}")
-                st.write(f"⚠️ Urgence : {disease.get('urgency', 'Non précisée')}")
-                st.write(f"🔎 Symptômes : {disease.get('symptoms', 'Indisponibles')}")
-                st.write(f"🧪 Recommandations : {disease.get('recommendations', 'Aucune suggestion disponible')}")
+    # 🧾 Détails enrichis pour chaque maladie prédite
+    for disease in uploaded_results:
+        st.subheader(f"🦠 {disease['disease']}")
+        st.write(f"🔹 Confiance IA : {disease['confidence']}%")
+        st.write(f"🩺 Sévérité estimée : {disease.get('severity', 'Non précisée')}")
+        st.write(f"⚠️ Urgence : {disease.get('urgency', 'Non précisée')}")
+        st.write(f"🔎 Symptômes : {disease.get('symptoms', 'Indisponibles')}")
+        st.write(f"🧪 Recommandations : {disease.get('recommendations', 'Aucune suggestion disponible')}")
 
-            # 🌤️ Risque météo pour la culture
-            crop = "Tomate"
-            weather_risk = get_weather_risk(crop)
-            st.warning(f"🌍 Risque climatique actuel pour {crop} : {weather_risk}")
+    # 🌤️ Risque météo pour la culture
+    crop = "Tomate"
+    weather_risk = get_weather_risk(crop)
+    st.warning(f"🌍 Risque climatique actuel pour {crop} : {weather_risk}")
 
-        else:
-            st.warning("⚠️ Aucune maladie détectée avec le seuil de confiance défini.")
 else:
-    st.info("📷 Veuillez charger une image pour démarrer l’analyse.")
-
-
-# ✅ Sauvegarde des résultats (si des résultats sont disponibles)
-if 'results' in locals() and results:
-    if st.button("💾 Sauvegarder ce Diagnostic"):
-        main = results[0]
-        diagnosis_data = {
-            "timestamp": datetime.now().isoformat(),
-            "main_disease": main["disease"],
-            "confidence": main["confidence"],
-            "model_used": "EfficientNet-ResNet",
-            "all_predictions": results,
-            "image_name": f"{main['disease'].replace(' ', '_')}.jpg"
-        }
-
-        # Init state si vide
-        if "diagnosis_history" not in st.session_state:
-            st.session_state.diagnosis_history = []
-
-        # Enrichissement : remplacement via mapping s’il existe
-        diagnosis_data["main_disease"] = DISEASE_CLASSES.get(
-            diagnosis_data["main_disease"], diagnosis_data["main_disease"]
-        )
-
-        st.session_state.diagnosis_history.append(diagnosis_data)
-        st.success("📝 Diagnostic sauvegardé dans l'historique !")
-        st.json(diagnosis_data)
-else:
-    st.warning("Aucun résultat à sauvegarder pour l’instant.")
-# ✅ Vérification d’image uploadée
-if uploaded_files:
-    st.write(f"**{len(uploaded_files)} image(s) sélectionnée(s)**")
-else:
-    st.info("Uploadez une image pour commencer le diagnostic.")
-
+    st.warning("⚠️ Aucune maladie détectée avec le seuil de confiance défini.")
 
     # ✅ Vérification avant utilisation de `st.columns()`
     col1, col2 = st.columns(2)
@@ -514,21 +478,31 @@ if st.button("🚀 Lancer l'Analyse par Lot"):
 # ✅ Résumé des statistiques
 st.markdown("---")
 st.subheader("Statistiques de l'Historique")
+# ✅ Initialisation de l'historique filtré
+filtered_history = st.session_state.get("diagnosis_history", [])
+
+if disease_filter:
+    filtered_history = [
+        d for d in filtered_history if d["main_disease"] in disease_filter
+    ]
+
+filtered_history = [
+    d for d in filtered_history if d["confidence"] >= confidence_filter
+]
 
 if filtered_history:
-    # ✅ Création des statistiques maladies
-    disease_freq = {
-        d["main_disease"]: disease_freq.get(d["main_disease"], 0) + 1
-        for d in filtered_history
-    }
+    st.markdown("---")
+    st.subheader("Statistiques de l'Historique")
 
-    # ✅ Vérification format `datetime`
+    # ✅ Fréquence des maladies
+    disease_freq = {}
+    for d in filtered_history:
+        key = d["main_disease"]
+        disease_freq[key] = disease_freq.get(key, 0) + 1
+
     try:
-        timestamps = [
-            datetime.fromisoformat(
-                d["timestamp"]) for d in filtered_history]
-    except ValueError:
-        st.warning("⚠️ Format de date incorrect, vérifiez les données.")
+        timestamps = [datetime.fromisoformat(d["timestamp"]) for d in filtered_history]
+    except Exception:
         timestamps = []
 
     confidences = [d["confidence"] for d in filtered_history]
@@ -544,13 +518,16 @@ if filtered_history:
         st.plotly_chart(fig_freq, use_container_width=True)
 
     with col2:
-        fig_conf = px.line(
-            x=timestamps,
-            y=confidences,
-            title="Évolution de la Confiance",
-            labels={"x": "Date", "y": "Confiance (%)"},
-        )
-        st.plotly_chart(fig_conf, use_container_width=True)
+        if timestamps:
+            fig_conf = px.line(
+                x=timestamps,
+                y=confidences,
+                title="Évolution de la Confiance",
+                labels={"x": "Date", "y": "Confiance (%)"},
+            )
+            st.plotly_chart(fig_conf, use_container_width=True)
+        else:
+            st.info("Aucune date disponible pour générer le graphique.")
 
 # ✅ Vérification avant nettoyage historique
 if "diagnosis_history" not in st.session_state:
