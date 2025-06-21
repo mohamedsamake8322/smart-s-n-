@@ -322,11 +322,19 @@ if uploaded_image and processed_image:
 
     with st.spinner("🔬 Analyse IA en cours..."):
         single_results, raw_preds = predict_disease(processed_image, return_raw=True)
-
+if single_results:
     st.subheader("🔢 Prédictions brutes (top 10)")
     st.json(single_results[:10])
+
+    st.markdown("### 🩺 Résumé Diagnostique")
+    for result in single_results:
+        with st.expander(result["name"]):
+            st.markdown(f"**Confiance :** {result['confidence']:.1f}%")
+            st.markdown(f"**Stade estimé :** {result['progression_stage']}")
+            st.markdown(f"**Symptômes :** {result['symptoms']}")
+            st.markdown(f"**Recommandations :** {result['recommendations']}")
 else:
-    st.warning("🚨 Aucune image n'a été chargée pour l’analyse.")
+    st.info("🚨 Aucune prédiction trouvée pour cette image.")
 
 # 🖼️ Images multiples : boucle de prédiction
 if uploaded_files:
