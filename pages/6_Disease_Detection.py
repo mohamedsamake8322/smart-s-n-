@@ -11,7 +11,6 @@ import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 import streamlit as st  # type: ignore
 from PIL import Image, ImageEnhance  # type: ignore
-import preprocess_input  # type: ignore
 import plotly.express as px  # type: ignore
 import traceback  # 💡 Pour le débogage si nécessaire
 
@@ -106,17 +105,14 @@ except Exception as e:
 @st.cache_resource
 # 🔍 Prétraitement de l’image
 def preprocess_image(image_file):
-    """Prépare l’image et applique le prétraitement EfficientNet."""
+    """Prépare l’image pour un modèle entraîné avec Rescaling(1./255)."""
     try:
-        image = Image.open(image_file).convert("RGB").resize((380, 380))
-        img_array = np.array(image)
-        img_array = preprocess_input(img_array)
-
+        image = Image.open(image_file).convert("RGB").resize((224, 224))
+        img_array = np.array(image, dtype=np.float32) / 255.0
         return np.expand_dims(img_array, axis=0)
     except Exception as e:
         print(f"🚨 Erreur : {e}")
         return None
-
 # 🔍 Prédiction multi-maladies avec tri des résultats
 def predict_disease(image_pil, return_raw=False, top_k=5, confidence_threshold=0.7):
     """Analyse une image et retourne les prédictions principales."""
