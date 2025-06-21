@@ -1,18 +1,19 @@
 import json
+import time
 from utils.disease_database import DiseaseDatabase
 from deep_translator import GoogleTranslator
 
 # ✅ 1. Charger la base principale
-base_main = DiseaseDatabase().diseases_data  # dict[str, dict]
+base_main = DiseaseDatabase().diseases_data
 
-# ✅ 2. Charger la base dynamique exportée
+# ✅ 2. Charger la base dynamique
 with open("data/extended_disease_database.json", "r", encoding="utf-8") as f:
-    base_extended = json.load(f)  # dict[str, dict]
+    base_extended = json.load(f)
 
 # ✅ 3. Fusionner les deux
 combined = {**base_main, **base_extended}
 
-# ✅ 4. Traduire
+# ✅ 4. Traduction avec suivi
 def translate_entry(entry: dict, source="fr", target="en") -> dict:
     translated = {}
     for key, value in entry.items():
@@ -31,14 +32,18 @@ def translate_entry(entry: dict, source="fr", target="en") -> dict:
             translated[key] = value
     return translated
 
+# ✅ 5. Traduire avec affichage progressif
 translated_list = []
-for name, info in combined.items():
+total = len(combined)
+for i, (name, info) in enumerate(combined.items(), 1):
+    print(f"[{i}/{total}] Traduction de: {name}")
     entry = info.copy()
     entry.setdefault("name", name)
-    translated_list.append(translate_entry(entry))
+    translated = translate_entry(entry)
+    translated_list.append(translated)
 
-# ✅ 5. Sauvegarde
+# ✅ 6. Sauvegarde
 with open("data/all_diseases_translated.json", "w", encoding="utf-8") as f:
     json.dump(translated_list, f, ensure_ascii=False, indent=2)
 
-print(f"🎉 Fusion + traduction complète terminée ({len(translated_list)} maladies)")
+print(f"\n✅ Fusion + traduction terminée avec succès ({len(translated_list)} maladies) 🎉")
