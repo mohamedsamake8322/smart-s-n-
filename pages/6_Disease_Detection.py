@@ -120,7 +120,10 @@ def predict_disease(image_pil, return_raw=False, top_k=5, confidence_threshold=0
         results = detector.predict(image_pil, confidence_threshold=confidence_threshold)
 
         if not results:
-            return [{"error": "🚨 Aucune maladie détectée avec confiance suffisante."}]
+            if return_raw:
+                return [], []  # Rien à afficher
+            else:
+                return [], []
 
         top_labels = []
 
