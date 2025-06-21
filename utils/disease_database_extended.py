@@ -213,10 +213,6 @@ class DiseaseManager:
         "deltamethrin",
         "permethrin",
     ],
-)
-
-print("🚀 Disease Manager is fully operational!")
-
 # disease_manager.add_disease(
     "Armyworms on Vegetables",
     [
@@ -245,7 +241,6 @@ print("🚀 Disease Manager is fully operational!")
         "imiclacloprid",
         "sulfur",
     ],
-)
 
 # disease_manager.add_disease(
     "Blister Beetle",
@@ -260,7 +255,7 @@ print("🚀 Disease Manager is fully operational!")
         "by grasshopper populations..."
     ),
     [],  # Ajout de la liste vide pour éviter l'erreur
-)
+
 
 # disease_manager.add_disease(
     "Beet Leafhopper",
@@ -282,7 +277,7 @@ print("🚀 Disease Manager is fully operational!")
         "fenpropathrin",
         "permethrin",
     ],
-)
+
 
 # disease_manager.add_disease(
     "Colorado Potato Beetle",
@@ -305,7 +300,7 @@ print("🚀 Disease Manager is fully operational!")
         "methomyl",
         "fenpropathrin",
     ],
-)
+
 
 # disease_manager.add_disease(
     "Western Striped and Spotted Cucumber Beetle",
@@ -333,7 +328,6 @@ print("🚀 Disease Manager is fully operational!")
         "methomyl",
         "fenpropathrin",
     ],
-)
 
 # disease_manager.add_disease(
     "Spotted Cucumber Beetle",
@@ -362,7 +356,7 @@ print("🚀 Disease Manager is fully operational!")
         "neem oil",
         "kaolin",
     ],
-)
+
 # disease_manager.add_disease(
     "Cutworms on Vegetables",
     [
@@ -394,7 +388,7 @@ print("🚀 Disease Manager is fully operational!")
         "methomyl",
         "fenpropathrin",
     ],
-)
+
 # disease_manager.add_disease(
     "False Chinch Bug",
     [
@@ -424,7 +418,7 @@ print("🚀 Disease Manager is fully operational!")
         "methomyl",
         "fenpropathrin",
     ],
-)
+
 # disease_manager.add_disease(
     "Flea Beetles",
     [
@@ -450,7 +444,7 @@ print("🚀 Disease Manager is fully operational!")
         "cyfluthrin",
         "pyrethrins + neem oil",
     ],
-)
+
 # disease_manager.add_disease(
     "Tomato and Tobacco Hornworms",
     ["Tomato", "Pepper", "Potato"],
@@ -470,7 +464,7 @@ print("🚀 Disease Manager is fully operational!")
         "methomyl",
         "fenpropathrin",
     ],
-)
+
 # disease_manager.add_disease(
     "Thrips on Vegetables",
     [
@@ -502,7 +496,7 @@ print("🚀 Disease Manager is fully operational!")
         "methomyl",
         "fenpropathrin",
     ],
-)
+
 # disease_manager.add_disease(
     "Potato Leafhopper",
     [
@@ -528,7 +522,7 @@ print("🚀 Disease Manager is fully operational!")
         "methomyl",
         "fenpropathrin",
     ],
-)
+
 # disease_manager.add_disease(
     "Two-Spotted Spider Mite",
     [
@@ -556,7 +550,7 @@ print("🚀 Disease Manager is fully operational!")
         "cyfluthrin",
         "pyrethrins + neem oil",
     ],
-)
+
 # disease_manager.add_disease(
     "Corn Earworm / Tomato Fruitworm",
     ["Beans", "Corn", "Eggplant", "Pepper", "Peas", "Tomato"],
@@ -574,7 +568,7 @@ print("🚀 Disease Manager is fully operational!")
         "minute pirate bugs",
         "Trichogramma pretiosum",
     ],
-)
+
 # disease_manager.add_disease(
     "Tomato Russet Mite",
     ["Potato", "Tomato", "Pepper", "Eggplant"],
@@ -582,7 +576,7 @@ print("🚀 Disease Manager is fully operational!")
     "Bronzing or 'russeting' of stems, leaves, and fruits, yellowing, curling, deflated leaves, and longitudinal cracks on fruits...",
     "Use clean transplants, avoid planting during hot, dry periods, remove infested debris, clean tools after use...",
     ["sulfur", "abamectin"],
-)
+
 # disease_manager.add_disease(
     "Whiteflies (Family: Aleyrodidae)",
     [
@@ -619,7 +613,7 @@ print("🚀 Disease Manager is fully operational!")
         "cyfluthrin",
         "pyrethrins + neem oil",
     ],
-)
+
 # disease_manager.add_disease(
     "Alfalfa Mosaic Virus",
     [
@@ -634,7 +628,7 @@ print("🚀 Disease Manager is fully operational!")
     "Yellow mosaic or calico patterns on foliage, stunted plants, tuber necrosis, bright yellow blotches interspersed with green...",
     "Avoid planting potatoes or hemp near alfalfa fields, remove plants with positive diagnosis...",
     ["Limited efficacy with aphid-targeting insecticides"],
-)
+
 
 # disease_manager.add_disease(
     "Bacterial Canker",
@@ -643,7 +637,7 @@ print("🚀 Disease Manager is fully operational!")
     "Wilting in young plants, yellow leaf margins ('firing'), white spots with dark centers on fruit, vascular discoloration in stems...",
     "Source disease-free seed, clean and disinfect equipment, avoid overwatering, rotate crops, remove solanaceous weeds, deep plow soil...",
     ["Copper-based products effective in greenhouse transplant production"],
-)
+
 # disease_manager.add_disease(
     "Bacterial Speck",
     ["Tomato"],
@@ -651,7 +645,7 @@ print("🚀 Disease Manager is fully operational!")
     "Brown to black spots with a yellow halo on leaves, scabby pinpoint-like spots on fruit, damage does not penetrate into flesh...",
     "Start examining undersides of leaves soon after planting, delay planting until wet conditions pass, avoid overhead irrigation, rotate crops...",
     ["Crop rotation", "Avoid overhead irrigation"],
-)
+
 # disease_manager.add_disease(
     "Beet Curly Top Virus",
     [
@@ -670,7 +664,7 @@ print("🚀 Disease Manager is fully operational!")
         "Integrated pest management (IPM)",
         "Avoid chemical treatments due to BLH migration",
     ],
-)
+
 # disease_manager.add_disease(
     "Big Bud",
     ["Tomato", "Pepper"],
@@ -678,7 +672,7 @@ print("🚀 Disease Manager is fully operational!")
     "Swollen flower buds, distorted flower and leaf growth, short and thick apical stems, yellow discoloration of foliage...",
     "Remove infected plants, clear weeds that host leafhoppers...",
     ["Leafhopper management", "Remove infected debris"],
-)
+
 # disease_manager.add_disease(
     "Blossom End Rot",
     ["Cucumbers", "Eggplant", "Pepper", "Squash", "Tomato", "Watermelon"],
@@ -686,7 +680,7 @@ print("🚀 Disease Manager is fully operational!")
     "Water-soaked discoloration on the blossom end, leathery dark brown or black lesions, sunken fruit, potential secondary infections...",
     "Use deep, infrequent irrigation to maintain uniform soil moisture, avoid ammonium-based nitrogen fertilizers, protect roots from injury, apply mulch...",
     ["Optimize calcium availability", "Avoid excessive salts in soil"],
-)
+
 # disease_manager.add_disease(
     "Damping-Off",
     [
@@ -704,7 +698,7 @@ print("🚀 Disease Manager is fully operational!")
     "Circular bare spots in seed flats due to seedling death, pinched brown or black stems, seedlings tipping over...",
     "Disinfect growing benches and containers, use sterile potting mix, avoid excessive irrigation...",
     ["Seed treatments available, fungicides can reduce incidence"],
-)
+
 # disease_manager.add_disease(
     "Early Blight",
     ["Potato", "Tomato"],
@@ -712,7 +706,7 @@ print("🚀 Disease Manager is fully operational!")
     "Pinpoint brown or black spots on lower leaves, yellow halo around spots, concentric rings in lesions, sunken stem and tuber lesions...",
     "Use crop rotations, source disease-free transplants, destroy volunteer plants, plow down debris, maintain plant vigor, avoid prolonged leaf wetness...",
     ["Fungicide spray programs initiated in early August if lesions appear"],
-)
+
 # disease_manager.add_disease(
     "Fusarium Crown/Root Rot",
     ["Asparagus", "Brassicas", "Cucurbits", "Solanaceous Crops"],
@@ -720,7 +714,7 @@ print("🚀 Disease Manager is fully operational!")
     "Rotting and necrotic roots, discoloration and softening of crown tissue, stunted growth, wilting and plant death...",
     "Remove infected plants, sanitize equipment, sterilize soil, rotate crops with non-susceptible varieties, ensure proper soil drainage...",
     ["No fungicides available, prevention is key"],
-)
+
 # disease_manager.add_disease(
     "Fusarium Wilt",
     [
@@ -740,7 +734,7 @@ print("🚀 Disease Manager is fully operational!")
     "Foliar chlorosis, wilting, red to purple leaf discoloration, stunted growth, brown vascular tissue, reduced yield...",
     "Use certified disease-free seed, plant resistant varieties, improve water drainage, clean equipment to minimize spread...",
     ["No chemical controls available, prevention is key"],
-)
+
 # disease_manager.add_disease(
     "Late Blight",
     ["Potato", "Tomato"],
@@ -748,7 +742,7 @@ print("🚀 Disease Manager is fully operational!")
     "Greasy-gray blotches on leaves and stems that turn black, hard brown blotchy lesions on fruit and tubers extending into flesh...",
     "Scout early after planting, monitor wet field areas, eliminate infected plant debris, avoid overhead irrigation, rotate crops...",
     ["Fungicides necessary where the disease has occurred in the past"],
-)
+
 # disease_manager.add_disease(
     "Root-Knot Nematodes",
     ["Many vegetables", "Fruits", "Grasses", "Weeds"],
@@ -756,7 +750,7 @@ print("🚀 Disease Manager is fully operational!")
     "Chlorosis, stunting resembling nutrient deficiency, galled roots that may merge into large tumors...",
     "Use tolerant varieties, keep infested fields fallow, remove weeds, roto-till fallow areas regularly, apply Telone fumigation in commercial fields...",
     ["No chemical options available for non-commercial fields"],
-)
+
 # disease_manager.add_disease(
     "Phytophthora Root, Stem, and Crown Rots",
     ["Solanaceous Crops", "Cucurbits", "Legumes"],
@@ -764,7 +758,7 @@ print("🚀 Disease Manager is fully operational!")
     "Bruised, soft, rotted seedlings, chocolate-brown lesions on roots and stems, yellowing leaves, wilting and plant death in patches...",
     "Watch for symptoms early, improve soil drainage, manage water use, rotate crops, use resistant varieties...",
     ["No chemical control, prevention through water management"],
-)
+
 # disease_manager.add_disease(
     "Powdery Mildew on Vegetables",
     [
@@ -779,7 +773,7 @@ print("🚀 Disease Manager is fully operational!")
     "White, powdery fungal growth on leaves, stems, and petioles; yellowing and wilting of leaves, potential fruit sunscald and yield loss...",
     "Plant resistant varieties, remove infected plant material after harvest, improve air circulation, use morning irrigation, switch to drip irrigation...",
     ["Fungicides available, repeated applications every 7–10 days"],
-)
+
 # disease_manager.add_disease(
     "Tobacco Mosaic Virus & Tomato Mosaic Virus",
     ["Tomato", "Eggplant", "Pepper"],
@@ -789,7 +783,7 @@ print("🚀 Disease Manager is fully operational!")
     [
         "No chemical controls available, rely on sanitation and resistant cultivars"
     ],
-)
+
 # disease_manager.add_disease(
     "Tomato Spotted Wilt Virus",
     ["Tomato", "Pepper", "Eggplant", "Several other vegetable and weed hosts"],
@@ -799,7 +793,7 @@ print("🚀 Disease Manager is fully operational!")
     [
         "No chemical controls available, rely on thrips management and resistant cultivars"
     ],
-)
+
 # disease_manager.add_disease(
     "Verticillium Wilt",
     [
@@ -812,7 +806,7 @@ print("🚀 Disease Manager is fully operational!")
     "Leaves yellow and die from the bottom up, decreased fruit quality, premature wilting, symptoms appearing on one side of the plant...",
     "Use resistant varieties, plant on raised beds, avoid planting in infected fields, prevent root injury, practice sanitation, rotate crops...",
     ["No direct chemical control, rely on prevention and resistant cultivars"],
-)
+
 # disease_manager.add_disease(
     "Cercospora Leaf Spot (Frogeye)",
     ["Pepper", "Eggplant"],
@@ -820,7 +814,7 @@ print("🚀 Disease Manager is fully operational!")
     "Small chlorotic lesions, necrotic centers with concentric rings, defoliation, reduced fruit size...",
     "Use protectant fungicide spray programs, remove infected debris, rotate crops, apply mulch, use furrow or drip irrigation...",
     ["Fungicide treatments based on a calendar schedule"],
-)
+
 # disease_manager.add_disease(
     "Choanephora Blight (Wet Rot)",
     ["Beans", "Peas", "Squash", "Cucumber", "Eggplant", "Pepper"],
@@ -828,7 +822,7 @@ print("🚀 Disease Manager is fully operational!")
     "Water-soaked areas on leaves, blighted apical growing points, dark gray fungal growth, silvery spine-like fungal structures, black soft rot in fruit...",
     "Few management techniques available; fungicide sprays may help reduce disease damage...",
     ["Limited fungicide options, rely on environmental control"],
-)
+
 # disease_manager.add_disease(
     "Gray Leaf Spot",
     ["Pepper", "Tomato"],
@@ -836,7 +830,7 @@ print("🚀 Disease Manager is fully operational!")
     "Expanding lesions with white to gray centers and dark margins, yellowing leaves, defoliation, does not affect fruit...",
     "Remove infected plant debris, improve ventilation for seedlings, apply fungicide treatments...",
     ["Fungicides available for control"],
-)
+
 # Ajout de la maladie Phomopsis Blight
 # disease_manager.add_disease(
     "Phomopsis Blight",
@@ -845,7 +839,7 @@ print("🚀 Disease Manager is fully operational!")
     "Dark-brown lesions on stems, dry rot, collapsing seedlings, circular gray-brown lesions on leaves, severe defoliation, mummified fruit...",
     "Sow high-quality seed, remove infected plants, rotate crops, mulch and furrow irrigate to reduce pathogen spread...",
     ["Protectant fungicide sprays recommended"],
-)
+
 
 # ✅ Correction du dictionnaire pour "Healthy"
 DISEASE_DATABASE = {
