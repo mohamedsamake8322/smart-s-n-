@@ -5,6 +5,8 @@ import json
 # ⚙️ Charger les deux bases
 db1 = DiseaseDatabase().diseases_data
 db2 = DISEASE_DATABASE
+print(f"🔢 Maladies dans disease_database.py (db1) : {len(db1)}")
+print(f"🔢 Maladies dans disease_database_extended.py (db2) : {len(db2)}")
 
 # 🧬 Fusion avec priorité à db1
 combined = {**db2, **db1}
