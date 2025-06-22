@@ -138,7 +138,7 @@ if uploaded:
         enhance = st.checkbox("🔬 Améliorer le contraste ?", value=True)
         if enhance:
             image = ImageEnhance.Contrast(image).enhance(1.2)
-        hreshold = st.slider("🎚️ Seuil de confiance IA (%)", min_value=10, max_value=100, value=60, step=5) / 100
+        threshold = st.slider("🎚️ Seuil de confiance IA (%)", min_value=10, max_value=100, value=60, step=5) / 100
         with st.spinner("🧠 Diagnostic en cours..."):
             predictions = predict_disease(image, confidence_threshold=threshold)
         if predictions:
