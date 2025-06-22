@@ -1,6 +1,10 @@
 from googletrans import Translator
+from tqdm import tqdm
 import json
+import time
+import os
 
+translator = Translator()
 # Liste brute des classes (à compléter avec toutes les lignes que tu m’as envoyées)
 classes_chinoises = [
     "健康苹果", "苹果Alternaria_叶斑病", "苹果灰斑病", "苹果白粉病", "苹果花叶病", "苹果蛙眼叶斑病",
@@ -19,17 +23,29 @@ classes_chinoises = [
     "西瓜炭疽病", "西瓜病毒病", "豇豆褐斑病", "豇豆锈病", "黄瓜炭疽病", "黄瓜白粉病", "黄瓜霜霉病",
     "黄瓜靶斑病"
 ]
+output_file = "traductions_classes.json"
 
+# Charger les traductions déjà faites s’il y en a
+if os.path.exists(output_file):
+    with open(output_file, "r", encoding="utf-8") as f:
+        traductions = json.load(f)
+else:
+    traductions = {}
 
-translator = Translator()
-traductions = {}
+# Traduire les classes restantes avec suivi
+for nom in tqdm(classes_chinoises, desc="Traduction des classes"):
+    if nom in traductions:
+        continue  # déjà traduit
 
-for nom in classes_chinoises:
-    traduction = translator.translate(nom, src='zh-cn', dest='fr')
-    traductions[nom] = traduction.text
+    try:
+        traduction = translator.translate(nom, src='zh-cn', dest='fr')
+        traductions[nom] = traduction.text
+    except Exception as e:
+        print(f"❌ Erreur pour {nom} : {e}")
+        time.sleep(5)  # courte pause avant de réessayer
 
-# Sauvegarde dans un fichier JSON
-with open("traductions_classes.json", "w", encoding="utf-8") as f:
-    json.dump(traductions, f, ensure_ascii=False, indent=4)
+    # Sauvegarde intermédiaire
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(traductions, f, ensure_ascii=False, indent=4)
 
-print("✅ Traductions enregistrées dans 'traductions_classes.json'")
+print("✅ Traductions complètes enregistrées dans", output_file)
