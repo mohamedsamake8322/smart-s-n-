@@ -72,7 +72,7 @@ def estimate_progression(conf):
     elif conf > 50: return "🟡 Début"
     else: return "🟢 Faible impact"
 
-def predict_disease(image_pil, confidence_threshold=0.6):
+def predict_disease(image_pil, confidence_threshold=0.2):
     disease_name_map = {
         "Late Blight": "Bright",
         "Early Blight": "Early Blightt",
@@ -89,13 +89,14 @@ def predict_disease(image_pil, confidence_threshold=0.6):
 
     results = detector.predict(image_pil, confidence_threshold=confidence_threshold)
     preds = []
-
+    print("Résultats du modèle brut :", results)
     for r in results:
         json_name = disease_name_map.get(r["disease"], r["disease"])  # remplace si mapping trouvé
         desc = next(
             (d for d in disease_descriptions if d.get("name", "").strip().lower() == json_name.strip().lower()),
             {}
         )
+        print("Maladie prédite :", r["disease"], "| JSON utilisé :", json_name)
         preds.append({
             "name": f"{DISEASE_ICONS.get(r['disease'], '🦠')} {r['disease']}",
             "confidence": r["confidence"],
@@ -137,10 +138,9 @@ if uploaded:
         enhance = st.checkbox("🔬 Améliorer le contraste ?", value=True)
         if enhance:
             image = ImageEnhance.Contrast(image).enhance(1.2)
-
+        hreshold = st.slider("🎚️ Seuil de confiance IA (%)", min_value=10, max_value=100, value=60, step=5) / 100
         with st.spinner("🧠 Diagnostic en cours..."):
-            predictions = predict_disease(image)
-
+            predictions = predict_disease(image, confidence_threshold=threshold)
         if predictions:
             st.success("✅ Analyse terminée")
             for result in predictions[:3]:
@@ -152,3 +152,4 @@ if uploaded:
         st.error(f"❌ Erreur lors de l’analyse : {e}")
 else:
     st.info("📷 Téléversez une image de la plante pour commencer.")
+print("Taille image :", image.size)

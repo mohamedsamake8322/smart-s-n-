@@ -72,7 +72,7 @@ def estimate_progression(conf):
     elif conf > 50: return "🟡 Début"
     else: return "🟢 Faible impact"
 
-def predict_disease(image_pil, confidence_threshold=0.6):
+def predict_disease(image_pil, confidence_threshold=0.3):
     results = detector.predict(image_pil, confidence_threshold=confidence_threshold)
     preds = []
     for r in results:
