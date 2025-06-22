@@ -90,8 +90,9 @@ def predict_disease(image_pil, confidence_threshold=0.2):
     results = detector.predict(image_pil, confidence_threshold=confidence_threshold)
     preds = []
     print("Résultats du modèle brut :", results)
+
     for r in results:
-        json_name = disease_name_map.get(r["disease"], r["disease"])  # remplace si mapping trouvé
+        json_name = disease_name_map.get(r["disease"], r["disease"])
         desc = next(
             (d for d in disease_descriptions if d.get("name", "").strip().lower() == json_name.strip().lower()),
             {}
@@ -105,7 +106,8 @@ def predict_disease(image_pil, confidence_threshold=0.2):
             "recommendations": desc.get("management", "❌ Aucune recommandation"),
         })
 
-        return preds[:3]
+    return preds[:3]  # ✅ Maintenant bien placé en dehors de la boucle
+
 # 💡 3. Fiche Diagnostique
 def render_diagnostic_card(result):
     color = {
