@@ -10,7 +10,7 @@ from utils.config_model import load_model, load_labels
 class DiseaseDetector:
     def __init__(self, model_path="model/default_model.keras"):
         self.model = tf.keras.models.load_model(model_path)
-
+        self.class_labels = load_labels()  # ✅ Mapping des classes ajouté ici
 
     def preprocess_image(self, image_pil: Image.Image, target_size: Tuple[int, int] = (224, 224)) -> np.ndarray:
         try:
