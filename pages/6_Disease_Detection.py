@@ -105,8 +105,7 @@ def predict_disease(image_pil, confidence_threshold=0.2):
             "recommendations": desc.get("management", "❌ Aucune recommandation"),
         })
 
-    return preds
-
+        return preds[:3]
 # 💡 3. Fiche Diagnostique
 def render_diagnostic_card(result):
     color = {
@@ -139,9 +138,11 @@ if uploaded:
         enhance = st.checkbox("🔬 Améliorer le contraste ?", value=True)
         if enhance:
             image = ImageEnhance.Contrast(image).enhance(1.2)
-        threshold = st.slider("🎚️ Seuil de confiance IA (%)", min_value=10, max_value=100, value=60, step=5) / 100
+        threshold = st.slider("🎚️ Seuil de confiance IA (%)", min_value=1, max_value=100, value=60, step=1) / 100
+        force_top3 = st.checkbox("📋 Afficher les 3 meilleures prédictions (même avec faible confiance)", value=False)
         with st.spinner("🧠 Diagnostic en cours..."):
-            predictions = predict_disease(image, confidence_threshold=threshold)
+            predictions = predict_disease(image, confidence_threshold=threshold if not force_top3 else 0.0)
+            st.write("🧠 Résultats bruts :", predictions)
         if predictions:
             st.success("✅ Analyse terminée")
             for result in predictions[:3]:
