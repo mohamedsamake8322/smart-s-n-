@@ -34,8 +34,7 @@ class DiseaseDetector:
             for idx in sorted_indices:
                 confidence = float(predictions[idx]) * 100
                 if confidence < confidence_threshold * 100:
-                    break
-
+                    continue
                 label = self.class_labels.get(str(idx), f"Classe inconnue {idx}")
                 severity, urgency = self._assess_disease_severity(label, confidence)
 
