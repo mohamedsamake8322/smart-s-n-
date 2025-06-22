@@ -26,6 +26,8 @@ class DiseaseDetector:
         try:
             img_array = self.preprocess_image(image_pil)
             predictions = self.model.predict(img_array, verbose=0)[0]
+            predictions = self.model.predict(img_array, verbose=0)[0]
+            print("🧠 Prédictions brutes :", predictions)
             sorted_indices = np.argsort(predictions)[::-1]
 
             results = []
