@@ -1,0 +1,632 @@
+{
+    "Pomme en bonne santé": {
+        "culture": "Pomme",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Apple Alternaria_leaf Spot Disease": {
+        "culture": "Apple",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du spot gris des pommes": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Mildiou poudreux pomme": {
+        "culture": "Mildiou",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie de la mosaïque de pomme": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie des yeux de la grenouille aux pommes": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie au comptant des pommes": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Apple Gibberellia": {
+        "culture": "Apple",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rouille de pomme": {
+        "culture": "Rouille",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "ip102_v1.1 (c)": {
+        "culture": "ip102_v1.1",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "ip102_v1.1": {
+        "culture": "",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "images": {
+        "culture": "",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Blé sain (C)": {
+        "culture": "Blé",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Soja sain": {
+        "culture": "Soja",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Agrumes sains": {
+        "culture": "Agrumes",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Framboise saine": {
+        "culture": "Framboise",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Pêches saines": {
+        "culture": "Pêches",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Cherries saines": {
+        "culture": "Cherries",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maïs sain": {
+        "culture": "Maïs",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Poivron sain": {
+        "culture": "Poivron",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Tomates saines": {
+        "culture": "Tomates",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Fraises saines": {
+        "culture": "Fraises",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Raisins sains": {
+        "culture": "Raisins",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Pommes de terre saines": {
+        "culture": "Pommes",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Mildiou à la citrouille": {
+        "culture": "Mildiou",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie d'agrumes Huanglong": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Perforation bactérienne de pêche": {
+        "culture": "Perforation",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Mildiou à cerise": {
+        "culture": "Mildiou",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du spot de feuille de maïs": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du spot de maïs": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rouille de maïs": {
+        "culture": "Rouille",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie bactérienne du poivron": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Acariens": {
+        "culture": "",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie des moisissures de feuilles de tomate": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Éjaculation des coquilles de tomate": {
+        "culture": "Éjaculation",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Blight prématuré de tomate": {
+        "culture": "Blight",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Bright à la tomate tardive": {
+        "culture": "Bright",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie bactérienne de tomate": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du virus de la mosaïque de tomate": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie cible de tomate": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du virus de la chrysanthèse jaune de tomates": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rouille de genévrier de pomme": {
+        "culture": "Rouille",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie d'étoile noire de pomme": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Pomme de pourriture noire": {
+        "culture": "Pomme",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie de brûlure des feuilles de fraise": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Brûlure de la feuille de raisin": {
+        "culture": "Brûlure",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rot noir de raisin": {
+        "culture": "Rot",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie de la rougeole noire de raisin": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Épidémie de pommes de terre prématurée": {
+        "culture": "Épidémie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Blight tardif de la pomme de terre": {
+        "culture": "Blight",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Pourriture des racines de soja": {
+        "culture": "Pourriture",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie de la plaque bactérienne du soja": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du virus de la mosaïque de soja": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Blé sain": {
+        "culture": "Blé",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Blee à feuilles de blé": {
+        "culture": "Blee",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rouille de bande de blé": {
+        "culture": "Rouille",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rouille de feuille de blé": {
+        "culture": "Rouille",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie des expectorations noires en vrac dans le blé": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Root Corona Rot": {
+        "culture": "Root",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Mède de blé poudre": {
+        "culture": "Mède",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Gibberrellose de blé": {
+        "culture": "Gibberrellose",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rouille des feuilles": {
+        "culture": "Rouille",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rouille": {
+        "culture": "",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie de Donggru": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Blast de riz": {
+        "culture": "Blast",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Brûlure bactérienne": {
+        "culture": "Brûlure",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du spot brun": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rice Blanc Leaf Blight": {
+        "culture": "Rice",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Blight de la veine de riz": {
+        "culture": "Blight",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie de la bande bactérienne dans le riz": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du riz à la annulation": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie des vermicelles de riz": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Rizière": {
+        "culture": "",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Bug de riz": {
+        "culture": "Bug",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Ferme à feuilles de riz": {
+        "culture": "Ferme",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Sauterelle de riz": {
+        "culture": "Sauterelle",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Houle de riz": {
+        "culture": "Houle",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Corn Southern Rust": {
+        "culture": "Corn",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Betterave": {
+        "culture": "",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Moth de lanterne à bord rouge": {
+        "culture": "Moth",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du virus de la mosaïque de raisin": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Mildiou de raisin": {
+        "culture": "Mildiou",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Moule noir": {
+        "culture": "Moule",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Anthrax de pastèque": {
+        "culture": "Anthrax",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Maladie du virus de la pastèque": {
+        "culture": "Maladie",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Cowpea Brown Spot maladie": {
+        "culture": "Cowpea",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Anthrax de concombre": {
+        "culture": "Anthrax",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "CUCUBRIMBER MOULOE POWERS": {
+        "culture": "CUCUBRIMBER",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "Mouveau du coeur": {
+        "culture": "Mouveau",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    },
+    "CUCUMBUMER CIBLEAL": {
+        "culture": "CUCUMBUMER",
+        "description": "",
+        "symptômes": "",
+        "évolution": "",
+        "traitement": ""
+    }
+}

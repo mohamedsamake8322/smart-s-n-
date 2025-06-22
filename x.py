@@ -1,3 +1,4 @@
+# 🧠 Étape 1 : Générer un squelette JSON enrichi
 import json
 
 # Charger les noms traduits (ex: classes_traduites.json)
