@@ -30,8 +30,7 @@ image = Image.open(r"C:\plateforme-agricole-complete-v2\plant_disease_dataset\tr
 
 # 🧠 Prédictions
 # 🧠 Prédictions
-results = detector.predict(image, confidence_threshold=0.1)
-
+results = detector.predict(image, confidence_threshold=0.01)
 print("🧠 Prédictions filtrées :", results)
 print("\n📌 Résultats du modèle :")
 for r in results:

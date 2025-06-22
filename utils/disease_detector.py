@@ -31,7 +31,7 @@ class DiseaseDetector:
             sorted_indices = np.argsort(predictions)[::-1]
 
             results = []
-            for idx in sorted_indices:
+            for idx in sorted_indices[:3]:
                 confidence = float(predictions[idx]) * 100
                 if confidence < confidence_threshold * 100:
                     continue
