@@ -130,6 +130,7 @@ uploaded = st.file_uploader("Téléverser une image de la plante 🌱", type=["p
 if uploaded:
     try:
         image = Image.open(uploaded).convert("RGB")
+        print("Taille image :", image.size)
         col1, col2 = st.columns(2)
         with col1:
             st.image(image, caption="🌱 Image originale", use_container_width=True)
@@ -152,4 +153,3 @@ if uploaded:
         st.error(f"❌ Erreur lors de l’analyse : {e}")
 else:
     st.info("📷 Téléversez une image de la plante pour commencer.")
-print("Taille image :", image.size)
