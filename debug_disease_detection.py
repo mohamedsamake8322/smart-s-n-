@@ -26,7 +26,7 @@ disease_name_map = {
 }
 
 # 🖼️ Charger une image de test (remplace par une image de ton jeu de validation)
-image = Image.open("C:\plateforme-agricole-complete-v2\plant_disease_dataset\train\BACTERIAL CANKER/bacterial-canker6x2400-rjnalg.jpg").convert("RGB")
+image = Image.open(r"C:\plateforme-agricole-complete-v2\plant_disease_dataset\train\BACTERIAL CANKER\bacterial-canker6x2400-rjnalg.jpg").convert("RGB")
 
 # 🧠 Prédictions
 results = detector.predict(image, confidence_threshold=0.1)
