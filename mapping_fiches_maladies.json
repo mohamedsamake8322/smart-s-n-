@@ -1,4 +1,81 @@
 {
+  "Alfalfa mosaic virus": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Aphids": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Armyworms": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Bacterial canker": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Bacterial speck": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Bacterial tache": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Beet curly top virus": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Beet feuillehopper": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Beetles and feuillehoppers": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Big bud": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Blossom end rot": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
   "Anacardier anthracnose": {
     "culture": "",
     "description": "",
@@ -34,6 +111,111 @@
     "évolution": "Nom de la matière active du produit",
     "traitement": ""
   },
+  "Cercospora feuille tache (frogeye)": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Choanephora brûlure (wet rot)": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Colorado Pomme de terre beetle": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Corn earworm Tomate fruitworm": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Cucumber mosaic geminiviruses": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Cutworms": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Damping-off & root rot": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Early brûlure": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "False chinch bug": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Flea beetles": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Fusarium crownroot rot": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Fusarium wilt": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Gray feuille tache": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Hornworms": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Late brûlure": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
   "Maïs feuille beetle": {
     "culture": "",
     "description": "",
@@ -56,6 +238,125 @@
     "traitement": ""
   },
   "Maïs streak virus": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Pepper mottle pepper": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Phomopsis brûlure": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Phytoptora root, stem, and crown rots": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Pomme de terre feuillehopper": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Pomme de terre y tobacco etch": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Powdery mildew on vegetables": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Root-knot nematodes": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Thrips": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Tobacco mosaic virus & Tomate mosaic virus": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Tobamoviruses": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Tomate russet mite": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Tomate tacheted wilt virus": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Tospoviruses blossom-end rot chemical damage": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Two-tacheted spider mite": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Western striped and tacheted cucumber beetle": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Whiteflies": {
+    "culture": "",
+    "description": "",
+    "symptômes": "",
+    "évolution": "Nom de la matière active du produit",
+    "traitement": ""
+  },
+  "Yellow mosaic Pomme de terre x": {
     "culture": "",
     "description": "",
     "symptômes": "",

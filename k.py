@@ -49,7 +49,8 @@ for dossier in dossiers:
         "culture": "",
         "description": "",
         "symptômes": "",
-        "évolution": "Nom de la matière active du produit",
+        "évolution":"",
+        "Nom de la matière active du produit":"",
         "traitement": ""
     }
 
