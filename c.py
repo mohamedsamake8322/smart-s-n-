@@ -22,7 +22,7 @@ def détecter_doublons(labels, seuil_similarité=0.85):
     return doublons
 
 # 📁 Chemin vers ton dossier unifié
-base_path = r"C:\chemin\vers\v"  # à adapter !
+base_path = r"C:\Downloads\plantdataset\plantvillage dataset"  # à adapter !
 
 # 📋 Récupération des classes
 labels = collect_labels(base_path)
