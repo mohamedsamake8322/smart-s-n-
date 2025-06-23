@@ -31,8 +31,8 @@ def afficher_statistiques(df, source_name):
 
 
 # 🔧 Chemins à ajuster selon ton système
-plantvillage_path = r"C:\Downloads\archive\plantvillage dataset"
-crop_disease_path = r"C:\Downloads\Dataset for Crop Pest and Disease Detection"
+plantvillage_path = r"C:\Downloads\archive\plantvillage dataset\color"
+crop_disease_path = r"C:\Downloads\Dataset for Crop Pest and Disease Detection\Dataset for Crop Pest and Disease Detection"
 
 # 🔍 Exploration des datasets
 df_plant = explorer_dataset(plantvillage_path, "PlantVillage")
