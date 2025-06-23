@@ -1,3 +1,4 @@
+# ✅ Script fusionné avec support récursif
 import os
 import pandas as pd
 
