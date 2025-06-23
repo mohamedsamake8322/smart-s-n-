@@ -1,0 +1,487 @@
+{
+  "Apple___Apple_scab": {
+    "culture": "Apple",
+    "maladie": "Apple scab",
+    "agent_causal": "À renseigner"
+  },
+  "Apple___Black_rot": {
+    "culture": "Apple",
+    "maladie": "Black rot",
+    "agent_causal": "À renseigner"
+  },
+  "Apple___Cedar_apple_rust": {
+    "culture": "Apple",
+    "maladie": "Cedar apple rust",
+    "agent_causal": "À renseigner"
+  },
+  "Apple___healthy": {
+    "culture": "Apple",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Blueberry___healthy": {
+    "culture": "Blueberry",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Cashew___anthracnose": {
+    "culture": "Cashew",
+    "maladie": "anthracnose",
+    "agent_causal": "À renseigner"
+  },
+  "Cashew___gumosis": {
+    "culture": "Cashew",
+    "maladie": "gumosis",
+    "agent_causal": "À renseigner"
+  },
+  "Cashew___healthy": {
+    "culture": "Cashew",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Cashew___leaf miner": {
+    "culture": "Cashew",
+    "maladie": "leaf miner",
+    "agent_causal": "À renseigner"
+  },
+  "Cashew___red rust": {
+    "culture": "Cashew",
+    "maladie": "red rust",
+    "agent_causal": "À renseigner"
+  },
+  "Cassava___bacterial blight": {
+    "culture": "Cassava",
+    "maladie": "bacterial blight",
+    "agent_causal": "À renseigner"
+  },
+  "Cassava___brown spot": {
+    "culture": "Cassava",
+    "maladie": "brown spot",
+    "agent_causal": "À renseigner"
+  },
+  "Cassava___green mite": {
+    "culture": "Cassava",
+    "maladie": "green mite",
+    "agent_causal": "À renseigner"
+  },
+  "Cassava___healthy": {
+    "culture": "Cassava",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Cassava___mosaic": {
+    "culture": "Cassava",
+    "maladie": "mosaic",
+    "agent_causal": "À renseigner"
+  },
+  "Cherry_(including_sour)___Powdery_mildew": {
+    "culture": "Cherry (including sour)",
+    "maladie": "Powdery mildew",
+    "agent_causal": "À renseigner"
+  },
+  "Cherry_(including_sour)___healthy": {
+    "culture": "Cherry (including sour)",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    "culture": "Corn (maize)",
+    "maladie": "Cercospora leaf spot Gray leaf spot",
+    "agent_causal": "À renseigner"
+  },
+  "Corn_(maize)___Common_rust_": {
+    "culture": "Corn (maize)",
+    "maladie": "Common rust",
+    "agent_causal": "À renseigner"
+  },
+  "Corn_(maize)___Northern_Leaf_Blight": {
+    "culture": "Corn (maize)",
+    "maladie": "Northern Leaf Blight",
+    "agent_causal": "À renseigner"
+  },
+  "Corn_(maize)___healthy": {
+    "culture": "Corn (maize)",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Grape___Black_rot": {
+    "culture": "Grape",
+    "maladie": "Black rot",
+    "agent_causal": "À renseigner"
+  },
+  "Grape___Esca_(Black_Measles)": {
+    "culture": "Grape",
+    "maladie": "Esca (Black Measles)",
+    "agent_causal": "À renseigner"
+  },
+  "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+    "culture": "Grape",
+    "maladie": "Leaf blight (Isariopsis Leaf Spot)",
+    "agent_causal": "À renseigner"
+  },
+  "Grape___healthy": {
+    "culture": "Grape",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Maize___fall armyworm": {
+    "culture": "Maize",
+    "maladie": "fall armyworm",
+    "agent_causal": "À renseigner"
+  },
+  "Maize___grasshoper": {
+    "culture": "Maize",
+    "maladie": "grasshoper",
+    "agent_causal": "À renseigner"
+  },
+  "Maize___healthy": {
+    "culture": "Maize",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Maize___leaf beetle": {
+    "culture": "Maize",
+    "maladie": "leaf beetle",
+    "agent_causal": "À renseigner"
+  },
+  "Maize___leaf blight": {
+    "culture": "Maize",
+    "maladie": "leaf blight",
+    "agent_causal": "À renseigner"
+  },
+  "Maize___leaf spot": {
+    "culture": "Maize",
+    "maladie": "leaf spot",
+    "agent_causal": "À renseigner"
+  },
+  "Maize___streak virus": {
+    "culture": "Maize",
+    "maladie": "streak virus",
+    "agent_causal": "À renseigner"
+  },
+  "Orange___Haunglongbing_(Citrus_greening)": {
+    "culture": "Orange",
+    "maladie": "Haunglongbing (Citrus greening)",
+    "agent_causal": "À renseigner"
+  },
+  "Peach___Bacterial_spot": {
+    "culture": "Peach",
+    "maladie": "Bacterial spot",
+    "agent_causal": "À renseigner"
+  },
+  "Peach___healthy": {
+    "culture": "Peach",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Pepper,_bell___Bacterial_spot": {
+    "culture": "Pepper bell",
+    "maladie": "Bacterial spot",
+    "agent_causal": "À renseigner"
+  },
+  "Pepper,_bell___healthy": {
+    "culture": "Pepper bell",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Potato___Early_blight": {
+    "culture": "Potato",
+    "maladie": "Early blight",
+    "agent_causal": "À renseigner"
+  },
+  "Potato___Late_blight": {
+    "culture": "Potato",
+    "maladie": "Late blight",
+    "agent_causal": "À renseigner"
+  },
+  "Potato___healthy": {
+    "culture": "Potato",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Raspberry___healthy": {
+    "culture": "Raspberry",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Soybean___healthy": {
+    "culture": "Soybean",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Squash___Powdery_mildew": {
+    "culture": "Squash",
+    "maladie": "Powdery mildew",
+    "agent_causal": "À renseigner"
+  },
+  "Strawberry___Leaf_scorch": {
+    "culture": "Strawberry",
+    "maladie": "Leaf scorch",
+    "agent_causal": "À renseigner"
+  },
+  "Strawberry___healthy": {
+    "culture": "Strawberry",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___Bacterial_spot": {
+    "culture": "Tomato",
+    "maladie": "Bacterial spot",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___Early_blight": {
+    "culture": "Tomato",
+    "maladie": "Early blight",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___Late_blight": {
+    "culture": "Tomato",
+    "maladie": "Late blight",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___Leaf_Mold": {
+    "culture": "Tomato",
+    "maladie": "Leaf Mold",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___Septoria_leaf_spot": {
+    "culture": "Tomato",
+    "maladie": "Septoria leaf spot",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___Spider_mites Two-spotted_spider_mite": {
+    "culture": "Tomato",
+    "maladie": "Spider mites Two-spotted spider mite",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___Target_Spot": {
+    "culture": "Tomato",
+    "maladie": "Target Spot",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "culture": "Tomato",
+    "maladie": "Tomato Yellow Leaf Curl Virus",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___Tomato_mosaic_virus": {
+    "culture": "Tomato",
+    "maladie": "Tomato mosaic virus",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___healthy": {
+    "culture": "Tomato",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___leaf blight": {
+    "culture": "Tomato",
+    "maladie": "leaf blight",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___leaf curl": {
+    "culture": "Tomato",
+    "maladie": "leaf curl",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___septoria leaf spot": {
+    "culture": "Tomato",
+    "maladie": "septoria leaf spot",
+    "agent_causal": "À renseigner"
+  },
+  "Tomato___verticulium wilt": {
+    "culture": "Tomato",
+    "maladie": "verticulium wilt",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___anthracnose": {
+    "culture": "test set",
+    "maladie": "anthracnose",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___bacterial blight": {
+    "culture": "test set",
+    "maladie": "bacterial blight",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___brown spot": {
+    "culture": "test set",
+    "maladie": "brown spot",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___fall armyworm": {
+    "culture": "test set",
+    "maladie": "fall armyworm",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___grasshoper": {
+    "culture": "test set",
+    "maladie": "grasshoper",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___green mite": {
+    "culture": "test set",
+    "maladie": "green mite",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___gumosis": {
+    "culture": "test set",
+    "maladie": "gumosis",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___healthy": {
+    "culture": "test set",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___leaf beetle": {
+    "culture": "test set",
+    "maladie": "leaf beetle",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___leaf blight": {
+    "culture": "test set",
+    "maladie": "leaf blight",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___leaf curl": {
+    "culture": "test set",
+    "maladie": "leaf curl",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___leaf miner": {
+    "culture": "test set",
+    "maladie": "leaf miner",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___leaf spot": {
+    "culture": "test set",
+    "maladie": "leaf spot",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___mosaic": {
+    "culture": "test set",
+    "maladie": "mosaic",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___red rust": {
+    "culture": "test set",
+    "maladie": "red rust",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___septoria leaf spot": {
+    "culture": "test set",
+    "maladie": "septoria leaf spot",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___streak virus": {
+    "culture": "test set",
+    "maladie": "streak virus",
+    "agent_causal": "À renseigner"
+  },
+  "test_set___verticulium wilt": {
+    "culture": "test set",
+    "maladie": "verticulium wilt",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___anthracnose3102": {
+    "culture": "train set",
+    "maladie": "anthracnose3102",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___bacterial blight": {
+    "culture": "train set",
+    "maladie": "bacterial blight",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___bacterial blight3241": {
+    "culture": "train set",
+    "maladie": "bacterial blight3241",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___brown spot": {
+    "culture": "train set",
+    "maladie": "brown spot",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___fall armyworm": {
+    "culture": "train set",
+    "maladie": "fall armyworm",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___grasshoper": {
+    "culture": "train set",
+    "maladie": "grasshoper",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___green mite": {
+    "culture": "train set",
+    "maladie": "green mite",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___gumosis1714": {
+    "culture": "train set",
+    "maladie": "gumosis1714",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___healthy": {
+    "culture": "train set",
+    "maladie": "healthy",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___healthy5877": {
+    "culture": "train set",
+    "maladie": "healthy5877",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___leaf beetle": {
+    "culture": "train set",
+    "maladie": "leaf beetle",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___leaf blight": {
+    "culture": "train set",
+    "maladie": "leaf blight",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___leaf curl": {
+    "culture": "train set",
+    "maladie": "leaf curl",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___leaf miner3466": {
+    "culture": "train set",
+    "maladie": "leaf miner3466",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___leaf spot": {
+    "culture": "train set",
+    "maladie": "leaf spot",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___mosaic": {
+    "culture": "train set",
+    "maladie": "mosaic",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___red rust4751": {
+    "culture": "train set",
+    "maladie": "red rust4751",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___septoria leaf spot": {
+    "culture": "train set",
+    "maladie": "septoria leaf spot",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___streak virus": {
+    "culture": "train set",
+    "maladie": "streak virus",
+    "agent_causal": "À renseigner"
+  },
+  "train_set___verticulium wilt": {
+    "culture": "train set",
+    "maladie": "verticulium wilt",
+    "agent_causal": "À renseigner"
+  }
+}
