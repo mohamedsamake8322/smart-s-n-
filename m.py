@@ -23,22 +23,27 @@ def translate_text(text):
         return GoogleTranslator(source='fr', target='en').translate(text)
     return text
 
-# Traduction de chaque fiche
+# Chargement du fichier
 with open(source_path, "r", encoding="utf-8") as f:
     fiches = json.load(f)
 
 translated = {}
+total = len(fiches)
 
-for maladie, infos in fiches.items():
+# Traduction avec suivi
+for i, (maladie, infos) in enumerate(fiches.items(), 1):
+    print(f"🔄 [{i}/{total}] Traduction de : {maladie}")
     translated_name = translate_text(maladie)
     translated_infos = {}
     for fr_key, value in infos.items():
         en_key = champ_mapping.get(fr_key, fr_key)
-        translated_infos[en_key] = translate_text(value)
+        translated_value = translate_text(value)
+        translated_infos[en_key] = translated_value
+        print(f"   ↳ Champ « {fr_key} » traduit.")
     translated[translated_name] = translated_infos
 
-# Sauvegarde dans un nouveau fichier
+# Sauvegarde
 with open(output_path, "w", encoding="utf-8") as f_out:
     json.dump(translated, f_out, indent=2, ensure_ascii=False)
 
-print("Traduction terminée. Fichier créé :", output_path)
+print("\n✅ Traduction terminée. Fichier créé :", output_path)
