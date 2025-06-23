@@ -16,5 +16,4 @@ def explorer_dataset(dataset_path):
     print(f"Nombre total d’images : {sum(compteur.values())}")
 
 # Exemple d'utilisation :
-explorer_dataset(r"C:\Downloads\archive\农作物病虫害数据集")
-
+explorer_dataset(r"C:\plateforme-agricole-complete-v2\plantdataset\train")
