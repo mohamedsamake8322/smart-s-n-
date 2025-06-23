@@ -20,7 +20,7 @@ def explorer_images(dataset_dir):
     return pd.DataFrame(data)
 
 # 📍 Chemin vers le dossier nettoyé
-dataset_path = r"C:\Downloads\plantdataset\plantvillage dataset"
+dataset_path = r"C:\plateforme-agricole-complete-v2\plantdataset\train"
 df = explorer_images(dataset_path)
 
 # 💾 Sauvegarde
