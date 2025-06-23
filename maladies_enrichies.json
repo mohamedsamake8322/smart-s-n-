@@ -325,346 +325,187 @@
         "traitement": "Utiliser des variétés résistantes. Surveiller les parcelles sensibles. Appliquer des fongicides (triazoles, strobilurines) dès les premiers symptômes."
     },
     "Rouille de feuille de blé": {
-        "culture": "Rouille",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Puccinia triticina",
+        "culture": "Blé",
+        "description": "Maladie fongique aussi appelée rouille brune du blé. Elle affecte principalement les feuilles, réduisant la photosynthèse et le rendement.",
+        "symptômes": "Pustules brun orangé dispersées sur les feuilles, souvent en fin de printemps. Les tissus autour des pustules peuvent jaunir. Les feuilles se dessèchent prématurément.",
+        "évolution": "Le champignon hiverne sur les repousses de céréales. Il se développe par temps doux et humide. Les spores sont disséminées par le vent.",
+        "traitement": "Utiliser des variétés résistantes. Appliquer des fongicides (triazoles, strobilurines) dès les premiers symptômes. Surveiller les parcelles sensibles."
     },
     "Maladie des expectorations noires en vrac dans le blé": {
-        "culture": "Maladie",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Champignons saprophytes (Alternaria, Cladosporium, Aureobasidium)",
+        "culture": "Blé",
+        "description": "Probablement une mauvaise traduction de 'fumagine' ou 'noir des céréales'. Il s’agit d’un encrassement superficiel des épis par des champignons saprophytes.",
+        "symptômes": "Coloration noire superficielle des épis, sans atteinte interne. Présence de spores sombres sur les glumes et les grains.",
+        "évolution": "Survient en fin de cycle, surtout si la récolte est retardée par l’humidité. Les spores se développent sur les tissus sénescents.",
+        "traitement": "Récolter à maturité. Éviter les blessures et les attaques d’insectes. Améliorer la ventilation et la nutrition pour limiter le stress des plantes."
     },
     "Root Corona Rot": {
-        "culture": "Root",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Phytophthora spp., Pythium spp., Fusarium spp.",
+        "culture": "Plantes diverses",
+        "description": "Terme générique désignant les pourritures de collet et de racines causées par divers champignons ou oomycètes. Affecte de nombreuses cultures, notamment en sol mal drainé.",
+        "symptômes": "Flétrissement, jaunissement, croissance ralentie. Racines brunes, molles, parfois avec odeur de pourriture. Taches sombres à la base de la tige.",
+        "évolution": "Favorisée par l’excès d’eau, les sols compacts et les températures modérées. Les pathogènes persistent longtemps dans le sol.",
+        "traitement": "Améliorer le drainage. Éviter les excès d’eau. Utiliser des fongicides de sol (métalaxyl, fosétyl-Al) si nécessaire. Choisir des variétés tolérantes."
     },
     "Mède de blé poudre": {
-        "culture": "Mède",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Aucun — complément alimentaire",
+        "culture": "Non applicable",
+        "description": "Erreur probable : il s’agit de l’herbe de blé en poudre, un complément nutritionnel riche en chlorophylle, vitamines et minéraux. Ce n’est pas une maladie.",
+        "symptômes": "Aucun symptôme pathologique. Produit utilisé pour ses bienfaits digestifs et antioxydants.",
+        "évolution": "Non applicable.",
+        "traitement": "Non applicable. À retirer de la base des maladies si elle ne concerne pas une pathologie végétale."
     },
     "Gibberrellose de blé": {
-        "culture": "Gibberrellose",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Fusarium graminearum (stade sexué : Gibberella zeae)",
+        "culture": "Blé",
+        "description": "Maladie fongique aussi appelée fusariose de l’épi. Elle affecte les épis du blé, provoquant des pertes de rendement et la production de mycotoxines (DON).",
+        "symptômes": "Épillets blanchis, parfois avec fructifications orange. Grains ratatinés, décolorés, souvent contaminés par des toxines.",
+        "évolution": "Le champignon hiverne dans les résidus de culture. Il infecte les épis pendant la floraison, surtout par temps chaud et humide.",
+        "traitement": "Utiliser des variétés tolérantes. Appliquer des fongicides (prothioconazole, tébuconazole) à la floraison. Réduire les résidus et pratiquer la rotation."
     },
     "Rouille des feuilles": {
-        "culture": "Rouille",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Puccinia spp. (selon la culture hôte)",
+        "culture": "Plantes diverses",
+        "description": "Maladie fongique très répandue, causée par des champignons du genre Puccinia. Elle affecte les feuilles de nombreuses espèces végétales.",
+        "symptômes": "Taches décolorées sur la face supérieure des feuilles, pustules orangées ou brunes sur la face inférieure. Chute prématurée des feuilles.",
+        "évolution": "Favorisée par l’humidité et les températures modérées. Les spores se propagent par le vent.",
+        "traitement": "Éliminer les feuilles infectées. Appliquer des fongicides (cuivre, triazoles). Favoriser l’aération et éviter les arrosages du feuillage."
     },
     "Rouille": {
-        "culture": "",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Maladie de Donggru": {
-        "culture": "Maladie",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Puccinia spp.",
+        "culture": "Non précisé",
+        "description": "Entrée générique désignant une maladie cryptogamique causée par des champignons du genre Puccinia. Elle touche de nombreuses cultures (blé, haricot, rosier, etc.).",
+        "symptômes": "Pustules poudreuses orangées à brunes sur les feuilles, parfois sur les tiges. Jaunissement et chute des feuilles.",
+        "évolution": "Se développe par temps humide et doux. Les spores sont disséminées par le vent.",
+        "traitement": "Utiliser des variétés résistantes. Appliquer des fongicides adaptés. Éviter les densités élevées et favoriser l’aération."
     },
     "Blast de riz": {
-        "culture": "Blast",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Magnaporthe oryzae (syn. Pyricularia oryzae)",
+        "culture": "Riz",
+        "description": "Maladie fongique très destructrice du riz, aussi appelée pyriculariose. Elle affecte les feuilles, les nœuds, les panicules et les grains.",
+        "symptômes": "Taches ovales à centre gris et bord brun sur les feuilles. Lésions sur les nœuds et les panicules, entraînant un flétrissement et une stérilité.",
+        "évolution": "Le champignon se développe par temps chaud et humide. Les spores se propagent par le vent et l’eau. Plusieurs cycles peuvent survenir en saison.",
+        "traitement": "Utiliser des variétés résistantes. Appliquer des fongicides (tricyclazole, azoxystrobine). Éviter les excès d’azote et favoriser une bonne aération des rizières."
     },
     "Brûlure bactérienne": {
-        "culture": "Brûlure",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Erwinia amylovora",
+        "culture": "Pommier, poirier et autres rosacées",
+        "description": "Maladie bactérienne grave aussi appelée feu bactérien. Elle affecte les arbres fruitiers à pépins, provoquant un flétrissement rapide des organes aériens et pouvant entraîner la mort de l’arbre.",
+        "symptômes": "Noircissement et flétrissement des fleurs, pousses et feuilles, donnant un aspect brûlé. Présence de suintements bactériens collants sur les tissus infectés. Les rameaux se recourbent en forme de crosse.",
+        "évolution": "La bactérie se propage par les insectes pollinisateurs, la pluie, le vent et les outils. Elle pénètre par les fleurs ou les blessures. Les infections sont favorisées par un printemps chaud et humide.",
+        "traitement": "Éliminer les parties infectées en taillant largement sous les symptômes. Désinfecter les outils. Appliquer des traitements préventifs à base de cuivre. Utiliser des variétés résistantes si disponibles."
     },
     "Maladie du spot brun": {
-        "culture": "Maladie",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Cochliobolus miyabeanus (syn. Bipolaris oryzae)",
+        "culture": "Riz",
+        "description": "Maladie fongique foliaire du riz, aussi appelée tache brune. Elle affecte les feuilles, les glumes et parfois les grains, réduisant la photosynthèse et la qualité des récoltes.",
+        "symptômes": "Petites taches brun foncé à centre gris sur les feuilles, s’élargissant en lésions ovales. Les glumes peuvent présenter des taches sombres. Les grains peuvent être décolorés ou mal remplis.",
+        "évolution": "Le champignon survit dans les semences et les résidus. Il se développe par temps chaud et humide, surtout en cas de carence en potassium ou de stress hydrique.",
+        "traitement": "Utiliser des semences saines. Appliquer des fongicides (tricyclazole, propiconazole) si nécessaire. Corriger les carences nutritionnelles. Pratiquer la rotation des cultures."
     },
     "Rice Blanc Leaf Blight": {
-        "culture": "Rice",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Xanthomonas oryzae pv. oryzae",
+        "culture": "Riz",
+        "description": "Maladie bactérienne très destructrice du riz, aussi appelée brûlure bactérienne des feuilles. Elle provoque un flétrissement rapide et peut entraîner des pertes de rendement importantes.",
+        "symptômes": "Stries imbibées d’eau partant du bord des feuilles, devenant jaunes puis blanches. Les feuilles se dessèchent progressivement. Chez les jeunes plants, flétrissement total (kresek).",
+        "évolution": "La bactérie se propage par l’eau, les éclaboussures, les outils et les semences. Elle se développe par temps chaud et humide. Les infections précoces sont les plus graves.",
+        "traitement": "Utiliser des variétés résistantes. Appliquer des traitements à base de cuivre. Contrôler l’irrigation et éviter les blessures. Éliminer les résidus infectés."
     },
     "Blight de la veine de riz": {
-        "culture": "Blight",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Xanthomonas oryzae pv. oryzicola",
+        "culture": "Riz",
+        "description": "Maladie bactérienne du riz aussi appelée stries bactériennes. Elle affecte les feuilles, provoquant des lésions translucides le long des nervures.",
+        "symptômes": "Stries translucides à bords droits le long des nervures, devenant brunes avec le temps. Présence possible d’exsudats bactériens. Les feuilles peuvent se dessécher partiellement.",
+        "évolution": "La bactérie se propage par les éclaboussures, le vent et les outils. Elle se développe par temps chaud et humide. Elle est favorisée par les blessures mécaniques.",
+        "traitement": "Utiliser des variétés tolérantes. Appliquer des traitements à base de cuivre. Éviter les blessures et les densités élevées. Assurer une bonne gestion de l’eau."
     },
     "Maladie de la bande bactérienne dans le riz": {
-        "culture": "Maladie",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Xanthomonas oryzae pv. oryzicola",
+        "culture": "Riz",
+        "description": "Autre nom pour la strie bactérienne du riz. Elle provoque des lésions linéaires translucides sur les feuilles, réduisant la photosynthèse et la vigueur des plants.",
+        "symptômes": "Stries translucides parallèles aux nervures, devenant brunes. Les lésions peuvent fusionner. Présence d’exsudats bactériens visibles tôt le matin.",
+        "évolution": "Similaire à la strie bactérienne : favorisée par l’humidité, les éclaboussures et les blessures. La bactérie persiste dans les résidus et les semences.",
+        "traitement": "Utiliser des variétés résistantes. Appliquer des traitements à base de cuivre. Éviter les blessures et les excès d’azote. Pratiquer la rotation des cultures."
     },
-    "Maladie du riz à la annulation": {
-        "culture": "Maladie",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Maladie des vermicelles de riz": {
-        "culture": "Maladie",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Rizière": {
-        "culture": "",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+    "Maladie de la panachure jaune du riz": {
+        "agent_causal": "Rice Yellow Mottle Virus (RYMV)",
+        "culture": "Riz",
+        "description": "Il s’agit d’une virose majeure en Afrique subsaharienne, causée par le Rice Yellow Mottle Virus (RYMV). Elle affecte la croissance et la productivité du riz.",
+        "symptômes": "Feuilles marbrées ou panachées de jaune, réduction du tallage, rabougrissement des plants, stérilité partielle ou totale des panicules.",
+        "évolution": "Transmise par des coléoptères (ex. Chaetocnema spp.) ou par contact mécanique (repiquage, outils). Le virus ne se transmet pas par les semences. Il persiste dans les résidus et les adventices.",
+        "traitement": "Utiliser des variétés résistantes. Éviter le repiquage de plants infectés. Désinfecter les outils. Éliminer les plants symptomatiques. Pratiquer la rotation et contrôler les insectes vecteurs."
     },
     "Bug de riz": {
-        "culture": "Bug",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Ferme à feuilles de riz": {
-        "culture": "Ferme",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Leptocorisa oratorius (punaise du riz)",
+        "culture": "Riz",
+        "description": "Insecte ravageur du riz, aussi appelé punaise du riz. Il se nourrit des grains en formation, provoquant des pertes de rendement et une mauvaise qualité des grains.",
+        "symptômes": "Grains vides ou mal remplis, décoloration, odeur nauséabonde. Panicules droites et grains ratatinés.",
+        "évolution": "Les punaises apparaissent pendant la floraison et le remplissage des grains. Elles sont favorisées par un climat chaud et humide, et se cachent dans les herbes autour des rizières.",
+        "traitement": "Utiliser des filets ou des pièges. Favoriser les ennemis naturels (guêpes, araignées). Appliquer des insecticides ciblés (chlorpyriphos, abamectine) en fin de journée si nécessaire."
     },
     "Sauterelle de riz": {
-        "culture": "Sauterelle",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Houle de riz": {
-        "culture": "Houle",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Oxya spp. (ex. Oxya hyla, Oxya japonica)",
+        "culture": "Riz",
+        "description": "Insectes orthoptères ravageurs du riz, appelés sauterelles du riz. Ils consomment les feuilles et les jeunes pousses, réduisant la photosynthèse et la croissance.",
+        "symptômes": "Feuilles partiellement ou totalement dévorées, croissance ralentie, aspect déchiqueté du feuillage.",
+        "évolution": "Les sauterelles pondent dans les zones humides. Elles prolifèrent en conditions chaudes et peuvent migrer en masse. Les jeunes stades (nymphes) sont les plus voraces.",
+        "traitement": "Favoriser les prédateurs naturels (oiseaux, araignées). Utiliser des filets ou des pièges lumineux. Appliquer des insecticides ciblés si nécessaire (ex. lambda-cyhalothrine)."
     },
     "Corn Southern Rust": {
-        "culture": "Corn",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Betterave": {
-        "culture": "",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Moth de lanterne à bord rouge": {
-        "culture": "Moth",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Puccinia polysora",
+        "culture": "Maïs",
+        "description": "Maladie fongique foliaire très destructrice du maïs, causée par Puccinia polysora. Elle réduit la photosynthèse, accélère le dessèchement des plantes et diminue le poids des grains.",
+        "symptômes": "Pustules orange clair à brun cannelle, circulaires et denses, principalement sur la face supérieure des feuilles. Les lésions peuvent s'étendre aux gaines et aux spathes.",
+        "évolution": "Le champignon ne survit pas à l’hiver dans les zones tempérées. Les spores sont transportées par le vent depuis les régions tropicales. Il se développe rapidement par temps chaud et humide (25–30 °C).",
+        "traitement": "Utiliser des variétés résistantes. Appliquer des fongicides systémiques (triazoles, strobilurines) dès l’apparition des premiers symptômes. Surveiller les champs en fin d’été."
     },
     "Maladie du virus de la mosaïque de raisin": {
-        "culture": "Maladie",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Grapevine fanleaf virus (GFLV)",
+        "culture": "Vigne",
+        "description": "Maladie virale chronique de la vigne, transmise par le nématode Xiphinema index. Elle provoque des déformations foliaires et une baisse de rendement.",
+        "symptômes": "Feuilles en forme d’éventail, nervures épaissies, marbrures jaunes. Raccourcissement des entre-nœuds, grappes clairsemées, maturation incomplète.",
+        "évolution": "Le virus persiste dans les racines et se propage lentement via le sol. Les symptômes sont plus marqués sur les porte-greffes sensibles.",
+        "traitement": "Utiliser des plants certifiés sains. Éviter les sols infestés par Xiphinema index. Arracher les ceps infectés. Repos du sol ou solarisation avant replantation."
     },
     "Mildiou de raisin": {
-        "culture": "Mildiou",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Moule noir": {
-        "culture": "Moule",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Plasmopara viticola",
+        "culture": "Vigne",
+        "description": "Maladie cryptogamique majeure de la vigne, introduite en Europe au XIXe siècle. Elle affecte les feuilles, les grappes et les jeunes pousses.",
+        "symptômes": "Taches jaunes huileuses sur la face supérieure des feuilles, duvet blanc sur la face inférieure. Nécrose des grappes, dessèchement des jeunes pousses.",
+        "évolution": "Le champignon hiverne dans les feuilles mortes. Il se développe rapidement par temps chaud et humide. Plusieurs cycles d’infection peuvent survenir par saison.",
+        "traitement": "Appliquer des fongicides préventifs (bouillie bordelaise, fosétyl-Al). Éliminer les feuilles mortes. Favoriser l’aération de la vigne. Utiliser des cépages tolérants."
     },
     "Anthrax de pastèque": {
-        "culture": "Anthrax",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Colletotrichum lagenarium (syn. Colletotrichum orbiculare)",
+        "culture": "Pastèque",
+        "description": "Maladie fongique affectant les feuilles, les tiges et les fruits de la pastèque. Elle provoque des lésions nécrotiques et des pertes de rendement.",
+        "symptômes": "Taches brunes à noires sur les feuilles, souvent bordées de rouge. Lésions enfoncées sur les fruits, parfois avec exsudat rosé. Flétrissement des tiges.",
+        "évolution": "Le champignon survit dans les résidus de culture et les semences. Il se développe par temps chaud et humide. Les spores se propagent par l’eau et le vent.",
+        "traitement": "Utiliser des semences saines. Appliquer des fongicides (chlorothalonil, mancozèbe). Éviter l’arrosage par aspersion. Pratiquer la rotation des cultures."
     },
     "Maladie du virus de la pastèque": {
-        "culture": "Maladie",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Watermelon mosaic virus (WMV)",
+        "culture": "Pastèque",
+        "description": "Maladie virale transmise par les pucerons. Elle affecte les feuilles et les fruits, réduisant la croissance et la qualité des récoltes.",
+        "symptômes": "Mosaïque vert clair à foncé sur les feuilles, déformation, rabougrissement. Fruits mal formés, striés ou bosselés.",
+        "évolution": "Le virus est transmis par les pucerons de manière non persistante. Il ne se transmet pas par les semences. Les infections précoces sont les plus graves.",
+        "traitement": "Utiliser des variétés résistantes. Contrôler les pucerons. Éviter les cultures hôtes proches (courgette, melon). Éliminer les plantes infectées."
     },
     "Cowpea Brown Spot maladie": {
-        "culture": "Cowpea",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Cercospora canescens",
+        "culture": "Niébé (Vigna unguiculata)",
+        "description": "Maladie fongique foliaire du niébé, causée par Cercospora canescens. Elle provoque une défoliation prématurée et réduit le rendement.",
+        "symptômes": "Taches brunes à bords irréguliers sur les feuilles, parfois avec un halo jaune. Les lésions peuvent fusionner. Les feuilles jaunissent et tombent.",
+        "évolution": "Le champignon survit dans les résidus de culture. Il se développe par temps chaud et humide. Les spores se propagent par le vent et les éclaboussures.",
+        "traitement": "Utiliser des variétés tolérantes. Appliquer des fongicides (mancozèbe, chlorothalonil). Pratiquer la rotation des cultures. Éliminer les résidus infectés."
     },
     "Anthrax de concombre": {
-        "culture": "Anthrax",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "CUCUBRIMBER MOULOE POWERS": {
-        "culture": "CUCUBRIMBER",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Mouveau du coeur": {
-        "culture": "Mouveau",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "CUCUMBUMER CIBLEAL": {
-        "culture": "CUCUMBUMER",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "ip102_v1.1 (c)": {
-        "culture": "ip102_v1.1",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "ip102_v1.1": {
-        "culture": "",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "images": {
-        "culture": "",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Blé sain (C)": {
-        "culture": "Blé",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Soja sain": {
-        "culture": "Soja",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Agrumes sains": {
-        "culture": "Agrumes",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Framboise saine": {
-        "culture": "Framboise",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Pêches saines": {
-        "culture": "Pêches",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Cherries saines": {
-        "culture": "Cherries",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Maïs sain": {
-        "culture": "Maïs",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Poivron sain": {
-        "culture": "Poivron",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Tomates saines": {
-        "culture": "Tomates",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Fraises saines": {
-        "culture": "Fraises",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Raisins sains": {
-        "culture": "Raisins",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
-    },
-    "Pommes de terre saines": {
-        "culture": "Pommes",
-        "description": "",
-        "symptômes": "",
-        "évolution": "",
-        "traitement": ""
+        "agent_causal": "Colletotrichum orbiculare",
+        "culture": "Concombre",
+        "description": "Maladie fongique fréquente des cucurbitacées, notamment du concombre. Elle provoque des lésions foliaires et des pourritures sur les fruits, affectant la qualité et le rendement.",
+        "symptômes": "Taches brunes à noires sur les feuilles, souvent bordées de rouge. Lésions enfoncées et circulaires sur les fruits, parfois avec un centre clair. Les tiges peuvent aussi présenter des nécroses.",
+        "évolution": "Le champignon survit dans les résidus de culture et les semences. Il se développe par temps chaud et humide. Les spores se propagent par l’eau, le vent et les outils.",
+        "traitement": "Utiliser des semences saines. Appliquer des fongicides préventifs (chlorothalonil, mancozèbe). Éviter l’arrosage par aspersion. Pratiquer la rotation des cultures et éliminer les résidus infectés."
     }
 }

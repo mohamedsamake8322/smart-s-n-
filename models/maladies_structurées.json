@@ -1,0 +1,428 @@
+{
+    "FIELD GUIDE\nT O M A T O  D I S E A S E\nP R E F A C E": {
+        "nom": "FIELD GUIDE\nT O M A T O  D I S E A S E\nP R E F A C E"
+    },
+    "T O M A T O  D I S E A S E\nFIELD GUIDE": {
+        "nom": "T O M A T O  D I S E A S E\nFIELD GUIDE"
+    },
+    "ACKNOWLEDGMENTS": {
+        "nom": "ACKNOWLEDGMENTS"
+    },
+    "CONTENTS": {
+        "nom": "CONTENTS"
+    },
+    "BACTERIAL\nD I S E A S E S\nBACTERIAL CANKER\nBACTERIAL SPECK\nBACTERIAL SPOT \nBACTERIAL STEM ROT\nBACTERIAL WILT\nPITH NECROSIS": {
+        "nom": "BACTERIAL\nD I S E A S E S\nBACTERIAL CANKER\nBACTERIAL SPECK\nBACTERIAL SPOT \nBACTERIAL STEM ROT\nBACTERIAL WILT\nPITH NECROSIS"
+    },
+    "SYRINGAE LEAF SPOT \nTOMATO ROOT MAT": {
+        "nom": "SYRINGAE LEAF SPOT \nTOMATO ROOT MAT"
+    },
+    "B A C T E R I A L\nB A C T E R I A L  C A N K E R\nCAUSAL AGENT": {
+        "nom": "B A C T E R I A L\nB A C T E R I A L  C A N K E R\nCAUSAL AGENT"
+    },
+    "DISTRIBUTION": {
+        "nom": "DISTRIBUTION"
+    },
+    "SYMPTOMS": {
+        "nom": "SYMPTOMS"
+    },
+    "CONDITIONS FOR DISEASE DEVELOPMENT": {
+        "nom": "CONDITIONS FOR DISEASE DEVELOPMENT"
+    },
+    "CONTROL": {
+        "nom": "CONTROL"
+    },
+    "B A C T E R I A L\nB A C T E R I A L  C A N K E R": {
+        "nom": "B A C T E R I A L\nB A C T E R I A L  C A N K E R"
+    },
+    "B A C T E R I A L\nB A C T E R I A L  S P E C K": {
+        "nom": "B A C T E R I A L\nB A C T E R I A L  S P E C K"
+    },
+    "CAUSAL AGENT": {
+        "nom": "CAUSAL AGENT"
+    },
+    "B A C T E R I A L\nB A C T E R I A L  S P O T\nCAUSAL AGENTS": {
+        "nom": "B A C T E R I A L\nB A C T E R I A L  S P O T\nCAUSAL AGENTS"
+    },
+    "B A C T E R I A L\nB A C T E R I A L  S P O T": {
+        "nom": "B A C T E R I A L\nB A C T E R I A L  S P O T"
+    },
+    "B A C T E R I A L": {
+        "nom": "B A C T E R I A L"
+    },
+    "B A C T E R I A L  S P O T": {
+        "nom": "B A C T E R I A L  S P O T"
+    },
+    "B A C T E R I A L\nB A C T E R I A L  S T E M  R O T\nCAUSAL AGENTS": {
+        "nom": "B A C T E R I A L\nB A C T E R I A L  S T E M  R O T\nCAUSAL AGENTS"
+    },
+    "B A C T E R I A L\nB A C T E R I A L  S T E M  R O T": {
+        "nom": "B A C T E R I A L\nB A C T E R I A L  S T E M  R O T"
+    },
+    "B A C T E R I A L\nB A C T E R I A L  W I LT\nCAUSAL AGENTS": {
+        "nom": "B A C T E R I A L\nB A C T E R I A L  W I LT\nCAUSAL AGENTS"
+    },
+    "B A C T E R I A L\nB A C T E R I A L  W I LT": {
+        "nom": "B A C T E R I A L\nB A C T E R I A L  W I LT"
+    },
+    "B A C T E R I A L\nP I T H  N E C R O S I S\nCAUSAL AGENTS": {
+        "nom": "B A C T E R I A L\nP I T H  N E C R O S I S\nCAUSAL AGENTS"
+    },
+    "B A C T E R I A L\nP I T H  N E C R O S I S": {
+        "nom": "B A C T E R I A L\nP I T H  N E C R O S I S"
+    },
+    "CAUSAL AGENT OF PSYLLID YELLOWS": {
+        "nom": "CAUSAL AGENT OF PSYLLID YELLOWS"
+    },
+    "VECTOR DISTRIBUTION": {
+        "nom": "VECTOR DISTRIBUTION"
+    },
+    "PATHOGEN DISTRIBUTION": {
+        "nom": "PATHOGEN DISTRIBUTION"
+    },
+    "B A C T E R I A L\nS Y R I N G A E  L E A F  S P O T\nCAUSAL AGENT": {
+        "nom": "B A C T E R I A L\nS Y R I N G A E  L E A F  S P O T\nCAUSAL AGENT"
+    },
+    "B A C T E R I A L\nT O M AT O  R O O T  M AT": {
+        "nom": "B A C T E R I A L\nT O M AT O  R O O T  M AT"
+    },
+    "FUNGAL A N D OOMYCETE\nD I S E A S E S\nALTERNARIA STEM CANKER\nANTHRACNOSE\nBUCKEYE FRUIT AND ROOT ROT\nCERCOSPORA LEAF MOLD\nCORKY ROOT ROT": {
+        "nom": "FUNGAL A N D OOMYCETE\nD I S E A S E S\nALTERNARIA STEM CANKER\nANTHRACNOSE\nBUCKEYE FRUIT AND ROOT ROT\nCERCOSPORA LEAF MOLD\nCORKY ROOT ROT"
+    },
+    "DIDYMELLA STEM ROT\nEARLY BLIGHT\nFRUIT ROTS\nFUSARIUM CROWN AND ROOT ROT\nFUSARIUM FOOT ROT\nFUSARIUM WILT\nGRAY LEAF SPOT\nGRAY MOLD\nLATE BLIGHT\nLEAF MOLD\nPHOMA ROT\nPOWDERY MILDEW\nSEPTORIA LEAF SPOT\nSOUTHERN BLIGHT\nTARGET SPOT\nVERTICILLIUM WILT\nWHITE MOLD": {
+        "nom": "DIDYMELLA STEM ROT\nEARLY BLIGHT\nFRUIT ROTS\nFUSARIUM CROWN AND ROOT ROT\nFUSARIUM FOOT ROT\nFUSARIUM WILT\nGRAY LEAF SPOT\nGRAY MOLD\nLATE BLIGHT\nLEAF MOLD\nPHOMA ROT\nPOWDERY MILDEW\nSEPTORIA LEAF SPOT\nSOUTHERN BLIGHT\nTARGET SPOT\nVERTICILLIUM WILT\nWHITE MOLD"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nA LT E R N A R I A  S T E M  C A N K E R\nCAUSAL AGENT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nA LT E R N A R I A  S T E M  C A N K E R\nCAUSAL AGENT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nA LT E R N A R I A  S T E M  C A N K E R": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nA LT E R N A R I A  S T E M  C A N K E R"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nA N T H R A C N O S E\nCAUSAL AGENTS": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nA N T H R A C N O S E\nCAUSAL AGENTS"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nA N T H R A C N O S E": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nA N T H R A C N O S E"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nB U C K E Y E  F R U I T  A N D  R O O T  R O T\nCAUSAL AGENTS": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nB U C K E Y E  F R U I T  A N D  R O O T  R O T\nCAUSAL AGENTS"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nB U C K E Y E  F R U I T  A N D  R O O T  R O T": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nB U C K E Y E  F R U I T  A N D  R O O T  R O T"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nC E R C O S P O R A  L E A F  M O L D\nCONDITIONS FOR DISEASE DEVELOPMENT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nC E R C O S P O R A  L E A F  M O L D\nCONDITIONS FOR DISEASE DEVELOPMENT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nC E R C O S P O R A  L E A F  M O L D": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nC E R C O S P O R A  L E A F  M O L D"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nC O R K Y  R O O T  R O T\nCAUSAL AGENT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nC O R K Y  R O O T  R O T\nCAUSAL AGENT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nC O R K Y  R O O T  R O T": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nC O R K Y  R O O T  R O T"
+    },
+    "F U N G A L  A N D  O O M Y C E T E": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E"
+    },
+    "CAUSAL AGENTS": {
+        "nom": "CAUSAL AGENTS"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nD I D Y M E L L A  S T E M  R O T\nCAUSAL AGENT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nD I D Y M E L L A  S T E M  R O T\nCAUSAL AGENT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nD I D Y M E L L A  S T E M  R O T": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nD I D Y M E L L A  S T E M  R O T"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nEARLY BLIGHT\nCAUSAL AGENTS": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nEARLY BLIGHT\nCAUSAL AGENTS"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nEARLY BLIGHT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nEARLY BLIGHT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nF R U I T  R O T S\nCAUSAL AGENTS": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nF R U I T  R O T S\nCAUSAL AGENTS"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nF R U I T  R O T S\nDISEASE\nORGANISM\nSYMPTOMS": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nF R U I T  R O T S\nDISEASE\nORGANISM\nSYMPTOMS"
+    },
+    "F R U I T  R O T S": {
+        "nom": "F R U I T  R O T S"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nFUSARIUM CROWN AND ROOT ROT\nCAUSAL AGENT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nFUSARIUM CROWN AND ROOT ROT\nCAUSAL AGENT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nFUSARIUM CROWN AND ROOT ROT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nFUSARIUM CROWN AND ROOT ROT"
+    },
+    "FUSARIUM CROWN AND ROOT ROT": {
+        "nom": "FUSARIUM CROWN AND ROOT ROT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nF U S A R I U M  F O O T  R O T": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nF U S A R I U M  F O O T  R O T"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nF U S A R I U M  W I LT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nF U S A R I U M  W I LT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nG R AY  L E A F  S P O T": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nG R AY  L E A F  S P O T"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nGRAY LEAF SPOT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nGRAY LEAF SPOT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nGRAY MOLD": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nGRAY MOLD"
+    },
+    "LATE BLIGHT": {
+        "nom": "LATE BLIGHT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nLATE BLIGHT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nLATE BLIGHT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nLEAF MOLD": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nLEAF MOLD"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nPHOMA ROT\nCAUSAL AGENT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nPHOMA ROT\nCAUSAL AGENT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nPHOMA ROT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nPHOMA ROT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nPOWDERY MILDEW\nCAUSAL AGENTS": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nPOWDERY MILDEW\nCAUSAL AGENTS"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nPOWDERY MILDEW": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nPOWDERY MILDEW"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nCAUSAL AGENT": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nCAUSAL AGENT"
+    },
+    "SEPTORIA LEAF SPOT": {
+        "nom": "SEPTORIA LEAF SPOT"
+    },
+    "SOUTHERN BLIGHT": {
+        "nom": "SOUTHERN BLIGHT"
+    },
+    "F U N G A L  A N D  O O M Y C E T E\nCAUSAL AGENTS": {
+        "nom": "F U N G A L  A N D  O O M Y C E T E\nCAUSAL AGENTS"
+    },
+    "TARGET SPOT": {
+        "nom": "TARGET SPOT"
+    },
+    "VERTICILLIUM WILT": {
+        "nom": "VERTICILLIUM WILT"
+    },
+    "WHITE MOLD": {
+        "nom": "WHITE MOLD"
+    },
+    "NEMATODE\nD I S E A S E S": {
+        "nom": "NEMATODE\nD I S E A S E S"
+    },
+    "ADDITIONAL NEMATODE DISEASES": {
+        "nom": "ADDITIONAL NEMATODE DISEASES"
+    },
+    "N E M A T O D E": {
+        "nom": "N E M A T O D E"
+    },
+    "N E M A T O D E\nA D D I T I O N A L  N E M AT O D E S": {
+        "nom": "N E M A T O D E\nA D D I T I O N A L  N E M AT O D E S"
+    },
+    "PARASITIC\nP L A N T S\nBROOMRAPE\nDODDER": {
+        "nom": "PARASITIC\nP L A N T S\nBROOMRAPE\nDODDER"
+    },
+    "P A R A S I T I C  P L A N T S\nB R O O M R A P E": {
+        "nom": "P A R A S I T I C  P L A N T S\nB R O O M R A P E"
+    },
+    "CONDITIONS FOR SYMPTOM DEVELOPMENT": {
+        "nom": "CONDITIONS FOR SYMPTOM DEVELOPMENT"
+    },
+    "P A R A S I T I C  P L A N T S\nD O D D E R": {
+        "nom": "P A R A S I T I C  P L A N T S\nD O D D E R"
+    },
+    "PHYTOPLASMA\nD I S E A S E\nTOMATO BIG BUD": {
+        "nom": "PHYTOPLASMA\nD I S E A S E\nTOMATO BIG BUD"
+    },
+    "P H Y T O P L A S M A\nT O M AT O  B I G  B U D\nCAUSAL AGENTS": {
+        "nom": "P H Y T O P L A S M A\nT O M AT O  B I G  B U D\nCAUSAL AGENTS"
+    },
+    "VECTORS": {
+        "nom": "VECTORS"
+    },
+    "P H Y T O P L A S M A\nT O M AT O  B I G  B U D": {
+        "nom": "P H Y T O P L A S M A\nT O M AT O  B I G  B U D"
+    },
+    "VIRAL\nD I S E A S E S\nALFALFA MOSAIC\nCRINIVIRUS DISEASES\nCUCUMBER MOSAIC": {
+        "nom": "VIRAL\nD I S E A S E S\nALFALFA MOSAIC\nCRINIVIRUS DISEASES\nCUCUMBER MOSAIC"
+    },
+    "ILARVIRUS DISEASES\nPELARGONIUM ZONATE SPOT\nPEPINO MOSAIC\nPOTYVIRUS DISEASES\nTOBAMOVIRUS DISEASES\nTOMATO BUSHY STUNT": {
+        "nom": "ILARVIRUS DISEASES\nPELARGONIUM ZONATE SPOT\nPEPINO MOSAIC\nPOTYVIRUS DISEASES\nTOBAMOVIRUS DISEASES\nTOMATO BUSHY STUNT"
+    },
+    "TORRADOVIRUS DISEASES\nTOSPOVIRUS DISEASES\nCOMMON VECTORS OF TOMATO VIRUSES": {
+        "nom": "TORRADOVIRUS DISEASES\nTOSPOVIRUS DISEASES\nCOMMON VECTORS OF TOMATO VIRUSES"
+    },
+    "V I R A L": {
+        "nom": "V I R A L"
+    },
+    "A L FA L FA  M O S A I C\nCAUSAL AGENT": {
+        "nom": "A L FA L FA  M O S A I C\nCAUSAL AGENT"
+    },
+    "V I R A L\nA L FA L FA  M O S A I C": {
+        "nom": "V I R A L\nA L FA L FA  M O S A I C"
+    },
+    "V I R A L\nC R I N I V I R U S  D I S E A S E S\nCAUSAL AGENTS": {
+        "nom": "V I R A L\nC R I N I V I R U S  D I S E A S E S\nCAUSAL AGENTS"
+    },
+    "V I R A L\nC R I N I V I R U S  D I S E A S E S": {
+        "nom": "V I R A L\nC R I N I V I R U S  D I S E A S E S"
+    },
+    "C U C U M B E R  M O S A I C\nCAUSAL AGENT": {
+        "nom": "C U C U M B E R  M O S A I C\nCAUSAL AGENT"
+    },
+    "VECTOR": {
+        "nom": "VECTOR"
+    },
+    "V I R A L\nC U C U M B E R  M O S A I C": {
+        "nom": "V I R A L\nC U C U M B E R  M O S A I C"
+    },
+    "CYVMV": {
+        "nom": "CYVMV"
+    },
+    "PHYVV": {
+        "nom": "PHYVV"
+    },
+    "PLCBDV": {
+        "nom": "PLCBDV"
+    },
+    "PYMPV": {
+        "nom": "PYMPV"
+    },
+    "STLCV": {
+        "nom": "STLCV"
+    },
+    "TRYLCV": {
+        "nom": "TRYLCV"
+    },
+    "TYLCV": {
+        "nom": "TYLCV"
+    },
+    "TYLCCNV": {
+        "nom": "TYLCCNV"
+    },
+    "TYLCIDV": {
+        "nom": "TYLCIDV"
+    },
+    "TYLCMLV": {
+        "nom": "TYLCMLV"
+    },
+    "TYLCSV": {
+        "nom": "TYLCSV"
+    },
+    "TYLCTHV": {
+        "nom": "TYLCTHV"
+    },
+    "V I R A L\nI L A R V I R U S  D I S E A S E S\nCAUSAL AGENTS": {
+        "nom": "V I R A L\nI L A R V I R U S  D I S E A S E S\nCAUSAL AGENTS"
+    },
+    "V I R A L\nI L A R V I R U S  D I S E A S E S": {
+        "nom": "V I R A L\nI L A R V I R U S  D I S E A S E S"
+    },
+    "V I R A L\nP E L A R G O N I U M  Z O N AT E  S P O T\nCAUSAL AGENT": {
+        "nom": "V I R A L\nP E L A R G O N I U M  Z O N AT E  S P O T\nCAUSAL AGENT"
+    },
+    "V I R A L\nP E L A R G O N I U M  Z O N AT E  S P O T": {
+        "nom": "V I R A L\nP E L A R G O N I U M  Z O N AT E  S P O T"
+    },
+    "V I R A L\nP E P I N O  M O S A I C": {
+        "nom": "V I R A L\nP E P I N O  M O S A I C"
+    },
+    "POTYVIRUS DISEASES\nCAUSAL AGENTS": {
+        "nom": "POTYVIRUS DISEASES\nCAUSAL AGENTS"
+    },
+    "V I R A L\nPOTYVIRUS DISEASES": {
+        "nom": "V I R A L\nPOTYVIRUS DISEASES"
+    },
+    "V I R A L\nTOBAMOVIRUS DISEASES\nCAUSAL AGENTS": {
+        "nom": "V I R A L\nTOBAMOVIRUS DISEASES\nCAUSAL AGENTS"
+    },
+    "V I R A L\nTOBAMOVIRUS DISEASES": {
+        "nom": "V I R A L\nTOBAMOVIRUS DISEASES"
+    },
+    "V I R A L\nTOMATO BUSHY STUNT \nCAUSAL AGENT": {
+        "nom": "V I R A L\nTOMATO BUSHY STUNT \nCAUSAL AGENT"
+    },
+    "V I R A L\nTOMATO BUSHY STUNT": {
+        "nom": "V I R A L\nTOMATO BUSHY STUNT"
+    },
+    "V I R A L\nTORRADOVIRUS DISEASES\nCAUSAL AGENTS": {
+        "nom": "V I R A L\nTORRADOVIRUS DISEASES\nCAUSAL AGENTS"
+    },
+    "TORRADOVIRUS DISEASES": {
+        "nom": "TORRADOVIRUS DISEASES"
+    },
+    "V I R A L\nTORRADOVIRUS DISEASES": {
+        "nom": "V I R A L\nTORRADOVIRUS DISEASES"
+    },
+    "V I R A L\nTOSPOVIRUS DISEASES\nVECTORS": {
+        "nom": "V I R A L\nTOSPOVIRUS DISEASES\nVECTORS"
+    },
+    "CAUSAL AGENTS\nDISTRIBUTION": {
+        "nom": "CAUSAL AGENTS\nDISTRIBUTION"
+    },
+    "V I R A L\nTOSPOVIRUS DISEASES": {
+        "nom": "V I R A L\nTOSPOVIRUS DISEASES"
+    },
+    "V I R A L\nCOMMON VECTORS OF TOMATO VIRUSES": {
+        "nom": "V I R A L\nCOMMON VECTORS OF TOMATO VIRUSES"
+    },
+    "VIROIDS": {
+        "nom": "VIROIDS"
+    },
+    "CITRUS EXOCORTIS\nCOLUMNEA LATENT\nMEXICAN PAPITA\nPEPPER CHAT FRUIT\nPOTATO SPINDLE TUBER\nTOMATO APICAL STUNT\nTOMATO CHLOROTIC DWARF": {
+        "nom": "CITRUS EXOCORTIS\nCOLUMNEA LATENT\nMEXICAN PAPITA\nPEPPER CHAT FRUIT\nPOTATO SPINDLE TUBER\nTOMATO APICAL STUNT\nTOMATO CHLOROTIC DWARF"
+    },
+    "V I R O I D S": {
+        "nom": "V I R O I D S"
+    },
+    "ABIOTIC\nD I S O R D E R S\nGENETIC DISORDERS \nENVIRONMENTAL STRESSES \nINSECT DAMAGE \nPLANT NUTRIENT DISORDERS \nPESTICIDE INJURY \nUNKNOWN ETIOLOGY": {
+        "nom": "ABIOTIC\nD I S O R D E R S\nGENETIC DISORDERS \nENVIRONMENTAL STRESSES \nINSECT DAMAGE \nPLANT NUTRIENT DISORDERS \nPESTICIDE INJURY \nUNKNOWN ETIOLOGY"
+    },
+    "A B I O T I C  D I S O R D E R S\nG E N E T I C  D I S O R D E R S\nGENETIC DISORDERS": {
+        "nom": "A B I O T I C  D I S O R D E R S\nG E N E T I C  D I S O R D E R S\nGENETIC DISORDERS"
+    },
+    "A B I O T I C  D I S O R D E R S\nG E N E T I C  D I S O R D E R S": {
+        "nom": "A B I O T I C  D I S O R D E R S\nG E N E T I C  D I S O R D E R S"
+    },
+    "A B I O T I C  D I S O R D E R S\nE N V I R O N M E N TA L  S T R E S S E S\nENVIRONMENTAL STRESSES": {
+        "nom": "A B I O T I C  D I S O R D E R S\nE N V I R O N M E N TA L  S T R E S S E S\nENVIRONMENTAL STRESSES"
+    },
+    "A B I O T I C  D I S O R D E R S\nE N V I R O N M E N TA L  S T R E S S E S": {
+        "nom": "A B I O T I C  D I S O R D E R S\nE N V I R O N M E N TA L  S T R E S S E S"
+    },
+    "E N V I R O N M E N TA L  S T R E S S E S": {
+        "nom": "E N V I R O N M E N TA L  S T R E S S E S"
+    },
+    "A B I O T I C  D I S O R D E R S": {
+        "nom": "A B I O T I C  D I S O R D E R S"
+    },
+    "E N V I R O N M E N TA L  S T R E S S E S\nA B I O T I C  D I S O R D E R S": {
+        "nom": "E N V I R O N M E N TA L  S T R E S S E S\nA B I O T I C  D I S O R D E R S"
+    },
+    "I N S E C T  D A M A G E\nC L O U D Y  S P O T\nCAUSAL AGENT": {
+        "nom": "I N S E C T  D A M A G E\nC L O U D Y  S P O T\nCAUSAL AGENT"
+    },
+    "P L A N T  N U T R I E N T  D I S O R D E R S": {
+        "nom": "P L A N T  N U T R I E N T  D I S O R D E R S"
+    },
+    "P E S T I C I D E  I N J U R Y": {
+        "nom": "P E S T I C I D E  I N J U R Y"
+    },
+    "U N K N O W N  E T I O L O G Y\nB L I N D  P L A N T": {
+        "nom": "U N K N O W N  E T I O L O G Y\nB L I N D  P L A N T"
+    },
+    "GLOSSARY": {
+        "nom": "GLOSSARY"
+    },
+    "REFERENCES": {
+        "nom": "REFERENCES"
+    }
+}
