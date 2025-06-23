@@ -1,16 +1,16 @@
 import os
 from difflib import get_close_matches
 
-def collect_labels(base_dir):
+def collect_labels_recursive(root_dir):
+    """
+    Explore tous les sous-dossiers contenant des images et extrait les chemins comme labels potentiels.
+    """
     labels = set()
-    for split in ["train", "val"]:
-        split_dir = os.path.join(base_dir, split)
-        if not os.path.exists(split_dir):
-            continue
-        for d in os.listdir(split_dir):
-            full_path = os.path.join(split_dir, d)
-            if os.path.isdir(full_path):
-                labels.add(d)
+    for dirpath, _, files in os.walk(root_dir):
+        images = [f for f in files if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+        if images:
+            label = os.path.basename(dirpath)
+            labels.add(label)
     return sorted(labels)
 
 def détecter_doublons(labels, seuil_similarité=0.85):
@@ -21,20 +21,20 @@ def détecter_doublons(labels, seuil_similarité=0.85):
             doublons.append((label, match))
     return doublons
 
-# 📁 Chemin vers ton dossier unifié
-base_path = r"C:\Downloads\plantdataset\plantvillage dataset"  # à adapter !
+# 📁 À adapter selon ta machine
+base_dir = r"C:\Downloads\plantdataset\plantvillage dataset"
 
-# 📋 Récupération des classes
-labels = collect_labels(base_path)
-print(f"\n🎯 {len(labels)} classes détectées dans {base_path} :\n")
-for label in labels:
-    print("-", label)
+# 📋 Extraction des labels potentiels
+labels = collect_labels_recursive(base_dir)
+print(f"\n🎯 {len(labels)} labels détectés (profondément) dans :\n{base_dir}\n")
+for l in labels:
+    print("-", l)
 
-# 🔍 Détection des doublons proches
+# 🔍 Doublons suspects
 suspects = détecter_doublons(labels)
 if suspects:
     print("\n⚠️ Doublons ou noms très proches détectés :\n")
     for a, b in suspects:
         print(f"🔁 {a}  ≈  {b}")
 else:
-    print("\n✅ Aucun doublon apparent trouvé (au seuil donné).")
+    print("\n✅ Aucun doublon apparent détecté (selon la similarité définie)")
