@@ -26,7 +26,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 📦 Chemins vers ressources
-MODEL_PATH = "mon_modele_keras.h5"
+MODEL_PATH = "C:/plateforme-agricole-complete-v2/model/efficientnet_agro_final.keras"
 FICHES_PATH_EN = "mapping_fiches_maladies_en.json"
 FICHES_PATH_FR = "mapping_fiches_maladies.json"
 
