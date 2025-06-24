@@ -1,5 +1,6 @@
 import tensorflow as tf
-from tensorflow.keras.applications import EfficientNetB3, preprocess_input # type: ignore
+from tensorflow.keras.applications.efficientnet import EfficientNetB3, preprocess_input
+# type: ignore
 from tensorflow.keras.models import Model # type: ignore
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout # type: ignore
 from tensorflow.keras.preprocessing.image import ImageDataGenerator # type: ignore
