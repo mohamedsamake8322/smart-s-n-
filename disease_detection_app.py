@@ -3,6 +3,11 @@ import json, os
 from PIL import Image, ImageEnhance
 import numpy as np
 import tensorflow as tf
+from collections import defaultdict
+from datetime import datetime
+
+# 🕒 Heure de session
+session_time = datetime.now().strftime("%Y-%m-%d %H:%M")
 
 # 🌐 Configuration
 st.set_page_config(page_title="🌱 Diagnostic Intelligent", layout="wide")
@@ -22,7 +27,8 @@ st.markdown("""
 # 🔧 Chemins des ressources
 MODEL_PATH = "model/efficientnet_agro_final.keras"
 FICHES_PATH = "mapping_fiches_maladies.json"
-IMAGE_DIR = "illustrations"  # 📁 Dossier contenant images par maladie (optionnel)
+IMAGE_DIR = "illustrations"
+REPARTITION_JSON = "repartition_maladies_afrique.json"
 
 # 📥 Chargement du modèle
 @st.cache_resource
@@ -39,6 +45,19 @@ def load_fiches():
 
 fiches = load_fiches()
 
+# 🌍 Chargement de la répartition par pays
+@st.cache_data
+def charger_repartition_par_pays(json_path=REPARTITION_JSON):
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    pays_maladies = defaultdict(list)
+    for maladie, liste_pays in data.items():
+        for pays in liste_pays:
+            pays_maladies[pays.strip()].append(maladie)
+    return dict(pays_maladies)
+
+repartition = charger_repartition_par_pays()
+
 # 🧠 Prédiction
 def predict_image(img):
     img_resized = img.resize((224, 224))
@@ -48,8 +67,8 @@ def predict_image(img):
     confidence = float(predictions[class_index])
     return class_index, confidence
 
-# 🎯 Mapping des classes (à personnaliser selon ton modèle)
-CLASS_NAMES = list(fiches.keys())  # supposer que classes == clés du JSON
+# 🎯 Noms de classes
+CLASS_NAMES = list(fiches.keys())
 
 # 📷 Upload image
 uploaded_file = st.file_uploader("📸 Importer une image de plante", type=["jpg", "png", "jpeg"])
@@ -71,7 +90,7 @@ if uploaded_file:
         st.markdown(f"**Symptômes :** {fiche.get('symptômes', 'N/A')}")
         st.markdown(f"**Traitement :** {fiche.get('traitement', 'N/A')}")
 
-        # 🖼️ Images illustratives (si dispo)
+        # 🖼️ Images illustratives
         st.markdown("---")
         st.subheader("📸 Références visuelles similaires")
         disease_folder = os.path.join(IMAGE_DIR, maladie.replace(" ", "_"))
@@ -84,12 +103,16 @@ if uploaded_file:
         else:
             st.info("Pas d’illustrations disponibles pour cette maladie.")
 
-# Affichage
-st.title("📊 Répartition des maladies par pays")
-chart = alt.Chart(df).mark_bar().encode(
-    x=alt.X("Pays:N", sort="-y"),
-    y="Nombre de maladies:Q"
-).properties(width=800)
-st.altair_chart(chart, use_container_width=True)
+# 🌍 Répartition des maladies par pays
+st.title("🌍 Répartition géographique des maladies")
+pays_disponibles = sorted(repartition.keys())
+pays_selectionne = st.selectbox("Sélectionnez un pays :", pays_disponibles)
+
+if pays_selectionne:
+    maladies = sorted(repartition[pays_selectionne])
+    st.success(f"{len(maladies)} maladies détectées en **{pays_selectionne}** :")
+    for m in maladies:
+        st.markdown(f"• {m}")
+
 # Footer
 st.caption(f"📅 {session_time} – Mohamed'SAMAKE Diagnostic Interface")
