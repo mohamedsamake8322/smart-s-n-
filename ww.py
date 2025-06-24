@@ -1,3 +1,4 @@
+#Remplacer la 1 lettre en majuscule
 import os
 
 # Remplace ce chemin par le chemin de ton dossier principal

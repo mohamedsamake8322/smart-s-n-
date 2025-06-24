@@ -1,3 +1,4 @@
+#Traduire un chier en anglais
 import json
 import os
 from deep_translator import GoogleTranslator  # pip install deep-translator

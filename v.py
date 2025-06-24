@@ -1,3 +1,4 @@
+#Mettre un nombre d'images dans un dossier déterminer
 import os
 import shutil
 import random
