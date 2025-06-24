@@ -1,13 +1,12 @@
-#Traduire un chier en anglais
 import json
 import os
-from deep_translator import GoogleTranslator  # pip install deep-translator
+from deep_translator import GoogleTranslator, exceptions
 
-# Chemin vers le fichier source
+# 📁 Fichiers
 source_path = r"C:\plateforme-agricole-complete-v2\mapping_fiches_maladies.json"
 output_path = r"C:\plateforme-agricole-complete-v2\mapping_fiches_maladies_en.json"
 
-# Clés à traduire (et leur version anglaise)
+# 🏷️ Clés à traduire
 champ_mapping = {
     "culture": "crop",
     "Agent causal": "causal agent",
@@ -18,22 +17,27 @@ champ_mapping = {
     "traitement": "treatment"
 }
 
-# Fonction de traduction individuelle
+# 🌐 Fonction de traduction sécurisée
 def translate_text(text):
     if isinstance(text, str) and text.strip():
-        return GoogleTranslator(source='fr', target='en').translate(text)
-    return text
+        try:
+            return GoogleTranslator(source='fr', target='en').translate(text)
+        except exceptions.TranslationNotFound as e:
+            print(f"⚠️ Traduction introuvable : « {text} » → conservé tel quel.")
+        except Exception as e:
+            print(f"⚠️ Erreur inattendue sur « {text} » → {e}")
+    return text  # On renvoie le texte original si vide ou en cas d’erreur
 
-# Chargement du fichier
+# 📥 Charger le fichier source
 with open(source_path, "r", encoding="utf-8") as f:
     fiches = json.load(f)
 
 translated = {}
 total = len(fiches)
 
-# Traduction avec suivi
+# 🔄 Boucle de traduction
 for i, (maladie, infos) in enumerate(fiches.items(), 1):
-    print(f"🔄 [{i}/{total}] Traduction de : {maladie}")
+    print(f"\n🔄 [{i}/{total}] Traduction de : {maladie}")
     translated_name = translate_text(maladie)
     translated_infos = {}
     for fr_key, value in infos.items():
@@ -43,8 +47,8 @@ for i, (maladie, infos) in enumerate(fiches.items(), 1):
         print(f"   ↳ Champ « {fr_key} » traduit.")
     translated[translated_name] = translated_infos
 
-# Sauvegarde
+# 💾 Sauvegarde
 with open(output_path, "w", encoding="utf-8") as f_out:
     json.dump(translated, f_out, indent=2, ensure_ascii=False)
 
-print("\n✅ Traduction terminée. Fichier créé :", output_path)
+print(f"\n✅ Traduction terminée. Fichier enregistré dans : {output_path}")
