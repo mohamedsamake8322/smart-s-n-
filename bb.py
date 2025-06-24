@@ -1,6 +1,7 @@
 import json
 import os
-from deep_translator import deep-translatorlator
+from deep_translator import GoogleTranslator
+
 
 # Dossier contenant les fichiers JSON
 folder_path = r"C:\plateforme-agricole-complete-v2"
