@@ -1,6 +1,6 @@
 import json
 import os
-from deep_translator import GoogleTranslator, exceptions
+from deep_translator import deep-translatorlator, exceptions
 
 # 📁 Fichiers
 source_path = r"C:\plateforme-agricole-complete-v2\mapping_fiches_maladies.json"
@@ -21,7 +21,7 @@ champ_mapping = {
 def translate_text(text):
     if isinstance(text, str) and text.strip():
         try:
-            return GoogleTranslator(source='fr', target='en').translate(text)
+            return deep-translatorlator(source='fr', target='en').translate(text)
         except exceptions.TranslationNotFound as e:
             print(f"⚠️ Traduction introuvable : « {text} » → conservé tel quel.")
         except Exception as e:

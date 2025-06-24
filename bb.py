@@ -1,6 +1,6 @@
 import json
 import os
-from deep_translator import GoogleTranslator
+from deep_translator import deep-translatorlator
 
 # Dossier contenant les fichiers JSON
 folder_path = r"C:\plateforme-agricole-complete-v2"
@@ -16,7 +16,7 @@ def translate_content(content):
         return [translate_content(item) for item in content]
     elif isinstance(content, str):
         try:
-            return GoogleTranslator(source='auto', target='en').translate(text=content)
+            return deep-translatorlator(source='auto', target='en').translate(text=content)
         except Exception as e:
             print(f"Erreur de traduction: {e}")
             return content
