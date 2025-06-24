@@ -566,7 +566,7 @@
         "Nom de la matière active du produit": "Azoxystrobine, propiconazole, pyraclostrobine",
         "traitement": "Rotation culturale, variétés résistantes, traitements fongicides préventifs, enfouissement des résidus."
     },
-    "Corn (Maïs) common rust": {
+    "Common rust": {
         "culture": "Maïs",
         "Agent causal": "*Puccinia sorghi*, champignon rouille",
         "description": "Maladie fongique provoquant des pustules brun-rouge sur les feuilles, réduisant la surface photosynthétique.",
@@ -881,7 +881,7 @@
         "Nom de la matière active du produit": "Captane, cuivre, thiophanate-méthyl",
         "traitement": "Élimination des feuilles atteintes, traitements fongicides préventifs, espacement des plants, irrigation au sol."
     },
-    "Streak virus": {
+    "Streak virus ": {
         "culture": "Maïs, tomate, tabac, coton, tournesol",
         "Agent causal": "*Maize streak virus* (MSV), *Tobacco streak virus* (TSV), genre *Mastrevirus* ou *Ilarvirus*",
         "description": "Virus transmis par des insectes vecteurs (cicadelles, thrips), provoquant des stries chlorotiques et un nanisme.",
@@ -988,5 +988,336 @@
         "évolution": "Le champignon pénètre par les racines et colonise le xylème, bloquant la circulation de l’eau. Il peut persister dans le sol pendant plus de 10 ans sous forme de microsclérotes.",
         "Nom de la matière active du produit": "Pas de fongicide curatif. Prévention : Trichoderma spp., biofumigation, solarisation",
         "traitement": "Utiliser des variétés résistantes (ex. ‘Verticillium-tolerant’), rotation culturale longue (>4 ans), solarisation du sol, amélioration du drainage, désinfection des outils, apport de composts suppressifs."
+    },
+    "Apple apple scab": {
+        "culture": "Pommier",
+        "Agent causal": "Venturia inaequalis (champignon)",
+        "description": "Champignon responsable de la tavelure, principale maladie fongique du pommier dans les zones humides.",
+        "symptômes": "Taches brun-olive sur les feuilles, les fruits et les jeunes rameaux. Fruits déformés, craquelés.",
+        "évolution": "Se conserve sur les feuilles mortes. Propagation favorisée par l'humidité et les pluies de printemps.",
+        "Nom de la matière active du produit": "Fongicides à base de captane, dithianon, soufre, ou cuivre (AB).",
+        "traitement": "Ramassage des feuilles mortes, traitements fongicides en préventif dès le débourrement, variétés tolérantes."
+    },
+    "Apple black rot": {
+        "culture": "Pommier",
+        "Agent causal": "Botryosphaeria obtusa (syn. Diplodia seriata)",
+        "description": "Maladie provoquant la pourriture noire des fruits, des chancres et des taches sur feuilles.",
+        "symptômes": "Taches concentriques noirâtres sur fruits, lésions foliaires en 'œil de grenouille', chancres sur rameaux.",
+        "évolution": "Le champignon hiverne dans les chancres et les momies de fruits. Contamination par la pluie.",
+        "Nom de la matière active du produit": "Fongicides : thiophanate-méthyl, pyraclostrobine, captane.",
+        "traitement": "Élagage des branches atteintes, élimination des fruits momifiés, traitements préfloraison et postfloraison."
+    },
+    "Apple cedar apple rust": {
+        "culture": "Pommier (avec alternance sur genévrier)",
+        "Agent causal": "Gymnosporangium juniperi-virginianae",
+        "description": "Maladie cryptogamique nécessitant deux hôtes pour son cycle : pommier et genévrier.",
+        "symptômes": "Taches jaune-orange sur feuilles de pommier, pustules sous les feuilles, lésions sur fruits.",
+        "évolution": "Cycle de deux ans avec alternance hôte. Spores émises au printemps par le genévrier.",
+        "Nom de la matière active du produit": "Myclobutanil, fenarimol, cuivre (bio).",
+        "traitement": "Éviter la proximité avec les genévriers. Traitement fongicide préventif au printemps."
+    },
+    "Apple healthy": {
+        "culture": "Pommier",
+        "Agent causal": "Aucun (plante saine)",
+        "description": "Exemplaire visuellement sain servant de classe de référence dans l’apprentissage automatique.",
+        "symptômes": "Feuilles vertes, sans taches ni déformation. Fruits lisses, bien formés.",
+        "évolution": "Absence de symptômes visibles dans les conditions d’observation.",
+        "Nom de la matière active du produit": "—",
+        "traitement": "—"
+    },
+    "Bacterial blight": {
+        "culture": "Soja, riz, haricot, pommier, poirier",
+        "Agent causal": "Xanthomonas spp. ou Erwinia amylovora selon la culture",
+        "description": "Maladie bactérienne provoquant des lésions humides, nécroses foliaires et chancres sur tiges ou rameaux.",
+        "symptômes": "Taches angulaires brun foncé à noires, suintements bactériens, flétrissement, défoliation.",
+        "évolution": "Propagation rapide par éclaboussures d’eau, outils contaminés ou semences infectées.",
+        "Nom de la matière active du produit": "Cuivre, kasugamycine, oxytétracycline (selon réglementation locale)",
+        "traitement": "Rotation culturale, semences saines, désinfection des outils, traitements bactéricides préventifs."
+    },
+    "Bacterial spot": {
+        "culture": "Tomate, poivron, aubergine",
+        "Agent causal": "Xanthomonas vesicatoria",
+        "description": "Maladie bactérienne fréquente en climat chaud et humide, affectant feuilles, tiges et fruits.",
+        "symptômes": "Petites taches noires sur feuilles, lésions ovales sur tiges, croûtes sur fruits.",
+        "évolution": "Transmission par semences, éclaboussures d’eau, outils ou manipulation de plants mouillés.",
+        "Nom de la matière active du produit": "Cuivre + mancozèbe, kasugamycine",
+        "traitement": "Semences certifiées, éviter l’irrigation par aspersion, traitements préventifs au cuivre."
+    },
+    "Beetles and  leafhoppers": {
+        "culture": "Maïs, betterave, vigne, tomate, pomme de terre",
+        "Agent causal": "Vecteurs de virus et phytoplasmes (ex. curly top, aster yellows)",
+        "description": "Insectes piqueurs-suceurs transmettant des maladies virales ou bactériennes aux plantes.",
+        "symptômes": "Jaunissement, nanisme, enroulement foliaire, mosaïques, déformations.",
+        "évolution": "Transmission persistante ou semi-persistante selon le pathogène. Migration active des insectes.",
+        "Nom de la matière active du produit": "Spinosad, pyréthrinoïdes, acétamipride (attention à la réglementation)",
+        "traitement": "Lutte intégrée : filets, plantes pièges, insecticides ciblés, surveillance des populations."
+    },
+    "Blueberry  healthy": {
+        "culture": "Myrtille",
+        "Agent causal": "Aucun (plante saine)",
+        "description": "Exemplaire sain utilisé comme référence pour l’apprentissage automatique ou la détection visuelle.",
+        "symptômes": "Feuillage vert foncé, fruits bleus fermes, aucune tache ni déformation.",
+        "évolution": "Croissance normale sans stress biotique visible.",
+        "Nom de la matière active du produit": "—",
+        "traitement": "—"
+    },
+    "Cherry (including sour)  healthy": {
+        "culture": "Cerisier doux et acide",
+        "Agent causal": "Aucun (plante saine)",
+        "description": "Feuillage sain, fruits sans taches ni pourriture, croissance équilibrée.",
+        "symptômes": "Feuilles vertes, fruits brillants, absence de symptômes fongiques ou bactériens.",
+        "évolution": "Développement normal sans altération visible.",
+        "Nom de la matière active du produit": "—",
+        "traitement": "—"
+    },
+    "Cherry (including sour)  powdery mildew": {
+        "culture": "Cerisier",
+        "Agent causal": "Podosphaera clandestina",
+        "description": "Maladie cryptogamique affectant feuilles, jeunes pousses et fruits, surtout en climat humide.",
+        "symptômes": "Feutrage blanc sur feuilles jeunes, fruits couverts de poudre blanche, déformation des pousses.",
+        "évolution": "Propagation par spores en conditions chaudes et humides, survie hivernale dans les chancres.",
+        "Nom de la matière active du produit": "Soufre, myclobutanil, trifloxystrobine",
+        "traitement": "Élagage des parties atteintes, traitements fongicides préventifs après floraison."
+    },
+    "Northern leaf blight": {
+        "culture": "Maïs",
+        "Agent causal": "Exserohilum turcicum",
+        "description": "Maladie foliaire majeure du maïs, causant des pertes de rendement importantes.",
+        "symptômes": "Lésions allongées en forme de cigare, grises à brunes, sur feuilles inférieures puis supérieures.",
+        "évolution": "Spores disséminées par le vent, favorisée par humidité et températures modérées (18–27 °C).",
+        "Nom de la matière active du produit": "Azoxystrobine, pyraclostrobine, propiconazole",
+        "traitement": "Hybrides résistants, rotation culturale, fongicides en préventif dès apparition des symptômes."
+    },
+    "Corn earworm  tomato fruitworm": {
+        "culture": "Maïs, tomate, poivron, coton",
+        "Agent causal": "Helicoverpa zea (insecte ravageur)",
+        "description": "Lépidoptère polyphage dont les larves creusent les fruits et les épis.",
+        "symptômes": "Trous dans les fruits, galeries remplies de déjections, fruits pourris ou prématurément mûrs.",
+        "évolution": "3 générations/an, ponte sur feuilles ou soies, larves pénètrent dans les fruits.",
+        "Nom de la matière active du produit": "Spinosad, Bacillus thuringiensis, méthoxyfénozide",
+        "traitement": "Piégeage des adultes, traitements ciblés sur œufs/jeunes larves, variétés résistantes."
+    },
+    "Cucumber_mosaic_geminiviruses": {
+        "culture": "Concombre, melon, courge, tomate, épinard",
+        "Agent causal": "Cucumber mosaic virus (CMV), parfois associé à des geminivirus",
+        "description": "Virus très polyphage transmis par les pucerons, provoquant mosaïques et déformations.",
+        "symptômes": "Feuilles en mosaïque, rabougrissement, fruits déformés ou striés, croissance ralentie.",
+        "évolution": "Transmission non persistante par plus de 80 espèces de pucerons, propagation rapide.",
+        "Nom de la matière active du produit": "Aucun antiviral. Huiles minérales, savon insecticide.",
+        "traitement": "Élimination des plantes infectées, lutte contre les pucerons, variétés résistantes, paillage réfléchissant."
+    },
+    "Grape  black rot": {
+        "culture": "Vigne",
+        "Agent causal": "Guignardia bidwellii",
+        "description": "Maladie fongique provoquant la pourriture noire des baies et des lésions foliaires.",
+        "symptômes": "Taches brunes sur feuilles, fruits momifiés noirs, lésions sur rameaux.",
+        "évolution": "Spores libérées par la pluie, infection favorisée par chaleur et humidité.",
+        "Nom de la matière active du produit": "Captane, mancozèbe, myclobutanil",
+        "traitement": "Élimination des fruits momifiés, traitements fongicides dès le débourrement."
+    },
+    "Grape  esca (black measles)": {
+        "culture": "Vigne (souvent >5 ans)",
+        "Agent causal": "Complexe fongique : Phaeomoniella chlamydospora, Phaeoacremonium spp.",
+        "description": "Maladie du bois chronique provoquant des stries noires internes et des symptômes foliaires en 'tigre'.",
+        "symptômes": "Feuilles tigrées, fruits tachés (measles), dessèchement brutal (apoplexie), bois noirci.",
+        "évolution": "Infection par les plaies de taille, expression favorisée par stress hydrique et chaleur.",
+        "Nom de la matière active du produit": "Topsin-M (thiophanate-méthyl), myclobutanil, peinture au boron",
+        "traitement": "Protection des plaies de taille, double taille, élimination du bois atteint."
+    },
+    "Grape  healthy": {
+        "culture": "Vigne",
+        "Agent causal": "Aucun (plante saine)",
+        "description": "Pied de vigne sans symptômes, utilisé comme référence dans les modèles de détection.",
+        "symptômes": "Feuilles vertes, grappes intactes, absence de nécroses ou de taches.",
+        "évolution": "Développement normal sans manifestation de pathogènes connus."
+    },
+    "Grape  leaf blight (isariopsis leaf spot)": {
+        "culture": "Vigne",
+        "Agent causal": "Pseudocercospora vitis (anciennement Isariopsis griseola)",
+        "description": "Maladie fongique affectant principalement les feuilles de vigne, provoquant des taches nécrotiques et une défoliation prématurée.",
+        "symptômes": "Taches angulaires brun foncé à noires, souvent bordées de halos chlorotiques. Les lésions peuvent se rejoindre et provoquer un dessèchement foliaire.",
+        "évolution": "Se propage par les spores en conditions humides. Survit dans les débris végétaux. Favorisée par les printemps pluvieux.",
+        "Nom de la matière active du produit": "Captane, mancozèbe, cuivre (en bio), trifloxystrobine",
+        "traitement": "Élimination des feuilles infectées, traitements fongicides préventifs, aération de la canopée."
+    },
+    "Leaf beetle": {
+        "culture": "Pomme de terre, betterave, maïs, ornementales",
+        "Agent causal": "Famille Chrysomelidae (ex. Leptinotarsa decemlineata, Oulema melanopus)",
+        "description": "Coléoptères phytophages dont les larves et adultes consomment les feuilles, réduisant la photosynthèse.",
+        "symptômes": "Feuilles perforées, squelettisées ou partiellement dévorées. Présence d’adultes brillants ou de larves noires.",
+        "évolution": "Cycle rapide en conditions chaudes. Ponte sur la face inférieure des feuilles. Plusieurs générations par an.",
+        "Nom de la matière active du produit": "Spinosad, pyréthrinoïdes, azadirachtine (neem)",
+        "traitement": "Ramassage manuel, filets anti-insectes, traitements ciblés en début d’infestation."
+    },
+    "Leaf spot": {
+        "culture": "Nombreuses cultures (tomate, soja, céréales, arbres fruitiers)",
+        "Agent causal": "Champignons (Cercospora, Septoria, Alternaria) ou bactéries (Xanthomonas, Pseudomonas)",
+        "description": "Groupe de maladies provoquant des taches foliaires nécrotiques, souvent circulaires ou angulaires.",
+        "symptômes": "Taches brunes, noires ou rouges, parfois concentriques. Chute prématurée des feuilles si sévère.",
+        "évolution": "Favorisée par l’humidité, la pluie et les éclaboussures. Survie dans les débris végétaux.",
+        "Nom de la matière active du produit": "Cuivre, mancozèbe, chlorothalonil, thiophanate-méthyl",
+        "traitement": "Rotation culturale, aération, traitements préventifs, élimination des feuilles atteintes."
+    },
+    "Orange  haunglongbing (citrus greening)": {
+        "culture": "Agrumes (oranger, citronnier, mandarinier)",
+        "Agent causal": "Candidatus Liberibacter spp. (bactérie transmise par le psylle asiatique)",
+        "description": "Maladie bactérienne incurable provoquant le dépérissement des agrumes. Aussi appelée HLB ou 'dragon jaune'.",
+        "symptômes": "Feuilles marbrées asymétriques, fruits verts, petits et amers, chute prématurée, déclin de l’arbre.",
+        "évolution": "Transmise par Diaphorina citri. Arbre infecté reste porteur à vie. Aucun traitement curatif.",
+        "Nom de la matière active du produit": "Aucun. Lutte contre le vecteur (psylle) avec insecticides systémiques.",
+        "traitement": "Élimination des arbres infectés, lutte contre le psylle, surveillance stricte, variétés tolérantes en développement."
+    },
+    "Pepper_mottle_pepper": {
+        "culture": "Poivron (Capsicum spp.)",
+        "Agent causal": "Pepper mild mottle virus (PMMoV), genre Tobamovirus",
+        "description": "Virus très stable transmis par semences et contact, provoquant des déformations et pertes de rendement.",
+        "symptômes": "Mosaïque, chlorose, feuilles déformées, fruits bosselés ou striés, croissance ralentie.",
+        "évolution": "Transmission mécanique (mains, outils), semences infectées. Très persistant sur surfaces inertes.",
+        "Nom de la matière active du produit": "Aucun antiviral. Désinfection avec lait écrémé, savon, iodophores.",
+        "traitement": "Semences certifiées, désinfection des outils, élimination des plants infectés, variétés résistantes (gène L)."
+    },
+    "Phomopsis blight": {
+        "culture": "Aubergine, poivron, tomate, genévrier (selon espèce)",
+        "Agent causal": "Phomopsis vexans (aubergine) ou Phomopsis juniperovora (genévrier)",
+        "description": "Maladie fongique provoquant des lésions sur tiges, feuilles et fruits, entraînant flétrissement et pourriture.",
+        "symptômes": "Taches brunes à noires sur feuilles, chancres sur tiges, pourriture molle des fruits avec pycnides noires en cercles.",
+        "évolution": "Survit dans les débris végétaux et fruits momifiés. Propagation par éclaboussures d’eau, favorisée par chaleur et humidité.",
+        "Nom de la matière active du produit": "Captane, chlorothalonil, thiophanate-méthyl",
+        "traitement": "Rotation culturale, destruction des résidus, semences saines, traitements fongicides préventifs."
+    },
+    "Potato early blight": {
+        "culture": "Pomme de terre, tomate",
+        "Agent causal": "Alternaria solani",
+        "description": "Maladie fongique fréquente provoquant des pertes de rendement importantes sur feuilles, tiges et tubercules.",
+        "symptômes": "Taches brunes concentriques ('œil de bœuf') sur feuilles âgées, lésions sur tiges, pourriture sèche des tubercules.",
+        "évolution": "Favorisée par chaleur (20–30 °C) et humidité. Survit dans le sol et les débris. Infection rapide en conditions favorables.",
+        "Nom de la matière active du produit": "Azoxystrobine, mancozèbe, chlorothalonil, difenoconazole",
+        "traitement": "Rotation, élimination des débris, traitements fongicides dès les premiers symptômes."
+    },
+    "Early Blight": {
+        "culture": "Tomate, pomme de terre, aubergine",
+        "Agent causal": "Alternaria solani ou A. tomatophila",
+        "description": "Maladie fongique provoquant des lésions foliaires, tiges et fruits, avec défoliation rapide si non contrôlée.",
+        "symptômes": "Taches brunes à noires avec anneaux concentriques, chlorose, flétrissement, lésions sur collet et fruits.",
+        "évolution": "Spores disséminées par le vent et la pluie. Survie dans les débris. Développement rapide par temps chaud et humide.",
+        "Nom de la matière active du produit": "Chlorothalonil, mancozèbe, boscalid, fluopyram",
+        "traitement": "Rotation, désinfection, traitements fongicides préventifs, variétés tolérantes."
+    },
+    "Raspberry healthy": {
+        "culture": "Framboisier",
+        "Agent causal": "Aucun (plante saine)",
+        "description": "Exemplaire sain utilisé comme référence dans les modèles de détection ou pour l’apprentissage automatique.",
+        "symptômes": "Feuilles vertes, fruits rouges fermes, aucune tache ni déformation visible.",
+        "évolution": "Croissance normale sans stress biotique ou abiotique apparent.",
+        "Nom de la matière active du produit": "—",
+        "traitement": "—"
+    },
+    "Septoria leaf spot": {
+        "culture": "Tomate, aubergine, pomme de terre, soja",
+        "Agent causal": "Septoria spp. (ex. Septoria lycopersici, Septoria glycines)",
+        "description": "Maladie fongique très fréquente sur les Solanacées, provoquant des taches foliaires et une défoliation prématurée.",
+        "symptômes": "Petites taches circulaires à centre gris et bord brun, souvent sur les feuilles inférieures. Chute rapide du feuillage.",
+        "évolution": "Spores disséminées par la pluie, le vent ou les outils. Survit dans les débris végétaux. Favorisée par l’humidité.",
+        "Nom de la matière active du produit": "Cuivre, chlorothalonil, mancozèbe, thiophanate-méthyl",
+        "traitement": "Rotation culturale, élimination des feuilles infectées, traitements fongicides préventifs, aération des plants."
+    },
+    "Soybean healthy": {
+        "culture": "Soja",
+        "Agent causal": "Aucun (plante saine)",
+        "description": "Exemplaire sain utilisé comme référence dans les modèles de détection ou pour l’apprentissage automatique.",
+        "symptômes": "Feuillage vert uniforme, gousses bien formées, croissance régulière.",
+        "évolution": "Développement normal sans stress biotique ou abiotique apparent.",
+        "Nom de la matière active du produit": "—",
+        "traitement": "—"
+    },
+    "Squash powdery mildew": {
+        "culture": "Courge, courgette, melon, concombre",
+        "Agent causal": "Podosphaera xanthii, Golovinomyces cichoracearum",
+        "description": "Maladie cryptogamique très fréquente sur cucurbitacées, provoquant un feutrage blanc sur les feuilles.",
+        "symptômes": "Taches poudreuses blanches sur les deux faces des feuilles, jaunissement, dessèchement, fruits exposés au soleil.",
+        "évolution": "Propagation rapide par le vent. Favorisée par chaleur et humidité. Peut apparaître même par temps sec.",
+        "Nom de la matière active du produit": "Soufre, trifloxystrobine, myclobutanil, bicarbonate de potassium",
+        "traitement": "Variétés résistantes, traitements préventifs, espacement des plants, suppression des feuilles atteintes."
+    },
+    "Strawberry healthy": {
+        "culture": "Fraisier",
+        "Agent causal": "Aucun (plante saine)",
+        "description": "Plant sain sans symptômes de maladies fongiques, bactériennes ou virales.",
+        "symptômes": "Feuilles vertes, fruits rouges brillants, aucune tache ni déformation.",
+        "évolution": "Croissance normale, bon rendement, pas de stress visible.",
+        "Nom de la matière active du produit": "—",
+        "traitement": "—"
+    },
+    "Strawberry leaf scorch": {
+        "culture": "Fraisier",
+        "Agent causal": "Diplocarpon earlianum (syn. Marssonina fragariae)",
+        "description": "Maladie fongique provoquant des taches sombres sur les feuilles, menant à leur dessèchement.",
+        "symptômes": "Taches pourpres à noires sans centre clair, feuilles qui brunissent, se recroquevillent et se dessèchent.",
+        "évolution": "Survit dans les débris végétaux. Propagation par éclaboussures d’eau. Favorisée par humidité et chaleur.",
+        "Nom de la matière active du produit": "Captane, myclobutanil, cuivre",
+        "traitement": "Élimination des feuilles atteintes, aération, traitements fongicides préventifs, variétés résistantes."
+    },
+    "Streak virus": {
+        "culture": "Maïs, graminées sauvages",
+        "Agent causal": "Maize streak virus (MSV), genre Mastrevirus",
+        "description": "Virus transmis par cicadelles, provoquant des stries chlorotiques sur les feuilles et un nanisme sévère.",
+        "symptômes": "Stries jaunes parallèles sur les feuilles, croissance ralentie, épis absents ou mal formés.",
+        "évolution": "Transmis par Cicadulina mbila. Virus très stable, persiste dans les hôtes sauvages. Endémique en Afrique.",
+        "Nom de la matière active du produit": "Aucun antiviral. Lutte contre le vecteur.",
+        "traitement": "Variétés résistantes, lutte contre les cicadelles, désherbage des graminées hôtes, semis précoces."
+    },
+    "Tobacco mosaic virus & tomato mosaic virus": {
+        "culture": "Tabac, tomate, poivron, aubergine, ornementales",
+        "Agent causal": "Tobacco mosaic virus (TMV), Tomato mosaic virus (ToMV), genre Tobamovirus",
+        "description": "Virus très stable transmis mécaniquement, provoquant mosaïques, déformations et pertes de rendement.",
+        "symptômes": "Mosaïque vert clair/foncé, feuilles déformées, croissance ralentie, fruits striés ou nécrosés.",
+        "évolution": "Transmission par semences, outils, mains, tabac. Survie longue sur surfaces inertes (plusieurs années).",
+        "Nom de la matière active du produit": "Aucun antiviral. Désinfection : lait écrémé, savon, solutions iodées.",
+        "traitement": "Semences saines, désinfection des outils, éviter le tabac, éliminer les plantes infectées, variétés résistantes."
+    },
+    "Tomato  spider mites two-spotted spider mite": {
+        "culture": "Tomate, aubergine, poivron, haricot",
+        "Agent causal": "Tetranychus urticae (acarien tétranyque à deux points)",
+        "description": "Acarien microscopique suceur de sève, provoquant des décolorations, un flétrissement et une chute des feuilles.",
+        "symptômes": "Feuilles ponctuées de taches jaunes, aspect marbré, toiles fines sous les feuilles, dessèchement progressif.",
+        "évolution": "Se développe rapidement par temps chaud et sec. Plusieurs générations par saison. Résistance fréquente aux acaricides.",
+        "Nom de la matière active du produit": "Abamectine, bifenazate, spirodiclofen, huiles végétales (menthe, clou de girofle)",
+        "traitement": "Pulvérisation sur la face inférieure des feuilles, introduction d’acariens prédateurs (Phytoseiulus persimilis), éviter le stress hydrique."
+    },
+    "Tomato  target spot": {
+        "culture": "Tomate, papaye, soja, coton, concombre",
+        "Agent causal": "Corynespora cassiicola (champignon nécrotrophe)",
+        "description": "Maladie fongique provoquant des lésions foliaires circulaires à centre clair et anneaux concentriques.",
+        "symptômes": "Taches brunes à centre grisâtre avec cercles concentriques ('cible'), souvent sur les feuilles inférieures. Chute prématurée du feuillage.",
+        "évolution": "Survit dans les débris végétaux. Propagation par le vent et la pluie. Favorisée par l’humidité et les températures chaudes.",
+        "Nom de la matière active du produit": "Chlorothalonil, azoxystrobine, mancozèbe, cuivre",
+        "traitement": "Rotation culturale, aération des plants, traitements fongicides dès les premiers symptômes."
+    },
+    "Mosaic virus": {
+        "culture": "Tomate, pomme de terre, concombre, melon, haricot, tabac",
+        "Agent causal": "Famille des Potyvirus (ex. TMV, CMV, PVY)",
+        "description": "Groupe de virus provoquant des mosaïques, déformations et pertes de rendement. Transmis par insectes ou contact.",
+        "symptômes": "Feuilles marbrées vert clair/foncé, déformations, croissance ralentie, fruits striés ou bosselés.",
+        "évolution": "Transmission par pucerons, semences, outils ou contact. Virus très stable, persistant sur surfaces inertes.",
+        "Nom de la matière active du produit": "Aucun antiviral. Désinfection avec savon, lait écrémé, iodophores.",
+        "traitement": "Semences saines, désinfection des outils, élimination des plants infectés, variétés résistantes."
+    },
+    "Western striped and spotted cucumber beetle": {
+        "culture": "Concombre, melon, courge, maïs, haricot",
+        "Agent causal": "Acalymma trivittatum (rayé), Diabrotica undecimpunctata (tacheté)",
+        "description": "Coléoptères ravageurs des cucurbitacées, responsables de dégâts directs et vecteurs de virus (mosaïque, flétrissement bactérien).",
+        "symptômes": "Feuilles perforées, fleurs détruites, cicatrices sur fruits, flétrissement des jeunes plants.",
+        "évolution": "Hivernent à l’état adulte. Actifs dès le printemps. Ponte au pied des plants. Larves attaquent les racines.",
+        "Nom de la matière active du produit": "Spinosad, pyréthrinoïdes, acétamipride, huiles végétales",
+        "traitement": "Filets anti-insectes, piégeage, traitements ciblés, destruction des résidus de culture."
+    },
+    "Yellow_mosaic_potato x": {
+        "culture": "Pomme de terre",
+        "Agent causal": "Potato virus X (PVX), genre Potexvirus",
+        "description": "Virus latent ou faiblement symptomatique, mais pouvant réduire les rendements. Symptômes amplifiés en co-infection.",
+        "symptômes": "Mosaïque légère, feuilles légèrement gaufrées ou sans symptômes visibles. Crénelures discrètes.",
+        "évolution": "Transmission par contact, outils, tubercules infectés. Très stable. Pas de vecteur connu.",
+        "Nom de la matière active du produit": "Aucun antiviral. Prévention uniquement.",
+        "traitement": "Utilisation de plants certifiés sains, désinfection des outils, élimination des plants infectés."
     }
 }

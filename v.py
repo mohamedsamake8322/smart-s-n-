@@ -3,7 +3,7 @@ import shutil
 import random
 
 # 📂 Répertoires
-train_dir = r"C:\plateforme-agricole-complete-v2\plantdataset\train"
+train_dir = r"C:\plateforme-agricole-complete-v2\plantdataset\val"
 illustrations_dir = r"C:\plateforme-agricole-complete-v2\illustrations"
 max_images = 8
 extensions = [".jpg", ".jpeg", ".png", ".webp"]
