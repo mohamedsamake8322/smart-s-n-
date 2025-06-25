@@ -36,7 +36,7 @@ class SafeDirectoryIterator(Sequence):
         self.directory = directory
         self.kwargs = kwargs
         print("🔍 Filtrage des images corrompues...")
-        temp_gen = datagen.flow_from_directory(directory, shuffle=False, **kwargs)
+        temp_gen = datagen.flow_from_directory(directory, **kwargs)
         valid_files = []
         for fname in temp_gen.filenames:
             path = os.path.join(directory, fname)
