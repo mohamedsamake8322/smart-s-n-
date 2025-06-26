@@ -4,7 +4,7 @@ import os
 
 start = time.time()
 
-zip_path = r"C:\plateforme-agricole-complete-v2\plantdataset.zip"
+zip_path = r"C:\plateforme-agricole-complete-v2\Moh\plantdataset.zip"
 extract_to = r"H:\My Drive\My drive"
 
 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
