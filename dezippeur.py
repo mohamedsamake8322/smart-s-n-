@@ -9,11 +9,13 @@ extract_to = r"H:\My Drive\My drive"
 
 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
     file_list = zip_ref.namelist()
-    total = len(file_list)
+    total = 0
 
-    for i, file in enumerate(file_list, 1):
-        zip_ref.extract(file, extract_to)
-        print(f"[{i}/{total}] {file} extrait")
+    for file in file_list:
+        if file.startswith("plantdataset/train/") or file.startswith("plantdataset/val/"):
+            zip_ref.extract(file, extract_to)
+            total += 1
+            print(f"[{total}] {file} extrait")
 
 end = time.time()
-print(f"\n✅ Décompression terminée en {end - start:.2f} secondes.")
+print(f"\n✅ Extraction sélective terminée en {end - start:.2f} secondes.")
