@@ -10,8 +10,10 @@ SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 def authenticate():
     creds = InstalledAppFlow.from_client_secrets_file(
-        r"C:\Users\moham\Music\1\client_secret.json", SCOPES
-    ).run_local_server(port=0)
+    r"C:\Users\moham\Music\1\client_secret_363639044199-fase78nv9gfo3afuolkq9hhrnke96kdv.apps.googleusercontent.com.json",
+    SCOPES
+).run_local_server(port=0)
+
     return build('drive', 'v3', credentials=creds)
 
 def create_drive_folder(service, folder_name, parent_id=None):
