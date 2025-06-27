@@ -9,12 +9,34 @@ import streamlit as st
 import sys
 from pathlib import Path
 import sys
+import json
+
+data_dir = project_root / "SmartFertilizerPro" / "data"
+crop_profiles = json.load(open(data_dir / "crop_profiles.json", encoding="utf-8"))
+regional_prices = json.load(open(data_dir / "regional_prices.json", encoding="utf-8"))
+
 from pathlib import Path
 # Importer l'API FastAPI
 from SmartFertilizerPro.api import main as fertilizer_api
 from SmartFertilizerPro.api.models import SoilAnalysis
 from core.smart_fertilizer_engine import SmartFertilizerEngine
 from core.regional_context import RegionalContext
+from SmartFertilizerPro.core.smart_fertilization import SmartFertilizationEngine
+from SmartFertilizerPro.core.fertilizer_optimizer import FertilizerOptimizer
+from SmartFertilizerPro.core.agronomic_knowledge_base import get_nutrient_thresholds
+from SmartFertilizerPro.core.regional_context import RegionalContext
+from SmartFertilizerPro.core.smart_fertilizer_engine import SmartFertilizerEngine
+from SmartFertilizerPro.exports.pdf_generator import generate_pdf_report
+from SmartFertilizerPro.exports.export_utils import prepare_export_payload
+from SmartFertilizerPro.regions.region_selector import get_region_by_gps
+from SmartFertilizerPro.regions.regional_context import RegionalContext
+from SmartFertilizerPro.ui.smart_ui import SmartFertilizerUI
+from SmartFertilizerPro.ui.crop_selector import get_crop_options
+from SmartFertilizerPro.ui.translations import translate_label
+from SmartFertilizerPro.weather.weather_client import fetch_weather_forecast
+from SmartFertilizerPro.weather.iot_simulator import simulate_sensor_data
+from SmartFertilizerPro.interfaces import run_smart_fertilizer_app
+run_smart_fertilizer_app()
 
 # Utiliser l'objet app ou les fonctions
 
