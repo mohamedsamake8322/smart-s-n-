@@ -16,11 +16,20 @@ sys.path.insert(0, str(project_root))
 
 # 📂 Load data
 data_dir = project_root / "SmartFertilizerPro" / "data"
-with open(data_dir / "crop_profiles.json", encoding="utf-8") as f:
+
+crop_profiles_path = data_dir / "crop_profiles.json"
+regional_prices_path = data_dir / "regional_prices.json"
+
+if not crop_profiles_path.exists() or not regional_prices_path.exists():
+    st.error("❌ Fichiers de données manquants dans SmartFertilizerPro/data/")
+    st.stop()
+
+with open(crop_profiles_path, encoding="utf-8") as f:
     crop_profiles = json.load(f)
 
-with open(data_dir / "regional_prices.json", encoding="utf-8") as f:
+with open(regional_prices_path, encoding="utf-8") as f:
     regional_prices = json.load(f)
+
 
 # 🚀 Import core app modules
 from SmartFertilizerPro.api import main as fertilizer_api
