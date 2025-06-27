@@ -6,14 +6,14 @@ class AgronomicKnowledgeBase:
     """
     Comprehensive agronomic knowledge base containing fertilizer and crop nutrition data
     """
-    
+
     def __init__(self):
         self.stcr_coefficients = self._load_stcr_coefficients()
         self.crop_nutrient_responses = self._load_crop_responses()
         self.soil_test_correlations = self._load_soil_correlations()
         self.fertilizer_efficiency_factors = self._load_efficiency_factors()
         self.critical_nutrient_levels = self._load_critical_levels()
-        
+
     def _load_stcr_coefficients(self) -> Dict:
         """
         Load Soil Test Crop Response (STCR) coefficients based on ICAR/ICRISAT data
@@ -61,7 +61,7 @@ class AgronomicKnowledgeBase:
                 }
             }
         }
-    
+
     def _load_crop_responses(self) -> Dict:
         """Load crop nutrient response functions"""
         return {
@@ -106,7 +106,7 @@ class AgronomicKnowledgeBase:
                 }
             }
         }
-    
+
     def _load_soil_correlations(self) -> Dict:
         """Load soil test correlation data"""
         return {
@@ -147,7 +147,7 @@ class AgronomicKnowledgeBase:
                 }
             }
         }
-    
+
     def _load_efficiency_factors(self) -> Dict:
         """Load fertilizer efficiency factors"""
         return {
@@ -224,7 +224,7 @@ class AgronomicKnowledgeBase:
                 }
             }
         }
-    
+
     def _load_critical_levels(self) -> Dict:
         """Load critical nutrient levels for different crops and soils"""
         return {
@@ -267,46 +267,46 @@ class AgronomicKnowledgeBase:
                 }
             }
         }
-    
-    def calculate_fertilizer_requirement(self, crop_type: str, soil_type: str, 
+
+    def calculate_fertilizer_requirement(self, crop_type: str, soil_type: str,
                                        target_yield: float, soil_nutrients: Dict) -> Dict:
         """
         Calculate fertilizer requirements using STCR approach
         """
-        
+
         crop_type = crop_type.lower()
         soil_type = soil_type.lower()
-        
+
         # Get STCR coefficients
         stcr_data = self.stcr_coefficients.get(crop_type, {}).get(soil_type, {})
-        
+
         if not stcr_data:
             # Fallback to general coefficients
             stcr_data = self.stcr_coefficients.get("maize", {}).get("sandy_loam", {})
-        
+
         requirements = {}
-        
+
         for nutrient in ["n", "p", "k"]:
             if nutrient in stcr_data:
                 coeff = stcr_data[nutrient]
                 soil_supply = soil_nutrients.get(nutrient, 0)
-                
+
                 # STCR equation: Fertilizer needed = (Target - a - b*Soil_test) / c
                 fertilizer_needed = max(0, (target_yield - coeff["a"] - coeff["b"] * soil_supply) / coeff["c"])
                 requirements[nutrient] = round(fertilizer_needed, 2)
-        
+
         return requirements
-    
+
     def assess_nutrient_status(self, soil_test_values: Dict, crop_type: str) -> Dict:
         """Assess soil nutrient status based on critical levels"""
-        
+
         status = {}
         critical_levels = self.critical_nutrient_levels["soil_critical_levels"]
-        
+
         for nutrient, value in soil_test_values.items():
             if nutrient in critical_levels:
                 levels = critical_levels[nutrient]
-                
+
                 if value <= levels["very_low"]:
                     status[nutrient] = "very_low"
                 elif value <= levels["low"]:
@@ -317,51 +317,51 @@ class AgronomicKnowledgeBase:
                     status[nutrient] = "high"
             else:
                 status[nutrient] = "unknown"
-        
+
         return status
-    
-    def calculate_nutrient_efficiency(self, fertilizer_type: str, nutrient: str, 
+
+    def calculate_nutrient_efficiency(self, fertilizer_type: str, nutrient: str,
                                     soil_conditions: Dict) -> float:
         """Calculate nutrient use efficiency based on fertilizer type and conditions"""
-        
+
         efficiency_data = self.fertilizer_efficiency_factors.get(nutrient, {}).get(fertilizer_type, {})
-        
+
         if not efficiency_data:
             return 0.50  # Default efficiency
-        
+
         base_efficiency = efficiency_data.get("efficiency", 0.50)
         conditions = efficiency_data.get("conditions", {})
-        
+
         # Adjust efficiency based on soil conditions
         adjusted_efficiency = base_efficiency
-        
+
         if conditions.get("pH_sensitive", False):
             soil_ph = soil_conditions.get("ph", 6.5)
             if soil_ph < 5.5 or soil_ph > 8.0:
                 adjusted_efficiency *= 0.85
-        
+
         if conditions.get("pH_dependent", False):
             soil_ph = soil_conditions.get("ph", 6.5)
             optimal_range = conditions.get("optimal_pH_range", (6.0, 7.0))
             if soil_ph < optimal_range[0] or soil_ph > optimal_range[1]:
                 adjusted_efficiency *= 0.75
-        
+
         if conditions.get("moisture_sensitive", False):
             moisture_status = soil_conditions.get("moisture", "adequate")
             if moisture_status in ["dry", "waterlogged"]:
                 adjusted_efficiency *= 0.80
-        
+
         return round(adjusted_efficiency, 3)
-    
+
     def get_nutrient_interactions(self, applied_nutrients: List[str]) -> Dict:
         """Get nutrient interactions for applied nutrients"""
-        
+
         interactions = {
             "positive": [],
             "negative": [],
             "neutral": []
         }
-        
+
         interaction_matrix = {
             ("nitrogen", "phosphorus"): "positive",
             ("nitrogen", "potassium"): "neutral",
@@ -374,38 +374,38 @@ class AgronomicKnowledgeBase:
             ("calcium", "magnesium"): "positive",
             ("sulfur", "nitrogen"): "positive"
         }
-        
+
         for i, nutrient1 in enumerate(applied_nutrients):
             for j, nutrient2 in enumerate(applied_nutrients[i+1:], i+1):
                 interaction_key = tuple(sorted([nutrient1.lower(), nutrient2.lower()]))
                 interaction_type = interaction_matrix.get(interaction_key, "neutral")
-                
+
                 interaction_info = {
                     "nutrients": [nutrient1, nutrient2],
                     "type": interaction_type,
                     "description": self._get_interaction_description(nutrient1, nutrient2, interaction_type)
                 }
-                
+
                 interactions[interaction_type].append(interaction_info)
-        
+
         return interactions
-    
+
     def _get_interaction_description(self, nutrient1: str, nutrient2: str, interaction_type: str) -> str:
         """Get description of nutrient interaction"""
-        
+
         descriptions = {
             ("nitrogen", "phosphorus", "positive"): "Nitrogen enhances phosphorus uptake and utilization",
             ("phosphorus", "zinc", "negative"): "High phosphorus can induce zinc deficiency",
             ("potassium", "magnesium", "negative"): "Excess potassium can reduce magnesium uptake",
             ("sulfur", "nitrogen", "positive"): "Sulfur is essential for nitrogen metabolism and protein synthesis"
         }
-        
+
         key = tuple(sorted([nutrient1.lower(), nutrient2.lower()]) + [interaction_type])
         return descriptions.get(key, f"{interaction_type.title()} interaction between {nutrient1} and {nutrient2}")
-    
+
     def get_regional_adjustments(self, region: str, crop_type: str) -> Dict:
         """Get regional adjustments for fertilizer recommendations"""
-        
+
         # Regional adjustment factors based on climate and soil types
         regional_factors = {
             "west_africa": {
@@ -439,42 +439,42 @@ class AgronomicKnowledgeBase:
                 }
             }
         }
-        
+
         return regional_factors.get(region.lower(), regional_factors["west_africa"])
-    
+
     def validate_recommendation(self, recommendation: Dict, soil_analysis: Dict) -> Dict:
         """Validate fertilizer recommendation against agronomic principles"""
-        
+
         validation = {
             "valid": True,
             "warnings": [],
             "suggestions": []
         }
-        
+
         # Check for excessive rates
         n_rate = recommendation.get("n_kg_per_ha", 0)
         p_rate = recommendation.get("p_kg_per_ha", 0)
         k_rate = recommendation.get("k_kg_per_ha", 0)
-        
+
         if n_rate > 300:
             validation["warnings"].append(f"Nitrogen rate ({n_rate} kg/ha) is very high - consider split application")
-        
+
         if p_rate > 150:
             validation["warnings"].append(f"Phosphorus rate ({p_rate} kg/ha) is excessive - reduce to prevent fixation")
-        
+
         if k_rate > 200:
             validation["warnings"].append(f"Potassium rate ({k_rate} kg/ha) is high - monitor for luxury consumption")
-        
+
         # Check soil pH compatibility
         soil_ph = soil_analysis.get("ph", 6.5)
         if soil_ph < 5.5:
             validation["suggestions"].append("Consider liming before fertilizer application")
             if p_rate > 0:
                 validation["suggestions"].append("Use acidulated phosphorus sources for low pH soils")
-        
+
         if soil_ph > 7.5:
             validation["suggestions"].append("Consider micronutrient supplementation for alkaline soils")
-        
+
         # Check nutrient ratios
         if n_rate > 0 and p_rate > 0:
             np_ratio = n_rate / p_rate
@@ -482,5 +482,5 @@ class AgronomicKnowledgeBase:
                 validation["warnings"].append("N:P ratio is very high - may cause phosphorus deficiency")
             elif np_ratio < 2:
                 validation["warnings"].append("N:P ratio is low - may cause nitrogen deficiency")
-        
+
         return validation
