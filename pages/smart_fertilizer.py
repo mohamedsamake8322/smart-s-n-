@@ -48,10 +48,6 @@ from SmartFertilizerPro.ui.translations import translate_label
 from SmartFertilizerPro.weather.weather_client import fetch_weather_forecast
 from SmartFertilizerPro.weather.iot_simulator import simulate_sensor_data
 from SmartFertilizerPro.interfaces import run_smart_fertilizer_app
-
-# ▶️ Launch the Smart Fertilizer interface
-run_smart_fertilizer_app()
-
 # Utiliser l'objet app ou les fonctions
 
 # Aller à la racine du projet
