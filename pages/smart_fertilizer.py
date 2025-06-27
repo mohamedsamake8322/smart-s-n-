@@ -47,7 +47,6 @@ from SmartFertilizerPro.ui.crop_selector import get_crop_options
 from SmartFertilizerPro.ui.translations import translate_label
 from SmartFertilizerPro.weather.weather_client import fetch_weather_forecast
 from SmartFertilizerPro.weather.iot_simulator import simulate_sensor_data
-from SmartFertilizerPro.interfaces import run_smart_fertilizer_app
 # Utiliser l'objet app ou les fonctions
 
 # Aller à la racine du projet
@@ -76,7 +75,6 @@ st.set_page_config(
 
 def main():
     try:
-        from ui.smart_ui import SmartFertilizerUI
         app_ui = SmartFertilizerUI()
         app_ui.render_main_interface()
 
