@@ -1,17 +1,17 @@
 import shutil
 import os
 
-# Chemin source et destination
 source = r"C:\plateforme-agricole-complete-v2\plantdataset"
 destination = r"H:\My Drive\plantdataset"
 
-# Vérifier si la source existe
+print("🔍 Vérification de l'existence du dossier source...")
 if not os.path.exists(source):
-    raise FileNotFoundError(f"Le dossier source n'existe pas : {source}")
+    raise FileNotFoundError(f"❌ Le dossier source n'existe pas : {source}")
 
-# Créer le dossier de destination si nécessaire
+print("📁 Création du dossier de destination s'il n'existe pas déjà...")
 os.makedirs(os.path.dirname(destination), exist_ok=True)
 
-# Déplacer le dossier
+print(f"🚀 Déplacement du dossier de:\n   {source}\nvers:\n   {destination}")
 shutil.move(source, destination)
-print(f"Dossier déplacé de {source} vers {destination}")
+
+print("✅ Dossier déplacé avec succès.")
