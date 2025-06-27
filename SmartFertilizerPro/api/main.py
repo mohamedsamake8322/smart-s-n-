@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional
 import uvicorn
 from .models import SoilAnalysis, CropSelection, FertilizerRecommendation
-from core.smart_fertilizer_engine import SmartFertilizerEngine
-from core.regional_context import RegionalContext
+from SmartFertilizerPro.core.smart_fertilizer_engine import SmartFertilizerEngine
+from SmartFertilizerPro.core.regional_context import RegionalContext
 
 app = FastAPI(title="Smart Fertilizer API", version="1.0.0")
 
@@ -28,7 +28,7 @@ async def generate_fertilizer_plan(request: FertilizerRequest):
     try:
         # Get regional context
         region_data = regional_context.get_region_data(request.region)
-        
+
         # Generate fertilizer recommendation
         recommendation = fertilizer_engine.generate_recommendation(
             soil_analysis=request.soil_analysis,
@@ -38,7 +38,7 @@ async def generate_fertilizer_plan(request: FertilizerRequest):
             target_yield=request.target_yield,
             currency=request.local_currency
         )
-        
+
         return recommendation
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
