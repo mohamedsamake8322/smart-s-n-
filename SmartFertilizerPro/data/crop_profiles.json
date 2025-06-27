@@ -1,0 +1,432 @@
+{
+  "maize": {
+    "scientific_name": "Zea mays",
+    "common_names": ["Corn", "Maize", "Field Corn"],
+    "crop_family": "Poaceae",
+    "growth_characteristics": {
+      "typical_duration_days": 120,
+      "maturity_range_days": [90, 150],
+      "optimal_temperature_range": [20, 30],
+      "water_requirements_mm": [500, 800],
+      "photoperiod_sensitive": false
+    },
+    "nutrient_requirements": {
+      "n_kg_per_ton": 25,
+      "p_kg_per_ton": 4,
+      "k_kg_per_ton": 20,
+      "ca_kg_per_ton": 3,
+      "mg_kg_per_ton": 2,
+      "s_kg_per_ton": 3,
+      "zn_g_per_ton": 25,
+      "fe_g_per_ton": 50,
+      "mn_g_per_ton": 30,
+      "b_g_per_ton": 5
+    },
+    "growth_stages": [
+      {
+        "stage": "planting",
+        "days_after_planting": 0,
+        "description": "Seed planting and germination",
+        "n_percent": 0,
+        "p_percent": 100,
+        "k_percent": 30,
+        "critical_factors": ["soil_moisture", "temperature", "seed_depth"]
+      },
+      {
+        "stage": "vegetative",
+        "days_after_planting": 25,
+        "description": "Leaf development and root establishment",
+        "n_percent": 40,
+        "p_percent": 0,
+        "k_percent": 30,
+        "critical_factors": ["nitrogen_availability", "water_stress"]
+      },
+      {
+        "stage": "tasseling",
+        "days_after_planting": 60,
+        "description": "Flowering and pollination",
+        "n_percent": 35,
+        "p_percent": 0,
+        "k_percent": 40,
+        "critical_factors": ["water_stress", "temperature", "pollination"]
+      },
+      {
+        "stage": "grain_filling",
+        "days_after_planting": 90,
+        "description": "Kernel development and maturation",
+        "n_percent": 25,
+        "p_percent": 0,
+        "k_percent": 0,
+        "critical_factors": ["water_availability", "temperature", "disease_pressure"]
+      }
+    ],
+    "environmental_requirements": {
+      "ph_optimum": {"min": 6.0, "max": 7.0},
+      "ph_tolerance": {"min": 5.5, "max": 7.8},
+      "soil_drainage": "well_drained",
+      "frost_tolerance": "sensitive",
+      "drought_tolerance": "moderate",
+      "salinity_tolerance": "low"
+    },
+    "regional_varieties": {
+      "west_africa": ["SAMMAZ-15", "SAMMAZ-16", "BR-9928-DMRSR", "TZE-W"],
+      "east_africa": ["H-513", "H-614", "DK-8053", "SC-627"],
+      "southern_africa": ["SC-403", "PAN-53", "ZM-421", "ZM-623"]
+    },
+    "typical_yield_range": {
+      "minimum": 2.0,
+      "average": 5.0,
+      "maximum": 12.0,
+      "unit": "tons_per_hectare"
+    },
+    "economic_data": {
+      "market_price_range": [180, 250],
+      "production_cost_range": [400, 800],
+      "currency": "USD_per_ton"
+    }
+  },
+  "rice": {
+    "scientific_name": "Oryza sativa",
+    "common_names": ["Rice", "Paddy Rice"],
+    "crop_family": "Poaceae",
+    "growth_characteristics": {
+      "typical_duration_days": 110,
+      "maturity_range_days": [90, 140],
+      "optimal_temperature_range": [20, 35],
+      "water_requirements_mm": [1200, 1500],
+      "photoperiod_sensitive": true
+    },
+    "nutrient_requirements": {
+      "n_kg_per_ton": 20,
+      "p_kg_per_ton": 4,
+      "k_kg_per_ton": 25,
+      "ca_kg_per_ton": 2,
+      "mg_kg_per_ton": 1.5,
+      "s_kg_per_ton": 2,
+      "zn_g_per_ton": 20,
+      "fe_g_per_ton": 80,
+      "mn_g_per_ton": 40,
+      "b_g_per_ton": 3
+    },
+    "growth_stages": [
+      {
+        "stage": "transplanting",
+        "days_after_planting": 0,
+        "description": "Seedling transplanting",
+        "n_percent": 0,
+        "p_percent": 100,
+        "k_percent": 20,
+        "critical_factors": ["water_level", "seedling_health", "soil_puddling"]
+      },
+      {
+        "stage": "tillering",
+        "days_after_planting": 20,
+        "description": "Tiller development",
+        "n_percent": 50,
+        "p_percent": 0,
+        "k_percent": 40,
+        "critical_factors": ["nitrogen_supply", "water_management"]
+      },
+      {
+        "stage": "panicle_initiation",
+        "days_after_planting": 50,
+        "description": "Panicle formation",
+        "n_percent": 30,
+        "p_percent": 0,
+        "k_percent": 40,
+        "critical_factors": ["water_stress", "phosphorus_availability"]
+      },
+      {
+        "stage": "grain_filling",
+        "days_after_planting": 80,
+        "description": "Grain development",
+        "n_percent": 20,
+        "p_percent": 0,
+        "k_percent": 0,
+        "critical_factors": ["water_management", "disease_control"]
+      }
+    ],
+    "environmental_requirements": {
+      "ph_optimum": {"min": 5.5, "max": 6.5},
+      "ph_tolerance": {"min": 4.5, "max": 8.0},
+      "soil_drainage": "poor_to_flooded",
+      "frost_tolerance": "sensitive",
+      "drought_tolerance": "low",
+      "salinity_tolerance": "moderate"
+    },
+    "regional_varieties": {
+      "west_africa": ["NERICA-1", "NERICA-2", "FARO-44", "FARO-52"],
+      "east_africa": ["SARO-5", "IR-64", "BASMATI-370"],
+      "southern_africa": ["IRRI-132", "MAKALIOKA", "KILOMBERO"]
+    },
+    "typical_yield_range": {
+      "minimum": 2.5,
+      "average": 4.5,
+      "maximum": 8.0,
+      "unit": "tons_per_hectare"
+    },
+    "economic_data": {
+      "market_price_range": [350, 500],
+      "production_cost_range": [600, 1200],
+      "currency": "USD_per_ton"
+    }
+  },
+  "wheat": {
+    "scientific_name": "Triticum aestivum",
+    "common_names": ["Wheat", "Bread Wheat"],
+    "crop_family": "Poaceae",
+    "growth_characteristics": {
+      "typical_duration_days": 130,
+      "maturity_range_days": [100, 160],
+      "optimal_temperature_range": [15, 25],
+      "water_requirements_mm": [450, 650],
+      "photoperiod_sensitive": true
+    },
+    "nutrient_requirements": {
+      "n_kg_per_ton": 30,
+      "p_kg_per_ton": 5,
+      "k_kg_per_ton": 15,
+      "ca_kg_per_ton": 3,
+      "mg_kg_per_ton": 2,
+      "s_kg_per_ton": 4,
+      "zn_g_per_ton": 30,
+      "fe_g_per_ton": 40,
+      "mn_g_per_ton": 35,
+      "b_g_per_ton": 8
+    },
+    "growth_stages": [
+      {
+        "stage": "sowing",
+        "days_after_planting": 0,
+        "description": "Seed sowing and germination",
+        "n_percent": 0,
+        "p_percent": 100,
+        "k_percent": 30,
+        "critical_factors": ["soil_moisture", "temperature", "seed_quality"]
+      },
+      {
+        "stage": "tillering",
+        "days_after_planting": 30,
+        "description": "Tiller development",
+        "n_percent": 40,
+        "p_percent": 0,
+        "k_percent": 35,
+        "critical_factors": ["nitrogen_availability", "cold_tolerance"]
+      },
+      {
+        "stage": "stem_elongation",
+        "days_after_planting": 60,
+        "description": "Stem growth and heading",
+        "n_percent": 35,
+        "p_percent": 0,
+        "k_percent": 35,
+        "critical_factors": ["water_stress", "lodging_resistance"]
+      },
+      {
+        "stage": "grain_filling",
+        "days_after_planting": 90,
+        "description": "Grain development and maturation",
+        "n_percent": 25,
+        "p_percent": 0,
+        "k_percent": 0,
+        "critical_factors": ["heat_stress", "disease_pressure"]
+      }
+    ],
+    "environmental_requirements": {
+      "ph_optimum": {"min": 6.0, "max": 7.5},
+      "ph_tolerance": {"min": 5.5, "max": 8.5},
+      "soil_drainage": "well_drained",
+      "frost_tolerance": "moderate",
+      "drought_tolerance": "moderate",
+      "salinity_tolerance": "moderate"
+    },
+    "regional_varieties": {
+      "east_africa": ["Digalu", "Hidase", "Kakaba", "Sofumer"],
+      "southern_africa": ["SST-027", "SST-015", "Tugela-DN"],
+      "north_africa": ["Sakha-93", "Giza-168", "Misr-1"]
+    },
+    "typical_yield_range": {
+      "minimum": 2.0,
+      "average": 4.0,
+      "maximum": 7.0,
+      "unit": "tons_per_hectare"
+    },
+    "economic_data": {
+      "market_price_range": [220, 280],
+      "production_cost_range": [500, 900],
+      "currency": "USD_per_ton"
+    }
+  },
+  "sorghum": {
+    "scientific_name": "Sorghum bicolor",
+    "common_names": ["Sorghum", "Grain Sorghum", "Milo"],
+    "crop_family": "Poaceae",
+    "growth_characteristics": {
+      "typical_duration_days": 110,
+      "maturity_range_days": [90, 130],
+      "optimal_temperature_range": [25, 35],
+      "water_requirements_mm": [300, 500],
+      "photoperiod_sensitive": true
+    },
+    "nutrient_requirements": {
+      "n_kg_per_ton": 22,
+      "p_kg_per_ton": 3.5,
+      "k_kg_per_ton": 18,
+      "ca_kg_per_ton": 2.5,
+      "mg_kg_per_ton": 1.8,
+      "s_kg_per_ton": 2.5,
+      "zn_g_per_ton": 22,
+      "fe_g_per_ton": 45,
+      "mn_g_per_ton": 25,
+      "b_g_per_ton": 4
+    },
+    "growth_stages": [
+      {
+        "stage": "emergence",
+        "days_after_planting": 0,
+        "description": "Seedling emergence",
+        "n_percent": 0,
+        "p_percent": 100,
+        "k_percent": 25,
+        "critical_factors": ["soil_moisture", "temperature", "soil_crusting"]
+      },
+      {
+        "stage": "vegetative",
+        "days_after_planting": 30,
+        "description": "Leaf and stem development",
+        "n_percent": 45,
+        "p_percent": 0,
+        "k_percent": 40,
+        "critical_factors": ["nitrogen_supply", "drought_stress"]
+      },
+      {
+        "stage": "boot_stage",
+        "days_after_planting": 60,
+        "description": "Head formation",
+        "n_percent": 35,
+        "p_percent": 0,
+        "k_percent": 35,
+        "critical_factors": ["water_stress", "temperature"]
+      },
+      {
+        "stage": "grain_filling",
+        "days_after_planting": 85,
+        "description": "Grain development",
+        "n_percent": 20,
+        "p_percent": 0,
+        "k_percent": 0,
+        "critical_factors": ["bird_damage", "lodging"]
+      }
+    ],
+    "environmental_requirements": {
+      "ph_optimum": {"min": 6.0, "max": 7.8},
+      "ph_tolerance": {"min": 5.5, "max": 8.5},
+      "soil_drainage": "well_drained",
+      "frost_tolerance": "sensitive",
+      "drought_tolerance": "high",
+      "salinity_tolerance": "moderate"
+    },
+    "regional_varieties": {
+      "west_africa": ["ICSV-400", "CSR-01", "SAMSORG-17"],
+      "east_africa": ["Gadam", "Seredo", "IESV-92001"],
+      "southern_africa": ["NK-283", "PAN-8564", "MR-Buster"]
+    },
+    "typical_yield_range": {
+      "minimum": 1.5,
+      "average": 3.5,
+      "maximum": 6.0,
+      "unit": "tons_per_hectare"
+    },
+    "economic_data": {
+      "market_price_range": [160, 220],
+      "production_cost_range": [300, 600],
+      "currency": "USD_per_ton"
+    }
+  },
+  "millet": {
+    "scientific_name": "Pennisetum glaucum",
+    "common_names": ["Pearl Millet", "Millet", "Bulrush Millet"],
+    "crop_family": "Poaceae",
+    "growth_characteristics": {
+      "typical_duration_days": 85,
+      "maturity_range_days": [70, 110],
+      "optimal_temperature_range": [25, 35],
+      "water_requirements_mm": [200, 400],
+      "photoperiod_sensitive": true
+    },
+    "nutrient_requirements": {
+      "n_kg_per_ton": 18,
+      "p_kg_per_ton": 3,
+      "k_kg_per_ton": 15,
+      "ca_kg_per_ton": 2,
+      "mg_kg_per_ton": 1.5,
+      "s_kg_per_ton": 2,
+      "zn_g_per_ton": 20,
+      "fe_g_per_ton": 50,
+      "mn_g_per_ton": 20,
+      "b_g_per_ton": 3
+    },
+    "growth_stages": [
+      {
+        "stage": "establishment",
+        "days_after_planting": 0,
+        "description": "Seedling establishment",
+        "n_percent": 0,
+        "p_percent": 100,
+        "k_percent": 30,
+        "critical_factors": ["soil_moisture", "seed_quality"]
+      },
+      {
+        "stage": "tillering",
+        "days_after_planting": 25,
+        "description": "Tiller development",
+        "n_percent": 50,
+        "p_percent": 0,
+        "k_percent": 40,
+        "critical_factors": ["nitrogen_availability", "water_stress"]
+      },
+      {
+        "stage": "heading",
+        "days_after_planting": 50,
+        "description": "Head emergence",
+        "n_percent": 30,
+        "p_percent": 0,
+        "k_percent": 30,
+        "critical_factors": ["drought_stress", "temperature"]
+      },
+      {
+        "stage": "maturity",
+        "days_after_planting": 75,
+        "description": "Grain maturation",
+        "n_percent": 20,
+        "p_percent": 0,
+        "k_percent": 0,
+        "critical_factors": ["bird_damage", "shattering"]
+      }
+    ],
+    "environmental_requirements": {
+      "ph_optimum": {"min": 6.5, "max": 7.5},
+      "ph_tolerance": {"min": 5.0, "max": 8.0},
+      "soil_drainage": "well_drained",
+      "frost_tolerance": "sensitive",
+      "drought_tolerance": "very_high",
+      "salinity_tolerance": "moderate"
+    },
+    "regional_varieties": {
+      "west_africa": ["SOSAT-C88", "ICTP-8203", "GB-8735"],
+      "east_africa": ["Okashana-1", "ICMV-221", "Shona"],
+      "southern_africa": ["PMV-1", "PMV-2", "Okashana-2"]
+    },
+    "typical_yield_range": {
+      "minimum": 0.8,
+      "average": 2.5,
+      "maximum": 4.5,
+      "unit": "tons_per_hectare"
+    },
+    "economic_data": {
+      "market_price_range": [200, 280],
+      "production_cost_range": [250, 500],
+      "currency": "USD_per_ton"
+    }
+  }
+}
