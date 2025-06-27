@@ -8,10 +8,20 @@ Provides intelligent fertilizer recommendations for African agriculture.
 import streamlit as st
 import sys
 from pathlib import Path
+import sys
+from pathlib import Path
+# Importer l'API FastAPI
+from SmartFertilizerPro.api import main as fertilizer_api
+from SmartFertilizerPro.api.models import SoilAnalysis
+from core.smart_fertilizer_engine import SmartFertilizerEngine
+from core.regional_context import RegionalContext
 
-# 🔧 Add project root to PYTHONPATH
+# Utiliser l'objet app ou les fonctions
+
+# Aller à la racine du projet
 project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
+app = fertilizer_api.app
 
 # 🌿 Page configuration
 st.set_page_config(
