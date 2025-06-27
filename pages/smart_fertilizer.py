@@ -4,11 +4,15 @@ Smart Fertilizer Streamlit Application (Multipage Compatible)
 Used as a standalone page within Streamlit's `pages/` directory.
 Provides intelligent fertilizer recommendations for African agriculture.
 """
-
-import streamlit as st
 import sys
 from pathlib import Path
-import sys
+
+# Définir la racine du projet
+project_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_root))
+
+import streamlit as st
+from pathlib import Path
 import json
 
 data_dir = project_root / "SmartFertilizerPro" / "data"
@@ -41,8 +45,6 @@ run_smart_fertilizer_app()
 # Utiliser l'objet app ou les fonctions
 
 # Aller à la racine du projet
-project_root = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(project_root))
 app = fertilizer_api.app
 
 # 🌿 Page configuration
