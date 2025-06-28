@@ -352,6 +352,14 @@ class AgronomicKnowledgeBase:
                 adjusted_efficiency *= 0.80
 
         return round(adjusted_efficiency, 3)
+    def get_nutrient_thresholds(crop_type: str) -> Dict[str, float]:
+        """Return nutrient thresholds (in kg/ha) for a given crop type."""
+        thresholds_by_crop = {
+            "maize": {"N": 120, "P": 60, "K": 90},
+            "rice": {"N": 100, "P": 50, "K": 80},
+            "sorghum": {"N": 90, "P": 40, "K": 60}
+    }
+        return thresholds_by_crop.get(crop_type.lower(), {"N": 100, "P": 50, "K": 70})
 
     def get_nutrient_interactions(self, applied_nutrients: List[str]) -> Dict:
         """Get nutrient interactions for applied nutrients"""

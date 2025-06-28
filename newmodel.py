@@ -1,21 +1,21 @@
 import tensorflow as tf
 import os
 from datetime import datetime
-import matplotlib.pyplot as plt
 from tensorflow.keras import layers
-from tensorflow.keras.applications import EfficientNetV2S
+from tensorflow.keras.applications import EfficientNetV2L
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
 
 # === 📁 Dossiers ===
-base_path = '/content/drive/MyDrive/My Drive/plantdataset'
+base_path = '/content/drive/My Drive/My Drive/plantdataset'
 train_dir = os.path.join(base_path, 'train')
 val_dir = os.path.join(base_path, 'val')
 
 # === ⚙️ Paramètres
 batch_size = 32
-img_size = (384, 384)
-epochs = 25
-model_name = 'efficientnetv2s_agri.keras'
+img_size = (480, 480)
+epochs = 30
+model_name = '/content/drive/My Drive/My Drive/plantdataset/efficientnetv2l_agri.keras'
+
 
 # === 📦 Chargement des datasets
 train_ds = tf.keras.utils.image_dataset_from_directory(
@@ -42,8 +42,8 @@ AUTOTUNE = tf.data.AUTOTUNE
 train_ds = train_ds.prefetch(buffer_size=AUTOTUNE).cache()
 val_ds = val_ds.prefetch(buffer_size=AUTOTUNE).cache()
 
-# === 🧠 Modèle
-base_model = EfficientNetV2S(
+# === 🧠 Modèle EfficientNetV2-L
+base_model = EfficientNetV2L(
     include_top=False,
     weights='imagenet',
     input_shape=img_size + (3,)
@@ -105,6 +105,6 @@ model.fit(
     callbacks=callbacks
 )
 
-# === ✅ Sauvegarde finale
+# === 💾 Sauvegarde finale
 model.save(model_name)
 print("✅ Modèle entraîné et sauvegardé :", model_name)
