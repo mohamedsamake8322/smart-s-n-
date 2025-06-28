@@ -37,7 +37,7 @@ from SmartFertilizerPro.api.models import SoilAnalysis
 from SmartFertilizerPro.core.smart_fertilizer_engine import SmartFertilizerEngine
 from SmartFertilizerPro.core.smart_fertilization import SmartFertilization
 from SmartFertilizerPro.core.fertilizer_optimizer import FertilizerOptimizer
-from SmartFertilizerPro.core.agronomic_knowledge_base import get_nutrient_thresholds
+#from SmartFertilizerPro.core.agronomic_knowledge_base import get_nutrient_thresholds
 from SmartFertilizerPro.core.regional_context import RegionalContext
 from SmartFertilizerPro.exports.pdf_generator import generate_pdf_report
 from SmartFertilizerPro.exports.export_utils import prepare_export_payload
