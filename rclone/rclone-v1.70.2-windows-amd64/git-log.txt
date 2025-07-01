@@ -1,0 +1,175 @@
+commit 4010380ea8896a50e560ac09500d4c4d6213a614
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Jun 27 12:30:18 2025 +0100
+
+    Version v1.70.2
+
+commit c138e52a575ebd5e6fe795c89af6ef086c385f3d
+Author: Ali Zein Yousuf <azy5030@gmail.com>
+Date:   Thu Jun 26 20:42:42 2025 -0500
+
+    docs: update client ID instructions to current Azure AD portal - fixes #8027
+
+commit e22ce597ad7063eb98da648c0073cf9193ef4d47
+Author: necaran <55765083+necaran@users.noreply.github.com>
+Date:   Fri Jun 20 01:05:00 2025 +0800
+
+    mega: fix tls handshake failure - fixes #8565
+    
+    The cipher suites used by Mega's storage endpoints: https://github.com/meganz/webclient/issues/103
+    are no longer supported by default since Go 1.22: https://tip.golang.org/doc/go1.22#minor_library_changes
+    This therefore assigns the cipher suites explicitly to include the one Mega needs.
+
+commit 79bd9e7913678ccc4f3c3dd72c600e4dccb46163
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jun 25 21:10:16 2025 +0100
+
+    pacer: fix nil pointer deref in RetryError - fixes #8077
+    
+    Before this change, if RetryAfterError was called with a nil err, then
+    it's Error method would return this when wrapped in a fmt.Errorf
+    statement
+    
+        error %!v(PANIC=Error method: runtime error: invalid memory address or nil pointer dereference))
+    
+    Looking at the code, it looks like RetryAfterError will usually be
+    called with a nil pointer, so this patch makes sure it has a sensible
+    error.
+
+commit 32f9393ac8f3911198534d2c8642403ae6f5e6f1
+Author: nielash <nielronash@gmail.com>
+Date:   Tue Jun 24 22:57:23 2025 -0400
+
+    convmv: fix moving to unicode-equivalent name - fixes #8634
+    
+    Before this change, using convmv to convert filenames between NFD and NFC could
+    fail on certain backends (such as onedrive) that were insensitive to the
+    difference. This change fixes the issue by extending the existing
+    needsMoveCaseInsensitive logic for use in this scenario.
+
+commit f97c876eb16011bb4158b2a6a745ba18905a6cbf
+Author: nielash <nielronash@gmail.com>
+Date:   Tue Jun 24 21:56:25 2025 -0400
+
+    convmv: make --dry-run logs less noisy
+    
+    Before this change, convmv dry runs would log a SkipDestructive message for
+    every single object, even objects that would not really be moved during a real
+    run. This made it quite difficult to tell what would actually happen during the
+    real run. This change fixes that by returning silently in such cases (as would
+    happen during a real run.)
+
+commit 9b43836e19d06b9a5d3c71eca9f67001d0fbdc8c
+Author: nielash <nielronash@gmail.com>
+Date:   Tue Jun 24 21:48:53 2025 -0400
+
+    sync: avoid copying dir metadata to itself
+    
+    In convmv, src and dst can point to the same directory. Unless a dir's name is
+    changing, we should leave it alone and not attempt to copy its metadata to
+    itself.
+
+commit ff817e8764af6808c31c9ce3c2561e58860c2f93
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Mon Jun 23 17:43:52 2025 +0100
+
+    combine: fix directory not found errors with ListP interface - Fixes #8627
+    
+    In
+    
+    b1d774c2e3caab23 combine: implement ListP interface
+    
+    We introduced the ListP interface to the combine backend. This was
+    passing the wrong remote to the upstreams. This was picked up by the
+    integration tests but was ignored by accident.
+
+commit 3c63dec8496dfa56188eec5bce4437c251e708c9
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu May 22 16:58:06 2025 +0100
+
+    local: fix --skip-links on Windows when skipping Junction points
+    
+    Due to a change in Go which was enabled by the `go 1.22` in `go.mod`
+    rclone has stopped skipping junction points ("My Documents" in
+    particular) if `--skip-links` is set on Windows.
+    
+    This is because the output from os.Lstat has changed and junction
+    points are no longer marked with os.ModeSymlink but with
+    os.ModeIrregular instead.
+    
+    This fix now skips os.ModeIrregular objects if --skip-links is set on
+    Windows only.
+    
+    Fixes #8561
+    See: https://github.com/golang/go/issues/73827
+
+commit 33876c58066ba1cd576432a31962d2f8efec7fbc
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Fri Jun 20 18:27:36 2025 +0100
+
+    build: bump github.com/go-chi/chi/v5 from 5.2.1 to 5.2.2 to fix GHSA-vrw8-fxc6-2r93
+    
+    See: https://github.com/go-chi/chi/security/advisories/GHSA-vrw8-fxc6-2r93
+    Signed-off-by: dependabot[bot] <support@github.com>
+    Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+commit fa3b44434142c5966a90761230deca8228d29dbe
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Jun 20 12:00:40 2025 +0100
+
+    log: fix deadlock when using systemd logging - fixes #8621
+    
+    In this commit the logging system was re-worked
+    
+    dfa4d948279f3e36 fs: Remove github.com/sirupsen/logrus and replace with log/slog
+    
+    Unfortunately the systemd logging was still using the plain log
+    package and this caused a deadlock as it was recursively calling the
+    logging package.
+    
+    The fix was to use the dedicated systemd journal logging routines in
+    the process removing a TODO!
+
+commit e5fc424955e1a3e7c526f4c255cc1f73bfce955a
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Fri Jun 20 12:12:50 2025 +0100
+
+    docs: googlephotos: detail how to make your own client_id - fixes #8622
+
+commit 06badeffa3ccd39e35917424bb9703e79140bc47
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Thu Jun 26 16:58:02 2025 +0100
+
+    pikpak: fix uploads fail with "aws-chunked encoding is not supported" error
+    
+    This downgrades the AWS SDK slightly (this is still an upgrade from
+    rclone v1.69.3) to work around a breakage in the upstream SDK when
+    used with pikpak. This isn't a long term solution - either they will
+    fix it upstream or we will implement a workaround.
+    
+    See: https://github.com/aws/aws-sdk-go-v2/issues/3007
+    See: #8629
+
+commit eb71d1be1810aa435539f2d5c95b51c47a5c30d7
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jun 25 16:40:16 2025 +0100
+
+    Start v1.70.2-DEV development
+
+commit 7506a3c84c197123b8b8041db0e3fca9baee5185
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jun 25 15:50:46 2025 +0100
+
+    docs: Remove Warp as a sponsor
+
+commit 831abd3406b82475cb74a6c3f6f2fad85235f88c
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jun 25 15:46:17 2025 +0100
+
+    docs: add files.com as a Gold sponsor
+
+commit 9c08cd80c736519037635966a90b4e1e79f01ca0
+Author: Nick Craig-Wood <nick@craig-wood.com>
+Date:   Wed Jun 25 15:30:59 2025 +0100
+
+    docs: add links to SecureBuild docker image
