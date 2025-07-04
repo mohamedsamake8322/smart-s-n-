@@ -12,6 +12,8 @@ from utils.voice_assistant import voice_assistant
 from utils.micro_input import get_voice_input
 from utils.animations import typewriting_effect, pulsing_title
 import os
+from utils.voice_assistant import VoiceAssistant
+voice_assistant = VoiceAssistant()
 os.environ["STREAMLIT_WATCH_USE_POLLING"] = "true"
 
 # ✅ Configuration de la page (doit être la première commande Streamlit)

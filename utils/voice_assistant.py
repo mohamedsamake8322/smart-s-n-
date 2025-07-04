@@ -129,6 +129,13 @@ class VoiceAssistant:
                 return intent
 
         return 'unknown'
+    def get_response(self, user_message: str) -> str:
+        """
+        Simplified wrapper to integrate with app.py:
+        It extracts and returns the text response only.
+        """
+        result = self.process_voice_command(user_message)
+        return result.get('text_response', "Je n'ai pas compris votre demande.")
 
     def _handle_weather_inquiry(self, text: str) -> Dict[str, Any]:
         """Handle weather-related inquiries"""
