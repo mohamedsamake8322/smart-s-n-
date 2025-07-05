@@ -4,14 +4,16 @@ Smart Fertilizer Streamlit Application
 Main entry point for the Smart Fertilizer web application using Streamlit.
 This application provides intelligent fertilizer recommendations for African agriculture.
 """
-
 import streamlit as st
 import sys
 from pathlib import Path
-from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
-# Add project root to Python path
+
+# ✅ Ajoute le chemin vers la racine du projet AVANT les imports des modules
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
+
+# 🔄 Maintenant tu peux faire cet import
+from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
 
 # Configure Streamlit page
 st.set_page_config(
