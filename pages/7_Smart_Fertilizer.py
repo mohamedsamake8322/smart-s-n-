@@ -13,51 +13,50 @@ import json
 
 # ✅ Résout le chemin racine du projet, même sur Streamlit Cloud
 current_file = Path(__file__).resolve()
-project_root = current_file.parent.parent  # <== ça monte depuis /pages
-sys.path.insert(0, str(project_root))     # <== ajoute à sys.path
+project_root = current_file.parent.parent  # monte depuis /pages/
+sys.path.insert(0, str(project_root))      # ajoute le projet à PYTHONPATH
 
-# ✳️ Affiche pour debug (optionnel)
+# ✳️ Debug info (facultatif)
 st.sidebar.info(f"📁 project_root: {project_root}")
 st.sidebar.info(f"📦 sys.path[0]: {sys.path[0]}")
 
-
-# ✅ Ensuite seulement, on tente l’import
+# ✅ Test d'import de l'interface principale
 try:
-    from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
+    from smart_fertilizer.ui.smart_ui import SmartFertilizerUI
 except Exception as e:
     import traceback
     st.error("❌ Problème d'import")
     st.code(traceback.format_exc())
     st.stop()
 
-
 # 🌿 Interface utilisateur
-from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
-from modules.smart_fertilizer.ui.crop_selector import CropSelector
-from modules.smart_fertilizer.ui.translations import Translator
+from smart_fertilizer.ui.smart_ui import SmartFertilizerUI
+from smart_fertilizer.ui.crop_selector import CropSelector
+from smart_fertilizer.ui.translations import Translator
 
 # ⚙️ Moteur de recommandation
-from modules.smart_fertilizer.core.smart_fertilizer_engine import SmartFertilizerEngine
-from modules.smart_fertilizer.core.fertilizer_optimizer import FertilizerOptimizer
-from modules.smart_fertilizer.core.smart_fertilization import SmartFertilization
-from modules.smart_fertilizer.core.agronomic_knowledge_base import AgronomicKnowledgeBase
-from modules.smart_fertilizer.core.regional_context import RegionalContext
+from smart_fertilizer.core.smart_fertilizer_engine import SmartFertilizerEngine
+from smart_fertilizer.core.fertilizer_optimizer import FertilizerOptimizer
+from smart_fertilizer.core.smart_fertilization import SmartFertilization
+from smart_fertilizer.core.agronomic_knowledge_base import AgronomicKnowledgeBase
+from smart_fertilizer.core.regional_context import RegionalContext
 
 # 🌍 Contexte régional
-from modules.smart_fertilizer.regions.region_selector import RegionSelector
-from modules.smart_fertilizer.regions.regional_context import get_regional_config
+from smart_fertilizer.regions.region_selector import RegionSelector
+from smart_fertilizer.regions.regional_context import get_regional_config
 
-# 🚀 API FastAPI locale (si utilisée)
-from modules.smart_fertilizer.api.main import fertilizer_router
-from modules.smart_fertilizer.api.models import FertilizerRequest
+# 🚀 API FastAPI locale (si utilisée dans Streamlit)
+from smart_fertilizer.api.main import fertilizer_router
+from smart_fertilizer.api.models import FertilizerRequest
 
-# 🧾 Génération de rapports
-from modules.smart_fertilizer.exports.pdf_generator import PDFGenerator
-from modules.smart_fertilizer.exports.export_utils import format_recommendation_data
+# 🧾 Génération de rapports PDF
+from smart_fertilizer.exports.pdf_generator import PDFGenerator
+from smart_fertilizer.exports.export_utils import format_recommendation_data
 
 # 🌦️ Météo et capteurs
-from modules.smart_fertilizer.weather.weather_client import WeatherClient
-from modules.smart_fertilizer.weather.iot_simulator import SoilSensorSimulator
+from smart_fertilizer.weather.weather_client import WeatherClient
+from smart_fertilizer.weather.iot_simulator import SoilSensorSimulator
+
 
 # Configure Streamlit page
 st.set_page_config(
