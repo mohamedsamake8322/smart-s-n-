@@ -39,13 +39,7 @@ from SmartFertilizerPro.core.fertilizer_optimizer import FertilizerOptimizer
 # from SmartFertilizerPro.core.agronomic_knowledge_base import get_nutrient_thresholds
 from SmartFertilizerPro.core.regional_context import RegionalContext
 from SmartFertilizerPro.exports.pdf_generator import FertilizerReportGenerator
-from SmartFertilizerPro.regions.region_selector import get_region_by_gps
 from SmartFertilizerPro.ui.smart_ui import SmartFertilizerUI
-from SmartFertilizerPro.ui.crop_selector import get_crop_options
-from SmartFertilizerPro.ui.translations import translate_label
-from SmartFertilizerPro.weather.weather_client import fetch_weather_forecast
-from SmartFertilizerPro.weather.iot_simulator import simulate_sensor_data
-
 # Utiliser l'objet app ou les fonctions
 
 # Aller à la racine du projet
