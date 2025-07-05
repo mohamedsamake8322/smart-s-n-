@@ -4,6 +4,7 @@ Smart Fertilizer Streamlit Application
 Main entry point for the Smart Fertilizer web application using Streamlit.
 This application provides intelligent fertilizer recommendations for African agriculture.
 """
+
 import streamlit as st
 import sys
 import os
@@ -16,35 +17,47 @@ current_file = Path(__file__).resolve()
 project_root = current_file.parent.parent  # monte depuis /pages/
 sys.path.insert(0, str(project_root))      # ajoute le projet à PYTHONPATH
 
-# ✳️ Debug info (facultatif)
+# ✳️ Debug info (optionnel)
 st.sidebar.info(f"📁 project_root: {project_root}")
 st.sidebar.info(f"📦 sys.path[0]: {sys.path[0]}")
 
-# ✅ Test d'import de l'interface principale
+# ✅ Test et chargement des modules de Smart Fertilizer
 try:
-    from smart_fertilizer.ui.smart_ui import SmartFertilizerUI
+    # 🌿 Interface utilisateur
+    from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
+    from modules.smart_fertilizer.ui.crop_selector import CropSelector
+    from modules.smart_fertilizer.ui.translations import Translator
+
+    # ⚙️ Moteur de recommandation
+    from modules.smart_fertilizer.core.smart_fertilizer_engine import SmartFertilizerEngine
+    from modules.smart_fertilizer.core.fertilizer_optimizer import FertilizerOptimizer
+    from modules.smart_fertilizer.core.smart_fertilization import SmartFertilization
+    from modules.smart_fertilizer.core.agronomic_knowledge_base import AgronomicKnowledgeBase
+    from modules.smart_fertilizer.core.regional_context import RegionalContext
+
+    # 🌍 Contexte régional
+    from modules.smart_fertilizer.regions.region_selector import RegionSelector
+    from modules.smart_fertilizer.regions.regional_context import get_regional_config
+
+    # 🚀 API FastAPI locale
+    from modules.smart_fertilizer.api.main import fertilizer_router
+    from modules.smart_fertilizer.api.models import FertilizerRequest
+
+    # 🧾 Génération de rapports
+    from modules.smart_fertilizer.exports.pdf_generator import PDFGenerator
+    from modules.smart_fertilizer.exports.export_utils import format_recommendation_data
+
+    # 🌦️ Météo et capteurs
+    from modules.smart_fertilizer.weather.weather_client import WeatherClient
+    from modules.smart_fertilizer.weather.iot_simulator import SoilSensorSimulator
+
 except Exception as e:
     import traceback
-    st.error("❌ Problème d'import")
+    st.error("❌ Problème d'import de modules Smart Fertilizer")
     st.code(traceback.format_exc())
     st.stop()
-from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
-from modules.smart_fertilizer.ui.crop_selector import CropSelector
-from modules.smart_fertilizer.ui.translations import Translator
-from modules.smart_fertilizer.core.smart_fertilizer_engine import SmartFertilizerEngine
-from modules.smart_fertilizer.core.fertilizer_optimizer import FertilizerOptimizer
-from modules.smart_fertilizer.core.smart_fertilization import SmartFertilization
-from modules.smart_fertilizer.core.agronomic_knowledge_base import AgronomicKnowledgeBase
-from modules.smart_fertilizer.core.regional_context import RegionalContext
-from modules.smart_fertilizer.regions.region_selector import RegionSelector
-from modules.smart_fertilizer.regions.regional_context import get_regional_config
-from modules.smart_fertilizer.api.main import fertilizer_router
-from modules.smart_fertilizer.api.models import FertilizerRequest
-from modules.smart_fertilizer.exports.pdf_generator import PDFGenerator
-from modules.smart_fertilizer.exports.export_utils import format_recommendation_data
-from modules.smart_fertilizer.weather.weather_client import WeatherClient
-from modules.smart_fertilizer.weather.iot_simulator import SoilSensorSimulator
-# Configure Streamlit page
+
+# ✅ Configuration de la page
 st.set_page_config(
     page_title="Smart Fertilizer - African Agriculture",
     page_icon="🌾",
@@ -57,28 +70,24 @@ st.set_page_config(
         # Smart Fertilizer Application
 
         **Version:** 1.0.0
+        Intelligent fertilizer recommendation system for African agriculture
 
-        **Description:** Intelligent fertilizer recommendation system for African agriculture
+        **Fonctionnalités :**
+        - Analyse du sol et interprétation
+        - Recommandations spécifiques aux cultures
+        - Adaptation régionale (Afrique de l’Ouest, Est, Centre, Sud)
+        - Intégration météo et IoT
+        - Interface multilingue
+        - Génération de rapports PDF
 
-        **Features:**
-        - Soil analysis and interpretation
-        - Crop-specific recommendations
-        - Regional adaptation
-        - Weather integration
-        - IoT sensor support
-        - Multi-language interface
-        - PDF report generation
-
-        **Data Sources:** FAO, ESDAC, ICAR/ICRISAT, NOAA/CHIRPS
-
-        **Methodology:** STCR (Soil Test Crop Response)
-
-        **Regions Supported:** West Africa, East Africa, Southern Africa, Central Africa
-
-        **Contact:** support@smartfertilizer.org
+        **Données :** FAO, ESDAC, ICRISAT, NOAA/CHIRPS
+        **Contact :** support@smartfertilizer.org
         """
     }
 )
+
+# 🖥️ Lancement de l’interface si tout est bon
+SmartFertilizerUI().render_main_interface()
 
 def main():
     """Main application entry point"""
