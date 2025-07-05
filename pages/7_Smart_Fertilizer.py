@@ -14,8 +14,8 @@ import json
 
 # ✅ Résout le chemin racine du projet, même sur Streamlit Cloud
 current_file = Path(__file__).resolve()
-project_root = current_file.parent.parent  # monte depuis /pages/
-sys.path.insert(0, str(project_root))      # ajoute le projet à PYTHONPATH
+project_root = current_file.parent.parent.parent
+sys.path.insert(0, str(project_root))  # ajoute la racine du projet à PYTHONPATH
 
 # ✳️ Debug info (optionnel)
 st.sidebar.info(f"📁 project_root: {project_root}")
@@ -53,7 +53,7 @@ try:
 
 except Exception as e:
     import traceback
-    st.error("❌ Problème d'import de modules Smart Fertilizer")
+    st.error("❌ Problème lors de l'import des modules Smart Fertilizer")
     st.code(traceback.format_exc())
     st.stop()
 
