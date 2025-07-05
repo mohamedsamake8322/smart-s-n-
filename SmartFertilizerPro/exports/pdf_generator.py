@@ -1,3 +1,5 @@
+import io
+import os
 from reportlab.lib.pagesizes import A4, letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
@@ -11,8 +13,13 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart
 from reportlab.lib import colors
 from datetime import datetime
 from typing import Dict, List, Optional
-import io
-import os
+
+
+from datetime import datetime
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
 
 class FertilizerReportGenerator:
     """
@@ -22,58 +29,71 @@ class FertilizerReportGenerator:
     def __init__(self):
         self.styles = getSampleStyleSheet()
         self.setup_custom_styles()
-    def generate_pdf_report(filename: str, farmer_name: str, crop_name: str, region: str, recommendations: list, logo_path: str = None):
+
+    def setup_custom_styles(self):
+        # (optionnel) Tu peux ajouter des styles personnalisés ici si besoin
+        pass
+
+    def generate_pdf_report(
+        self,
+        filename: str,
+        farmer_name: str,
+        crop_name: str,
+        region: str,
+        recommendations: list,
+        logo_path: str = None
+    ):
         """
         Génère un rapport PDF de recommandations de fertilisation.
 
         Args:
-            filename (str): nom du fichier de sortie (ex. 'rapport_fertilisation.pdf')
+            filename (str): nom du fichier de sortie
             farmer_name (str): nom du fermier
             crop_name (str): culture concernée
-            region (str): zone géographique/agronomique
+            region (str): région géographique
             recommendations (list): liste de tuples (élément, dose, unité)
-            logo_path (str): chemin vers un logo à afficher (facultatif)
+            logo_path (str): chemin vers un logo facultatif
         """
         doc = SimpleDocTemplate(filename, pagesize=A4)
         story = []
-        styles = getSampleStyleSheet()
 
-    # Logo (optionnel)
+        # Logo (optionnel)
         if logo_path and os.path.exists(logo_path):
             img = Image(logo_path, width=80, height=80)
             story.append(img)
             story.append(Spacer(1, 12))
 
-    # Titre
+        # Titre
         title = f"Rapport de Fertilisation – {datetime.now().strftime('%d/%m/%Y')}"
-        story.append(Paragraph(title, styles['Title']))
+        story.append(Paragraph(title, self.styles['Title']))
         story.append(Spacer(1, 12))
 
-    # Infos générales
-        story.append(Paragraph(f"<b>Fermier :</b> {farmer_name}", styles['Normal']))
-        story.append(Paragraph(f"<b>Culture :</b> {crop_name}", styles['Normal']))
-        story.append(Paragraph(f"<b>Région :</b> {region}", styles['Normal']))
+        # Infos générales
+        story.append(Paragraph(f"<b>Fermier :</b> {farmer_name}", self.styles['Normal']))
+        story.append(Paragraph(f"<b>Culture :</b> {crop_name}", self.styles['Normal']))
+        story.append(Paragraph(f"<b>Région :</b> {region}", self.styles['Normal']))
         story.append(Spacer(1, 12))
 
-    # Tableau des recommandations
-        story.append(Paragraph("<b>Recommandations de fertilisation :</b>", styles['Heading3']))
+        # Tableau des recommandations
+        story.append(Paragraph("<b>Recommandations de fertilisation :</b>", self.styles['Heading3']))
         table_data = [["Élément", "Dose recommandée", "Unité"]] + recommendations
         table = Table(table_data, hAlign='LEFT')
         table.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#4CAF50")),
-            ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-            ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-            ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
-            ('ALIGN', (1,1), (-1,-1), 'CENTER'),
-            ('ROWBACKGROUNDS', (1,1), (-1,-1), [colors.whitesmoke, colors.lightgrey])
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#4CAF50")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+            ('ROWBACKGROUNDS', (1, 1), (-1, -1), [colors.whitesmoke, colors.lightgrey])
         ]))
         story.append(table)
 
-    # Export
+        # Footer
         story.append(Spacer(1, 24))
-        story.append(Paragraph("Ce rapport a été généré automatiquement par Smart Fertilizer Pro.", styles['Normal']))
+        story.append(Paragraph("Ce rapport a été généré automatiquement par Smart Fertilizer Pro.", self.styles['Normal']))
 
         doc.build(story)
+
     def setup_custom_styles(self):
         """Setup custom styles for the report"""
 
