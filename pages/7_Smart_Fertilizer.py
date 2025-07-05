@@ -7,13 +7,41 @@ This application provides intelligent fertilizer recommendations for African agr
 import streamlit as st
 import sys
 from pathlib import Path
+import pandas as pd
+import json
+import os
 
-# ✅ Ajoute le chemin vers la racine du projet AVANT les imports des modules
+# ✅ Ajouter la racine du projet à sys.path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# 🔄 Maintenant tu peux faire cet import
+# 🌿 Interface utilisateur
 from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
+from modules.smart_fertilizer.ui.crop_selector import CropSelector
+from modules.smart_fertilizer.ui.translations import Translator
+
+# ⚙️ Moteur de recommandation
+from modules.smart_fertilizer.core.smart_fertilizer_engine import SmartFertilizerEngine
+from modules.smart_fertilizer.core.fertilizer_optimizer import FertilizerOptimizer
+from modules.smart_fertilizer.core.smart_fertilization import SmartFertilization
+from modules.smart_fertilizer.core.agronomic_knowledge_base import AgronomicKnowledgeBase
+from modules.smart_fertilizer.core.regional_context import RegionalContext
+
+# 🌍 Contexte régional
+from modules.smart_fertilizer.regions.region_selector import RegionSelector
+from modules.smart_fertilizer.regions.regional_context import get_regional_config
+
+# 🚀 API FastAPI locale (si utilisée)
+from modules.smart_fertilizer.api.main import fertilizer_router
+from modules.smart_fertilizer.api.models import FertilizerRequest
+
+# 🧾 Génération de rapports
+from modules.smart_fertilizer.exports.pdf_generator import PDFGenerator
+from modules.smart_fertilizer.exports.export_utils import format_recommendation_data
+
+# 🌦️ Météo et capteurs
+from modules.smart_fertilizer.weather.weather_client import WeatherClient
+from modules.smart_fertilizer.weather.iot_simulator import SoilSensorSimulator
 
 # Configure Streamlit page
 st.set_page_config(
