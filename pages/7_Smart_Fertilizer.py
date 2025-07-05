@@ -11,9 +11,19 @@ import pandas as pd
 import json
 import os
 
-# ✅ Ajouter la racine du projet à sys.path
+# ✅ D'abord on ajoute le chemin racine
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
+
+# ✅ Ensuite seulement, on tente l’import
+try:
+    from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
+except Exception as e:
+    import traceback
+    st.error("❌ Problème d'import")
+    st.code(traceback.format_exc())
+    st.stop()
+
 
 # 🌿 Interface utilisateur
 from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
