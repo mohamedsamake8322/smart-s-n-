@@ -6,14 +6,20 @@ This application provides intelligent fertilizer recommendations for African agr
 """
 import streamlit as st
 import sys
+import os
 from pathlib import Path
 import pandas as pd
 import json
-import os
 
-# ✅ D'abord on ajoute le chemin racine
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+# ✅ Résout le chemin racine du projet, même sur Streamlit Cloud
+current_file = Path(__file__).resolve()
+project_root = current_file.parent.parent  # <== ça monte depuis /pages
+sys.path.insert(0, str(project_root))     # <== ajoute à sys.path
+
+# ✳️ Affiche pour debug (optionnel)
+st.sidebar.info(f"📁 project_root: {project_root}")
+st.sidebar.info(f"📦 sys.path[0]: {sys.path[0]}")
+
 
 # ✅ Ensuite seulement, on tente l’import
 try:
