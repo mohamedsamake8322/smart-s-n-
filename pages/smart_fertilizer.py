@@ -38,7 +38,7 @@ from SmartFertilizerPro.core.smart_fertilization import SmartFertilization
 from SmartFertilizerPro.core.fertilizer_optimizer import FertilizerOptimizer
 # from SmartFertilizerPro.core.agronomic_knowledge_base import get_nutrient_thresholds
 from SmartFertilizerPro.core.regional_context import RegionalContext
-from SmartFertilizerPro.exports.pdf_generator import generate_pdf_report
+from SmartFertilizerPro.exports.pdf_generator import FertilizerReportGenerator
 from SmartFertilizerPro.exports.export_utils import prepare_export_payload
 from SmartFertilizerPro.regions.region_selector import get_region_by_gps
 from SmartFertilizerPro.ui.smart_ui import SmartFertilizerUI
