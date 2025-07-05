@@ -1,25 +1,22 @@
-import io
 import os
-from reportlab.lib.pagesizes import A4, letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.lib.colors import HexColor, black, blue, green, red
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
-from reportlab.platypus.tableofcontents import TableOfContents
-from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
-from reportlab.graphics.shapes import Drawing
-from reportlab.graphics.charts.linecharts import HorizontalLineChart
-from reportlab.graphics.charts.barcharts import VerticalBarChart
-from reportlab.lib import colors
+import io
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict
 
-
-from datetime import datetime
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
-from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
+from reportlab.lib.colors import HexColor
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+    Image,
+    PageBreak
+)
 
 class FertilizerReportGenerator:
     """
@@ -31,73 +28,8 @@ class FertilizerReportGenerator:
         self.setup_custom_styles()
 
     def setup_custom_styles(self):
-        # (optionnel) Tu peux ajouter des styles personnalisés ici si besoin
-        pass
-
-    def generate_pdf_report(
-        self,
-        filename: str,
-        farmer_name: str,
-        crop_name: str,
-        region: str,
-        recommendations: list,
-        logo_path: str = None
-    ):
-        """
-        Génère un rapport PDF de recommandations de fertilisation.
-
-        Args:
-            filename (str): nom du fichier de sortie
-            farmer_name (str): nom du fermier
-            crop_name (str): culture concernée
-            region (str): région géographique
-            recommendations (list): liste de tuples (élément, dose, unité)
-            logo_path (str): chemin vers un logo facultatif
-        """
-        doc = SimpleDocTemplate(filename, pagesize=A4)
-        story = []
-
-        # Logo (optionnel)
-        if logo_path and os.path.exists(logo_path):
-            img = Image(logo_path, width=80, height=80)
-            story.append(img)
-            story.append(Spacer(1, 12))
-
-        # Titre
-        title = f"Rapport de Fertilisation – {datetime.now().strftime('%d/%m/%Y')}"
-        story.append(Paragraph(title, self.styles['Title']))
-        story.append(Spacer(1, 12))
-
-        # Infos générales
-        story.append(Paragraph(f"<b>Fermier :</b> {farmer_name}", self.styles['Normal']))
-        story.append(Paragraph(f"<b>Culture :</b> {crop_name}", self.styles['Normal']))
-        story.append(Paragraph(f"<b>Région :</b> {region}", self.styles['Normal']))
-        story.append(Spacer(1, 12))
-
-        # Tableau des recommandations
-        story.append(Paragraph("<b>Recommandations de fertilisation :</b>", self.styles['Heading3']))
-        table_data = [["Élément", "Dose recommandée", "Unité"]] + recommendations
-        table = Table(table_data, hAlign='LEFT')
-        table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#4CAF50")),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-            ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
-            ('ROWBACKGROUNDS', (1, 1), (-1, -1), [colors.whitesmoke, colors.lightgrey])
-        ]))
-        story.append(table)
-
-        # Footer
-        story.append(Spacer(1, 24))
-        story.append(Paragraph("Ce rapport a été généré automatiquement par Smart Fertilizer Pro.", self.styles['Normal']))
-
-        doc.build(story)
-
-    def setup_custom_styles(self):
         """Setup custom styles for the report"""
 
-        # Title style
         self.styles.add(ParagraphStyle(
             name='CustomTitle',
             parent=self.styles['Title'],
@@ -107,7 +39,6 @@ class FertilizerReportGenerator:
             alignment=TA_CENTER
         ))
 
-        # Subtitle style
         self.styles.add(ParagraphStyle(
             name='CustomSubtitle',
             parent=self.styles['Heading1'],
@@ -119,7 +50,6 @@ class FertilizerReportGenerator:
             borderPadding=5
         ))
 
-        # Section header style
         self.styles.add(ParagraphStyle(
             name='SectionHeader',
             parent=self.styles['Heading2'],
@@ -133,7 +63,6 @@ class FertilizerReportGenerator:
             borderPadding=3
         ))
 
-        # Highlight style
         self.styles.add(ParagraphStyle(
             name='Highlight',
             parent=self.styles['Normal'],
@@ -143,7 +72,6 @@ class FertilizerReportGenerator:
             spaceAfter=10
         ))
 
-        # Warning style
         self.styles.add(ParagraphStyle(
             name='Warning',
             parent=self.styles['Normal'],
@@ -156,15 +84,51 @@ class FertilizerReportGenerator:
             borderPadding=5
         ))
 
+    def generate_pdf_report(self, filename: str, farmer_name: str, crop_name: str, region: str, recommendations: list, logo_path: str = None):
+        """
+        Génère un rapport PDF simple avec titre + tableau
+        """
+        doc = SimpleDocTemplate(filename, pagesize=A4)
+        story = []
+
+        if logo_path and os.path.exists(logo_path):
+            img = Image(logo_path, width=80, height=80)
+            story.append(img)
+            story.append(Spacer(1, 12))
+
+        title = f"Rapport de Fertilisation – {datetime.now().strftime('%d/%m/%Y')}"
+        story.append(Paragraph(title, self.styles['CustomTitle']))
+        story.append(Spacer(1, 12))
+
+        story.append(Paragraph(f"<b>Fermier :</b> {farmer_name}", self.styles['Normal']))
+        story.append(Paragraph(f"<b>Culture :</b> {crop_name}", self.styles['Normal']))
+        story.append(Paragraph(f"<b>Région :</b> {region}", self.styles['Normal']))
+        story.append(Spacer(1, 12))
+
+        story.append(Paragraph("Recommandations de fertilisation :", self.styles['SectionHeader']))
+        table_data = [["Élément", "Dose recommandée", "Unité"]] + recommendations
+        table = Table(table_data, hAlign='LEFT')
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#4CAF50")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+            ('ROWBACKGROUNDS', (1, 1), (-1, -1), [colors.whitesmoke, colors.lightgrey])
+        ]))
+        story.append(table)
+
+        story.append(Spacer(1, 24))
+        story.append(Paragraph("Ce rapport a été généré automatiquement par Smart Fertilizer Pro.", self.styles['Normal']))
+
+        doc.build(story)
+
     def generate_fertilizer_report(self, recommendation: Dict, output_path: str = None) -> bytes:
         """
-        Generate comprehensive fertilizer recommendation report
+        Génère un rapport complet professionnel (multi-sections)
         """
-
-        # Create PDF buffer
         buffer = io.BytesIO()
 
-        # Create document
         doc = SimpleDocTemplate(
             buffer,
             pagesize=A4,
@@ -174,49 +138,26 @@ class FertilizerReportGenerator:
             bottomMargin=18
         )
 
-        # Build report content
         story = []
 
-        # Title page
+        # 🔧 Tu dois définir ces méthodes dans ta classe si elles ne le sont pas encore
         story.extend(self._create_title_page(recommendation))
         story.append(PageBreak())
-
-        # Executive summary
         story.extend(self._create_executive_summary(recommendation))
         story.append(PageBreak())
-
-        # Soil analysis section
         story.extend(self._create_soil_analysis_section(recommendation))
-
-        # Crop requirements section
         story.extend(self._create_crop_requirements_section(recommendation))
-
-        # Fertilizer recommendations
         story.extend(self._create_fertilizer_recommendations_section(recommendation))
-
-        # Application schedule
         story.extend(self._create_application_schedule_section(recommendation))
-
-        # Cost analysis
         story.extend(self._create_cost_analysis_section(recommendation))
-
-        # Regional considerations
         story.extend(self._create_regional_considerations_section(recommendation))
-
-        # Risk assessment
         story.extend(self._create_risk_assessment_section(recommendation))
-
-        # Appendices
         story.extend(self._create_appendices(recommendation))
 
-        # Build PDF
         doc.build(story)
-
-        # Get PDF bytes
         pdf_bytes = buffer.getvalue()
         buffer.close()
 
-        # Save to file if path provided
         if output_path:
             with open(output_path, 'wb') as f:
                 f.write(pdf_bytes)
