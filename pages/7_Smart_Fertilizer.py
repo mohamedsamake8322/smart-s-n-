@@ -5,7 +5,7 @@ Main entry point for the Smart Fertilizer web application using Streamlit.
 This application provides intelligent fertilizer recommendations for African agriculture.
 """
 
-import streamlit as st
+import streamlit as st # type: ignore
 import sys
 import os
 from pathlib import Path
