@@ -5,41 +5,70 @@ Main entry point for the Smart Fertilizer web application using Streamlit.
 This application provides intelligent fertilizer recommendations for African agriculture.
 """
 
-import streamlit as st # type: ignore
+# --------------------------
+# 🌱 Initialisation Streamlit
+# --------------------------
+import streamlit as st  # type: ignore
 import sys
 import os
 from pathlib import Path
 import pandas as pd
 import json
 
-# ✅ Résout le chemin racine du projet, même sur Streamlit Cloud
+# --------------------------
+# 🔍 Détection du chemin racine du projet
+# --------------------------
 current_file = Path(__file__).resolve()
 project_root = current_file.parent.parent.parent
-sys.path.insert(0, str(project_root))  # ajoute la racine du projet à PYTHONPATH
+sys.path.insert(0, str(project_root))  # Ajoute la racine du projet à PYTHONPATH
 
-# ✳️ Debug info (optionnel)
-st.sidebar.info(f"📁 project_root: {project_root}")
-st.sidebar.info(f"📦 sys.path[0]: {sys.path[0]}")
+# 🛠️ Infos de debug (facultatif pour voir l'environnement)
+st.sidebar.subheader("🛠️ Chemins et environnement")
+st.sidebar.info(f"📁 Racine projet : {project_root}")
+st.sidebar.info(f"📦 sys.path[0] : {sys.path[0]}")
+if os.path.exists(project_root / "modules"):
+    st.sidebar.success("✅ Le dossier modules/ est bien détecté")
+else:
+    st.sidebar.error("🚫 Le dossier modules/ n'est pas trouvé")
 
-# ✅ Test et chargement des modules de Smart Fertilizer
+# --------------------------
+# 🌍 Chargement des données régionales
+# --------------------------
 try:
-    # 🌿 Interface utilisateur
+    from modules.smart_fertilizer.regions.regional_context import get_regional_config
+
+    region_name = "west_africa"
+    region_info = get_regional_config(region_name)
+
+    st.markdown(f"### 🌍 Contexte : {region_name.replace('_', ' ').title()}")
+    st.json(region_info)
+
+except Exception as e:
+    import traceback
+    st.error("❌ Erreur lors de l'import ou du chargement du contexte régional")
+    st.code(traceback.format_exc())
+    st.stop()
+
+# --------------------------
+# ⚙️ Imports principaux de l'application
+# --------------------------
+try:
+    # 🌿 Interface Utilisateur
     from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
     from modules.smart_fertilizer.ui.crop_selector import CropSelector
     from modules.smart_fertilizer.ui.translations import Translator
 
-    # ⚙️ Moteur de recommandation
+    # 🔬 Moteur de recommandation
     from modules.smart_fertilizer.core.smart_fertilizer_engine import SmartFertilizerEngine
     from modules.smart_fertilizer.core.fertilizer_optimizer import FertilizerOptimizer
     from modules.smart_fertilizer.core.smart_fertilization import SmartFertilization
     from modules.smart_fertilizer.core.agronomic_knowledge_base import AgronomicKnowledgeBase
     from modules.smart_fertilizer.core.regional_context import RegionalContext
 
-    # 🌍 Contexte régional
+    # 🌍 Contexte Régional
     from modules.smart_fertilizer.regions.region_selector import RegionSelector
-    from modules.smart_fertilizer.regions.regional_context import get_regional_config
 
-    # 🚀 API FastAPI locale
+    # 🚀 API interne
     from modules.smart_fertilizer.api.main import fertilizer_router
     from modules.smart_fertilizer.api.models import FertilizerRequest
 
@@ -47,7 +76,7 @@ try:
     from modules.smart_fertilizer.exports.pdf_generator import PDFGenerator
     from modules.smart_fertilizer.exports.export_utils import format_recommendation_data
 
-    # 🌦️ Météo et capteurs
+    # ☁️ Données météo et capteurs
     from modules.smart_fertilizer.weather.weather_client import WeatherClient
     from modules.smart_fertilizer.weather.iot_simulator import SoilSensorSimulator
 
@@ -56,9 +85,7 @@ except Exception as e:
     st.error("❌ Problème lors de l'import des modules Smart Fertilizer")
     st.code(traceback.format_exc())
     st.stop()
-    st.sidebar.markdown("### 🔍 Vérification environnement")
-    st.sidebar.write("📂 Contenu de la racine :")
-    st.sidebar.code("\n".join(os.listdir(project_root)))
+
 
 # ✅ Configuration de la page
 st.set_page_config(
