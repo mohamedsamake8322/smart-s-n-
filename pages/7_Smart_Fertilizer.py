@@ -56,6 +56,9 @@ except Exception as e:
     st.error("❌ Problème lors de l'import des modules Smart Fertilizer")
     st.code(traceback.format_exc())
     st.stop()
+    st.sidebar.markdown("### 🔍 Vérification environnement")
+    st.sidebar.write("📂 Contenu de la racine :")
+    st.sidebar.code("\n".join(os.listdir(project_root)))
 
 # ✅ Configuration de la page
 st.set_page_config(
