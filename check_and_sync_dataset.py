@@ -1,3 +1,4 @@
+#Verier les dossiers manquantes et copier en même temps
 import os
 import shutil
 
