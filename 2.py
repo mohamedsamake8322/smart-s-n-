@@ -42,6 +42,6 @@ def stratified_split(train_dir, val_dir, split_ratio=0.2, seed=42):
 # === Paramètres ===
 train_path = r"C:\Users\moham\Pictures\plantdataset\train"
 val_path = r"C:\Users\moham\Pictures\plantdataset\val"
-proportion = 0.2  # 20% vers val
+proportion = 0.3  # 30% vers val
 
 stratified_split(train_path, val_path, proportion)
