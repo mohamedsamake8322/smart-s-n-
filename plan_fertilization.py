@@ -1,54 +1,48 @@
 import json
-import os
-import re
 
-# 📁 Charger la base fusionnée
-with open("unified_fertilization/fertilization_master.json", "r", encoding="utf-8") as f:
-    data = json.load(f)
+# 📁 Charger les bases de données
+with open("knowledge/pheno_phases.json", "r", encoding="utf-8") as f:
+    phenology = json.load(f)
+
+with open("knowledge/fertilization_phased_db.json", "r", encoding="utf-8") as f:
+    fertibase = json.load(f)
 
 # 📥 Inputs utilisateur
 culture = input("🌱 Entrez la culture : ").strip().lower()
 surface = float(input("📐 Entrez la superficie (en hectares) : "))
+rendement = input("🎯 Rendement souhaité (ex: 20 t/ha) : ").strip().lower()
+mode_app = input("🧴 Méthode d’application (volée / localisée / fertirrigation) : ").strip().lower()
+zone = input("📍 Zone géographique (pays ou région) : ").strip().lower()
 
-# 🔍 Rechercher les lignes disponibles
-recs = data.get(culture)
-if not recs:
-    print(f"❌ Aucune donnée disponible pour « {culture} »")
+# 🔍 Vérifier si la culture est connue
+if culture not in phenology:
+    print(f"❌ Culture « {culture} » inconnue dans la base phénologique.")
     exit()
 
-print(f"\n✅ {len(recs)} recommandations trouvées pour « {culture} »\n")
+# 🧬 Obtenir les phases
+phases = phenology[culture]
 
-# 🔬 Détection automatique de nutriments
-nutrients = ['N', 'P2O5', 'K2O']
-dose_pattern = re.compile(r"(N|P2O5|K2O)[\s:=\-]*([0-9]+(?:\.[0-9]+)?)", re.IGNORECASE)
+# 🧠 Chercher le plan de fertilisation associé
+try:
+    plan = fertibase[culture][rendement][mode_app][zone]
+except KeyError:
+    print("❌ Aucune donnée disponible pour cette combinaison (culture, rendement, mode, zone).")
+    exit()
 
-plans = []
+# 📊 Affichage du plan par phase
+print(f"\n📋 Plan de fertilisation par phase — {culture.upper()}, {surface} ha, {rendement}, {zone.title()}")
+print("-" * 80)
+print(f"{'Phase':<25} | {'Engrais':<20} | {'Dose (kg/ha)':<15} | {'Total (kg)':<10}")
+print("-" * 80)
 
-for i, row in enumerate(recs, 1):
-    row_text = " | ".join(str(cell) for cell in row)
-    extracted = {}
-
-    for match in dose_pattern.finditer(row_text):
-        nutri = match.group(1).upper()
-        amount = float(match.group(2))
-        extracted[nutri] = amount
-
-    if extracted:
-        plans.append((row_text, extracted))
-
-# 📊 Affichage
-if not plans:
-    print("⚠️ Aucun dosage N/P/K explicite détecté.")
-else:
-    for i, (source_text, doses) in enumerate(plans, 1):
-        print(f"\n📋 Recommandation #{i}")
-        print("Source :", source_text)
-        print("-" * 50)
-        print(f"{'Nutriment':<10} | {'Dose (kg/ha)':<12} | {'Surface':<6} | {'Total (kg)':<10}")
-        print("-" * 50)
-        for nut, dose in doses.items():
-            total = dose * surface
-            print(f"{nut:<10} | {dose:<12.2f} | {surface:<6} | {total:<10.2f}")
-        print("-" * 50)
-
-print("\n🎯 Fin de génération du plan structuré. Prêt pour export PDF ou interface utilisateur.")
+for phase in phases:
+    if phase in plan:
+        for dose in plan[phase]:
+            engrais = dose["fertilizer"]
+            par_ha = dose["dose_kg_ha"]
+            total = par_ha * surface
+            print(f"{phase:<25} | {engrais:<20} | {par_ha:<15.2f} | {total:<10.2f}")
+    else:
+        print(f"{phase:<25} | {'-':<20} | {'-':<15} | {'-':<10}")
+print("-" * 80)
+print("\n✅ Plan terminé. Prêt pour export PDF ou adaptation selon variété/date semis.")

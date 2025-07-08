@@ -1,0 +1,1030 @@
+{
+    "Zea mays (maïs)": [
+        "Germination",
+        "Tallaison",
+        "Montaison",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Oryza sativa (riz irrigué)": [
+        "Germination",
+        "Tallage",
+        "Élongation de la tige",
+        "Initiation panicule",
+        "Floraison",
+        "Remplissage des grains",
+        "Récolte"
+    ],
+    "Oryza glaberrima (riz pluvial)": [
+        "Germination",
+        "Tallage",
+        "Croissance foliaire",
+        "Floraison",
+        "Remplissage des grains",
+        "Récolte"
+    ],
+    "Sorghum bicolor (sorgho)": [
+        "Germination",
+        "Croissance végétative",
+        "Apparition panicule",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Pennisetum glaucum (petit mil)": [
+        "Germination",
+        "Tallage",
+        "Montaison",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Pennisetum glaucum (grand mil)": [
+        "Germination",
+        "Tallage",
+        "Montaison",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Digitaria exilis (fonio)": [
+        "Germination",
+        "Tallage",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Eragrostis tef (teff)": [
+        "Germination",
+        "Tallage",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Triticum aestivum (blé)": [
+        "Germination",
+        "Tallage",
+        "Montaison",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Hordeum vulgare (orge)": [
+        "Germination",
+        "Tallage",
+        "Montaison",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Avena sativa (avoine)": [
+        "Germination",
+        "Tallage",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Eleusine coracana (mil noir / éleusine)": [
+        "Germination",
+        "Tallage",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Panicum miliaceum (panic)": [
+        "Germination",
+        "Tallage",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Triticosecale (triticale)": [
+        "Germination",
+        "Tallage",
+        "Montaison",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Secale cereale (seigle)": [
+        "Germination",
+        "Tallage",
+        "Montaison",
+        "Floraison",
+        "Remplissage du grain",
+        "Récolte"
+    ],
+    "Solanum lycopersicum (tomate)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Croissance du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Solanum melongena (aubergine)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Croissance du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Capsicum annuum (piment)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Croissance des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Capsicum annuum (poivron)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Croissance des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Cucumis sativus (concombre)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement des fruits",
+        "Récolte"
+    ],
+    "Cucurbita pepo (courgette)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement des fruits",
+        "Récolte"
+    ],
+    "Cucurbita maxima (citrouille)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Grossissement des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Citrullus lanatus (pastèque)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Cucumis melo (melon)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Croissance des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Cucurbita moschata (potiron)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Croissance du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Abelmoschus esculentus (gombo)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Croissance des fruits",
+        "Récolte"
+    ],
+    "Luffa cylindrica (luffa)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Sechium edule (chayotte)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement des fruits",
+        "Récolte"
+    ],
+    "Brassica oleracea (chou)": [
+        "Germination",
+        "Stade plantule",
+        "Croissance végétative",
+        "Formation de la pomme",
+        "Maturation",
+        "Récolte"
+    ],
+    "Lactuca sativa (laitue)": [
+        "Germination",
+        "Stade plantule",
+        "Croissance végétative",
+        "Formation de la rosette",
+        "Floraison",
+        "Récolte"
+    ],
+    "Spinacia oleracea (épinard)": [
+        "Germination",
+        "Développement foliaire",
+        "Floraison",
+        "Montée en graines",
+        "Récolte"
+    ],
+    "Corchorus olitorius (corète / feuille de jute)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Montée en graines",
+        "Récolte"
+    ],
+    "Solanum nigrum (morelle noire)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Fructification",
+        "Récolte"
+    ],
+    "Amaranthus spp. (amarante)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Montée en graines",
+        "Récolte"
+    ],
+    "Ocimum gratissimum (basilic africain)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Récolte"
+    ],
+    "Apium graveolens (céleri)": [
+        "Germination",
+        "Croissance végétative",
+        "Développement foliaire",
+        "Floraison",
+        "Récolte"
+    ],
+    "Portulaca oleracea (pourpier)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Récolte"
+    ],
+    "Mentha spp. (menthe)": [
+        "Germination",
+        "Croissance végétative",
+        "Rejets / Multiplication",
+        "Floraison",
+        "Récolte"
+    ],
+    "Hibiscus sabdariffa (oseille de Guinée)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Développement des calices",
+        "Récolte"
+    ],
+    "Daucus carota (carotte)": [
+        "Germination",
+        "Développement foliaire",
+        "Développement racinaire",
+        "Tubérisation",
+        "Maturation",
+        "Récolte"
+    ],
+    "Beta vulgaris (betterave)": [
+        "Germination",
+        "Développement des feuilles",
+        "Développement racinaire",
+        "Accumulation des sucres",
+        "Maturation",
+        "Récolte"
+    ],
+    "Brassica rapa (navet ou colza selon le cultivar)": [
+        "Germination",
+        "Développement foliaire",
+        "Élongation de la tige",
+        "Floraison",
+        "Formation des siliques",
+        "Maturation",
+        "Récolte"
+    ],
+    "Raphanus sativus (radis)": [
+        "Germination",
+        "Développement foliaire",
+        "Développement racinaire",
+        "Maturation",
+        "Récolte"
+    ],
+    "Manihot esculenta (manioc)": [
+        "Phase de germination (0–2 semaines)",
+        "Phase de développement foliaire (2–12 semaines)",
+        "Phase de tubérisation initiale (3e–6e mois)",
+        "Phase de remplissage des racines (6e–10e mois)",
+        "Récolte (8e–12e mois selon variété)"
+    ],
+    "Ipomoea batatas (patate douce)": [
+        "Phase d’établissement (0–4 semaines après plantation)",
+        "Croissance rapide des tiges et feuilles (4–8 semaines)",
+        "Début de tubérisation (8–12 semaines)",
+        "Remplissage des tubercules (12–16 semaines)",
+        "Récolte (3,5–5 mois après plantation)"
+    ],
+    "Dioscorea spp. (igname)": [
+        "Germination et levée",
+        "Croissance végétative (développement des tiges et feuilles)",
+        "Tubérisation (formation des tubercules)",
+        "Maturation des tubercules",
+        "Récolte (après dessèchement des feuilles)"
+    ],
+    "Colocasia esculenta (taro, colocase)": [
+        "Émergence des jeunes plants",
+        "Développement foliaire et enracinement",
+        "Formation du corme principal",
+        "Croissance des cormels latéraux",
+        "Récolte (6 à 9 mois après plantation)"
+    ],
+    "Allium sativum (ail)": [
+        "Germination et levée",
+        "Croissance végétative (développement des feuilles)",
+        "Bulbification (formation des caïeux)",
+        "Maturation (dessèchement progressif des feuilles)",
+        "Récolte (quand 60–80% des feuilles sont tombées)"
+    ],
+    "Allium cepa (oignon)": [
+        "Germination",
+        "Croissance végétative (feuillage)",
+        "Bulbification (renflement du bulbe)",
+        "Maturation (dessèchement du feuillage)",
+        "Récolte (quand 70–90% des feuilles sont couchées)"
+    ],
+    "Allium ascalonicum (échalote)": [
+        "Levée",
+        "Croissance végétative (multiplication des pousses)",
+        "Formation des bulbes secondaires",
+        "Maturation (dessèchement des feuilles)",
+        "Récolte (quand les feuilles sont tombées et sèches)"
+    ],
+    "Zingiber officinale (gingembre)": [
+        "Germination du rhizome",
+        "Croissance végétative (développement des tiges et feuilles)",
+        "Formation des rhizomes",
+        "Grossissement et maturation des rhizomes",
+        "Récolte (8 à 10 mois après plantation)"
+    ],
+    "Phaseolus vulgaris (haricot vert)": [
+        "Germination",
+        "Développement foliaire",
+        "Floraison",
+        "Formation des gousses",
+        "Récolte (gousses immatures)"
+    ],
+    "Phaseolus vulgaris (haricot sec)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Remplissage des gousses",
+        "Maturation des graines",
+        "Récolte (gousses sèches)"
+    ],
+    "Pisum sativum (pois)": [
+        "Germination",
+        "Développement foliaire",
+        "Floraison",
+        "Formation des gousses",
+        "Remplissage des graines",
+        "Récolte"
+    ],
+    "Cajanus cajan (pois d’Angole)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Formation des gousses",
+        "Maturation des graines",
+        "Récolte"
+    ],
+    "Vigna unguiculata (niébé, haricot à œil noir)": [
+        "Germination",
+        "Développement foliaire",
+        "Floraison",
+        "Formation des gousses",
+        "Remplissage des graines",
+        "Récolte"
+    ],
+    "Vigna subterranea (voandzou, pois de terre)": [
+        "Germination",
+        "Développement végétatif",
+        "Floraison",
+        "Formation des gousses souterraines",
+        "Remplissage des graines",
+        "Récolte"
+    ],
+    "Agaricus bisporus (champignon de Paris)": [
+        "Préparation du substrat",
+        "Ensemencement (inoculation du mycélium)",
+        "Incubation (colonisation du substrat)",
+        "Formation des primordia (ébauches de champignons)",
+        "Croissance des carpophores",
+        "Récolte"
+    ],
+    "Allium schoenoprasum (ciboulette)": [
+        "Germination",
+        "Croissance végétative (développement des feuilles tubulaires)",
+        "Montaison (allongement des tiges florales)",
+        "Floraison",
+        "Récolte (feuilles jeunes ou fleurs selon l’usage)"
+    ],
+    "Foeniculum vulgare (fenouil)": [
+        "Germination",
+        "Développement foliaire (rosette basale)",
+        "Formation du bulbe (renflement des gaines foliaires)",
+        "Montaison et floraison (si non récolté jeune)",
+        "Récolte (bulbe ou graines selon le type)"
+    ],
+    "Petroselinum crispum (persil)": [
+        "Germination (lente, 15–30 jours)",
+        "Développement foliaire (rosette de feuilles)",
+        "Croissance végétative continue (selon récolte)",
+        "Montaison et floraison (2e année pour bisannuelles)",
+        "Récolte (feuilles jeunes ou graines)"
+    ],
+    "Arachis hypogaea (arachide)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Fructification (pénétration des gynophores)",
+        "Remplissage des gousses",
+        "Maturation",
+        "Récolte"
+    ],
+    "Glycine max (soja)": [
+        "Germination",
+        "Développement végétatif (V1 à Vn)",
+        "Floraison (R1)",
+        "Formation des gousses (R3)",
+        "Remplissage des graines (R5)",
+        "Maturité physiologique (R7)",
+        "Récolte (R8)"
+    ],
+    "Sesamum indicum (sésame)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Fructification (formation des capsules)",
+        "Remplissage des graines",
+        "Maturation",
+        "Récolte"
+    ],
+    "Helianthus annuus (tournesol)": [
+        "Germination",
+        "Développement végétatif",
+        "Bouton floral",
+        "Floraison",
+        "Remplissage des graines",
+        "Maturation",
+        "Récolte"
+    ],
+    "Elaeis guineensis (palmier à huile)": [
+        "Germination",
+        "Phase juvénile (formation du stipe)",
+        "Développement végétatif (feuillage)",
+        "Apparition des inflorescences",
+        "Pollinisation et nouaison",
+        "Développement des régimes",
+        "Récolte (fruits mûrs tous les 5–6 mois)"
+    ],
+    "Cocos nucifera (noix de coco)": [
+        "Germination",
+        "Phase juvénile (3–6 ans)",
+        "Floraison",
+        "Nouaison",
+        "Remplissage de l’albumen",
+        "Maturation (10–12 mois après fécondation)",
+        "Récolte"
+    ],
+    "Ricinus communis (ricin)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Fructification (capsules épineuses)",
+        "Remplissage des graines",
+        "Maturation",
+        "Récolte"
+    ],
+    "Jatropha curcas (Jatropha)": [
+        "Germination",
+        "Croissance végétative",
+        "Ramification et lignification",
+        "Floraison",
+        "Fructification",
+        "Récolte"
+    ],
+    "Brassica napus (Colza)": [
+        "Levée",
+        "Rosette",
+        "Montaison",
+        "Floraison",
+        "Remplissage des siliques",
+        "Récolte"
+    ],
+    "Gossypium spp. (Coton - graines)": [
+        "Levée",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison (formation des capsules)",
+        "Maturation des capsules",
+        "Récolte"
+    ],
+    "Vitellaria paradoxa (Noix de karité)": [
+        "Germination",
+        "Croissance juvénile (5–10 ans)",
+        "Floraison",
+        "Fructification",
+        "Maturation des fruits",
+        "Récolte"
+    ],
+    "Anacardium occidentale (Noix de cajou)": [
+        "Levée",
+        "Croissance végétative",
+        "Floraison",
+        "Fructification (pomme + noix)",
+        "Maturation",
+        "Récolte"
+    ],
+    "Linum usitatissimum (Lin oléagineux)": [
+        "Levée",
+        "Croissance végétative",
+        "Floraison",
+        "Formation des capsules",
+        "Maturation",
+        "Récolte"
+    ],
+    "Cannabis sativa (Chanvre)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Formation des graines (chanvre grain)",
+        "Maturation",
+        "Récolte"
+    ],
+    "Tamarindus indica (Tamarin)": [
+        "Germination",
+        "Croissance juvénile (3–5 ans)",
+        "Floraison",
+        "Fructification",
+        "Maturation des gousses",
+        "Récolte"
+    ],
+    "Adansonia digitata (Baobab - graines oléagineuses)": [
+        "Germination",
+        "Croissance lente (5–15 ans)",
+        "Floraison nocturne",
+        "Fructification (gousses)",
+        "Maturation",
+        "Récolte"
+    ],
+    "Citrullus lanatus var. citroides (Courge oléagineuse - egusi)": [
+        "Levée",
+        "Croissance végétative",
+        "Floraison",
+        "Fructification",
+        "Maturation des fruits",
+        "Récolte"
+    ],
+    "Citrus sinensis (Oranger)": [
+        "Germination et croissance initiale",
+        "Développement végétatif",
+        "Floraison",
+        "Nouaison et grossissement des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Citrus limon (Citronnier)": [
+        "Germination ou greffage",
+        "Croissance végétative",
+        "Floraison (plusieurs fois par an)",
+        "Fructification",
+        "Maturation",
+        "Récolte (échelonnée selon variété)"
+    ],
+    "Citrus reticulata (Mandarinier)": [
+        "Croissance juvénile",
+        "Floraison printanière",
+        "Nouaison",
+        "Développement du fruit (été)",
+        "Maturation (automne)",
+        "Récolte (novembre à janvier)"
+    ],
+    "Citrus paradisi (Pamplemoussier)": [
+        "Croissance végétative",
+        "Floraison (printemps)",
+        "Nouaison",
+        "Développement du fruit (long)",
+        "Maturation (hiver)",
+        "Récolte (décembre à mars)"
+    ],
+    "Citrus aurantifolia (Limonier / Lime acide)": [
+        "Croissance végétative",
+        "Floraison (souvent continue en climat tropical)",
+        "Nouaison",
+        "Fructification rapide",
+        "Maturation",
+        "Récolte (plusieurs fois par an)"
+    ],
+    "Fortunella spp. (Kumquat)": [
+        "Croissance végétative",
+        "Floraison (printemps-été)",
+        "Nouaison",
+        "Développement du fruit",
+        "Maturation (hiver)",
+        "Récolte (décembre à mars)"
+    ],
+    "Citrus clementina (Clémentinier)": [
+        "Croissance végétative",
+        "Floraison (avril-mai)",
+        "Nouaison",
+        "Grossissement du fruit (été)",
+        "Maturation (automne)",
+        "Récolte (novembre à janvier)"
+    ],
+    "Citrus latifolia (Lime / citron vert Tahiti)": [
+        "Croissance végétative",
+        "Floraison (souvent continue)",
+        "Nouaison",
+        "Développement rapide du fruit",
+        "Maturation",
+        "Récolte (toute l’année en climat chaud)"
+    ],
+    "Mangifera indica (manguier)": [
+        "Débourrement",
+        "Floraison",
+        "Nouaison",
+        "Grossissement du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Carica papaya (papayer)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Fructification",
+        "Maturation",
+        "Récolte"
+    ],
+    "Musa spp. (bananier)": [
+        "Émergence du pseudotronc",
+        "Croissance végétative",
+        "Émission de l'inflorescence",
+        "Floraison",
+        "Remplissage des fruits",
+        "Récolte"
+    ],
+    "Persea americana (avocatier)": [
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Psidium guajava (goyavier)": [
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Annona muricata (corossolier)": [
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Manilkara zapota (sapotillier)": [
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Grossissement du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Artocarpus heterophyllus (jacquier)": [
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Averrhoa carambola (carambolier)": [
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Litchi chinensis (litchi)": [
+        "Repos végétatif",
+        "Induction florale",
+        "Floraison",
+        "Nouaison",
+        "Grossissement du fruit",
+        "Récolte"
+    ],
+    "Dimocarpus longan (longanier)": [
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Spondias mombin (prunier mombin)": [
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement du fruit",
+        "Récolte"
+    ],
+    "Passiflora edulis (fruit de la passion)": [
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement du fruit",
+        "Récolte"
+    ],
+    "Saccharum officinarum (canne à sucre)": [
+        "Germination",
+        "Tallage",
+        "Allongement des tiges",
+        "Maturation",
+        "Récolte"
+    ],
+    "Cocos nucifera (cocotier)": [
+        "Germination (3-6 mois)",
+        "Croissance végétative (3-6 ans)",
+        "Floraison (à partir de 5-6 ans)",
+        "Fructification continue (toute l'année)",
+        "Récolte (tous les 45-60 jours)"
+    ],
+    "Vitellaria paradoxa (karité)": [
+        "Germination (1-2 mois)",
+        "Croissance lente (jusqu'à 15 ans)",
+        "Floraison (15-20 ans)",
+        "Fructification annuelle (saison des pluies)",
+        "Récolte (juin à août)"
+    ],
+    "Corylus avellana (noisetier)": [
+        "Germination (1-2 mois)",
+        "Croissance végétative (3-4 ans)",
+        "Floraison hivernale (janvier-mars)",
+        "Fructification (été)",
+        "Récolte (août-septembre)"
+    ],
+    "Juglans regia (noyer)": [
+        "Germination (1-2 mois)",
+        "Croissance juvénile (4-6 ans)",
+        "Floraison (printemps)",
+        "Fructification (été)",
+        "Récolte (septembre-octobre)"
+    ],
+    "Prunus dulcis (amandier)": [
+        "Germination (1-2 mois)",
+        "Croissance végétative (3-4 ans)",
+        "Floraison (janvier-mars)",
+        "Fructification (printemps-été)",
+        "Récolte (août-septembre)"
+    ],
+    "Pistacia vera (pistachier)": [
+        "Germination (1-2 mois)",
+        "Croissance lente (5-7 ans)",
+        "Floraison (avril-mai)",
+        "Fructification (été)",
+        "Récolte (août-septembre)"
+    ],
+    "Anacardium occidentale (cajoutier)": [
+        "Germination (2-4 semaines)",
+        "Croissance végétative (2-3 ans)",
+        "Floraison (saison sèche)",
+        "Fructification (2-3 mois après floraison)",
+        "Récolte (février-mai selon climat)"
+    ],
+    "Adansonia digitata (baobab)": [
+        "Germination (2-4 semaines)",
+        "Croissance lente (5-10 ans)",
+        "Floraison (saison sèche)",
+        "Fructification (6 mois après floraison)",
+        "Récolte (mars-mai)"
+    ],
+    "Tamarindus indica (tamarinier)": [
+        "Germination (1-2 semaines)",
+        "Croissance végétative (3-5 ans)",
+        "Floraison (mars-mai)",
+        "Fructification (6-9 mois après floraison)",
+        "Récolte (janvier-mars)"
+    ],
+    "Parkia biglobosa (néré)": [
+        "Germination (2-3 semaines)",
+        "Croissance lente (5-7 ans)",
+        "Floraison (mars-avril)",
+        "Fructification (mai-juillet)",
+        "Récolte (juin-août)"
+    ],
+    "Sclerocarya birrea (marula)": [
+        "Germination (1-2 mois)",
+        "Croissance végétative (3-5 ans)",
+        "Floraison (août-octobre)",
+        "Fructification (janvier-mars)",
+        "Récolte (février-avril)"
+    ],
+    "Malus domestica (pommier)": [
+        "Débourrement",
+        "Feuillaison",
+        "Floraison",
+        "Nouaison",
+        "Grossissement des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Pyrus communis (poirier)": [
+        "Débourrement",
+        "Développement des feuilles",
+        "Floraison",
+        "Nouaison",
+        "Croissance des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Prunus persica (pêcher)": [
+        "Débourrement",
+        "Floraison",
+        "Nouaison",
+        "Phase de noyau lignifié",
+        "Grossissement final",
+        "Maturation",
+        "Récolte"
+    ],
+    "Prunus domestica (prunier)": [
+        "Débourrement",
+        "Floraison",
+        "Nouaison",
+        "Croissance des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Prunus avium (cerisier)": [
+        "Débourrement",
+        "Floraison",
+        "Nouaison",
+        "Croissance rapide",
+        "Maturation",
+        "Récolte"
+    ],
+    "Prunus armeniaca (abricotier)": [
+        "Débourrement",
+        "Floraison",
+        "Nouaison",
+        "Phase de croissance lente",
+        "Phase de croissance rapide",
+        "Maturation",
+        "Récolte"
+    ],
+    "Ficus carica (figuier)": [
+        "Débourrement",
+        "Croissance végétative",
+        "Induction florale interne (sycone)",
+        "Développement du fruit",
+        "Maturation",
+        "Récolte"
+    ],
+    "Vitis vinifera (vigne)": [
+        "Débourrement",
+        "Floraison",
+        "Nouaison",
+        "Véraison",
+        "Maturation",
+        "Récolte"
+    ],
+    "Diospyros kaki (kaki)": [
+        "Débourrement",
+        "Floraison",
+        "Nouaison",
+        "Croissance des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Eriobotrya japonica (néflier du Japon)": [
+        "Floraison automnale",
+        "Nouaison hivernale",
+        "Croissance printanière",
+        "Maturation",
+        "Récolte (fin printemps)"
+    ],
+    "Ziziphus mauritiana (Jujubier africain)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Maturation des fruits",
+        "Récolte"
+    ],
+    "Annona muricata (Corossol)": [
+        "Germination",
+        "Croissance des jeunes plants",
+        "Floraison",
+        "Fructification",
+        "Maturation du fruit",
+        "Récolte"
+    ],
+    "Phoenix dactylifera (Palmier-dattier)": [
+        "Germination",
+        "Croissance juvénile",
+        "Induction florale",
+        "Floraison",
+        "Développement des régimes",
+        "Maturation des dattes",
+        "Récolte"
+    ],
+    "Annona squamosa (Pomme cannelle)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Développement du fruit",
+        "Récolte"
+    ],
+    "Spondias dulcis (Prune de Cythère)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Fructification",
+        "Maturation",
+        "Récolte"
+    ],
+    "Opuntia ficus-indica (Figuier de barbarie)": [
+        "Émission de cladodes",
+        "Floraison",
+        "Nouaison",
+        "Développement des fruits",
+        "Maturation",
+        "Récolte"
+    ],
+    "Dovyalis caffra (Governor plum)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Maturation des fruits",
+        "Récolte"
+    ],
+    "Grewia spp. (Raisin sauvage)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Nouaison",
+        "Maturation",
+        "Récolte"
+    ],
+    "Balanites aegyptiaca (Dattier du désert)": [
+        "Germination",
+        "Croissance juvénile",
+        "Floraison",
+        "Nouaison",
+        "Maturation des fruits",
+        "Récolte"
+    ],
+    "Moringa oleifera (Moringa)": [
+        "Germination",
+        "Croissance végétative",
+        "Floraison",
+        "Formation des gousses",
+        "Maturation des graines",
+        "Récolte"
+    ]
+}
