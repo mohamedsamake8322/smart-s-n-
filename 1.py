@@ -2,60 +2,62 @@ import os
 from PIL import Image
 import io
 
-def compress_to_target_size(input_path, output_path, target_size_bytes=150_000):
-    img = Image.open(input_path)
-    stat_info = os.stat(input_path)
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    ext = os.path.splitext(input_path)[1].lower()
+def compress_jpeg_if_beneficial(img, original_path, output_path, target_reduction=0.8):
+    buffer = io.BytesIO()
+    img.save(buffer, format='JPEG', quality=85, optimize=True)
+    new_size = buffer.tell()
+    old_size = os.path.getsize(original_path)
 
-    success = False
+    if new_size < old_size * target_reduction:
+        with open(output_path, 'wb') as f:
+            f.write(buffer.getvalue())
+        return new_size
+    else:
+        shutil.copy2(original_path, output_path)
+        return old_size
+
+def compress_preserving_visual_quality(input_path, output_path):
+    img = Image.open(input_path)
+    ext = os.path.splitext(input_path)[1].lower()
+    stat_info = os.stat(input_path)
+
+    # Force RGB (sans transparence) pour JPEG
+    if img.mode in ("RGBA", "LA"):
+        img = img.convert("RGB")
 
     if ext in ['.jpg', '.jpeg']:
-        for quality in range(90, 4, -5):  # Descendre jusqu’à qualité 5
-            buffer = io.BytesIO()
-            img.save(buffer, format='JPEG', quality=quality, optimize=True)
-            if buffer.tell() <= target_size_bytes:
-                with open(output_path, 'wb') as f_out:
-                    f_out.write(buffer.getvalue())
-                success = True
-                break
-        if not success:
-            img.save(output_path, format='JPEG', quality=5, optimize=True)
+        final_size = compress_jpeg_if_beneficial(img, input_path, output_path)
 
     elif ext == '.png':
-        if "A" not in img.getbands():  # Si pas de canal alpha
-            # Convertir en JPEG pour meilleur gain
-            img = img.convert("RGB")
+        if "transparency" not in img.info and img.mode != "RGBA":
             output_path = output_path.rsplit('.', 1)[0] + ".jpg"
-            compress_to_target_size(input_path, output_path, target_size_bytes)
-            return
+            final_size = compress_jpeg_if_beneficial(img.convert("RGB"), input_path, output_path)
         else:
-            img = img.convert('P', palette=Image.ADAPTIVE)
+            # PNG avec transparence — pas de conversion
             img.save(output_path, format='PNG', optimize=True)
-
-            if os.path.getsize(output_path) > target_size_bytes:
-                # Réessai en JPEG forcé si palette ne suffit pas
-                img = img.convert("RGB")
-                output_path = output_path.rsplit('.', 1)[0] + ".jpg"
-                compress_to_target_size(input_path, output_path, target_size_bytes)
-                return
+            final_size = os.path.getsize(output_path)
+    else:
+        print(f"Format non pris en charge : {input_path}")
+        return
 
     os.utime(output_path, (stat_info.st_atime, stat_info.st_mtime))
+    return os.path.getsize(input_path), final_size
 
+# === TRAITEMENT EN LOT AVEC COMPARAISON AVANT/APRÈS ===
 
-# === TRAITEMENT PAR LOT AVEC AFFICHAGE DES TAILLES ===
 source_dir = r"C:\Users\moham\Pictures\2"
 target_dir = r"C:\Users\moham\Pictures\3"
+import shutil
 
 for filename in os.listdir(source_dir):
     if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
-        src_file = os.path.join(source_dir, filename)
-        dest_file = os.path.join(target_dir, filename)
+        src = os.path.join(source_dir, filename)
+        dest = os.path.join(target_dir, filename)
 
-        original_size = os.path.getsize(src_file)
-        compress_to_target_size(src_file, dest_file)
-
-        if os.path.exists(dest_file):
-            new_size = os.path.getsize(dest_file)
-            saved_kb = (original_size - new_size) // 1024
-            print(f"{filename}: {original_size//1024} KB → {new_size//1024} KB  (Gain : {saved_kb} KB)")
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        try:
+            before, after = compress_preserving_visual_quality(src, dest)
+            gain = (before - after) // 1024
+            print(f"{filename}: {before//1024} KB → {after//1024} KB (Gain : {gain} KB)")
+        except Exception as e:
+            print(f"Erreur avec {filename} : {e}")
