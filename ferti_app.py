@@ -8,15 +8,6 @@ import qrcode  # type: ignore
 from io import BytesIO
 from config.lang import LANG
 
-selected_lang = st.selectbox("🌐 Language", list(LANG.keys()), index=0)
-txt = LANG[selected_lang]
-
-st.title(txt["app_title"])
-st.selectbox(txt["select_culture"], ...)
-st.number_input(txt["surface_label"], ...)
-st.button(txt["generate_button"])
-# etc.
-
 # ----- CHEMIN DES POLICES -----
 base_path = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
 dejavu_regular = os.path.join(base_path, "DejaVuSans.ttf")
