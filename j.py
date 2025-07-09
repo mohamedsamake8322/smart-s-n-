@@ -16,7 +16,7 @@ def flatten_cultures(cultures_dict, result=None):
     return result
 
 # Charger le fichier JSON original
-with open("besoins_des_plantes_en_nutriments.json", "r", encoding="utf-8") as f:
+with open("C:\\plateforme-agricole-complete-v2\\besoins_des_plantes_en_nutriments.json", "r", encoding="utf-8") as f:
     raw_data = json.load(f)
 
 # Appliquer le nettoyage
