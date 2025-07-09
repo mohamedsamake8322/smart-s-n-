@@ -1,28 +1,37 @@
 import json
-from pathlib import Path
 
-# Charger le fichier brut fusionné que tu m’as envoyé
-path = Path("C:\\plateforme-agricole-complete-v2\\besoins_des_plantes_en_nutriments.json")
+def uniformiser_json_agronomique(fichier_entree, fichier_sortie):
+    cultures_fusionnees = {}
 
-with open(path, "r", encoding="utf-8") as f:
-    buffer = ""
-    raw_blocks = []
-    for line in f:
-        line = line.strip()
-        if not line:
-            continue
-        buffer += line
+    # Lecture du fichier brut (avec plusieurs objets JSON à la suite)
+    with open(fichier_entree, 'r', encoding='utf-8') as f:
+        contenu = f.read()
+
+    # Séparation approximative des blocs JSON par heuristique
+    blocs = contenu.split('}\n{')
+    blocs = [b if b.startswith('{') else '{' + b for b in blocs]
+    blocs = [b if b.endswith('}') else b + '}' for b in blocs]
+
+    for bloc in blocs:
         try:
-            parsed = json.loads(buffer)
-            raw_blocks.append(parsed)
-            buffer = ""
-        except json.JSONDecodeError:
-            buffer += " "
+            json_obj = json.loads(bloc)
+            if "cultures" in json_obj:
+                for culture, contenu in json_obj["cultures"].items():
+                    cultures_fusionnees[culture] = contenu
+        except json.JSONDecodeError as e:
+            print(f"❌ Erreur lors du parsing JSON d’un bloc : {e}")
 
-# Sortie : un fichier avec un bloc JSON par culture dans un seul fichier
-with open("cultures_par_bloc.json", "w", encoding="utf-8") as out:
-    for block in raw_blocks:
-        json.dump(block, out, indent=2, ensure_ascii=False)
-        out.write("\n\n")  # Séparation lisible entre les blocs
+    # Structure uniforme
+    resultat = { "cultures": cultures_fusionnees }
 
-print("✅ Cultures exportées individuellement dans cultures_par_bloc.json (1 bloc par culture).")
+    # Sauvegarde du JSON final propre
+    with open(fichier_sortie, 'w', encoding='utf-8') as f_out:
+        json.dump(resultat, f_out, ensure_ascii=False, indent=2)
+
+    print(f"✅ Fichier nettoyé et restructuré enregistré dans : {fichier_sortie}")
+
+# Exécution directe
+fichier_source = r"C:\plateforme-agricole-complete-v2\besoins_des_plantes_en_nutriments.json"
+fichier_destination = r"C:\plateforme-agricole-complete-v2\besoins_uniformises.json"
+
+uniformiser_json_agronomique(fichier_source, fichier_destination)
