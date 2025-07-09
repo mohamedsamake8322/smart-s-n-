@@ -7,9 +7,6 @@ from datetime import datetime
 import qrcode # type: ignore
 from io import BytesIO
 
-# ----- POLICE UNICODE -----
-if not hasattr(FPDF, '_dejavu_registered'):
-    FPDF._dejavu_registered = True
 # ----- ENREGISTREMENT POLICES UNIQUES DEJAVU -----
 base_path = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
 dejavu_regular = os.path.join(base_path, "DejaVuSans.ttf")
@@ -22,10 +19,9 @@ try:
             FPDF.add_font("DejaVu", "", fname=dejavu_regular, uni=True)
             FPDF.add_font("DejaVu", "B", fname=dejavu_bold, uni=True)
     else:
-        raise FileNotFoundError("Police DejaVu introuvable.")
+        st.warning("🚫 Fichiers DejaVu introuvables. Vérifie leur chemin.")
 except Exception as e:
-    st.warning(f"⚠️ Impossible de charger les polices DejaVu : {e}. Utilisation de polices par défaut.")
-
+    st.warning(f"⚠️ Erreur lors du chargement de la police : {e}")
 
 # ----- CONFIG -----
 ENGRAIS_DB = {
