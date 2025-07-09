@@ -8,7 +8,7 @@ import qrcode # type: ignore
 from io import BytesIO
 import sqlite3
 from sqlite3 import Error
-import leafmap.foliumap as leafmap
+import leafmap.foliumap as leafmap # type: ignore
 from config.lang import t
 # ----- CONFIGURATION INITIALE -----
 # DRAPEAUX PAR LANGUE
@@ -30,8 +30,6 @@ with st.sidebar:
     lang_options = list(lang_labels.values())
     selected_label = st.selectbox("🌐", lang_options, index=lang_options.index("🇫🇷 Français"))
     selected_lang = [code for code, label in lang_labels.items() if label == selected_label][0]
-
-t = LANG.get(selected_lang, LANG["fr"])
 
 # ----- CONFIG POLICES -----
 BASE_PATH = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
@@ -180,8 +178,7 @@ for bloc in raw_data:
     besoins_db.update(bloc.get("cultures", bloc))
 
 # ----- INTERFACE UTILISATEUR -----
-st.title(t["app_title"])
-
+st.title(t("🌾 Plan de Fertilisation par Phase", selected_lang))
 # Onglets principaux
 tab1, tab2 = st.tabs(["Recommandations", "Carte Climatique"])
 

@@ -1,7 +1,7 @@
 import os
 from google.cloud import translate_v2 as translate
 from functools import lru_cache
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 
 load_dotenv()
 
