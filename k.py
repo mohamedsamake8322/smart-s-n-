@@ -13,7 +13,7 @@ def translate_json(obj, source_lang="fr", target_lang="en"):
         return obj  # Keep numbers and other types unchanged
 
 # Charger le fichier JSON d'origine
-with open("besoins_des_plantes_en_nutriments.json", "r", encoding="utf-8") as f:
+with open("C:\\plateforme-agricole-complete-v2\\besoins des plantes en nutriments.json", "r", encoding="utf-8") as f:
     raw_data = json.load(f)
 
 # Appliquer la traduction
