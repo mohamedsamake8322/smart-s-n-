@@ -6,6 +6,16 @@ from fpdf import FPDF  # type: ignore
 from datetime import datetime
 import qrcode  # type: ignore
 from io import BytesIO
+from config.lang import LANG
+
+selected_lang = st.selectbox("🌐 Language", list(LANG.keys()), index=0)
+txt = LANG[selected_lang]
+
+st.title(txt["app_title"])
+st.selectbox(txt["select_culture"], ...)
+st.number_input(txt["surface_label"], ...)
+st.button(txt["generate_button"])
+# etc.
 
 # ----- CHEMIN DES POLICES -----
 base_path = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
@@ -78,14 +88,14 @@ if st.button("🔍 Générer plan + Export PDF", key="generate_plan"):
             self.set_font("DejaVu", "B", 14)
             self.set_text_color(255, 255, 255)
             self.set_y(6)
-            self.cell(0, 8, "🧪 Plan de fertilisation – Sama AgroLink", align="C")
+            self.cell(0, 8, "🧪 Plan de fertilisation – Smart Sènè Yield Predictor", align="C")
             self.ln(10)
 
         def footer(self):
             self.set_y(-15)
             self.set_font("DejaVu", "", 8)
             self.set_text_color(150, 150, 150)
-            self.cell(0, 10, "Généré par Sama AgroLink | " + datetime.now().strftime("%d/%m/%Y %H:%M"), 0, 0, "C")
+            self.cell(0, 10, "Généré par Smart Sènè Yield Predictor | " + datetime.now().strftime("%d/%m/%Y %H:%M"), 0, 0, "C")
 
     # ----- CONSTRUCTION PDF -----
     pdf = StyledPDF()
