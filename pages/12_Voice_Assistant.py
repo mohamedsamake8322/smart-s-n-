@@ -8,6 +8,7 @@ from datetime import datetime
 from utils.voice_assistant import voice_assistant, expert_chatbot
 from utils.translations import translator
 import json
+from config.lang import t
 
 st.set_page_config(page_title="Voice Assistant", page_icon="🗣️", layout="wide")
 
@@ -53,7 +54,7 @@ st.session_state.voice_settings['speech_speed'] = st.sidebar.slider(
     "Speech Speed", 0.5, 2.0, 1.0, 0.1
 )
 st.session_state.voice_settings['voice_type'] = st.sidebar.selectbox(
-    "Voice Type", 
+    "Voice Type",
     ["Neutral", "Professional", "Friendly"]
 )
 st.session_state.voice_settings['auto_play'] = st.sidebar.checkbox(
@@ -63,7 +64,7 @@ st.session_state.voice_settings['auto_play'] = st.sidebar.checkbox(
 # Main content tabs
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🤖 AI Chatbot",
-    "🎙️ Voice Commands", 
+    "🎙️ Voice Commands",
     "📊 Daily Reports",
     "🔔 Audio Alerts",
     "⚙️ Assistant Settings"
@@ -71,24 +72,24 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 
 with tab1:
     st.subheader("🤖 Expert Agricultural Chatbot")
-    
+
     # Chat interface
     st.markdown("**Ask me anything about farming, crops, diseases, soil, weather, or agricultural best practices!**")
-    
+
     # Display chat history
     chat_container = st.container()
-    
+
     with chat_container:
         for i, message in enumerate(st.session_state.chat_history):
             if message['type'] == 'user':
                 st.markdown(f"**🧑‍🌾 You:** {message['content']}")
             else:
                 st.markdown(f"**🤖 AI Expert:** {message['content']}")
-                
+
                 if 'confidence' in message:
                     confidence_color = "green" if message['confidence'] > 80 else "orange" if message['confidence'] > 60 else "red"
                     st.markdown(f"<small style='color: {confidence_color}'>Confidence: {message['confidence']}% | Expertise: {message.get('expertise_area', 'General')}</small>", unsafe_allow_html=True)
-                
+
                 if 'follow_up_questions' in message:
                     st.markdown("**Suggested follow-up questions:**")
                     for j, question in enumerate(message['follow_up_questions']):
@@ -99,7 +100,7 @@ with tab1:
                                 'content': question,
                                 'timestamp': datetime.now().isoformat()
                             })
-                            
+
                             # Get AI response
                             response = expert_chatbot.chat(question)
                             st.session_state.chat_history.append({
@@ -111,18 +112,18 @@ with tab1:
                                 'timestamp': datetime.now().isoformat()
                             })
                             st.rerun()
-                
+
                 st.markdown("---")
-    
+
     # Chat input
     user_input = st.text_input(
         "💬 Ask your agricultural question:",
         placeholder="e.g., 'My wheat crops have yellow spots on the leaves, what could be wrong?'",
         key="chat_input"
     )
-    
+
     col1, col2, col3 = st.columns([1, 1, 2])
-    
+
     with col1:
         if st.button("📤 Send", use_container_width=True) and user_input:
             # Add user message
@@ -131,7 +132,7 @@ with tab1:
                 'content': user_input,
                 'timestamp': datetime.now().isoformat()
             })
-            
+
             # Get AI response
             response = expert_chatbot.chat(user_input)
             st.session_state.chat_history.append({
@@ -142,15 +143,15 @@ with tab1:
                 'follow_up_questions': response.get('follow_up_questions', []),
                 'timestamp': datetime.now().isoformat()
             })
-            
+
             # Clear input and rerun
             st.rerun()
-    
+
     with col2:
         if st.button("🗑️ Clear Chat", use_container_width=True):
             st.session_state.chat_history = []
             st.rerun()
-    
+
     with col3:
         if st.button("💾 Export Chat History", use_container_width=True):
             chat_export = {
@@ -167,15 +168,15 @@ with tab1:
 
 with tab2:
     st.subheader("🎙️ Voice Command Interface")
-    
+
     st.info("🎤 Voice recognition feature would be implemented here using Web Speech API or similar technology.")
-    
+
     # Simulate voice command interface
     col1, col2 = st.columns(2)
-    
+
     with col1:
         st.markdown("**🎯 Quick Voice Commands:**")
-        
+
         voice_commands = [
             "What's today's weather?",
             "Check soil moisture levels",
@@ -186,31 +187,31 @@ with tab2:
             "What fertilizer should I use?",
             "Check market prices"
         ]
-        
+
         for cmd in voice_commands:
             if st.button(f"🎤 '{cmd}'", key=f"voice_cmd_{cmd}"):
                 # Process voice command
                 response = voice_assistant.process_voice_command(cmd)
-                
+
                 st.success(f"**Command processed:** {cmd}")
                 st.info(f"**AI Response:** {response['text_response']}")
-                
+
                 if response['actions']:
                     st.markdown(f"**Suggested actions:** {', '.join(response['actions'])}")
-    
+
     with col2:
         st.markdown("**🔊 Voice Response Preview:**")
-        
+
         sample_text = st.text_area(
             "Enter text to hear AI voice response:",
             value="Your crops are looking healthy. Soil moisture is at optimal levels.",
             height=100
         )
-        
+
         if st.button("🔊 Play Voice Response"):
             st.audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAAAAQABAAA...", format="audio/wav")
             st.success("🎵 Voice synthesis would play here")
-        
+
         st.markdown("**🎛️ Voice Customization:**")
         voice_speed = st.slider("Speech Speed", 0.5, 2.0, 1.0, 0.1, key="voice_speed_tab2")
         voice_pitch = st.slider("Voice Pitch", 0.5, 2.0, 1.0, 0.1)
@@ -218,12 +219,12 @@ with tab2:
 
 with tab3:
     st.subheader("📊 Daily Voice Reports")
-    
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
         st.markdown("**📈 Today's Farm Report:**")
-        
+
         # Generate sample daily report
         sample_farm_data = {
             'weather': {
@@ -237,35 +238,35 @@ with tab3:
                 'Disease risk: High humidity detected'
             ]
         }
-        
+
         daily_report = voice_assistant.get_daily_report(sample_farm_data)
-        
+
         st.text_area("Voice Report Text:", value=daily_report, height=150, disabled=True)
-        
+
         col_a, col_b = st.columns(2)
         with col_a:
             if st.button("🔊 Play Daily Report", use_container_width=True):
                 st.success("🎵 Daily report would be played via text-to-speech")
-        
+
         with col_b:
             if st.button("📧 Email Report", use_container_width=True):
                 st.success("📧 Report sent to your email!")
-    
+
     with col2:
         st.markdown("**⏰ Report Schedule:**")
-        
+
         report_time = st.time_input("Daily Report Time", datetime.now().time())
-        
+
         report_frequency = st.selectbox(
             "Report Frequency",
             ["Daily", "Twice Daily", "Weekly", "Custom"]
         )
-        
+
         report_content = st.multiselect(
             "Include in Report:",
             [
                 "Weather Summary",
-                "Soil Conditions", 
+                "Soil Conditions",
                 "Irrigation Status",
                 "Disease Alerts",
                 "Market Prices",
@@ -274,28 +275,28 @@ with tab3:
             ],
             default=["Weather Summary", "Soil Conditions", "Disease Alerts"]
         )
-        
+
         if st.button("💾 Save Report Settings", use_container_width=True):
             st.success("✅ Report settings saved!")
-        
+
         st.markdown("**📝 Recent Reports:**")
         recent_reports = [
             {"date": "2024-06-12", "type": "Daily", "status": "Delivered"},
             {"date": "2024-06-11", "type": "Daily", "status": "Delivered"},
             {"date": "2024-06-10", "type": "Daily", "status": "Delivered"}
         ]
-        
+
         for report in recent_reports:
             st.markdown(f"• **{report['date']}** - {report['type']} ({report['status']})")
 
 with tab4:
     st.subheader("🔔 Smart Audio Alerts")
-    
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
         st.markdown("**⚠️ Active Alerts:**")
-        
+
         alerts = [
             {
                 "type": "Critical",
@@ -304,7 +305,7 @@ with tab4:
                 "priority": "high"
             },
             {
-                "type": "Warning", 
+                "type": "Warning",
                 "message": "Disease risk conditions in Field B",
                 "time": "1 hour ago",
                 "priority": "medium"
@@ -312,16 +313,16 @@ with tab4:
             {
                 "type": "Info",
                 "message": "Optimal harvesting conditions predicted",
-                "time": "2 hours ago", 
+                "time": "2 hours ago",
                 "priority": "low"
             }
         ]
-        
+
         for alert in alerts:
             priority_color = {"high": "🔴", "medium": "🟡", "low": "🟢"}
             st.markdown(f"{priority_color[alert['priority']]} **{alert['type']}:** {alert['message']}")
             st.caption(f"⏰ {alert['time']}")
-            
+
             col_play, col_dismiss = st.columns(2)
             with col_play:
                 if st.button(f"🔊 Play", key=f"play_{alert['message'][:10]}"):
@@ -329,18 +330,18 @@ with tab4:
             with col_dismiss:
                 if st.button(f"✅ Dismiss", key=f"dismiss_{alert['message'][:10]}"):
                     st.success("Alert dismissed")
-            
+
             st.markdown("---")
-    
+
     with col2:
         st.markdown("**🔧 Alert Settings:**")
-        
+
         alert_types = st.multiselect(
             "Enable Audio Alerts For:",
             [
                 "Critical System Failures",
                 "Irrigation Needs",
-                "Disease Outbreaks", 
+                "Disease Outbreaks",
                 "Weather Warnings",
                 "Equipment Maintenance",
                 "Harvest Reminders",
@@ -348,36 +349,36 @@ with tab4:
             ],
             default=["Critical System Failures", "Irrigation Needs", "Disease Outbreaks"]
         )
-        
+
         alert_volume = st.slider("Alert Volume", 0.1, 1.0, 0.7, 0.1)
         alert_repeat = st.checkbox("Repeat critical alerts", True)
         quiet_hours = st.checkbox("Enable quiet hours", True)
-        
+
         if quiet_hours:
             quiet_start = st.time_input("Quiet hours start", datetime.strptime("22:00", "%H:%M").time())
             quiet_end = st.time_input("Quiet hours end", datetime.strptime("06:00", "%H:%M").time())
-        
+
         if st.button("💾 Save Alert Settings", use_container_width=True):
             st.success("✅ Alert settings saved!")
 
 with tab5:
     st.subheader("⚙️ Assistant Configuration")
-    
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
         st.markdown("**🎯 AI Assistant Personality:**")
-        
+
         personality = st.selectbox(
             "Assistant Personality",
             ["Professional Expert", "Friendly Advisor", "Technical Specialist", "Conversational Helper"]
         )
-        
+
         expertise_focus = st.multiselect(
             "Primary Expertise Areas:",
             [
                 "Crop Production",
-                "Plant Pathology", 
+                "Plant Pathology",
                 "Soil Science",
                 "Agricultural Engineering",
                 "Farm Economics",
@@ -386,30 +387,30 @@ with tab5:
             ],
             default=["Crop Production", "Plant Pathology", "Soil Science"]
         )
-        
+
         response_length = st.selectbox(
             "Response Length Preference",
             ["Brief & Concise", "Detailed Explanations", "Comprehensive Analysis"]
         )
-        
+
         include_citations = st.checkbox("Include scientific citations", False)
         multilingual_support = st.checkbox("Enable multilingual responses", True)
-    
+
     with col2:
         st.markdown("**🔄 Learning & Adaptation:**")
-        
+
         learning_mode = st.checkbox("Enable continuous learning", True)
         feedback_collection = st.checkbox("Collect response feedback", True)
-        
+
         if feedback_collection:
             st.markdown("**Rate Recent Responses:**")
-            
+
             recent_responses = [
                 "Disease diagnosis for wheat rust",
                 "Irrigation scheduling advice",
                 "Fertilizer recommendation for corn"
             ]
-            
+
             for response in recent_responses:
                 rating = st.select_slider(
                     f"{response}:",
@@ -417,12 +418,12 @@ with tab5:
                     value="Good",
                     key=f"rating_{response[:10]}"
                 )
-        
+
         st.markdown("**📊 Usage Statistics:**")
         st.metric("Questions Answered", "247")
         st.metric("Average Response Time", "1.2s")
         st.metric("User Satisfaction", "94%")
-        
+
         if st.button("🔄 Reset Assistant", use_container_width=True):
             st.warning("This will reset all learning data and preferences.")
             if st.button("⚠️ Confirm Reset"):
@@ -433,7 +434,7 @@ st.markdown("---")
 st.markdown("""
 ### 💡 Voice Assistant Tips:
 - **Ask specific questions** for better responses (e.g., "My tomato leaves are yellowing, what nutrients might be lacking?")
-- **Provide context** about your location, crop type, and current conditions  
+- **Provide context** about your location, crop type, and current conditions
 - **Use follow-up questions** to get more detailed explanations
 - **Enable daily reports** to stay informed about your farm conditions
 - **Set up audio alerts** for critical situations that need immediate attention

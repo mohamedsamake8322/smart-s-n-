@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from utils.visualization import create_overview_charts, create_trend_analysis
 from utils.data_processing import get_sample_agricultural_data
+from config.lang import t
 
 st.set_page_config(page_title="Dashboard", page_icon="📊", layout="wide")
 
@@ -15,18 +16,18 @@ st.markdown("### Comprehensive overview of your agricultural operations")
 # Check if data exists in session state
 if 'agricultural_data' not in st.session_state:
     st.warning("No data available. Please upload data first or use sample data for demonstration.")
-    
+
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Upload Data", use_container_width=True):
             st.switch_page("pages/5_Data_Upload.py")
-    
+
     with col2:
         if st.button("Use Sample Data", use_container_width=True):
             # This would normally load real data, but for demo we'll create structure
             st.session_state.agricultural_data = get_sample_agricultural_data()
             st.rerun()
-    
+
     st.stop()
 
 # Main dashboard content
@@ -89,12 +90,12 @@ tab1, tab2, tab3, tab4 = st.tabs(["Yield Analysis", "Crop Distribution", "Season
 
 with tab1:
     col1, col2 = st.columns(2)
-    
+
     with col1:
         if 'yield' in data.columns and 'crop_type' in data.columns:
             fig_yield = px.box(
-                data, 
-                x='crop_type', 
+                data,
+                x='crop_type',
                 y='yield',
                 title="Yield Distribution by Crop Type",
                 labels={'yield': 'Yield (tons/ha)', 'crop_type': 'Crop Type'}
@@ -103,11 +104,11 @@ with tab1:
             st.plotly_chart(fig_yield, use_container_width=True)
         else:
             st.error("Yield or crop type data not available for visualization")
-    
+
     with col2:
         if 'yield' in data.columns:
             fig_hist = px.histogram(
-                data, 
+                data,
                 x='yield',
                 nbins=20,
                 title="Yield Distribution Histogram",
@@ -121,9 +122,9 @@ with tab1:
 with tab2:
     if 'crop_type' in data.columns:
         crop_counts = data['crop_type'].value_counts()
-        
+
         col1, col2 = st.columns(2)
-        
+
         with col1:
             fig_pie = px.pie(
                 values=crop_counts.values,
@@ -132,7 +133,7 @@ with tab2:
             )
             fig_pie.update_layout(height=400)
             st.plotly_chart(fig_pie, use_container_width=True)
-        
+
         with col2:
             fig_bar = px.bar(
                 x=crop_counts.index,
@@ -148,14 +149,14 @@ with tab2:
 with tab3:
     if 'date' in data.columns or 'season' in data.columns:
         st.info("Seasonal trend analysis requires date/season data in your dataset")
-        
+
         # If we have date data, create time series
         if 'date' in data.columns and 'yield' in data.columns:
             try:
                 data['date'] = pd.to_datetime(data['date'])
                 monthly_yield = data.groupby(data['date'].dt.to_period('M'))['yield'].mean().reset_index()
                 monthly_yield['date'] = monthly_yield['date'].dt.to_timestamp()
-                
+
                 fig_trend = px.line(
                     monthly_yield,
                     x='date',
@@ -175,7 +176,7 @@ with tab3:
 with tab4:
     if 'yield' in data.columns and 'area' in data.columns:
         col1, col2 = st.columns(2)
-        
+
         with col1:
             # Scatter plot of yield vs area
             fig_scatter = px.scatter(
@@ -188,7 +189,7 @@ with tab4:
             )
             fig_scatter.update_layout(height=400)
             st.plotly_chart(fig_scatter, use_container_width=True)
-        
+
         with col2:
             # Correlation analysis
             numeric_cols = data.select_dtypes(include=[np.number]).columns

@@ -9,6 +9,7 @@ from PIL import Image, ImageEnhance
 from datetime import datetime
 from utils.disease_detector import DiseaseDetector
 from utils.config_model import load_labels
+from config.lang import t
 
 # 🧠 Initialisation
 st.set_page_config(page_title="Diagnostic Agricole Pro", page_icon="🩺", layout="wide")

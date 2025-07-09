@@ -6,6 +6,7 @@ import json
 import time
 import requests
 import sqlite3
+from config.lang import t
 
 # ✅ Configuration de la page Streamlit
 st.set_page_config(

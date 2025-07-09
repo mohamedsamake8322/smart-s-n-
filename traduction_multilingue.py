@@ -1,7 +1,7 @@
 import json
 from google.cloud import translate_v2 as translate
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 
 load_dotenv()
 CHEMIN_CLE = os.getenv("GOOGLE_KEY_PATH")
