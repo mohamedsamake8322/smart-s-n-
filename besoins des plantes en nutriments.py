@@ -3649,4 +3649,102 @@
     }
   }
 }
+{
+  "Dovyalis_caffra": {
+    "nom_commun": "Governor plum",
+    "export_par_tonne": {
+      "N": 28.0,
+      "P2O5": 9.0,
+      "K2O": 35.0,
+      "CaO": 7.0,
+      "MgO": 2.5,
+      "SO3": 3.5,
+      "Fe": 12.0,
+      "Mn": 4.5,
+      "Zn": 3.5,
+      "Cu": 1.0,
+      "B": 1.8
+    },
+    "stades_cles": {
+      "Germination": ["N", "P"],
+      "Croissance_végétative": ["N", "K", "Mg"],
+      "Floraison": ["P", "B"],
+      "Nouaison": ["K", "Ca"],
+      "Maturation_des_fruits": ["K", "Ca"],
+      "Récolte": []
+    }
+  },
+  "Grewia_spp": {
+    "nom_commun": "Raisin sauvage",
+    "export_par_tonne": {
+      "N": 26.0,
+      "P2O5": 8.5,
+      "K2O": 33.0,
+      "CaO": 6.5,
+      "MgO": 2.5,
+      "SO3": 3.5,
+      "Fe": 11.0,
+      "Mn": 4.0,
+      "Zn": 3.0,
+      "Cu": 0.9,
+      "B": 1.7
+    },
+    "stades_cles": {
+      "Germination": ["N", "P"],
+      "Croissance_végétative": ["N", "K"],
+      "Floraison": ["P", "B"],
+      "Nouaison": ["K", "Ca"],
+      "Maturation": ["K", "Ca"],
+      "Récolte": []
+    }
+  },
+  "Balanites_aegyptiaca": {
+    "nom_commun": "Dattier du désert",
+    "export_par_tonne": {
+      "N": 30.0,
+      "P2O5": 10.0,
+      "K2O": 38.0,
+      "CaO": 7.5,
+      "MgO": 3.0,
+      "SO3": 3.8,
+      "Fe": 12.5,
+      "Mn": 5.0,
+      "Zn": 3.5,
+      "Cu": 1.0,
+      "B": 2.0
+    },
+    "stades_cles": {
+      "Germination": ["N", "P"],
+      "Croissance_juvénile": ["N", "K", "Mg"],
+      "Floraison": ["P", "B"],
+      "Nouaison": ["K", "Ca"],
+      "Maturation_des_fruits": ["K", "Ca"],
+      "Récolte": []
+    }
+  },
+  "Moringa_oleifera": {
+    "nom_commun": "Moringa",
+    "export_par_tonne": {
+      "N": 35.0,
+      "P2O5": 12.0,
+      "K2O": 40.0,
+      "CaO": 8.0,
+      "MgO": 3.0,
+      "SO3": 4.0,
+      "Fe": 14.0,
+      "Mn": 5.0,
+      "Zn": 4.0,
+      "Cu": 1.1,
+      "B": 2.2
+    },
+    "stades_cles": {
+      "Germination": ["N", "P"],
+      "Croissance_végétative": ["N", "K"],
+      "Floraison": ["P", "B"],
+      "Formation_des_gousses": ["K", "Ca"],
+      "Maturation_des_graines": ["K", "Ca"],
+      "Récolte": []
+    }
+  }
+}
 
