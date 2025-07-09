@@ -1,5 +1,10 @@
 import json
 from google.cloud import translate_v2 as translate
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+CHEMIN_CLE = os.getenv("GOOGLE_KEY_PATH")
 
 # 📍 Chemin vers ton fichier de clé API JSON téléchargé depuis Google Console
 CHEMIN_CLE = "C:/plateforme-agricole-complete-v2/plant-ai-mohamed-tpu-b154d2918738.json"
