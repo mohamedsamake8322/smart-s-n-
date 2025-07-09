@@ -2,7 +2,11 @@ import streamlit as st # type: ignore
 import json
 import pandas as pd # type: ignore
 from fpdf import FPDF # type: ignore
+if not hasattr(FPDF, '_dejavu_registered'):
+    FPDF._dejavu_registered = True
+    FPDF.add_font("DejaVu", "", "fonts/dejavu-fonts-ttf-2.37/DejaVuSans.ttf", uni=True)
 
+from datetime import datetime
 # ----- CONFIG -----
 ENGRAIS_DB = {
     "Urée": {"N": 0.46},
@@ -69,34 +73,54 @@ if st.button("🔍 Générer plan + Export PDF"):
                     "Engrais": engrais,
                     "Dose engrais (kg)": dose_engrais
                 })
+    # -- 📋 Tableau dans Streamlit --
+df = pd.DataFrame(phase_data)
+st.markdown("### 📋 Plan de fertilisation par phase")
+st.dataframe(df)
 
-    df = pd.DataFrame(phase_data)
-    st.markdown("### 📋 Plan par phase")
-    st.dataframe(df)
+# -- 📄 EXPORT PDF AVEC STYLE --
+class StyledPDF(FPDF):
+    def header(self):
+        self.set_fill_color(0, 102, 204)  # bleu Sama AgroLink
+        self.rect(0, 0, self.w, 20, 'F')
+        self.set_font("DejaVu", "B", 14)
+        self.set_text_color(255, 255, 255)
+        self.set_y(6)
+        self.cell(0, 8, "🧪 Plan de fertilisation – Sama AgroLink", align="C")
+        self.ln(10)
 
-    # --- PDF EXPORT ---
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(0, 10, f"Plan de fertilisation – {culture['nom_commun']}", ln=True)
-    pdf.set_font("Arial", "", 12)
-    pdf.cell(0, 10, f"Superficie: {surface} ha | Rendement cible: {rendement} t/ha", ln=True)
-    pdf.ln(5)
+    def footer(self):
+        self.set_y(-15)
+        self.set_font("DejaVu", "", 8)
+        self.set_text_color(150, 150, 150)
+        self.cell(0, 10, "Généré par Sama AgroLink | " + datetime.now().strftime("%d/%m/%Y %H:%M"), 0, 0, "C")
 
-    for phase in df["Phase"].unique():
-        pdf.set_font("Arial", "B", 12)
-        pdf.cell(0, 10, f"• {phase}", ln=True)
-        sous_df = df[df["Phase"] == phase]
-        for _, row in sous_df.iterrows():
-            el = row["Élément"]
-            dose = row["Dose kg"]
-            engrais = row["Engrais"]
-            dose_e = row["Dose engrais (kg)"]
-            pdf.set_font("Arial", "", 11)
-            pdf.cell(0, 9, f"{el}: {dose} kg → {engrais} ({dose_e} kg)", ln=True)
-        pdf.ln(2)
+pdf = StyledPDF()
+pdf.add_page()
+pdf.add_font("DejaVu", "", "fonts/dejavu-fonts-ttf-2.37/DejaVuSans.ttf", uni=True)
+pdf.set_font("DejaVu", "", 12)
+pdf.set_text_color(0, 0, 0)
 
-    file_path = f"{culture_code}_fertilisation_plan.pdf"
-    pdf.output(file_path)
-    with open(file_path, "rb") as f:
-        st.download_button(label="📄 Télécharger le plan PDF", data=f, file_name=file_path, mime="application/pdf")
+pdf.ln(5)
+pdf.cell(0, 10, f"🌿 Culture : {culture['nom_commun']}", ln=True)
+pdf.cell(0, 10, f"📐 Surface : {surface} ha    🎯 Rendement cible : {rendement} t/ha", ln=True)
+pdf.ln(5)
+
+phases = df["Phase"].unique()
+for phase in phases:
+    pdf.set_font("DejaVu", "B", 12)
+    pdf.set_text_color(0, 51, 102)
+    pdf.cell(0, 9, f"• Phase : {phase}", ln=True)
+    sous_df = df[df["Phase"] == phase]
+    for _, row in sous_df.iterrows():
+        pdf.set_font("DejaVu", "", 11)
+        pdf.set_text_color(0, 0, 0)
+        ligne = f"{row['Élément']}: {row['Dose kg']} kg → {row['Engrais']} ({row['Dose engrais (kg)']} kg)"
+        pdf.cell(0, 8, ligne, ln=True)
+    pdf.ln(3)
+
+file_path = f"{culture_code}_fertilisation_plan.pdf"
+pdf.output(file_path)
+
+with open(file_path, "rb") as f:
+    st.download_button("📄 Télécharger le plan PDF", f, file_name=file_path, mime="application/pdf")
