@@ -1,41 +1,28 @@
 import json
 from pathlib import Path
 
-# 📁 Chemin vers le fichier brut
-fichier_source = Path("C:\\plateforme-agricole-complete-v2\\besoins_des_plantes_en_nutriments.json")
+# Charger le fichier brut fusionné que tu m’as envoyé
+path = Path("C:\\plateforme-agricole-complete-v2\\besoins_des_plantes_en_nutriments.json")
 
-cultures = {}
-sources = []
-
-with open(fichier_source, "r", encoding="utf-8") as f:
+with open(path, "r", encoding="utf-8") as f:
     buffer = ""
+    raw_blocks = []
     for line in f:
-        stripped = line.strip()
-        if not stripped:
+        line = line.strip()
+        if not line:
             continue
-        buffer += stripped
+        buffer += line
         try:
-            obj = json.loads(buffer)
-            if "cultures" in obj:
-                for nom_culture, data in obj["cultures"].items():
-                    cultures[nom_culture] = data
-                    if "sources" in data:
-                        sources.extend(data["sources"])
+            parsed = json.loads(buffer)
+            raw_blocks.append(parsed)
             buffer = ""
         except json.JSONDecodeError:
             buffer += " "
 
-# 🧹 Nettoyage éventuel des sources (optionnel)
-sources_uniques = sorted(set(sources))
+# Sortie : un fichier avec un bloc JSON par culture dans un seul fichier
+with open("cultures_par_bloc.json", "w", encoding="utf-8") as out:
+    for block in raw_blocks:
+        json.dump(block, out, indent=2, ensure_ascii=False)
+        out.write("\n\n")  # Séparation lisible entre les blocs
 
-# 📦 Structure finale
-resultat = {
-    "sources": sources_uniques,
-    "cultures": cultures
-}
-
-# 💾 Sauvegarde
-with open("besoins_correcte.json", "w", encoding="utf-8") as f:
-    json.dump(resultat, f, indent=4, ensure_ascii=False)
-
-print("✅ Fichier fusionné enregistré avec succès : besoins_correcte.json")
+print("✅ Cultures exportées individuellement dans cultures_par_bloc.json (1 bloc par culture).")
