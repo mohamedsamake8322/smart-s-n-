@@ -1,3 +1,4 @@
+#Mettre json au bon rmat
 import json
 
 def flatten_cultures(cultures_dict, result=None):
