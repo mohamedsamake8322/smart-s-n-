@@ -10,15 +10,21 @@ from io import BytesIO
 # ----- POLICE UNICODE -----
 if not hasattr(FPDF, '_dejavu_registered'):
     FPDF._dejavu_registered = True
-base_path = "C:/plateforme-agricole-complete-v2/fonts/dejav-fonts-ttf-2.37/ttf/"
-normal_path = os.path.join(base_path, "DejaVuSans.ttf")
-bold_path = os.path.join(base_path, "DejaVuSans-Bold.ttf")
+# ----- ENREGISTREMENT POLICES UNIQUES DEJAVU -----
+base_path = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
+dejavu_regular = os.path.join(base_path, "DejaVuSans.ttf")
+dejavu_bold = os.path.join(base_path, "DejaVuSans-Bold.ttf")
 
-if os.path.exists(normal_path) and os.path.exists(bold_path):
-    FPDF.add_font("DejaVu", "", fname=normal_path, uni=True)
-    FPDF.add_font("DejaVu", "B", fname=bold_path, uni=True)
-else:
-    st.error("❌ Fichiers de police non trouvés. Vérifie les chemins vers DejaVuSans.ttf.")
+try:
+    if os.path.exists(dejavu_regular) and os.path.exists(dejavu_bold):
+        if not hasattr(FPDF, "_dejavu_registered"):
+            FPDF._dejavu_registered = True
+            FPDF.add_font("DejaVu", "", fname=dejavu_regular, uni=True)
+            FPDF.add_font("DejaVu", "B", fname=dejavu_bold, uni=True)
+    else:
+        raise FileNotFoundError("Police DejaVu introuvable.")
+except Exception as e:
+    st.warning(f"⚠️ Impossible de charger les polices DejaVu : {e}. Utilisation de polices par défaut.")
 
 
 # ----- CONFIG -----
