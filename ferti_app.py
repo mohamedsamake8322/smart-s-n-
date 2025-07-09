@@ -21,17 +21,14 @@ lang_labels = {
     "mo": "🌍 Mooré"
 }
 
-# ----- LANGUE (barre latérale) -----
-# LANGUE - toujours en haut du script
-lang_options = list(LANG.keys())
-
 with st.sidebar:
     st.markdown("### 🌐 Langue / Language")
-    selected_lang = st.selectbox("🌐", lang_options, index=lang_options.index("fr"))
-st.write("Langue active :", selected_lang)
+    lang_options = list(lang_labels.values())
+    selected_label = st.selectbox("🌐", lang_options, index=lang_options.index("🇫🇷 Français"))
+    selected_lang = [code for code, label in lang_labels.items() if label == selected_label][0]
 
-# 🔁 On sort du bloc pour charger la traduction
-t = LANG.get(selected_lang, LANG["fr"])  # fallback si clé incorrecte
+t = LANG.get(selected_lang, LANG["fr"])
+
 
 # ----- CONFIG POLICES -----
 BASE_PATH = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
