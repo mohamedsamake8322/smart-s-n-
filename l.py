@@ -1,35 +1,29 @@
-import json
 import re
-
-def nettoyer_et_formater_json(fichier_entree, fichier_sortie):
-    cultures_fusionnees = {}
-
+def corriger_json_multiblocs(fichier_entree, fichier_sortie):
     with open(fichier_entree, 'r', encoding='utf-8') as f:
         contenu = f.read()
 
-    # Séparer chaque objet JSON contenant la clé "cultures"
-    pattern = r'{[^{}]*"cultures"\s*:\s*{.*?}}'
-    blocs_json = re.findall(pattern, contenu, re.DOTALL)
+    # On sépare les blocs JSON qui commencent par {"cultures":
+    blocs = re.split(r'(?=\{\s*"cultures"\s*:)', contenu.strip())
 
-    for bloc in blocs_json:
-        try:
-            json_obj = json.loads(bloc)
-            for culture, contenu in json_obj["cultures"].items():
-                if culture in cultures_fusionnees:
-                    print(f"⚠️ Duplication détectée pour la culture : {culture}")
-                cultures_fusionnees[culture] = contenu
-        except json.JSONDecodeError as e:
-            print(f"❌ Erreur lors du parsing d’un bloc JSON : {e}")
+    # Nettoyer, supprimer virgules en trop, etc.
+    blocs_nettoyes = []
+    for bloc in blocs:
+        bloc = bloc.strip()
+        if bloc.endswith(','):
+            bloc = bloc[:-1]
+        blocs_nettoyes.append(bloc)
 
-    resultat = { "cultures": cultures_fusionnees }
+    # Recomposition
+    contenu_valide = '[\n' + ',\n'.join(blocs_nettoyes) + '\n]'
 
-    with open(fichier_sortie, 'w', encoding='utf-8') as f_out:
-        json.dump(resultat, f_out, ensure_ascii=False, indent=2)
+    with open(fichier_sortie, 'w', encoding='utf-8') as f:
+        f.write(contenu_valide)
 
-    print(f"\n✅ Formatage terminé avec succès. Fichier sauvegardé dans : {fichier_sortie}")
+    print(f"✅ Fichier corrigé écrit dans : {fichier_sortie}")
 
-# === Configuration du chemin ===
-fichier_source = r"C:\plateforme-agricole-complete-v2\besoins_des_plantes_en_nutriments.json"
-fichier_formate = r"C:\plateforme-agricole-complete-v2\besoins_uniformises.json"
-
-nettoyer_et_formater_json(fichier_source, fichier_formate)
+# Exemple d’utilisation
+corriger_json_multiblocs(
+    r"C:\plateforme-agricole-complete-v2\besoins_des_plantes_en_nutriments.json",
+    r"C:\plateforme-agricole-complete-v2\besoins_correctement_formates.json"
+)
