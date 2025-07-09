@@ -7,12 +7,31 @@ from datetime import datetime
 import qrcode # type: ignore
 from io import BytesIO
 from config.lang import LANG
+# ----- DRAPEAUX PAR LANGUE -----
+lang_labels = {
+    "fr": "🇫🇷 Français",
+    "en": "🇬🇧 English",
+    "ar": "🇸🇦 العربية",
+    "tr": "🇹🇷 Türkçe",
+    "zh": "🇨🇳 中文",
+    "wo": "🌍 Wolof",
+    "bm": "🌍 Bambara",
+    "ha": "🌍 Hausa",
+    "ff": "🌍 Fulfulde",
+    "mo": "🌍 Mooré"
+}
+
 # ----- LANGUE (barre latérale) -----
+# LANGUE - toujours en haut du script
+lang_options = list(LANG.keys())
+
 with st.sidebar:
     st.markdown("### 🌐 Langue / Language")
-    lang_options = list(LANG.keys())
     selected_lang = st.selectbox("🌐", lang_options, index=lang_options.index("fr"))
-    t = LANG[selected_lang]
+st.write("Langue active :", selected_lang)
+
+# 🔁 On sort du bloc pour charger la traduction
+t = LANG.get(selected_lang, LANG["fr"])  # fallback si clé incorrecte
 
 # ----- CONFIG POLICES -----
 BASE_PATH = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
