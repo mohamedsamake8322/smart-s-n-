@@ -1,10 +1,10 @@
 import streamlit as st # type: ignore
 import json
 import os
-import pandas as pd
-from fpdf import FPDF
+import pandas as pd # type: ignore
+from fpdf import FPDF # type: ignore
 from datetime import datetime
-import qrcode
+import qrcode # type: ignore
 from io import BytesIO
 from config.lang import LANG
 
