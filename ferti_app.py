@@ -1,5 +1,6 @@
 import streamlit as st  # type: ignore
 import json
+import os
 import pandas as pd  # type: ignore
 from fpdf import FPDF  # type: ignore
 from datetime import datetime
@@ -9,8 +10,11 @@ from io import BytesIO
 # ----- POLICE UNICODE -----
 if not hasattr(FPDF, '_dejavu_registered'):
     FPDF._dejavu_registered = True
-    FPDF.add_font("DejaVu", "", "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/DejaVuSans.ttf", uni=True)
-    FPDF.add_font("DejaVu", "B", "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/DejaVuSans-Bold.ttf", uni=True)
+
+base_path = "C:/plateforme-agricole-complete-v2/fonts/dejav-fonts-ttf-2.37/ttf/"
+FPDF.add_font("DejaVu", "", os.path.join(base_path, "DejaVuSans.ttf"), uni=True)
+FPDF.add_font("DejaVu", "B", os.path.join(base_path, "DejaVuSans-Bold.ttf"), uni=True)
+
 
 # ----- CONFIG -----
 ENGRAIS_DB = {
