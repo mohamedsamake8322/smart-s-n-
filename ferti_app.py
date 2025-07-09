@@ -2,6 +2,7 @@ import streamlit as st  # type: ignore
 import json
 import os
 import pandas as pd  # type: ignore
+import traceback
 from fpdf import FPDF  # type: ignore
 from datetime import datetime
 import qrcode # type: ignore
@@ -19,7 +20,9 @@ try:
     else:
         st.warning("🚫 Fichiers DejaVu introuvables. Vérifie leur chemin.")
 except Exception as e:
-    st.warning(f"⚠️ Erreur lors du chargement de la police DejaVu : {e}")
+
+        st.warning("⚠️ Une erreur est survenue lors de l'enregistrement de la police.")
+        st.text(traceback.format_exc())
 
 
 # ----- CONFIG -----
