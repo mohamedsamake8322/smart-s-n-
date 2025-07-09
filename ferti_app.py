@@ -11,15 +11,18 @@ from io import BytesIO
 base_path = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
 dejavu_regular = os.path.join(base_path, "DejaVuSans.ttf")
 dejavu_bold = os.path.join(base_path, "DejaVuSans-Bold.ttf")
+
 try:
     if os.path.exists(dejavu_regular) and os.path.exists(dejavu_bold):
-        FPDF.add_font("DejaVu", "", fname=dejavu_regular, uni=True)
-        FPDF.add_font("DejaVu", "B", fname=dejavu_bold, uni=True)
+        pdf_font_loader = FPDF()
+        pdf_font_loader.add_font("DejaVu", "", dejavu_regular, uni=True)
+        pdf_font_loader.add_font("DejaVu", "B", dejavu_bold, uni=True)
     else:
-        raise FileNotFoundError("❌ Les fichiers TTF requis ne sont pas trouvés.")
+        st.error("❌ Les fichiers TTF requis ne sont pas trouvés.")
 except Exception as e:
-        st.warning("⚠️ Une erreur est survenue lors de l'enregistrement de la police.")
-        st.text(traceback.format_exc())
+    st.warning("⚠️ Une erreur est survenue lors de l'enregistrement de la police.")
+    st.text(traceback.format_exc())
+
 # ----- CONFIG -----
 ENGRAIS_DB = {
     "Urée": {"N": 0.46},
