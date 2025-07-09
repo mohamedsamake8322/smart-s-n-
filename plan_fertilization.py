@@ -33,10 +33,10 @@ def get_efficiences():
     }
 
 # ----------- 📂 Charger les données ----------
-with open("knowledge/pheno_phases.json", "r", encoding="utf-8") as f:
+with open("C:\\plateforme-agricole-complete-v2\\pheno_phases.json", "r", encoding="utf-8") as f:
     phenology = json.load(f)
 
-with open("knowledge/besoins des plantes en nutriments.json", "r", encoding="utf-8") as f:
+with open("C:\\plateforme-agricole-complete-v2\\besoins des plantes en nutriments.json", "r", encoding="utf-8") as f:
     culture_data = json.load(f)
 
 with open("knowledge/fertilization_phased_db.json", "r", encoding="utf-8") as f:
