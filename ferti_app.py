@@ -184,7 +184,7 @@ tab1, tab2 = st.tabs(["Recommandations", "Carte Climatique"])
 
 with tab1:
     # Section paramètres avancés
-    with st.expander(t.get("advanced_settings", "🔧 Paramètres avancés")):
+    with st.expander(t("🔧 Paramètres avancés", selected_lang)):
         col1, col2 = st.columns(2)
         with col1:
             soil_type = st.selectbox(
