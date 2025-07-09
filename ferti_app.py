@@ -1,10 +1,12 @@
-import streamlit as st
+import streamlit as st  # type: ignore
 import json
-import pandas as pd
-from fpdf import FPDF
+import pandas as pd  # type: ignore
+from fpdf import FPDF  # type: ignore
 from datetime import datetime
+import qrcode
+from io import BytesIO
 
-# ----- POLICES (unicode + gras) -----
+# ----- POLICE UNICODE -----
 if not hasattr(FPDF, '_dejavu_registered'):
     FPDF._dejavu_registered = True
     FPDF.add_font("DejaVu", "", "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/DejaVuSans.ttf", uni=True)
@@ -20,31 +22,26 @@ ENGRAIS_DB = {
     "Sulfate de zinc": {"Zn": 0.22},
     "Borax": {"B": 0.11}
 }
-EFFICIENCES = {
-    "N": 0.7, "P2O5": 0.5, "K2O": 0.6, "MgO": 0.5, "S": 0.6, "Zn": 0.3, "B": 0.3
-}
+EFFICIENCES = {"N": 0.7, "P2O5": 0.5, "K2O": 0.6, "MgO": 0.5, "S": 0.6, "Zn": 0.3, "B": 0.3}
 FERTI_PATH = "C:/plateforme-agricole-complete-v2/fertilization_phased_db.json"
 BESOINS_PATH = "C:/plateforme-agricole-complete-v2/besoins des plantes en nutriments.json"
 
-# ----- CHARGER DONNÉES -----
+# ----- CHARGEMENT DONNÉES -----
 with open(FERTI_PATH, encoding='utf-8') as f:
     fertibase = json.load(f)
 with open(BESOINS_PATH, encoding='utf-8') as f:
     raw_data = json.load(f)
+
 besoins_db = {}
 for bloc in raw_data:
-    if "cultures" in bloc:
-        besoins_db.update(bloc["cultures"])
-    else:
-        besoins_db.update(bloc)
+    besoins_db.update(bloc.get("cultures", bloc))
 
-# ----- UI -----
+# ----- UI STREAMLIT -----
 st.title("🌾 Plan de Fertilisation par Phase avec Export PDF")
 culture_code = st.selectbox("🌿 Culture", list(besoins_db.keys()))
 surface = st.number_input("Superficie (ha)", min_value=0.1, value=1.0)
 rendement = st.number_input("Rendement visé (t/ha)", min_value=0.1, value=5.0)
 
-# ----- BOUTON UNIQUE -----
 if st.button("🔍 Générer plan + Export PDF", key="generate_plan"):
     culture = besoins_db[culture_code]
     export = culture["export_par_tonne"]
@@ -105,14 +102,45 @@ if st.button("🔍 Générer plan + Export PDF", key="generate_plan"):
         pdf.cell(0, 9, f"• Phase : {phase}", ln=True)
         sous_df = df[df["Phase"] == phase]
         for _, row in sous_df.iterrows():
+            ligne = f"{row['Élément']} : {row['Dose kg']} kg → {row['Engrais']} ({row['Dose engrais (kg)']} kg)"
             pdf.set_font("DejaVu", "", 11)
             pdf.set_text_color(0, 0, 0)
-            ligne = f"{row['Élément']}: {row['Dose kg']} kg → {row['Engrais']} ({row['Dose engrais (kg)']} kg)"
             pdf.cell(0, 8, ligne, ln=True)
-        pdf.ln(3)
+
+    pdf.ln(5)
+    pdf.set_font("DejaVu", "B", 12)
+    pdf.set_text_color(0, 51, 102)
+    pdf.cell(0, 10, "📘 Légende des engrais utilisés :", ln=True)
+
+    pdf.set_font("DejaVu", "", 10)
+    pdf.set_text_color(0, 0, 0)
+    engrais_utilises = {row["Engrais"] for row in phase_data if row["Engrais"]}
+    for engrais in sorted(engrais_utilises):
+        nutriments = ENGRAIS_DB.get(engrais, {})
+        contenu = ", ".join([f"{k} – {int(v * 100)} %" for k, v in nutriments.items()])
+        pdf.cell(0, 8, f"- {engrais} : {contenu}", ln=True)
+
+    # ----- QR CODE -----
+    url = f"https://sama-agrolink.com/fertiplan/{culture_code}"
+    qr_img = qrcode.make(url)
+    qr_buffer = BytesIO()
+    qr_img.save(qr_buffer, format='PNG')
+    qr_buffer.seek(0)
+
+    pdf.ln(10)
+    pdf.set_font("DejaVu", "B", 12)
+    pdf.cell(0, 10, "🔗 Accès en ligne :", ln=True)
+    pdf.image(qr_buffer, w=30)
+    pdf.set_font("DejaVu", "", 9)
+    pdf.cell(0, 10, url, ln=True)
 
     file_path = f"{culture_code}_fertilisation_plan.pdf"
     pdf.output(file_path)
-
     with open(file_path, "rb") as f:
         st.download_button("📄 Télécharger le plan PDF", f, file_name=file_path, mime="application/pdf")
+
+    # ----- EXCEL -----
+    excel_file = f"{culture_code}_fertilisation_plan.xlsx"
+    df.to_excel(excel_file, index=False)
+    with open(excel_file, "rb") as f_excel:
+        st.download_button("📥 Télécharger les données Excel", f_excel, file_name=excel_file, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
