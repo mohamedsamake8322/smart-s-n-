@@ -46,7 +46,7 @@ culture_code = st.selectbox("🌿 Culture", list(besoins_db.keys()))
 surface = st.number_input("Superficie (ha)", min_value=0.1, value=1.0)
 rendement = st.number_input("Rendement visé (t/ha)", min_value=0.1, value=5.0)
 
-if st.button("🔍 Générer plan + Export PDF"):
+if st.button("🔍 Générer plan + Export PDF", key="generate_button"):
     culture = besoins_db[culture_code]
     export = culture["export_par_tonne"]
     fractionnement = fertibase[culture_code]["fractionnement"]
