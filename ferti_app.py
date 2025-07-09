@@ -4,7 +4,7 @@ import pandas as pd # type: ignore
 from fpdf import FPDF # type: ignore
 if not hasattr(FPDF, '_dejavu_registered'):
     FPDF._dejavu_registered = True
-    FPDF.add_font("DejaVu", "", "fonts/dejavu-fonts-ttf-2.37/DejaVuSans.ttf", uni=True)
+    FPDF.add_font("DejaVu", "", "C:\plateforme-agricole-complete-v2\fonts\dejavu-fonts-ttf-2.37", uni=True)
 
 from datetime import datetime
 # ----- CONFIG -----
