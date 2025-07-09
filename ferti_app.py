@@ -26,7 +26,15 @@ BESOINS_PATH = "C:/plateforme-agricole-complete-v2/besoins des plantes en nutrim
 with open(FERTI_PATH, encoding='utf-8') as f:
     fertibase = json.load(f)
 with open(BESOINS_PATH, encoding='utf-8') as f:
-    besoins_db = json.load(f)["cultures"]
+    raw_data = json.load(f)
+besoins_db = {}
+
+for bloc in raw_data:
+    if "cultures" in bloc:
+        besoins_db.update(bloc["cultures"])
+    else:
+        besoins_db.update(bloc)
+
 
 # ----- UI -----
 st.title("🌾 Plan de Fertilisation par Phase avec Export PDF")
