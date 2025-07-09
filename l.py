@@ -1,19 +1,13 @@
-import os
 import json
 from pathlib import Path
 
-def is_valid_json(line):
-    try:
-        json.loads(line)
-        return True
-    except json.JSONDecodeError:
-        return False
+# 📁 Chemin vers le fichier brut
+fichier_source = Path("C:\\plateforme-agricole-complete-v2\\besoins_des_plantes_en_nutriments.json")
 
-# 📍 Chemin du fichier original
-json_path = Path("C:\\plateforme-agricole-complete-v2\\besoins_des_plantes_en_nutriments.json")
-clean_blocks = []
+cultures = {}
+sources = []
 
-with open(json_path, "r", encoding="utf-8") as f:
+with open(fichier_source, "r", encoding="utf-8") as f:
     buffer = ""
     for line in f:
         stripped = line.strip()
@@ -22,24 +16,26 @@ with open(json_path, "r", encoding="utf-8") as f:
         buffer += stripped
         try:
             obj = json.loads(buffer)
-            clean_blocks.append(obj)
-            buffer = ""  # Reset le buffer après chaque bloc valide
+            if "cultures" in obj:
+                for nom_culture, data in obj["cultures"].items():
+                    cultures[nom_culture] = data
+                    if "sources" in data:
+                        sources.extend(data["sources"])
+            buffer = ""
         except json.JSONDecodeError:
-            buffer += " "  # Continue à accumuler
+            buffer += " "
 
-if not clean_blocks:
-    print("❌ Aucun bloc JSON valide n’a été détecté.")
-    exit(1)
+# 🧹 Nettoyage éventuel des sources (optionnel)
+sources_uniques = sorted(set(sources))
 
-# 🔁 Fusion logique des objets
-merged = {"sources": [], "cultures": {}}
-for block in clean_blocks:
-    if isinstance(block, dict):
-        merged["sources"].extend(block.get("sources", []))
-        merged["cultures"].update(block.get("cultures", {}))
+# 📦 Structure finale
+resultat = {
+    "sources": sources_uniques,
+    "cultures": cultures
+}
 
-# 💾 Sauvegarde propre
-with open("besoins_correcte.json", "w", encoding="utf-8") as out:
-    json.dump(merged, out, indent=4, ensure_ascii=False)
+# 💾 Sauvegarde
+with open("besoins_correcte.json", "w", encoding="utf-8") as f:
+    json.dump(resultat, f, indent=4, ensure_ascii=False)
 
-print("✅ JSON fusionné à partir de blocs partiels — sauvegardé dans besoins_correcte.json")
+print("✅ Fichier fusionné enregistré avec succès : besoins_correcte.json")
