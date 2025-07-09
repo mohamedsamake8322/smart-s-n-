@@ -7,7 +7,11 @@ from datetime import datetime
 import qrcode # type: ignore
 from io import BytesIO
 from config.lang import LANG
-
+# ----- LANGUE (barre latérale) -----
+st.sidebar.markdown("### 🌐 Langue / Language")
+lang_options = list(LANG.keys())
+selected_lang = st.sidebar.selectbox("🌐", lang_options, index=lang_options.index("fr"))
+t = LANG[selected_lang]
 # ----- CONFIG POLICES -----
 BASE_PATH = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
 dejavu_regular = os.path.join(BASE_PATH, "DejaVuSans.ttf")
@@ -27,10 +31,7 @@ EFFICIENCES = {"N": 0.7, "P2O5": 0.5, "K2O": 0.6, "MgO": 0.5, "S": 0.6, "Zn": 0.
 FERTI_PATH = "C:/plateforme-agricole-complete-v2/fertilization_phased_db.json"
 BESOINS_PATH = "C:/plateforme-agricole-complete-v2/besoins des plantes en nutriments.json"
 
-# ----- LANGUE (barre latérale) -----
-lang_options = list(LANG.keys())
-selected_lang = st.sidebar.selectbox("🌐", lang_options, index=lang_options.index("fr"))
-t = LANG[selected_lang]
+
 
 # ----- CHARGEMENT DONNÉES -----
 with open(FERTI_PATH, encoding='utf-8') as f:
