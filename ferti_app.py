@@ -73,10 +73,10 @@ if st.button("🔍 Générer plan + Export PDF"):
                     "Engrais": engrais,
                     "Dose engrais (kg)": dose_engrais
                 })
-    # -- 📋 Tableau dans Streamlit --
-df = pd.DataFrame(phase_data)
-st.markdown("### 📋 Plan de fertilisation par phase")
-st.dataframe(df)
+if st.button("🔍 Générer plan + Export PDF"):   # -- 📋 Tableau dans Streamlit --
+    df = pd.DataFrame(phase_data)
+    st.markdown("### 📋 Plan de fertilisation par phase")
+    st.dataframe(df)
 
 # -- 📄 EXPORT PDF AVEC STYLE --
 class StyledPDF(FPDF):
