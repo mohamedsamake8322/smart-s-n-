@@ -2,26 +2,15 @@ import streamlit as st  # type: ignore
 import json
 import os
 import pandas as pd  # type: ignore
-import traceback
 from fpdf import FPDF  # type: ignore
 from datetime import datetime
-import qrcode # type: ignore
+import qrcode  # type: ignore
 from io import BytesIO
-# ----- ENREGISTREMENT POLICES DEJAVU AVANT TOUT -----
+
+# ----- CHEMIN DES POLICES -----
 base_path = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
 dejavu_regular = os.path.join(base_path, "DejaVuSans.ttf")
 dejavu_bold = os.path.join(base_path, "DejaVuSans-Bold.ttf")
-
-try:
-    if os.path.exists(dejavu_regular) and os.path.exists(dejavu_bold):
-        pdf_font_loader = FPDF()
-        pdf_font_loader.add_font("DejaVu", "", dejavu_regular, uni=True)
-        pdf_font_loader.add_font("DejaVu", "B", dejavu_bold, uni=True)
-    else:
-        st.error("❌ Les fichiers TTF requis ne sont pas trouvés.")
-except Exception as e:
-    st.warning("⚠️ Une erreur est survenue lors de l'enregistrement de la police.")
-    st.text(traceback.format_exc())
 
 # ----- CONFIG -----
 ENGRAIS_DB = {
@@ -81,7 +70,7 @@ if st.button("🔍 Générer plan + Export PDF", key="generate_plan"):
     st.markdown("### 📋 Plan de fertilisation par phase")
     st.dataframe(df)
 
-    # ----- PDF EXPORT -----
+    # ----- CLASSE PDF -----
     class StyledPDF(FPDF):
         def header(self):
             self.set_fill_color(0, 102, 204)
@@ -98,7 +87,10 @@ if st.button("🔍 Générer plan + Export PDF", key="generate_plan"):
             self.set_text_color(150, 150, 150)
             self.cell(0, 10, "Généré par Sama AgroLink | " + datetime.now().strftime("%d/%m/%Y %H:%M"), 0, 0, "C")
 
+    # ----- CONSTRUCTION PDF -----
     pdf = StyledPDF()
+    pdf.add_font("DejaVu", "", dejavu_regular)
+    pdf.add_font("DejaVu", "B", dejavu_bold)
     pdf.add_page()
     pdf.set_font("DejaVu", "", 12)
     pdf.set_text_color(0, 0, 0)
@@ -111,8 +103,7 @@ if st.button("🔍 Générer plan + Export PDF", key="generate_plan"):
         pdf.set_font("DejaVu", "B", 12)
         pdf.set_text_color(0, 51, 102)
         pdf.cell(0, 9, f"• Phase : {phase}", ln=True)
-        sous_df = df[df["Phase"] == phase]
-        for _, row in sous_df.iterrows():
+        for _, row in df[df["Phase"] == phase].iterrows():
             ligne = f"{row['Élément']} : {row['Dose kg']} kg → {row['Engrais']} ({row['Dose engrais (kg)']} kg)"
             pdf.set_font("DejaVu", "", 11)
             pdf.set_text_color(0, 0, 0)
@@ -122,9 +113,9 @@ if st.button("🔍 Générer plan + Export PDF", key="generate_plan"):
     pdf.set_font("DejaVu", "B", 12)
     pdf.set_text_color(0, 51, 102)
     pdf.cell(0, 10, "📘 Légende des engrais utilisés :", ln=True)
-
     pdf.set_font("DejaVu", "", 10)
     pdf.set_text_color(0, 0, 0)
+
     engrais_utilises = {row["Engrais"] for row in phase_data if row["Engrais"]}
     for engrais in sorted(engrais_utilises):
         nutriments = ENGRAIS_DB.get(engrais, {})
@@ -145,12 +136,13 @@ if st.button("🔍 Générer plan + Export PDF", key="generate_plan"):
     pdf.set_font("DejaVu", "", 9)
     pdf.cell(0, 10, url, ln=True)
 
+    # ----- EXPORT PDF -----
     file_path = f"{culture_code}_fertilisation_plan.pdf"
     pdf.output(file_path)
     with open(file_path, "rb") as f:
         st.download_button("📄 Télécharger le plan PDF", f, file_name=file_path, mime="application/pdf")
 
-    # ----- EXCEL -----
+    # ----- EXPORT EXCEL -----
     excel_file = f"{culture_code}_fertilisation_plan.xlsx"
     df.to_excel(excel_file, index=False)
     with open(excel_file, "rb") as f_excel:
