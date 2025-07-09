@@ -1,0 +1,83 @@
+{
+    "profils_de_sol": {
+        "sol_sablo_limoneux_sahel": {
+            "nom": "Sol sablo-limoneux sahélien",
+            "zone": "Sahel semi-aride",
+            "carences_probables": [
+                "N",
+                "P",
+                "Zn"
+            ],
+            "efficacite_engrais": {
+                "N": 0.45,
+                "P2O5": 0.35,
+                "K2O": 0.60,
+                "Zn": 0.30
+            },
+            "pH_moyen": 7.3,
+            "texture": "sableux à limoneux",
+            "drainage": "rapide",
+            "remarques": "Faible rétention, risque élevé de lessivage, matière organique faible"
+        },
+        "sol_ferrugineux_savane_humide": {
+            "nom": "Sols ferrugineux de savane humide",
+            "zone": "Savane guinéenne",
+            "carences_probables": [
+                "P",
+                "Ca",
+                "Mg",
+                "B"
+            ],
+            "efficacite_engrais": {
+                "N": 0.55,
+                "P2O5": 0.30,
+                "K2O": 0.65,
+                "B": 0.25,
+                "CaO": 0.50
+            },
+            "pH_moyen": 5.5,
+            "texture": "argilo-sableux",
+            "drainage": "moyen",
+            "remarques": "Acide, forte fixation du phosphore, sensible à l’acidification"
+        },
+        "andosol_volcanique_grandes_vallees": {
+            "nom": "Andosol volcanique (Afrique de l’Est)",
+            "zone": "Régions volcaniques (Rwanda, Éthiopie, Kenya)",
+            "carences_probables": [
+                "S",
+                "Zn"
+            ],
+            "efficacite_engrais": {
+                "N": 0.65,
+                "P2O5": 0.55,
+                "K2O": 0.75,
+                "S": 0.35
+            },
+            "pH_moyen": 6.2,
+            "texture": "légère à friable",
+            "drainage": "excellent",
+            "remarques": "Très fertile, mais peut fixer des micronutriments, attention au soufre"
+        },
+        "ferralsol_zone_forestiere": {
+            "nom": "Ferralsol profond de forêt tropicale",
+            "zone": "Bassins forestiers (Congo, Côte d’Ivoire, Cameroun)",
+            "carences_probables": [
+                "N",
+                "K",
+                "Ca",
+                "Mg"
+            ],
+            "efficacite_engrais": {
+                "N": 0.50,
+                "P2O5": 0.40,
+                "K2O": 0.45,
+                "CaO": 0.40,
+                "MgO": 0.30
+            },
+            "pH_moyen": 4.9,
+            "texture": "argileux ferrallitique",
+            "drainage": "lent à moyen",
+            "remarques": "Très acide, très pauvre en cations échangeables, forte lixiviation"
+        }
+    }
+}
