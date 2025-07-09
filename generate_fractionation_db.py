@@ -34,7 +34,9 @@ def construire_db(input_path, output_path):
 
     phased_db = {}
     for bloc in besoins_data:
-        for culture, data in bloc["cultures"].items():
+        cultures = bloc.get("cultures", bloc)  # gère les deux cas
+        for culture, data in cultures.items():
+
             stades_cles = data.get("stades_cles", {})
             nom_commun = data.get("nom_commun", culture.replace("_", " ").capitalize())
             fractionnement = generer_fractionnement(stades_cles)
