@@ -4,16 +4,21 @@ import os
 import pandas as pd  # type: ignore
 from fpdf import FPDF  # type: ignore
 from datetime import datetime
-import qrcode
+import qrcode # type: ignore
 from io import BytesIO
 
 # ----- POLICE UNICODE -----
 if not hasattr(FPDF, '_dejavu_registered'):
     FPDF._dejavu_registered = True
-
 base_path = "C:/plateforme-agricole-complete-v2/fonts/dejav-fonts-ttf-2.37/ttf/"
-FPDF.add_font("DejaVu", "", os.path.join(base_path, "DejaVuSans.ttf"), uni=True)
-FPDF.add_font("DejaVu", "B", os.path.join(base_path, "DejaVuSans-Bold.ttf"), uni=True)
+normal_path = os.path.join(base_path, "DejaVuSans.ttf")
+bold_path = os.path.join(base_path, "DejaVuSans-Bold.ttf")
+
+if os.path.exists(normal_path) and os.path.exists(bold_path):
+    FPDF.add_font("DejaVu", "", fname=normal_path, uni=True)
+    FPDF.add_font("DejaVu", "B", fname=bold_path, uni=True)
+else:
+    st.error("❌ Fichiers de police non trouvés. Vérifie les chemins vers DejaVuSans.ttf.")
 
 
 # ----- CONFIG -----
