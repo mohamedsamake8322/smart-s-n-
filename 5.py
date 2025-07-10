@@ -23,7 +23,7 @@ for subset in subsets:
             new_name = mapping.get(key)
 
             if new_name and new_name != dirname:
-                dst = os.path.join(folder_path, new_name)
+                dst = os.path.join(folder_path, new_name.strip())
 
                 if not os.path.exists(dst):
                     os.rename(src, dst)
