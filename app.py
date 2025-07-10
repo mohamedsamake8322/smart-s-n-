@@ -1,10 +1,10 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
+import streamlit as st # type: ignore
+import pandas as pd # type: ignore
+import numpy as np # type: ignore
 import time
 import plotly.express as px # type: ignore
 import plotly.graph_objects as go # type: ignore
-import streamlit.components.v1 as components
+import streamlit.components.v1 as components # type: ignore
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
 from datetime import datetime

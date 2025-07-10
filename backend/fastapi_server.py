@@ -259,11 +259,11 @@ async def upload_agricultural_data(
         # Validation des données
         validation_result = validate_agricultural_data(df, data_type.title() + " Data")
 
-        if not validation_result["is_valid"]:
+        if not validation_resultranslate_text("is_valid", selected_lang):
             return {
                 "success": False,
-                "validation_errors": validation_result["errors"],
-                "warnings": validation_result["warnings"]
+                "validation_errors": validation_resultranslate_text("errors", selected_lang),
+                "warnings": validation_resultranslate_text("warnings", selected_lang)
             }
 
         # Traitement asynchrone en arrière-plan

@@ -9,14 +9,14 @@ def remplacer_t_crochets(path):
     with open(path, encoding="utf-8") as f:
         contenu = f.read()
 
-    # ✅ Corrige l'expression pour détecter t["..."] avec éventuels espaces
+    # ✅ Corrige l'expression pour détecter translate_text("...", selected_lang) avec éventuels espaces
     nouveau_contenu = re.sub(
         r't\s*\[\s*"([^"]+)"\s*\]',
         lambda m: f'translate_text("{m.group(1)}", {SELECTED_LANG_VAR})',
         contenu
     )
 
-    # ✅ Corrige t.get("clé", "valeur par défaut")
+    # ✅ Corrige translate_text("valeur par défaut", selected_lang)
     nouveau_contenu = re.sub(
         r't\.get\(\s*"([^"]+)"\s*,\s*"([^"]+)"\s*\)',
         lambda m: f'translate_text("{m.group(2)}", {SELECTED_LANG_VAR})',

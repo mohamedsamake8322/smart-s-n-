@@ -87,9 +87,9 @@ def plot_data():
 def check_alerts():
     if sensor_data:
         latest = sensor_data[-1]
-        if latest["humidity"] < 30:
+        if latestranslate_text("humidity", selected_lang) < 30:
             st.error("🚨 Alerte : Humidité trop basse !")
-        if latest["ph"] < 5 or latest["ph"] > 8:
+        if latestranslate_text("ph", selected_lang) < 5 or latestranslate_text("ph", selected_lang) > 8:
             st.warning("⚠️ Alerte : pH du sol hors norme.")
 
 # ✅ Interface Streamlit

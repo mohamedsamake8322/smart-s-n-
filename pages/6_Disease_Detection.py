@@ -117,7 +117,7 @@ def render_diagnostic_card(result):
         "🟠 Avancé": "orange",
         "🟡 Début": "gold",
         "🟢 Faible impact": "green"
-    }.get(result["progression_stage"], "gray")
+    }.get(resultranslate_text("progression_stage", selected_lang), "gray")
 
     with st.container():
         st.markdown("---")
