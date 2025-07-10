@@ -7,7 +7,9 @@ dataset_path = r"C:\plateforme-agricole-complete-v2\plantdataset"
 subsets = ["train", "val"]
 
 # Chargement du mapping
-with open(os.path.join(dataset_path, "class_mapping_suggestions.json"), "r", encoding="utf-8") as f:
+mapping_path = os.path.join("C:\\plateforme-agricole-complete-v2", "class_mapping_suggestions.json")
+with open(mapping_path, "r", encoding="utf-8") as f:
+
     mapping = json.load(f)
 
 log = []
