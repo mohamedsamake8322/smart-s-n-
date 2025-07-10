@@ -1,11 +1,15 @@
 import json
 import os
 from google.cloud import translate
+
+# Authentification : tu peux l'exporter via l'environnement ou l’intégrer ici
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\plateforme-agricole-complete-v2\plant-ai-mohamed-tpu-b154d2918738.json"
 client = translate.TranslationServiceClient()
 
-# Authentification
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\plateforme-agricole-complete-v2\plant-ai-mohamed-tpu-b154d2918738.json"
-translate_client = translate.Client()
+# Infos projet
+project_id = "plant-ai-mohamed-tpu"
+location = "global"
+parent = f"projects/{project_id}/locations/{location}"
 
 # Langues cibles
 SUPPORTED_LANGUAGES = {
@@ -16,24 +20,28 @@ SUPPORTED_LANGUAGES = {
 }
 
 def translate_text(text, target_lang):
-    result = translate_client.translate(text, target_language=target_lang)
-    return result["translatedText"]
+    response = client.translate_text(
+        contents=[text],
+        target_language_code=target_lang,
+        parent=parent,
+        mime_type="text/plain"
+    )
+    return response.translations[0].translated_text
 
-# Charger ton fichier de base
+# Charger ton fichier source
 with open(r"C:\plateforme-agricole-complete-v2\deficies.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
-# Traduction
-for element, entry in data["deficiencies"].items():
+# Traduction multilingue
+for element_code, entry in data["deficiencies"].items():
     entry["translations"] = {}
     for lang_code in SUPPORTED_LANGUAGES:
-        translated = {
+        entry["translations"][lang_code] = {
             "symptoms": translate_text(entry["symptoms"], lang_code),
             "deficiency": translate_text(entry["effects"]["deficiency"], lang_code),
             "excess": translate_text(entry["effects"]["excess"], lang_code),
             "correction": translate_text(entry["correction"], lang_code)
         }
-        entry["translations"][lang_code] = translated
 
 # Sauvegarde finale
 with open(r"C:\plateforme-agricole-complete-v2\deficiencies_multilingual.json", "w", encoding="utf-8") as f_out:
