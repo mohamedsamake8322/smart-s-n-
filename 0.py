@@ -5,6 +5,14 @@ from multiprocessing import Pool, cpu_count, freeze_support
 import tqdm
 from rapidfuzz import process, fuzz
 
+SAVE_PATH = r"C:\plateforme-agricole-complete-v2\dataset_v2l_mapped.json"
+
+if os.path.exists(SAVE_PATH):
+    os.remove(SAVE_PATH)
+    print(f"🗑️ Fichier supprimé : {SAVE_PATH}")
+else:
+    print(f"❌ Fichier introuvable : {SAVE_PATH}")
+
 # 📁 Chemins
 ROOT = r"C:\plateforme-agricole-complete-v2\plantdataset"
 SAVE_PATH = r"C:\plateforme-agricole-complete-v2\dataset_v2l_mapped.json"
