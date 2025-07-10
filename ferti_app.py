@@ -6,7 +6,6 @@ from fpdf import FPDF  # type: ignore
 from datetime import datetime
 import qrcode  # type: ignore
 from io import BytesIO
-from config.lang import t
 
 # ----- CHEMIN DES POLICES -----
 base_path = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
