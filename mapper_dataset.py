@@ -4,7 +4,7 @@ from glob import glob
 
 # Chemins
 ROOT = r"C:\plateforme-agricole-complete-v2\plantdataset"
-JSON_MALADIES = r"C:\plateforme-agricole-complete-v2\plantdataset\mapping_fiches_maladies_multilingual.json"
+JSON_MALADIES = r"C:\plateforme-agricole-complete-v2\plantdataset\EN_mapping_fiches_maladies.json.json"
 JSON_CARENCE = r"C:\plateforme-agricole-complete-v2\plantdataset\deficiencies_multilingual.json"
 JSON_STRESS = r"C:\plateforme-agricole-complete-v2\plantdataset\stress_multilingual.json"
 
