@@ -10,7 +10,9 @@ SAVE_PATH = r"C:\plateforme-agricole-complete-v2\dataset_v2l_mapped.json"
 
 # JSONs fusionnés
 json_paths = {
-    "maladies": r"C:\plateforme-agricole-complete-v2\plantdataset\mapping_fiches_maladies_fr.json",  # ← choisi parmi les deux disponibles
+    "maladies": r"C:\plateforme-agricole-complete-v2\plantdataset\mapping_fiches_maladies_fr.json",
+    # ← choisi parmi les deux disponibles
+    "maladies": r"C:\plateforme-agricole-complete-v2\plantdataset\EN_mapping_fiches_maladies.json",
     "carences": r"C:\plateforme-agricole-complete-v2\plantdataset\deficiencies_multilingual.json",
     "stress": r"C:\plateforme-agricole-complete-v2\plantdataset\stress_multilingual.json"
 }
