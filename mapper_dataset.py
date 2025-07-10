@@ -1,8 +1,7 @@
 import os
 import json
 from glob import glob
-from multiprocessing import Pool, cpu_count
-from functools import partial
+from multiprocessing import Pool, cpu_count, freeze_support
 import tqdm
 
 # Chemins
@@ -11,13 +10,11 @@ SAVE_PATH = r"C:\plateforme-agricole-complete-v2\dataset_v2l_mapped.json"
 
 # JSONs fusionnés
 json_paths = {
-    "maladies": r"C:\plateforme-agricole-complete-v2\plantdataset\EN_mapping_fiches_maladies.json.json",
-    "maladies": r"C:\plateforme-agricole-complete-v2\plantdataset\mapping_fiches_maladies_fr.json",
+    "maladies": r"C:\plateforme-agricole-complete-v2\plantdataset\mapping_fiches_maladies_fr.json",  # ← choisi parmi les deux disponibles
     "carences": r"C:\plateforme-agricole-complete-v2\plantdataset\deficiencies_multilingual.json",
     "stress": r"C:\plateforme-agricole-complete-v2\plantdataset\stress_multilingual.json"
 }
 
-# Charger les JSONs
 def load_jsons():
     with open(json_paths["maladies"], "r", encoding="utf-8") as f1:
         maladies = json.load(f1)
@@ -28,11 +25,9 @@ def load_jsons():
     return {**maladies, **carences, **stress}
 
 merged_data = load_jsons()
-
-# Liste des classes valides (présentes dans le JSON)
 valid_classes = set(merged_data.keys())
 
-# Vérifier si fichier partiel existe
+# Fichier déjà mappé ?
 if os.path.exists(SAVE_PATH):
     with open(SAVE_PATH, "r", encoding="utf-8") as f:
         already_mapped = json.load(f)
@@ -42,12 +37,12 @@ else:
     already_mapped = []
     mapped_images = set()
 
-# Fonction pour traiter une classe
+# Traitement d’une classe
 def process_class(category_path, split):
     output = []
     category_name = os.path.basename(category_path)
     if category_name not in valid_classes:
-        return []  # Classe ignorée
+        return []
     description_block = merged_data[category_name]
     if not description_block.get("translations"):
         return []
@@ -62,28 +57,29 @@ def process_class(category_path, split):
             })
     return output
 
-# Construction des chemins de classes valides
-tasks = []
-for split in ["train", "val"]:
-    split_path = os.path.join(ROOT, split)
-    for category in os.listdir(split_path):
-        cat_path = os.path.join(split_path, category)
-        if os.path.isdir(cat_path) and category in valid_classes:
-            tasks.append((cat_path, split))
-
-# Traitement parallèle
-print(f"🚀 Traitement de {len(tasks)} classes avec {cpu_count()} processus...")
-
 def process_class_wrapper(args):
     return process_class(*args)
 
-with Pool(processes=cpu_count()) as pool:
-    results = list(tqdm.tqdm(pool.imap(process_class_wrapper, tasks), total=len(tasks)))
+if __name__ == "__main__":
+    freeze_support()
+    # Créer la liste des tâches
+    tasks = []
+    for split in ["train", "val"]:
+        split_path = os.path.join(ROOT, split)
+        for category in os.listdir(split_path):
+            cat_path = os.path.join(split_path, category)
+            if os.path.isdir(cat_path) and category in valid_classes:
+                tasks.append((cat_path, split))
 
+    print(f"🚀 Traitement de {len(tasks)} classes avec {cpu_count()} processus...")
 
-# Fusion + sauvegarde
-all_data = already_mapped + [item for sublist in results for item in sublist]
-with open(SAVE_PATH, "w", encoding="utf-8") as f_out:
-    json.dump(all_data, f_out, indent=2, ensure_ascii=False)
+    # Lancer le pool de traitement
+    with Pool(processes=cpu_count()) as pool:
+        results = list(tqdm.tqdm(pool.imap(process_class_wrapper, tasks), total=len(tasks)))
 
-print(f"\n✅ Mapping terminé. Total d'images traitées : {len(all_data)}")
+    # Fusion et sauvegarde
+    all_data = already_mapped + [item for sublist in results for item in sublist]
+    with open(SAVE_PATH, "w", encoding="utf-8") as f_out:
+        json.dump(all_data, f_out, indent=2, ensure_ascii=False)
+
+    print(f"\n✅ Mapping terminé. Total d'images traitées : {len(all_data)}")
