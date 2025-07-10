@@ -9,13 +9,25 @@ SUPPORTED_LANGUAGES = [
 ]
 
 def libre_translate(text, target):
-    response = requests.post("https://libretranslate.com/translate", json={
-        "q": text,
-        "source": "en",
-        "target": target,
-        "format": "text"
-    })
-    return response.json()["translatedText"]
+    try:
+        response = requests.post("https://libretranslate.com/translate", json={
+            "q": text,
+            "source": "en",
+            "target": target,
+            "format": "text"
+        })
+        data = response.json()
+        if "translatedText" in data:
+            return data["translatedText"]
+        elif "error" in data:
+            print(f"❌ Erreur LibreTranslate ({target}): {data['error']}")
+            return f"[ERROR: {data['error']}]"
+        else:
+            print(f"❌ Réponse inattendue ({target}):", data)
+            return "[ERROR: Unexpected response]"
+    except Exception as e:
+        print(f"❌ Exception JSON ({target}): {e}")
+        return "[ERROR: Invalid JSON]"
 
 # Charger le fichier source
 with open(r"C:\plateforme-agricole-complete-v2\EN_mapping_fiches_maladies.json", "r", encoding="utf-8") as f:
@@ -25,7 +37,7 @@ with open(r"C:\plateforme-agricole-complete-v2\EN_mapping_fiches_maladies.json",
 for disease_name, entry in data.items():
     entry["translations"] = {}
     for lang in SUPPORTED_LANGUAGES:
-        translated = {
+        entry["translations"][lang] = {
             "culture": libre_translate(entry["culture"], lang),
             "Agent causal": libre_translate(entry["Agent causal"], lang),
             "description": libre_translate(entry["description"], lang),
@@ -34,8 +46,7 @@ for disease_name, entry in data.items():
             "Name of active product material": libre_translate(entry["Name of active product material"], lang),
             "treatment": libre_translate(entry["treatment"], lang)
         }
-        entry["translations"][lang] = translated
-        time.sleep(0.5)  # anti-blocage
+        time.sleep(0.5)  # Anti-blocage entre les requêtes
 
 # Sauvegarde finale
 with open(r"C:\plateforme-agricole-complete-v2\mapping_fiches_maladies_multilingual.json", "w", encoding="utf-8") as f_out:
