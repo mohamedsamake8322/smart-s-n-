@@ -68,10 +68,13 @@ def process_class(category_path, split, threshold=65):
     }
 
     # 🔎 Détection des images avec extensions classiques
-    image_extensions = ["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp", "*.JPG", "*.JPEG", "*.PNG"]
-    images = []
-    for ext in image_extensions:
-        images.extend(glob(os.path.join(category_path, ext)))
+    allowed_exts = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".JPG", ".JPEG", ".PNG"}
+    images = [
+    os.path.join(category_path, f)
+    for f in os.listdir(category_path)
+    if os.path.isfile(os.path.join(category_path, f)) and os.path.splitext(f)[1] in allowed_exts
+]
+
 
     for img_path in images:
         output.append({
