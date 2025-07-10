@@ -1,6 +1,7 @@
 import json
 import os
-from google.cloud import translate_v2 as translate
+from google.cloud import translate
+client = translate.TranslationServiceClient()
 
 # Authentification
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\plateforme-agricole-complete-v2\plant-ai-mohamed-tpu-b154d2918738.json"
