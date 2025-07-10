@@ -2,54 +2,49 @@ import json
 import requests
 import time
 
-# Langues cibles
+API_KEY = "bf46e370-3a4a-4338-8a79-d9aba6c289ed:fx"  # Remplace par ta clé DeepL API
+
 SUPPORTED_LANGUAGES = [
     "en", "zh", "hi", "es", "fr", "sw", "ha", "yo", "ig", "am",
     "om", "rw", "ln", "sn", "tn", "st", "mg", "wo", "bm", "ts"
 ]
 
-def libre_translate(text, target):
+def deepl_translate(text, target_lang):
+    url = "https://api-free.deepl.com/v2/translate"
+    params = {
+        "auth_key": API_KEY,
+        "text": text,
+        "source_lang": "EN",
+        "target_lang": target_lang.upper()
+    }
     try:
-        response = requests.post("https://libretranslate.com/translate", json={
-            "q": text,
-            "source": "en",
-            "target": target,
-            "format": "text"
-        })
-        data = response.json()
-        if "translatedText" in data:
-            return data["translatedText"]
-        elif "error" in data:
-            print(f"❌ Erreur LibreTranslate ({target}): {data['error']}")
-            return f"[ERROR: {data['error']}]"
-        else:
-            print(f"❌ Réponse inattendue ({target}):", data)
-            return "[ERROR: Unexpected response]"
+        response = requests.post(url, data=params)
+        result = response.json()
+        return result["translations"][0]["text"]
     except Exception as e:
-        print(f"❌ Exception JSON ({target}): {e}")
-        return "[ERROR: Invalid JSON]"
+        print(f"❌ DeepL ERROR ({target_lang}): {e}")
+        return f"[ERROR: {e}]"
 
-# Charger le fichier source
+# Charger les fiches
 with open(r"C:\plateforme-agricole-complete-v2\EN_mapping_fiches_maladies.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
-# Traduction par maladie
 for disease_name, entry in data.items():
     entry["translations"] = {}
     for lang in SUPPORTED_LANGUAGES:
         entry["translations"][lang] = {
-            "culture": libre_translate(entry["culture"], lang),
-            "Agent causal": libre_translate(entry["Agent causal"], lang),
-            "description": libre_translate(entry["description"], lang),
-            "symptoms": libre_translate(entry["symptoms"], lang),
-            "evolution": libre_translate(entry["evolution"], lang),
-            "Name of active product material": libre_translate(entry["Name of active product material"], lang),
-            "treatment": libre_translate(entry["treatment"], lang)
+            "culture": deepl_translate(entry["culture"], lang),
+            "Agent causal": deepl_translate(entry["Agent causal"], lang),
+            "description": deepl_translate(entry["description"], lang),
+            "symptoms": deepl_translate(entry["symptoms"], lang),
+            "evolution": deepl_translate(entry["evolution"], lang),
+            "Name of active product material": deepl_translate(entry["Name of active product material"], lang),
+            "treatment": deepl_translate(entry["treatment"], lang)
         }
-        time.sleep(0.5)  # Anti-blocage entre les requêtes
+        time.sleep(0.5)  # anti-blocage entre les requêtes
 
-# Sauvegarde finale
+# Sauvegarde
 with open(r"C:\plateforme-agricole-complete-v2\mapping_fiches_maladies_multilingual.json", "w", encoding="utf-8") as f_out:
     json.dump(data, f_out, indent=2, ensure_ascii=False)
 
-print("✅ Traduction terminée avec LibreTranslate.")
+print("✅ Traduction DeepL terminée !")
