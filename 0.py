@@ -5,14 +5,6 @@ from multiprocessing import Pool, cpu_count, freeze_support
 import tqdm
 from rapidfuzz import process, fuzz
 
-SAVE_PATH = r"C:\plateforme-agricole-complete-v2\dataset_v2l_mapped.json"
-
-if os.path.exists(SAVE_PATH):
-    os.remove(SAVE_PATH)
-    print(f"🗑️ Fichier supprimé : {SAVE_PATH}")
-else:
-    print(f"❌ Fichier introuvable : {SAVE_PATH}")
-
 # 📁 Chemins
 ROOT = r"C:\plateforme-agricole-complete-v2\plantdataset"
 SAVE_PATH = r"C:\plateforme-agricole-complete-v2\dataset_v2l_mapped.json"
@@ -22,6 +14,7 @@ json_paths = {
     "fr": r"C:\plateforme-agricole-complete-v2\plantdataset\mapping_fiches_maladies_fr.json"
 }
 
+# 📌 Champs requis dans les fiches maladie
 REQUIRED_FIELDS = [
     "culture",
     "Agent causal",
@@ -32,12 +25,15 @@ REQUIRED_FIELDS = [
     "treatment"
 ]
 
+# 🔧 Normalisation des noms
 def normalize(name):
     return " ".join(name.lower().replace("_", " ").replace("-", " ").replace(",", "").split())
 
+# ✅ Vérifie qu'une fiche maladie est complète
 def is_valid_entry(entry):
     return all(field in entry for field in REQUIRED_FIELDS)
 
+# 📥 Chargement des fiches EN et FR
 def load_jsons():
     with open(json_paths["en"], "r", encoding="utf-8") as f_en:
         raw_en = json.load(f_en)
@@ -48,20 +44,12 @@ def load_jsons():
     fr_data = {normalize(k): (k, raw_fr[k]) for k in raw_fr if isinstance(k, str) and is_valid_entry(raw_fr[k])}
     return en_data, fr_data
 
+# 💾 Préparation
 maladies_en, maladies_fr = load_jsons()
 valid_keys_en = list(maladies_en.keys())
-
-if os.path.exists(SAVE_PATH):
-    with open(SAVE_PATH, "r", encoding="utf-8") as f:
-        already_mapped = json.load(f)
-        mapped_images = set(x["image_path"] for x in already_mapped)
-        print(f"🔄 Reprise à partir de {len(mapped_images)} images déjà traitées.")
-else:
-    already_mapped = []
-    mapped_images = set()
-
 ignored_classes = []
 
+# 🔍 Traitement d’une classe (dossier de maladie)
 def process_class(category_path, split, threshold=65):
     output = []
     folder_name = os.path.basename(category_path)
@@ -86,20 +74,28 @@ def process_class(category_path, split, threshold=65):
     }
 
     for img_path in glob(os.path.join(category_path, "*.*")):
-        if img_path not in mapped_images:
-            output.append({
-                "split": split,
-                "image_path": img_path,
-                "label": en_key,
-                "descriptions": block
-            })
+        output.append({
+            "split": split,
+            "image_path": img_path,
+            "label": en_key,
+            "descriptions": block
+        })
     return output
 
 def process_class_wrapper(args):
     return process_class(*args)
 
+# 🏁 Lancement
 if __name__ == "__main__":
     freeze_support()
+
+    # 🧹 Réinitialisation
+    if os.path.exists(SAVE_PATH):
+        os.remove(SAVE_PATH)
+        print(f"🗑️ Fichier supprimé : {SAVE_PATH}")
+    else:
+        print(f"⚠️ Pas de fichier précédent trouvé : {SAVE_PATH}")
+
     tasks = []
     for split in ["train", "val"]:
         split_path = os.path.join(ROOT, split)
@@ -113,7 +109,8 @@ if __name__ == "__main__":
     with Pool(processes=cpu_count()) as pool:
         results = list(tqdm.tqdm(pool.imap(process_class_wrapper, tasks), total=len(tasks)))
 
-    all_data = already_mapped + [item for sublist in results for item in sublist]
+    # 🧾 Résultats
+    all_data = [item for sublist in results for item in sublist]
 
     with open(SAVE_PATH, "w", encoding="utf-8") as f_out:
         json.dump(all_data, f_out, indent=2, ensure_ascii=False)
