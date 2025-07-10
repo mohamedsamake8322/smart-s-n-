@@ -2,7 +2,7 @@ import os
 from PIL import Image
 
 # Dossier à nettoyer
-DATASET_DIR = r"C:\Users\moham\Music\dataset"
+DATASET_DIR = r"C:\Users\moham\Music\deficiencies"
 removed = []
 
 # Parcours des fichiers
