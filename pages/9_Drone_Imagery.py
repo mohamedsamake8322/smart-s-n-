@@ -8,7 +8,8 @@ from PIL import Image, ImageEnhance
 import cv2
 from datetime import datetime, timedelta
 import json
-from config.lang import t
+from config.translator import translate_text
+
 
 st.set_page_config(page_title="Drone & Imagery", page_icon="🛰", layout="wide")
 

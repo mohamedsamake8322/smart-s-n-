@@ -8,7 +8,8 @@ import requests
 import streamlit.components.v1 as components
 import folium
 from streamlit_folium import st_folium
-from config.lang import t
+from config.translator import translate_text
+
 
 # ✅ Configuration de la page
 st.set_page_config(page_title="African Agricultural Network", page_icon="🌍", layout="wide")

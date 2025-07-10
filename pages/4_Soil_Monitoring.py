@@ -5,7 +5,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from utils.data_processing import generate_soil_sample_data
-from config.lang import t
+from config.translator import translate_text
+
 
 st.set_page_config(page_title="Soil Monitoring", page_icon="🌱", layout="wide")
 

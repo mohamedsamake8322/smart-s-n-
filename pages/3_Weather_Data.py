@@ -6,7 +6,8 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import requests
 from utils.weather_api import WeatherAPI
-from config.lang import t
+from config.translator import translate_text
+
 
 st.set_page_config(page_title="Weather Data", page_icon="🌤️", layout="wide")
 
