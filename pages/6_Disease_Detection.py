@@ -9,8 +9,7 @@ from PIL import Image, ImageEnhance
 from datetime import datetime
 from utils.disease_detector import DiseaseDetector
 from utils.config_model import load_labels
-from config.translator import translate_text
-
+from config.lang import t
 
 # 🧠 Initialisation
 st.set_page_config(page_title="Diagnostic Agricole Pro", page_icon="🩺", layout="wide")
@@ -117,7 +116,7 @@ def render_diagnostic_card(result):
         "🟠 Avancé": "orange",
         "🟡 Début": "gold",
         "🟢 Faible impact": "green"
-    }.get(resultranslate_text("progression_stage", selected_lang), "gray")
+    }.get(result["progression_stage"], "gray")
 
     with st.container():
         st.markdown("---")

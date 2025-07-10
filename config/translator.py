@@ -49,7 +49,7 @@ def translate_text_dynamic(text: str, lang: str = "fr") -> str:
 
     try:
         result = client.translate(text, target_language=lang)
-        translated = resultranslate_text("translatedText", selected_lang)
+        translated = result["translatedText"]
         translation_cache[key] = translated
         save_cache()
         return translated

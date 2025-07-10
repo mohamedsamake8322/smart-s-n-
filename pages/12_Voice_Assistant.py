@@ -8,8 +8,7 @@ from datetime import datetime
 from utils.voice_assistant import voice_assistant, expert_chatbot
 from utils.translations import translator
 import json
-from config.translator import translate_text
-
+from config.lang import t
 
 st.set_page_config(page_title="Voice Assistant", page_icon="🗣️", layout="wide")
 

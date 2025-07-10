@@ -4,8 +4,7 @@ import numpy as np
 import io
 from datetime import datetime
 from utils.data_processing import validate_agricultural_data, clean_agricultural_data
-from config.translator import translate_text
-
+from config.lang import t
 
 st.set_page_config(page_title="Data Upload", page_icon="📁", layout="wide")
 

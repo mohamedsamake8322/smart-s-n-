@@ -66,7 +66,7 @@ def translate_text(
 
     try:
         result = client.translate(text, target_language=target_language)
-        return resultranslate_text("translatedText", selected_lang)
+        return result["translatedText"]
     except Exception as e:
         logger.error(f"Translation failed: {e}")
         return text

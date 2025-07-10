@@ -6,8 +6,7 @@ import json
 import time
 import requests
 import sqlite3
-from config.translator import translate_text
-
+from config.lang import t
 
 # ✅ Configuration de la page Streamlit
 st.set_page_config(
@@ -87,9 +86,9 @@ def plot_data():
 def check_alerts():
     if sensor_data:
         latest = sensor_data[-1]
-        if latestranslate_text("humidity", selected_lang) < 30:
+        if latest["humidity"] < 30:
             st.error("🚨 Alerte : Humidité trop basse !")
-        if latestranslate_text("ph", selected_lang) < 5 or latestranslate_text("ph", selected_lang) > 8:
+        if latest["ph"] < 5 or latest["ph"] > 8:
             st.warning("⚠️ Alerte : pH du sol hors norme.")
 
 # ✅ Interface Streamlit

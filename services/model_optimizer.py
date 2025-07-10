@@ -314,7 +314,7 @@ class ModelOptimizer:
         
         # Résumé des performances
         for model_name, model_data in self.best_models.items():
-            reportranslate_text("performance_summary", selected_lang)[model_name] = {
+            report["performance_summary"][model_name] = {
                 "cv_score": model_data['cv_score_mean'],
                 "cv_std": model_data['cv_score_std'],
                 "best_params": model_data['best_params'],
@@ -325,11 +325,11 @@ class ModelOptimizer:
         best_score = max(m['cv_score_mean'] for m in self.best_models.values())
         
         if best_score > 0.9:
-            reportranslate_text("recommendations", selected_lang).append("Performance excellente - Modèle prêt pour la production")
+            report["recommendations"].append("Performance excellente - Modèle prêt pour la production")
         elif best_score > 0.8:
-            reportranslate_text("recommendations", selected_lang).append("Performance bonne - Possible amélioration avec plus de données")
+            report["recommendations"].append("Performance bonne - Possible amélioration avec plus de données")
         else:
-            reportranslate_text("recommendations", selected_lang).append("Performance à améliorer - Collecte de données supplémentaires recommandée")
+            report["recommendations"].append("Performance à améliorer - Collecte de données supplémentaires recommandée")
         
         return report
 
