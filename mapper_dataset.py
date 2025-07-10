@@ -5,7 +5,7 @@ from multiprocessing import Pool, cpu_count, freeze_support
 import tqdm
 from rapidfuzz import process, fuzz
 
-# Chemins
+# 📂 Chemins
 ROOT = r"C:\plateforme-agricole-complete-v2\plantdataset"
 SAVE_PATH = r"C:\plateforme-agricole-complete-v2\dataset_v2l_mapped.json"
 
@@ -14,6 +14,7 @@ json_paths = {
     "fr": r"C:\plateforme-agricole-complete-v2\plantdataset\mapping_fiches_maladies_fr.json"
 }
 
+# 📌 Champs nécessaires pour valider une fiche maladie
 REQUIRED_FIELDS = [
     "culture",
     "Agent causal",
@@ -24,27 +25,30 @@ REQUIRED_FIELDS = [
     "treatment"
 ]
 
+# 🔧 Normalisation des noms
 def normalize(name):
     return " ".join(name.lower().replace("_", " ").replace("-", " ").replace(",", "").split())
 
+# ✅ Vérification qu'une fiche maladie contient tous les champs requis
 def is_valid_entry(entry):
     return all(field in entry for field in REQUIRED_FIELDS)
 
+# 📥 Chargement et fusion des JSON avec normalisation
 def load_jsons():
     with open(json_paths["en"], "r", encoding="utf-8") as f_en:
-        maladies_en_raw = json.load(f_en)
+        raw_en = json.load(f_en)
     with open(json_paths["fr"], "r", encoding="utf-8") as f_fr:
-        maladies_fr_raw = json.load(f_fr)
+        raw_fr = json.load(f_fr)
 
-    # Construction de mapping avec clés normalisées
-    maladies_en = {normalize(k): (k, maladies_en_raw[k]) for k in maladies_en_raw if is_valid_entry(maladies_en_raw[k])}
-    maladies_fr = {normalize(k): (k, maladies_fr_raw[k]) for k in maladies_fr_raw if is_valid_entry(maladies_fr_raw[k])}
-    return maladies_en, maladies_fr
+    en_data = {normalize(k): (k, raw_en[k]) for k in raw_en if is_valid_entry(raw_en[k])}
+    fr_data = {normalize(k): (k, raw_fr[k]) for k in raw_fr if is_valid_entry(raw_fr[k])}
+    return en_data, fr_data
 
+# 🧠 Chargement des maladies valides
 maladies_en, maladies_fr = load_jsons()
-valid_keys_en = list(maladies_en.keys())
+valid_keys_en = [k for k in maladies_en if isinstance(k, str)]
 
-# Reprise si mapping existant
+# 🔁 Reprise si mapping existant
 if os.path.exists(SAVE_PATH):
     with open(SAVE_PATH, "r", encoding="utf-8") as f:
         already_mapped = json.load(f)
@@ -54,15 +58,20 @@ else:
     already_mapped = []
     mapped_images = set()
 
+# 🔍 Traitement d'une classe (dossier de maladie)
 def process_class(category_path, split):
     output = []
     folder_name = os.path.basename(category_path)
     normalized_folder = normalize(folder_name)
 
-    # Matching flou avec les clés EN
-    match, score, matched_key = process.extractOne(normalized_folder, valid_keys_en, scorer=fuzz.ratio)
-    if score < 85:
-        return []  # Classe ignorée si pas de correspondance suffisante
+    # 🔎 Matching flou avec les noms EN
+    match_result = process.extractOne(normalized_folder, valid_keys_en, scorer=fuzz.ratio)
+    if not match_result:
+        return []  # Aucun match trouvé
+
+    _, score, matched_key = match_result
+    if score < 85 or not isinstance(matched_key, str) or matched_key not in maladies_en:
+        return []
 
     en_key, en_data = maladies_en[matched_key]
     fr_data = maladies_fr.get(matched_key, (None, None))[1]
@@ -72,7 +81,7 @@ def process_class(category_path, split):
         "fr": fr_data
     }
 
-    # Attribution aux images du dossier
+    # 📸 Attribution de la légende à chaque image du dossier
     images = glob(os.path.join(category_path, "*.*"))
     for img_path in images:
         if img_path not in mapped_images:
@@ -84,9 +93,11 @@ def process_class(category_path, split):
             })
     return output
 
+# 🧪 Wrapper pour multiprocessing
 def process_class_wrapper(args):
     return process_class(*args)
 
+# 🚀 Lancement du traitement
 if __name__ == "__main__":
     freeze_support()
     tasks = []
