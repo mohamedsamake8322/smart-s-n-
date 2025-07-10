@@ -15,13 +15,9 @@ json_paths = {
 }
 
 REQUIRED_FIELDS = [
-    "culture",
-    "Agent causal",
-    "description",
-    "symptoms",
-    "evolution",
-    "Name of active product material",
-    "treatment"
+    "culture", "Agent causal", "description",
+    "symptoms", "evolution",
+    "Name of active product material", "treatment"
 ]
 
 def normalize(name):
@@ -67,14 +63,13 @@ def process_class(category_path, split, threshold=65):
         "fr": fr_data
     }
 
-    # 🔎 Détection des images avec extensions classiques
-    allowed_exts = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".JPG", ".JPEG", ".PNG"}
+    # 🔍 Détection fiable des images
+    allowed_exts = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
     images = [
-    os.path.join(category_path, f)
-    for f in os.listdir(category_path)
-    if os.path.isfile(os.path.join(category_path, f)) and os.path.splitext(f)[1] in allowed_exts
-]
-
+        os.path.join(category_path, f)
+        for f in os.listdir(category_path)
+        if os.path.isfile(os.path.join(category_path, f)) and os.path.splitext(f)[1].lower() in allowed_exts
+    ]
 
     for img_path in images:
         output.append({
@@ -91,7 +86,7 @@ def process_class_wrapper(args):
 if __name__ == "__main__":
     freeze_support()
 
-    # 🧹 Réinitialisation du mapping précédent
+    # 🧹 Réinitialisation
     if os.path.exists(SAVE_PATH):
         os.remove(SAVE_PATH)
         print(f"🗑️ Fichier supprimé : {SAVE_PATH}")
@@ -109,14 +104,11 @@ if __name__ == "__main__":
 
     print(f"🚀 Traitement de {len(tasks)} classes avec {cpu_count()} processus...")
 
-    # 🧠 Traitement parallèle
     with Pool(processes=cpu_count()) as pool:
         results = list(tqdm.tqdm(pool.imap(process_class_wrapper, tasks), total=len(tasks)))
 
-    # 🔄 Fusion des résultats
     all_data = [item for sublist in results for item in sublist]
 
-    # 💾 Sauvegarde finale
     with open(SAVE_PATH, "w", encoding="utf-8") as f_out:
         json.dump(all_data, f_out, indent=2, ensure_ascii=False)
 
