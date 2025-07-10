@@ -1,32 +1,47 @@
+import os
 import json
 
-# Chemin vers le fichier JSON
-json_path = "EN_mapping_fiches_maladies.json"
+def normalize(name):
+    return name.lower().strip().replace("_", " ").replace("-", " ").replace("  ", " ")
 
-# Liste brute des classes à comparer (extraites par script ou manuellement)
-train_classes = [
-    "Alfalfa mosaic virus", "Anthracnose", "Aphids", "Apple  apple scab", "Apple  black rot",
-    # ... ajoute les 99 noms ici ou charge-les via le script de listing
-]
+# Dossier dataset
+dataset_path = r"C:\plateforme-agricole-complete-v2\plantdataset"
+subfolders = ["train", "val"]
 
-# Charger le JSON
-with open(json_path, "r", encoding="utf-8") as f:
-    data = json.load(f)
+# Extraction et nettoyage des noms de classes
+class_names = set()
+for subset in subfolders:
+    path = os.path.join(dataset_path, subset)
+    if os.path.isdir(path):
+        for entry in os.listdir(path):
+            full_path = os.path.join(path, entry)
+            if os.path.isdir(full_path):
+                class_names.add(normalize(entry))
 
-# Supposons que le JSON est sous forme { "nom_maladie": {...}, ... }
-json_keys = set(data.keys())
-train_keys = set(train_classes)
+print(f"🎯 Total de classes extraites (nettoyées) : {len(class_names)}")
 
-# Analyse
-matches = train_keys & json_keys
-missing = train_keys - json_keys
-extra = json_keys - train_keys
+# Chargement des deux fichiers JSON
+json_files = ["EN_mapping_fiches_maladies.json", "mapping_fiches_maladies_fr.json"]
+json_keys = {}
 
-print(f"✅ Correspondances trouvées : {len(matches)}")
-print(f"❌ Classes manquantes dans le JSON : {len(missing)}")
-for item in sorted(missing):
-    print(f"- {item}")
+for jf in json_files:
+    with open(os.path.join(dataset_path, jf), "r", encoding="utf-8") as f:
+        data = json.load(f)
+        cleaned_keys = set(normalize(k) for k in data.keys())
+        json_keys[jf] = cleaned_keys
 
-print(f"\n📦 Clés en trop dans le JSON (non présentes dans train/val) : {len(extra)}")
-for item in sorted(extra):
-    print(f"- {item}")
+# Comparaison pour chaque JSON
+for jf, keys in json_keys.items():
+    print(f"\n📂 Analyse pour {jf}")
+    matches = class_names & keys
+    missing_in_json = class_names - keys
+    extra_in_json = keys - class_names
+
+    print(f"✅ Correspondances : {len(matches)}")
+    print(f"❌ Classes non trouvées dans le JSON : {len(missing_in_json)}")
+    for item in sorted(missing_in_json):
+        print(f" - {item}")
+
+    print(f"📦 Clés en trop dans le JSON : {len(extra_in_json)}")
+    for item in sorted(extra_in_json):
+        print(f" - {item}")
