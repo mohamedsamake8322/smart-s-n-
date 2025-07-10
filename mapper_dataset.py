@@ -74,9 +74,12 @@ for split in ["train", "val"]:
 # Traitement parallèle
 print(f"🚀 Traitement de {len(tasks)} classes avec {cpu_count()} processus...")
 
+def process_class_wrapper(args):
+    return process_class(*args)
+
 with Pool(processes=cpu_count()) as pool:
-    func = partial(process_class)
-    results = list(tqdm.tqdm(pool.imap(lambda args: process_class(*args), tasks), total=len(tasks)))
+    results = list(tqdm.tqdm(pool.imap(process_class_wrapper, tasks), total=len(tasks)))
+
 
 # Fusion + sauvegarde
 all_data = already_mapped + [item for sublist in results for item in sublist]
