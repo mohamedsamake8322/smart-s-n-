@@ -2,16 +2,19 @@ import os
 import json
 from rapidfuzz import process, fuzz
 
-# 🔍 Chargement du JSON
-with open("EN_mapping_fiches_maladies.json", encoding="utf-8") as f:
-    data = json.load(f)
+# 📁 Chargement des fichiers JSON
+with open("EN_mapping_fiches_maladies.json", encoding="utf-8") as f_en:
+    data_en = json.load(f_en)
 
-# 🔧 Nettoyage et normalisation
+with open("mapping_fiches_maladies_fr.json", encoding="utf-8") as f_fr:
+    data_fr = json.load(f_fr)
+
+# 🧼 Fonction de normalisation des noms
 def normalize(name):
     name = name.lower().replace("_", " ").replace("-", " ").replace(",", "").strip()
-    return " ".join(name.split())  # Remove extra spaces
+    return " ".join(name.split())
 
-# 📂 Extraction des noms de classe du dataset
+# 📂 Extraction des classes du dataset (train + val)
 def extract_classes(folder_path):
     classes = set()
     for subdir in ["train", "val"]:
@@ -20,37 +23,50 @@ def extract_classes(folder_path):
             classes.update(os.listdir(full_path))
     return [normalize(cls) for cls in classes]
 
-# 🔁 Matching intelligent
-def build_mapping(dataset_classes, json_keys, threshold=85):
+# 🔁 Matching et fusion EN/FR
+def build_mapping(dataset_classes, data_en, data_fr, threshold=85):
+    en_keys = [normalize(k) for k in data_en.keys()]
+    fr_keys = [normalize(k) for k in data_fr.keys()]
     mapping = {}
     unmatched = []
-    extra_json = []
+    used_en_keys = set()
 
     for cls in dataset_classes:
-        match, score, key = process.extractOne(cls, json_keys, scorer=fuzz.ratio)
+        match, score, en_key = process.extractOne(cls, en_keys, scorer=fuzz.ratio)
         if score >= threshold:
-            mapping[cls] = key
+            mapping[cls] = {
+                "match_key_en": en_key,
+                "data_en": data_en[en_key],
+                "data_fr": None
+            }
+            used_en_keys.add(en_key)
+
+            # 🔍 Tentative d’association avec une clé FR
+            fr_match, fr_score, fr_key = process.extractOne(en_key, fr_keys, scorer=fuzz.ratio)
+            if fr_score >= threshold:
+                mapping[cls]["data_fr"] = data_fr[fr_key]
         else:
             unmatched.append(cls)
 
-    # Clés JSON non utilisées
-    used_keys = set(mapping.values())
-    extra_json = [key for key in json_keys if key not in used_keys]
+    extra_en = [k for k in en_keys if k not in used_en_keys]
 
-    return mapping, unmatched, extra_json
+    return mapping, unmatched, extra_en
 
-# 🔬 Exécution
+# 📊 Exécution
 folder = r"C:\plateforme-agricole-complete-v2\plantdataset"
 dataset_classes = extract_classes(folder)
-json_keys = [normalize(k) for k in data.keys()]
-mapping, not_found, extra_keys = build_mapping(dataset_classes, json_keys)
+mapping, not_found, extra_keys = build_mapping(dataset_classes, data_en, data_fr)
 
-# 📊 Résultats
-print(f"✅ Correspondances trouvées : {len(mapping)}")
+# 💡 Résumé des résultats
+print(f"✅ Classes associées : {len(mapping)}")
 print(f"❌ Classes non trouvées dans le JSON : {len(not_found)}")
 for cls in not_found:
     print(" -", cls)
 
-print(f"📦 Clés en trop dans le JSON : {len(extra_keys)}")
+print(f"📦 Clés EN non associées : {len(extra_keys)}")
 for key in extra_keys:
     print(" -", key)
+
+# 💾 Optionnel : sauvegarde dans un fichier
+with open("dataset_mapping_bilingue.json", "w", encoding="utf-8") as f_out:
+    json.dump(mapping, f_out, ensure_ascii=False, indent=2)
