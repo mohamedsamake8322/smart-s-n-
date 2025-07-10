@@ -1,50 +1,56 @@
+import os
 import json
-import requests
-import time
+from rapidfuzz import process, fuzz
 
-API_KEY = "bf46e370-3a4a-4338-8a79-d9aba6c289ed:fx"  # Remplace par ta clé DeepL API
-
-SUPPORTED_LANGUAGES = [
-    "en", "zh", "hi", "es", "fr", "sw", "ha", "yo", "ig", "am",
-    "om", "rw", "ln", "sn", "tn", "st", "mg", "wo", "bm", "ts"
-]
-
-def deepl_translate(text, target_lang):
-    url = "https://api-free.deepl.com/v2/translate"
-    params = {
-        "auth_key": API_KEY,
-        "text": text,
-        "source_lang": "EN",
-        "target_lang": target_lang.upper()
-    }
-    try:
-        response = requests.post(url, data=params)
-        result = response.json()
-        return result["translations"][0]["text"]
-    except Exception as e:
-        print(f"❌ DeepL ERROR ({target_lang}): {e}")
-        return f"[ERROR: {e}]"
-
-# Charger les fiches
-with open(r"C:\plateforme-agricole-complete-v2\EN_mapping_fiches_maladies.json", "r", encoding="utf-8") as f:
+# 🔍 Chargement du JSON
+with open("EN_mapping_fiches_maladies.json", encoding="utf-8") as f:
     data = json.load(f)
 
-for disease_name, entry in data.items():
-    entry["translations"] = {}
-    for lang in SUPPORTED_LANGUAGES:
-        entry["translations"][lang] = {
-            "culture": deepl_translate(entry["culture"], lang),
-            "Agent causal": deepl_translate(entry["Agent causal"], lang),
-            "description": deepl_translate(entry["description"], lang),
-            "symptoms": deepl_translate(entry["symptoms"], lang),
-            "evolution": deepl_translate(entry["evolution"], lang),
-            "Name of active product material": deepl_translate(entry["Name of active product material"], lang),
-            "treatment": deepl_translate(entry["treatment"], lang)
-        }
-        time.sleep(0.5)  # anti-blocage entre les requêtes
+# 🔧 Nettoyage et normalisation
+def normalize(name):
+    name = name.lower().replace("_", " ").replace("-", " ").replace(",", "").strip()
+    return " ".join(name.split())  # Remove extra spaces
 
-# Sauvegarde
-with open(r"C:\plateforme-agricole-complete-v2\mapping_fiches_maladies_multilingual.json", "w", encoding="utf-8") as f_out:
-    json.dump(data, f_out, indent=2, ensure_ascii=False)
+# 📂 Extraction des noms de classe du dataset
+def extract_classes(folder_path):
+    classes = set()
+    for subdir in ["train", "val"]:
+        full_path = os.path.join(folder_path, subdir)
+        if os.path.exists(full_path):
+            classes.update(os.listdir(full_path))
+    return [normalize(cls) for cls in classes]
 
-print("✅ Traduction DeepL terminée !")
+# 🔁 Matching intelligent
+def build_mapping(dataset_classes, json_keys, threshold=85):
+    mapping = {}
+    unmatched = []
+    extra_json = []
+
+    for cls in dataset_classes:
+        match, score, key = process.extractOne(cls, json_keys, scorer=fuzz.ratio)
+        if score >= threshold:
+            mapping[cls] = key
+        else:
+            unmatched.append(cls)
+
+    # Clés JSON non utilisées
+    used_keys = set(mapping.values())
+    extra_json = [key for key in json_keys if key not in used_keys]
+
+    return mapping, unmatched, extra_json
+
+# 🔬 Exécution
+folder = r"C:\plateforme-agricole-complete-v2\plantdataset"
+dataset_classes = extract_classes(folder)
+json_keys = [normalize(k) for k in data.keys()]
+mapping, not_found, extra_keys = build_mapping(dataset_classes, json_keys)
+
+# 📊 Résultats
+print(f"✅ Correspondances trouvées : {len(mapping)}")
+print(f"❌ Classes non trouvées dans le JSON : {len(not_found)}")
+for cls in not_found:
+    print(" -", cls)
+
+print(f"📦 Clés en trop dans le JSON : {len(extra_keys)}")
+for key in extra_keys:
+    print(" -", key)

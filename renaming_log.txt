@@ -1,0 +1,180 @@
+❌ train: anthracnose cashew non trouvé dans le mapping
+❌ train: Apple  apple scab non trouvé dans le mapping
+❌ train: Apple  black rot non trouvé dans le mapping
+❌ train: Apple  cedar apple rust non trouvé dans le mapping
+❌ train: Apple  healthy non trouvé dans le mapping
+❌ train: Beetles and  leafhoppers non trouvé dans le mapping
+❌ train: Blueberry  healthy non trouvé dans le mapping
+❌ train: Cherry (including sour)  healthy non trouvé dans le mapping
+❌ train: Cherry (including sour)  powdery mildew non trouvé dans le mapping
+❌ train: choanephora burn (wet rot) non trouvé dans le mapping
+⚠️ train: colorado potato beetle existe déjà, renommage ignoré
+⚠️ train: common rust existe déjà, renommage ignoré
+❌ train: Corn (maize)  healthy non trouvé dans le mapping
+❌ train: Corn earworm  tomato fruitworm non trouvé dans le mapping
+❌ train: Cucumber_mosaic_geminiviruses non trouvé dans le mapping
+❌ train: curl leaf non trouvé dans le mapping
+⚠️ train: cutworms existe déjà, renommage ignoré
+❌ train: Damping-off & root rot non trouvé dans le mapping
+⚠️ train: early blight existe déjà, renommage ignoré
+⚠️ train: fall armyworm existe déjà, renommage ignoré
+⚠️ train: false chinch bug existe déjà, renommage ignoré
+⚠️ train: flea beetles existe déjà, renommage ignoré
+❌ train: frogeye leaf spot non trouvé dans le mapping
+⚠️ train: fusarium crownroot rot existe déjà, renommage ignoré
+⚠️ train: fusarium wilt existe déjà, renommage ignoré
+❌ train: Grape  black rot non trouvé dans le mapping
+❌ train: Grape  esca (black measles) non trouvé dans le mapping
+❌ train: Grape  healthy non trouvé dans le mapping
+❌ train: Grape  leaf blight (isariopsis leaf spot) non trouvé dans le mapping
+⚠️ train: grasshoper existe déjà, renommage ignoré
+⚠️ train: gray leaf spot existe déjà, renommage ignoré
+⚠️ train: green mite existe déjà, renommage ignoré
+❌ train: gummosis non trouvé dans le mapping
+✅ train: Healthy → healthymaintenat
+❌ train: healthy cashew non trouvé dans le mapping
+❌ train: healthy maize non trouvé dans le mapping
+⚠️ train: hornworms existe déjà, renommage ignoré
+⚠️ train: late blight existe déjà, renommage ignoré
+⚠️ train: leaf beetle existe déjà, renommage ignoré
+⚠️ train: leaf blight existe déjà, renommage ignoré
+❌ train: leaf miners non trouvé dans le mapping
+⚠️ train: leaf spot existe déjà, renommage ignoré
+❌ train: leafhopper non trouvé dans le mapping
+❌ train: maïs streak virus non trouvé dans le mapping
+⚠️ train: mosaic existe déjà, renommage ignoré
+⚠️ train: mosaic virus existe déjà, renommage ignoré
+⚠️ train: northern leaf blight existe déjà, renommage ignoré
+❌ train: Orange  haunglongbing (citrus greening) non trouvé dans le mapping
+❌ train: Peach  healthy non trouvé dans le mapping
+❌ train: Pepper, bell  healthy non trouvé dans le mapping
+❌ train: Pepper_mottle_pepper non trouvé dans le mapping
+⚠️ train: phomopsis blight existe déjà, renommage ignoré
+⚠️ train: phytoptora root, stem, and crown rots existe déjà, renommage ignoré
+❌ train: Potato  healthy non trouvé dans le mapping
+❌ train: Potato_y_tobacco_etch non trouvé dans le mapping
+⚠️ train: powdery mildew on vegetables existe déjà, renommage ignoré
+❌ train: Raspberry  healthy non trouvé dans le mapping
+⚠️ train: red rust existe déjà, renommage ignoré
+❌ train: red rust cashew non trouvé dans le mapping
+❌ train: Root-knot nematodes non trouvé dans le mapping
+❌ train: russet tomato mite non trouvé dans le mapping
+⚠️ train: septoria leaf spot existe déjà, renommage ignoré
+❌ train: Soybean  healthy non trouvé dans le mapping
+❌ train: Squash  powdery mildew non trouvé dans le mapping
+❌ train: Strawberry  healthy non trouvé dans le mapping
+❌ train: Strawberry  leaf scorch non trouvé dans le mapping
+⚠️ train: streak virus existe déjà, renommage ignoré
+❌ train: tacheted wilt virus tomato non trouvé dans le mapping
+⚠️ train: thrips existe déjà, renommage ignoré
+⚠️ train: tobacco mosaic virus & tomato mosaic virus existe déjà, renommage ignoré
+⚠️ train: tobamoviruses existe déjà, renommage ignoré
+⚠️ train: tomate tacheted wilt virus existe déjà, renommage ignoré
+❌ train: Tomato  healthy non trouvé dans le mapping
+❌ train: Tomato  leaf mold non trouvé dans le mapping
+❌ train: Tomato  spider mites two-spotted spider mite non trouvé dans le mapping
+❌ train: Tomato  target spot non trouvé dans le mapping
+❌ train: tomato tomato yellow curl leaf virus non trouvé dans le mapping
+❌ train: Tospoviruses blossom-end rot chemical damage non trouvé dans le mapping
+❌ train: Two-spotted spider mite non trouvé dans le mapping
+⚠️ train: verticulium wilt existe déjà, renommage ignoré
+⚠️ train: western striped and spotted cucumber beetle existe déjà, renommage ignoré
+⚠️ train: whiteflies existe déjà, renommage ignoré
+❌ train: Yellow_mosaic_potato x non trouvé dans le mapping
+⚠️ val: alfalfa mosaic virus existe déjà, renommage ignoré
+⚠️ val: anthracnose existe déjà, renommage ignoré
+❌ val: anthracnose cashew non trouvé dans le mapping
+⚠️ val: aphids existe déjà, renommage ignoré
+❌ val: Apple  apple scab non trouvé dans le mapping
+❌ val: Apple  black rot non trouvé dans le mapping
+❌ val: Apple  cedar apple rust non trouvé dans le mapping
+❌ val: Apple  healthy non trouvé dans le mapping
+⚠️ val: armyworms existe déjà, renommage ignoré
+⚠️ val: bacterial blight existe déjà, renommage ignoré
+⚠️ val: bacterial canker existe déjà, renommage ignoré
+⚠️ val: bacterial speck existe déjà, renommage ignoré
+⚠️ val: bacterial spot existe déjà, renommage ignoré
+⚠️ val: beet curly top virus existe déjà, renommage ignoré
+⚠️ val: beet leafhopper existe déjà, renommage ignoré
+❌ val: Beetles and  leafhoppers non trouvé dans le mapping
+⚠️ val: big bud existe déjà, renommage ignoré
+⚠️ val: blossom end rot existe déjà, renommage ignoré
+❌ val: Blueberry  healthy non trouvé dans le mapping
+⚠️ val: brown spot existe déjà, renommage ignoré
+❌ val: Cherry (including sour)  healthy non trouvé dans le mapping
+❌ val: Cherry (including sour)  powdery mildew non trouvé dans le mapping
+❌ val: choanephora burn (wet rot) non trouvé dans le mapping
+⚠️ val: colorado potato beetle existe déjà, renommage ignoré
+⚠️ val: common rust existe déjà, renommage ignoré
+❌ val: Corn (maize)  healthy non trouvé dans le mapping
+❌ val: Corn earworm  tomato fruitworm non trouvé dans le mapping
+❌ val: Cucumber_mosaic_geminiviruses non trouvé dans le mapping
+❌ val: curl leaf non trouvé dans le mapping
+⚠️ val: cutworms existe déjà, renommage ignoré
+❌ val: Damping-off & root rot non trouvé dans le mapping
+⚠️ val: early blight existe déjà, renommage ignoré
+⚠️ val: fall armyworm existe déjà, renommage ignoré
+⚠️ val: false chinch bug existe déjà, renommage ignoré
+⚠️ val: flea beetles existe déjà, renommage ignoré
+❌ val: frogeye leaf spot non trouvé dans le mapping
+⚠️ val: fusarium crownroot rot existe déjà, renommage ignoré
+⚠️ val: fusarium wilt existe déjà, renommage ignoré
+❌ val: Grape  black rot non trouvé dans le mapping
+❌ val: Grape  esca (black measles) non trouvé dans le mapping
+❌ val: Grape  healthy non trouvé dans le mapping
+❌ val: Grape  leaf blight (isariopsis leaf spot) non trouvé dans le mapping
+⚠️ val: grasshoper existe déjà, renommage ignoré
+⚠️ val: gray leaf spot existe déjà, renommage ignoré
+⚠️ val: green mite existe déjà, renommage ignoré
+❌ val: gummosis non trouvé dans le mapping
+✅ val: Healthy → healthymaintenat
+❌ val: healthy cashew non trouvé dans le mapping
+❌ val: healthy maize non trouvé dans le mapping
+⚠️ val: hornworms existe déjà, renommage ignoré
+⚠️ val: late blight existe déjà, renommage ignoré
+⚠️ val: leaf beetle existe déjà, renommage ignoré
+⚠️ val: leaf blight existe déjà, renommage ignoré
+❌ val: leaf miners non trouvé dans le mapping
+⚠️ val: leaf spot existe déjà, renommage ignoré
+❌ val: leafhopper non trouvé dans le mapping
+⚠️ val: leaf blight existe déjà, renommage ignoré
+❌ val: maïs streak virus non trouvé dans le mapping
+⚠️ val: mosaic existe déjà, renommage ignoré
+⚠️ val: mosaic virus existe déjà, renommage ignoré
+⚠️ val: northern leaf blight existe déjà, renommage ignoré
+❌ val: Orange  haunglongbing (citrus greening) non trouvé dans le mapping
+❌ val: Peach  healthy non trouvé dans le mapping
+❌ val: Pepper, bell  healthy non trouvé dans le mapping
+❌ val: Pepper_mottle_pepper non trouvé dans le mapping
+⚠️ val: phomopsis blight existe déjà, renommage ignoré
+⚠️ val: phytoptora root, stem, and crown rots existe déjà, renommage ignoré
+❌ val: Potato  healthy non trouvé dans le mapping
+❌ val: Potato_y_tobacco_etch non trouvé dans le mapping
+⚠️ val: powdery mildew on vegetables existe déjà, renommage ignoré
+❌ val: Raspberry  healthy non trouvé dans le mapping
+⚠️ val: red rust existe déjà, renommage ignoré
+❌ val: red rust cashew non trouvé dans le mapping
+❌ val: Root-knot nematodes non trouvé dans le mapping
+❌ val: russet tomato mite non trouvé dans le mapping
+⚠️ val: septoria leaf spot existe déjà, renommage ignoré
+❌ val: Soybean  healthy non trouvé dans le mapping
+❌ val: Squash  powdery mildew non trouvé dans le mapping
+❌ val: Strawberry  healthy non trouvé dans le mapping
+❌ val: Strawberry  leaf scorch non trouvé dans le mapping
+⚠️ val: streak virus existe déjà, renommage ignoré
+❌ val: tacheted wilt virus tomato non trouvé dans le mapping
+⚠️ val: thrips existe déjà, renommage ignoré
+⚠️ val: tobacco mosaic virus & tomato mosaic virus existe déjà, renommage ignoré
+⚠️ val: tobamoviruses existe déjà, renommage ignoré
+⚠️ val: tomate tacheted wilt virus existe déjà, renommage ignoré
+❌ val: Tomato  healthy non trouvé dans le mapping
+❌ val: Tomato  leaf mold non trouvé dans le mapping
+❌ val: Tomato  spider mites two-spotted spider mite non trouvé dans le mapping
+❌ val: Tomato  target spot non trouvé dans le mapping
+❌ val: tomato tomato yellow curl leaf virus non trouvé dans le mapping
+❌ val: Tospoviruses blossom-end rot chemical damage non trouvé dans le mapping
+❌ val: Two-spotted spider mite non trouvé dans le mapping
+⚠️ val: verticulium wilt existe déjà, renommage ignoré
+⚠️ val: western striped and spotted cucumber beetle existe déjà, renommage ignoré
+⚠️ val: whiteflies existe déjà, renommage ignoré
+❌ val: Yellow_mosaic_potato x non trouvé dans le mapping
