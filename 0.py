@@ -1,6 +1,6 @@
 import os
 import json
-from glob import glob
+from pathlib import Path
 from multiprocessing import Pool, cpu_count, freeze_support
 import tqdm
 from rapidfuzz import process, fuzz
@@ -10,14 +10,13 @@ ROOT = r"C:\plateforme-agricole-complete-v2\plantdataset"
 SAVE_PATH = r"C:\plateforme-agricole-complete-v2\dataset_v2l_mapped.json"
 
 json_paths = {
-    "en": r"C:\plateforme-agricole-complete-v2\plantdataset\EN_mapping_fiches_maladies.json",
-    "fr": r"C:\plateforme-agricole-complete-v2\plantdataset\mapping_fiches_maladies_fr.json"
+    "en": os.path.join(ROOT, "EN_mapping_fiches_maladies.json"),
+    "fr": os.path.join(ROOT, "mapping_fiches_maladies_fr.json")
 }
 
 REQUIRED_FIELDS = [
     "culture", "Agent causal", "description",
-    "symptoms", "evolution",
-    "Name of active product material", "treatment"
+    "symptoms", "evolution", "Name of active product material", "treatment"
 ]
 
 def normalize(name):
@@ -40,6 +39,7 @@ maladies_en, maladies_fr = load_jsons()
 valid_keys_en = list(maladies_en.keys())
 ignored_classes = []
 
+# 🔍 Traitement d’une classe (dossier de maladie)
 def process_class(category_path, split, threshold=65):
     output = []
     folder_name = os.path.basename(category_path)
@@ -57,18 +57,14 @@ def process_class(category_path, split, threshold=65):
 
     en_key, en_data = maladies_en[matched_key]
     fr_data = maladies_fr.get(matched_key, (None, None))[1]
+    block = {"en": en_data, "fr": fr_data}
 
-    block = {
-        "en": en_data,
-        "fr": fr_data
-    }
-
-    # 🔍 Détection fiable des images
+    # 🔍 Récupération récursive des fichiers image
     allowed_exts = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
     images = [
-        os.path.join(category_path, f)
-        for f in os.listdir(category_path)
-        if os.path.isfile(os.path.join(category_path, f)) and os.path.splitext(f)[1].lower() in allowed_exts
+        str(p.resolve())
+        for p in Path(category_path).rglob("*")
+        if p.is_file() and p.suffix.lower() in allowed_exts
     ]
 
     for img_path in images:
@@ -78,6 +74,7 @@ def process_class(category_path, split, threshold=65):
             "label": en_key,
             "descriptions": block
         })
+
     return output
 
 def process_class_wrapper(args):
@@ -109,6 +106,7 @@ if __name__ == "__main__":
 
     all_data = [item for sublist in results for item in sublist]
 
+    # 💾 Sauvegardes
     with open(SAVE_PATH, "w", encoding="utf-8") as f_out:
         json.dump(all_data, f_out, indent=2, ensure_ascii=False)
 
