@@ -1,0 +1,710 @@
+{
+  "Alfalfa mosaic virus": {
+    "split": "val",
+    "num_images": 10,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Anthracnose": {
+    "split": "val",
+    "num_images": 562,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Aphids": {
+    "split": "val",
+    "num_images": 26,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Apple  apple scab": {
+    "split": "val",
+    "num_images": 148,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Apple  black rot": {
+    "split": "val",
+    "num_images": 148,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Apple  cedar apple rust": {
+    "split": "val",
+    "num_images": 66,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Apple  healthy": {
+    "split": "val",
+    "num_images": 394,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Armyworms": {
+    "split": "val",
+    "num_images": 36,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "B": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Bacterial blight": {
+    "split": "val",
+    "num_images": 2745,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Bacterial canker": {
+    "split": "val",
+    "num_images": 10,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Bacterial speck": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Bacterial spot": {
+    "split": "val",
+    "num_images": 1301,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Beet curly top virus": {
+    "split": "val",
+    "num_images": 14,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Beet leafhopper": {
+    "split": "val",
+    "num_images": 25,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Beetles and  leafhoppers": {
+    "split": "val",
+    "num_images": 19,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Big bud": {
+    "split": "val",
+    "num_images": 16,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Blossom end rot": {
+    "split": "val",
+    "num_images": 50,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Blueberry  healthy": {
+    "split": "val",
+    "num_images": 359,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Brown spot": {
+    "split": "val",
+    "num_images": 1145,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Ca": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Cashew anthracnose": {
+    "split": "val",
+    "num_images": 345,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Cashew gumosis": {
+    "split": "val",
+    "num_images": 92,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Cashew healthy": {
+    "split": "val",
+    "num_images": 268,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Cashew red rust": {
+    "split": "val",
+    "num_images": 378,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Cercospora leaf spot (frogeye)": {
+    "split": "val",
+    "num_images": 40,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Cercospora leaf spot gray leaf spot": {
+    "split": "val",
+    "num_images": 123,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Cherry (including sour)  healthy": {
+    "split": "val",
+    "num_images": 202,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Cherry (including sour)  powdery mildew": {
+    "split": "val",
+    "num_images": 219,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Choanephora blight (wet rot)": {
+    "split": "val",
+    "num_images": 25,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Cl": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Co": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Colorado potato beetle": {
+    "split": "val",
+    "num_images": 33,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Common rust": {
+    "split": "val",
+    "num_images": 285,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Corn (maize)  healthy": {
+    "split": "val",
+    "num_images": 221,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Corn earworm  tomato fruitworm": {
+    "split": "val",
+    "num_images": 22,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Cu": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Cucumber_mosaic_geminiviruses": {
+    "split": "val",
+    "num_images": 2,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Cutworms": {
+    "split": "val",
+    "num_images": 5,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Damping-off & root rot": {
+    "split": "val",
+    "num_images": 3,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Early blight": {
+    "split": "val",
+    "num_images": 248,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "extreme_temperatures": {
+    "split": "val",
+    "num_images": 112,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Fall armyworm": {
+    "split": "val",
+    "num_images": 257,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "False chinch bug": {
+    "split": "val",
+    "num_images": 5,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Fe": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Flea beetles": {
+    "split": "val",
+    "num_images": 9,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Fusarium crownroot rot": {
+    "split": "val",
+    "num_images": 2,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Fusarium wilt": {
+    "split": "val",
+    "num_images": 5,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Grape  black rot": {
+    "split": "val",
+    "num_images": 283,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Grape  esca (black measles)": {
+    "split": "val",
+    "num_images": 331,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Grape  healthy": {
+    "split": "val",
+    "num_images": 101,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Grape  leaf blight (isariopsis leaf spot)": {
+    "split": "val",
+    "num_images": 258,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Grasshoper": {
+    "split": "val",
+    "num_images": 485,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Gray leaf spot": {
+    "split": "val",
+    "num_images": 5,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Green mite": {
+    "split": "val",
+    "num_images": 1039,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Gumosis": {
+    "split": "val",
+    "num_images": 495,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Healthy": {
+    "split": "val",
+    "num_images": 2880,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Hornworms": {
+    "split": "val",
+    "num_images": 5,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "K": {
+    "split": "val",
+    "num_images": 64,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Late blight": {
+    "split": "val",
+    "num_images": 245,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Leaf beetle": {
+    "split": "val",
+    "num_images": 495,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Leaf blight": {
+    "split": "val",
+    "num_images": 2862,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Leaf curl": {
+    "split": "val",
+    "num_images": 555,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Leaf miner": {
+    "split": "val",
+    "num_images": 1312,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Leaf spot": {
+    "split": "val",
+    "num_images": 1024,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "light_stress": {
+    "split": "val",
+    "num_images": 64,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Maize healthy": {
+    "split": "val",
+    "num_images": 34,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Maize leaf blight": {
+    "split": "val",
+    "num_images": 215,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Maize streak virus": {
+    "split": "val",
+    "num_images": 205,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Mg": {
+    "split": "val",
+    "num_images": 72,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Mn": {
+    "split": "val",
+    "num_images": 36,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Mo": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Mosaic": {
+    "split": "val",
+    "num_images": 687,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Mosaic virus": {
+    "split": "val",
+    "num_images": 89,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "N": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Ni": {
+    "split": "val",
+    "num_images": 24,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Northern leaf blight": {
+    "split": "val",
+    "num_images": 236,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Orange  haunglongbing (citrus greening)": {
+    "split": "val",
+    "num_images": 916,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "P": {
+    "split": "val",
+    "num_images": 12,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Peach  healthy": {
+    "split": "val",
+    "num_images": 86,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Pepper, bell  healthy": {
+    "split": "val",
+    "num_images": 354,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Pepper_mottle_pepper": {
+    "split": "val",
+    "num_images": 12,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Phomopsis blight": {
+    "split": "val",
+    "num_images": 2,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Phytoptora root, stem, and crown rots": {
+    "split": "val",
+    "num_images": 10,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Potato  healthy": {
+    "split": "val",
+    "num_images": 36,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Potato leafhopper": {
+    "split": "val",
+    "num_images": 16,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Potato_y_tobacco_etch": {
+    "split": "val",
+    "num_images": 31,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Powdery mildew on vegetables": {
+    "split": "val",
+    "num_images": 11,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Raspberry  healthy": {
+    "split": "val",
+    "num_images": 88,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Red rust": {
+    "split": "val",
+    "num_images": 1423,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Root-knot nematodes": {
+    "split": "val",
+    "num_images": 2,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "S": {
+    "split": "val",
+    "num_images": 12,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "salinity": {
+    "split": "val",
+    "num_images": 69,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Septoria leaf spot": {
+    "split": "val",
+    "num_images": 3149,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Soybean  healthy": {
+    "split": "val",
+    "num_images": 1221,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Squash  powdery mildew": {
+    "split": "val",
+    "num_images": 440,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Strawberry  healthy": {
+    "split": "val",
+    "num_images": 109,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Strawberry  leaf scorch": {
+    "split": "val",
+    "num_images": 266,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Streak virus": {
+    "split": "val",
+    "num_images": 1039,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Thrips": {
+    "split": "val",
+    "num_images": 6,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Tobacco mosaic virus & tomato mosaic virus": {
+    "split": "val",
+    "num_images": 6,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Tobamoviruses": {
+    "split": "val",
+    "num_images": 2,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Tomate tacheted wilt virus": {
+    "split": "val",
+    "num_images": 240,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Tomato  healthy": {
+    "split": "val",
+    "num_images": 381,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Tomato  leaf mold": {
+    "split": "val",
+    "num_images": 228,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Tomato  spider mites two-spotted spider mite": {
+    "split": "val",
+    "num_images": 402,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Tomato  target spot": {
+    "split": "val",
+    "num_images": 336,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Tomato russet mite": {
+    "split": "val",
+    "num_images": 15,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Tomato spotted wilt virus": {
+    "split": "val",
+    "num_images": 7,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Tomato yellow leaf curl virus": {
+    "split": "val",
+    "num_images": 978,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Tospoviruses blossom-end rot chemical damage": {
+    "split": "val",
+    "num_images": 50,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Two-spotted spider mite": {
+    "split": "val",
+    "num_images": 6,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Verticulium wilt": {
+    "split": "val",
+    "num_images": 851,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "water_stress": {
+    "split": "val",
+    "num_images": 130,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  },
+  "Western striped and spotted cucumber beetle": {
+    "split": "val",
+    "num_images": 1,
+    "in_multilingual_json": false,
+    "already_mapped": false
+  },
+  "Whiteflies": {
+    "split": "val",
+    "num_images": 4,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Yellow_mosaic_potato x": {
+    "split": "val",
+    "num_images": 19,
+    "in_multilingual_json": true,
+    "already_mapped": false
+  },
+  "Zn": {
+    "split": "val",
+    "num_images": 12,
+    "in_multilingual_json": true,
+    "already_mapped": true
+  }
+}
