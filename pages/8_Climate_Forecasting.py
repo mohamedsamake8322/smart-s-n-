@@ -6,7 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import json
-from config.lang import t
+
 
 st.set_page_config(page_title="Climate Forecasting", page_icon="📡", layout="wide")
 

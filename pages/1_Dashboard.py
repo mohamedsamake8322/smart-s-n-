@@ -6,7 +6,6 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from utils.visualization import create_overview_charts, create_trend_analysis
 from utils.data_processing import get_sample_agricultural_data
-from config.lang import t
 
 st.set_page_config(page_title="Dashboard", page_icon="📊", layout="wide")
 
