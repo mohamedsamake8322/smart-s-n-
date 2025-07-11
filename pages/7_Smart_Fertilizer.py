@@ -1,209 +1,149 @@
-"""
-Smart Fertilizer Streamlit Application
-
-Main entry point for the Smart Fertilizer web application using Streamlit.
-This application provides intelligent fertilizer recommendations for African agriculture.
-"""
-
-# --------------------------
-# 🌱 Initialisation Streamlit
-# --------------------------
 import streamlit as st  # type: ignore
-import sys
-import os
-from pathlib import Path
-import pandas as pd
 import json
+import os
+import pandas as pd  # type: ignore
+from fpdf import FPDF  # type: ignore
+from datetime import datetime
+import qrcode  # type: ignore
+from io import BytesIO
 
-# --------------------------
-# 🔍 Détection du chemin racine du projet
-# --------------------------
-current_file = Path(__file__).resolve()
-project_root = current_file.parent.parent.parent
-sys.path.insert(0, str(project_root))  # Ajoute la racine du projet à PYTHONPATH
+# ----- CHEMIN DES POLICES -----
+base_path = "C:/plateforme-agricole-complete-v2/fonts/dejavu-fonts-ttf-2.37/ttf/"
+dejavu_regular = os.path.join(base_path, "DejaVuSans.ttf")
+dejavu_bold = os.path.join(base_path, "DejaVuSans-Bold.ttf")
 
-# 🛠️ Infos de debug (facultatif pour voir l'environnement)
-st.sidebar.subheader("🛠️ Chemins et environnement")
-st.sidebar.info(f"📁 Racine projet : {project_root}")
-st.sidebar.info(f"📦 sys.path[0] : {sys.path[0]}")
-if os.path.exists(project_root / "modules"):
-    st.sidebar.success("✅ Le dossier modules/ est bien détecté")
-else:
-    st.sidebar.error("🚫 Le dossier modules/ n'est pas trouvé")
+# ----- CONFIG -----
+ENGRAIS_DB = {
+    "Urée": {"N": 0.46},
+    "MAP": {"P2O5": 0.52, "N": 0.11},
+    "KCl": {"K2O": 0.60},
+    "Sulfate de magnésium": {"MgO": 0.16},
+    "Soufre (Sulfate)": {"S": 0.18},
+    "Sulfate de zinc": {"Zn": 0.22},
+    "Borax": {"B": 0.11}
+}
+EFFICIENCES = {"N": 0.7, "P2O5": 0.5, "K2O": 0.6, "MgO": 0.5, "S": 0.6, "Zn": 0.3, "B": 0.3}
+FERTI_PATH = "C:/plateforme-agricole-complete-v2/fertilization_phased_db.json"
+BESOINS_PATH = "C:/plateforme-agricole-complete-v2/besoins des plantes en nutriments.json"
 
-# --------------------------
-# 🌍 Chargement des données régionales
-# --------------------------
-try:
-    from modules.smart_fertilizer.regions.regional_context import get_regional_config
+# ----- CHARGEMENT DONNÉES -----
+with open(FERTI_PATH, encoding='utf-8') as f:
+    fertibase = json.load(f)
+with open(BESOINS_PATH, encoding='utf-8') as f:
+    raw_data = json.load(f)
 
-    region_name = "west_africa"
-    region_info = get_regional_config(region_name)
+besoins_db = {}
+for bloc in raw_data:
+    besoins_db.update(bloc.get("cultures", bloc))
 
-    st.markdown(f"### 🌍 Contexte : {region_name.replace('_', ' ').title()}")
-    st.json(region_info)
+# ----- UI STREAMLIT -----
+st.title("🌾 Plan de Fertilisation par Phase avec Export PDF")
+culture_code = st.selectbox("🌿 Culture", list(besoins_db.keys()))
+surface = st.number_input("Superficie (ha)", min_value=0.1, value=1.0)
+rendement = st.number_input("Rendement visé (t/ha)", min_value=0.1, value=5.0)
 
-except Exception as e:
-    import traceback
-    st.error("❌ Erreur lors de l'import ou du chargement du contexte régional")
-    st.code(traceback.format_exc())
-    st.stop()
+if st.button("🔍 Générer plan + Export PDF", key="generate_plan"):
+    culture = besoins_db[culture_code]
+    export = culture["export_par_tonne"]
+    fractionnement = fertibase[culture_code]["fractionnement"]
 
-# --------------------------
-# ⚙️ Imports principaux de l'application
-# --------------------------
-try:
-    # 🌿 Interface Utilisateur
-    from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
-    from modules.smart_fertilizer.ui.crop_selector import CropSelector
-    from modules.smart_fertilizer.ui.translations import Translator
+    phase_data = []
+    for phase, nutriments in fractionnement.items():
+        for elmt, ratio in nutriments.items():
+            if elmt in export:
+                unit = export[elmt]["unite"]
+                val = export[elmt]["valeur"]
+                quant = (val / 1000 if unit.endswith("g/t") else val) * rendement * surface
+                besoin = round(quant / EFFICIENCES.get(elmt, 1), 2)
+                dose = round(besoin * ratio, 2)
+                engrais = next((nom for nom, comp in ENGRAIS_DB.items() if elmt in comp), None)
+                dose_engrais = round(dose / ENGRAIS_DB[engrais][elmt], 2) if engrais else None
+                phase_data.append({
+                    "Phase": phase,
+                    "Élément": elmt,
+                    "Dose kg": dose,
+                    "Engrais": engrais,
+                    "Dose engrais (kg)": dose_engrais
+                })
 
-    # 🔬 Moteur de recommandation
-    from modules.smart_fertilizer.core.smart_fertilizer_engine import SmartFertilizerEngine
-    from modules.smart_fertilizer.core.fertilizer_optimizer import FertilizerOptimizer
-    from modules.smart_fertilizer.core.smart_fertilization import SmartFertilization
-    from modules.smart_fertilizer.core.agronomic_knowledge_base import AgronomicKnowledgeBase
-    from modules.smart_fertilizer.core.regional_context import RegionalContext
+    df = pd.DataFrame(phase_data)
+    st.markdown("### 📋 Plan de fertilisation par phase")
+    st.dataframe(df)
 
-    # 🌍 Contexte Régional
-    from modules.smart_fertilizer.regions.region_selector import RegionSelector
+    # ----- CLASSE PDF -----
+    class StyledPDF(FPDF):
+        def header(self):
+            self.set_fill_color(0, 102, 204)
+            self.rect(0, 0, self.w, 20, 'F')
+            self.set_font("DejaVu", "B", 14)
+            self.set_text_color(255, 255, 255)
+            self.set_y(6)
+            self.cell(0, 8, "🧪 Plan de fertilisation – Smart Sènè Yield Predictor", align="C")
+            self.ln(10)
 
-    # 🚀 API interne
-    from modules.smart_fertilizer.api.main import fertilizer_router
-    from modules.smart_fertilizer.api.models import FertilizerRequest
+        def footer(self):
+            self.set_y(-15)
+            self.set_font("DejaVu", "", 8)
+            self.set_text_color(150, 150, 150)
+            self.cell(0, 10, "Généré par Smart Sènè Yield Predictor | " + datetime.now().strftime("%d/%m/%Y %H:%M"), 0, 0, "C")
 
-    # 🧾 Génération de rapports
-    from modules.smart_fertilizer.exports.pdf_generator import PDFGenerator
-    from modules.smart_fertilizer.exports.export_utils import format_recommendation_data
+    # ----- CONSTRUCTION PDF -----
+    pdf = StyledPDF()
+    pdf.add_font("DejaVu", "", dejavu_regular)
+    pdf.add_font("DejaVu", "B", dejavu_bold)
+    pdf.add_page()
+    pdf.set_font("DejaVu", "", 12)
+    pdf.set_text_color(0, 0, 0)
+    pdf.ln(5)
+    pdf.cell(0, 10, f"🌿 Culture : {culture['nom_commun']}", ln=True)
+    pdf.cell(0, 10, f"📐 Surface : {surface} ha    🎯 Rendement cible : {rendement} t/ha", ln=True)
+    pdf.ln(5)
 
-    # ☁️ Données météo et capteurs
-    from modules.smart_fertilizer.weather.weather_client import WeatherClient
-    from modules.smart_fertilizer.weather.iot_simulator import SoilSensorSimulator
+    for phase in df["Phase"].unique():
+        pdf.set_font("DejaVu", "B", 12)
+        pdf.set_text_color(0, 51, 102)
+        pdf.cell(0, 9, f"• Phase : {phase}", ln=True)
+        for _, row in df[df["Phase"] == phase].iterrows():
+            ligne = f"{row['Élément']} : {row['Dose kg']} kg → {row['Engrais']} ({row['Dose engrais (kg)']} kg)"
+            pdf.set_font("DejaVu", "", 11)
+            pdf.set_text_color(0, 0, 0)
+            pdf.cell(0, 8, ligne, ln=True)
 
-except Exception as e:
-    import traceback
-    st.error("❌ Problème lors de l'import des modules Smart Fertilizer")
-    st.code(traceback.format_exc())
-    st.stop()
+    pdf.ln(5)
+    pdf.set_font("DejaVu", "B", 12)
+    pdf.set_text_color(0, 51, 102)
+    pdf.cell(0, 10, "📘 Légende des engrais utilisés :", ln=True)
+    pdf.set_font("DejaVu", "", 10)
+    pdf.set_text_color(0, 0, 0)
 
+    engrais_utilises = {row["Engrais"] for row in phase_data if row["Engrais"]}
+    for engrais in sorted(engrais_utilises):
+        nutriments = ENGRAIS_DB.get(engrais, {})
+        contenu = ", ".join([f"{k} – {int(v * 100)} %" for k, v in nutriments.items()])
+        pdf.cell(0, 8, f"- {engrais} : {contenu}", ln=True)
 
-# ✅ Configuration de la page
-st.set_page_config(
-    page_title="Smart Fertilizer - African Agriculture",
-    page_icon="🌾",
-    layout="wide",
-    initial_sidebar_state="expanded",
-    menu_items={
-        'Get Help': 'https://github.com/smartfertilizer/help',
-        'Report a bug': 'https://github.com/smartfertilizer/issues',
-        'About': """
-        # Smart Fertilizer Application
+    # ----- QR CODE -----
+    url = f"https://sama-agrolink.com/fertiplan/{culture_code}"
+    qr_img = qrcode.make(url)
+    qr_buffer = BytesIO()
+    qr_img.save(qr_buffer, format='PNG')
+    qr_buffer.seek(0)
 
-        **Version:** 1.0.0
-        Intelligent fertilizer recommendation system for African agriculture
+    pdf.ln(10)
+    pdf.set_font("DejaVu", "B", 12)
+    pdf.cell(0, 10, "🔗 Accès en ligne :", ln=True)
+    pdf.image(qr_buffer, w=30)
+    pdf.set_font("DejaVu", "", 9)
+    pdf.cell(0, 10, url, ln=True)
 
-        **Fonctionnalités :**
-        - Analyse du sol et interprétation
-        - Recommandations spécifiques aux cultures
-        - Adaptation régionale (Afrique de l’Ouest, Est, Centre, Sud)
-        - Intégration météo et IoT
-        - Interface multilingue
-        - Génération de rapports PDF
+    # ----- EXPORT PDF -----
+    file_path = f"{culture_code}_fertilisation_plan.pdf"
+    pdf.output(file_path)
+    with open(file_path, "rb") as f:
+        st.download_button("📄 Télécharger le plan PDF", f, file_name=file_path, mime="application/pdf")
 
-        **Données :** FAO, ESDAC, ICRISAT, NOAA/CHIRPS
-        **Contact :** support@smartfertilizer.org
-        """
-    }
-)
-
-# 🖥️ Lancement de l’interface si tout est bon
-SmartFertilizerUI().render_main_interface()
-
-def main():
-    """Main application entry point"""
-
-    try:
-        # Import UI class from modular path
-        from modules.smart_fertilizer.ui.smart_ui import SmartFertilizerUI
-
-        # Initialize and render
-        app_ui = SmartFertilizerUI()
-        app_ui.render_main_interface()
-
-    except ImportError as e:
-        st.error(f"❌ Error importing application modules: {e}")
-        st.info("Please ensure all required dependencies are installed.")
-
-        with st.expander("📋 Installation Instructions"):
-            st.markdown("""
-            ### Required Dependencies
-
-            ```bash
-            pip install streamlit fastapi uvicorn pandas numpy plotly
-            pip install requests reportlab openpyxl scikit-learn scipy
-            ```
-
-            ### Module structure must include:
-            - `modules/smart_fertilizer/ui/`
-            - `modules/smart_fertilizer/core/`
-            - `modules/smart_fertilizer/api/`
-            - `modules/smart_fertilizer/data/`
-            - `modules/smart_fertilizer/exports/`
-            """)
-        st.stop()
-
-    except Exception as e:
-        st.error(f"❌ Unexpected error: {e}")
-        st.info("Please check your configuration and try again.")
-
-        if st.button("🔄 Reload Application"):
-            st.rerun()
-        st.stop()
-
-def check_system_status():
-    """Check system status and display warnings if needed"""
-    import os
-    import warnings
-
-    warnings.filterwarnings('ignore')
-
-    base_dir = Path(__file__).parent.parent / "modules" / "smart_fertilizer"
-
-    required_dirs = ['data', 'ui', 'core', 'api', 'exports']
-    missing_dirs = [d for d in required_dirs if not (base_dir / d).exists()]
-    if missing_dirs:
-        st.sidebar.warning(f"⚠️ Missing directories: {', '.join(missing_dirs)}")
-
-    required_files = [
-        'data/crop_profiles.json',
-        'data/regional_prices.json',
-        'data/soil_samples.csv',
-        'data/yield_training_data.csv'
-    ]
-    missing_files = [
-        f for f in required_files if not (base_dir / f).exists()
-    ]
-    if missing_files:
-        st.sidebar.info(f"ℹ️ Some data files are missing. Using defaults.")
-
-def display_startup_info():
-    if 'startup_info_shown' not in st.session_state:
-        st.session_state.startup_info_shown = True
-        st.balloons()
-        check_system_status()
-
-def handle_errors():
-    def error_handler(exc_type, exc_value, exc_traceback):
-        if issubclass(exc_type, KeyboardInterrupt):
-            return
-        error_msg = f"Error: {exc_type.__name__}: {exc_value}"
-        st.error(f"❌ Application Error: {error_msg}")
-        if st.button("📝 Report this Error"):
-            st.info("Error reporting functionality would be implemented here.")
-    sys.excepthook = error_handler
-
-handle_errors()
-display_startup_info()
-
-if __name__ == "__main__":
-    main()
+    # ----- EXPORT EXCEL -----
+    excel_file = f"{culture_code}_fertilisation_plan.xlsx"
+    df.to_excel(excel_file, index=False)
+    with open(excel_file, "rb") as f_excel:
+        st.download_button("📥 Télécharger les données Excel", f_excel, file_name=excel_file, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
