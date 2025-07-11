@@ -1,6 +1,6 @@
 import os
 import shutil
-
+import json
 base_path = "C:/plateforme-agricole-complete-v2/plantdataset"
 sets = ["train", "val"]
 mapping_path = os.path.join(base_path, "custom_mapping.json")
