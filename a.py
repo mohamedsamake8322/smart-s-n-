@@ -1,53 +1,63 @@
+#📦 Résultat :
+#Tu auras un dossier pour chaque maladie définie mais absente.
+#Chaque dossier contiendra un fichier fiche_maladie.json prêt à être enrichi avec des images.
+#Tu peux ensuite annoter, collecter ou générer des images pour ces maladies.
 import os
 import json
 
-# Chemins vers les fichiers JSON
-base_path = r'C:\plateforme-agricole-complete-v2\plantdataset'
-json_en_path = os.path.join(base_path, 'EN_mapping_fiches_maladies.json')
-json_fr_path = os.path.join(base_path, 'mapping_fiches_maladies_fr.json')
+# Chemins
+base_path = r"C:/plateforme-agricole-complete-v2/plantdataset"
+json_en_path = os.path.join(base_path, "EN_mapping_fiches_maladies.json")
+json_fr_path = os.path.join(base_path, "mapping_fiches_maladies_fr.json")
+output_dir = os.path.join(base_path, "train")  # ou "val" selon ton choix
 
-# Chargement des bibliothèques JSON
-with open(json_en_path, encoding='utf-8') as f_en:
-    en_mapping = json.load(f_en)
+# Charger les JSONs
+with open(json_en_path, encoding="utf-8") as f_en:
+    en_data = json.load(f_en)
+with open(json_fr_path, encoding="utf-8") as f_fr:
+    fr_data = json.load(f_fr)
 
-with open(json_fr_path, encoding='utf-8') as f_fr:
-    fr_mapping = json.load(f_fr)
-
-# Fonction utilitaire pour nettoyer les noms pour comparaison
+# Normalisation
 def normalize(name):
-    return name.strip().lower()
+    return name.lower().strip().replace("_", " ").replace("-", " ").replace("  ", " ")
 
-# Récupération des noms de dossiers de maladies dans train et val
-def get_disease_folders(path):
-    folders = []
-    for subset in ['train', 'val']:
-        subset_path = os.path.join(path, subset)
-        if os.path.exists(subset_path):
-            folders += [folder for folder in os.listdir(subset_path)
-                        if os.path.isdir(os.path.join(subset_path, folder))]
-    return folders
+# Dossiers existants
+existing_folders = set()
+for subset in ["train", "val"]:
+    subset_path = os.path.join(base_path, subset)
+    if os.path.exists(subset_path):
+        existing_folders.update([
+            normalize(folder) for folder in os.listdir(subset_path)
+            if os.path.isdir(os.path.join(subset_path, folder))
+        ])
 
-# Récupération et normalisation des clés des deux JSON
-en_keys = {normalize(k) for k in en_mapping.keys()}
-fr_keys = {normalize(k) for k in fr_mapping.keys()}
+# Clés JSON normalisées
+json_keys = {}
+for key in set(en_data.keys()) | set(fr_data.keys()):
+    json_keys[normalize(key)] = key
 
-# Vérification des correspondances
-disease_folders = get_disease_folders(base_path)
-defined_in_both = []
-undefined = []
+# Création des dossiers manquants
+created = []
 
-for folder in disease_folders:
-    norm_name = normalize(folder)
-    if norm_name in en_keys and norm_name in fr_keys:
-        defined_in_both.append(folder)
-    else:
-        undefined.append(folder)
+for norm_key, original_key in json_keys.items():
+    if norm_key not in existing_folders:
+        folder_path = os.path.join(output_dir, original_key)
+        os.makedirs(folder_path, exist_ok=True)
 
-# Affichage des résultats
-print("✅ Maladies définies dans les deux fichiers JSON :")
-for name in defined_in_both:
-    print(f" - {name}")
+        fiche = {
+            "dossier": original_key,
+            "en": en_data.get(original_key, {}),
+            "fr": fr_data.get(original_key, {}),
+            "images": []  # vide pour l’instant
+        }
 
-print("\n⚠️ Maladies NON définies dans les deux fichiers JSON :")
-for name in undefined:
-    print(f" - {name}")
+        # Sauvegarde de la fiche dans le dossier
+        fiche_path = os.path.join(folder_path, "fiche_maladie.json")
+        with open(fiche_path, "w", encoding="utf-8") as f_out:
+            json.dump(fiche, f_out, indent=4, ensure_ascii=False)
+
+        created.append(original_key)
+        print(f"📁 Dossier créé : {original_key}")
+
+# Résumé
+print(f"\n✅ {len(created)} dossiers manquants ont été créés dans : {output_dir}")
