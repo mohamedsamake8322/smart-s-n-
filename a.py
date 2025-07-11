@@ -1,21 +1,13 @@
-#📦 Résultat :
-#Tu auras un dossier pour chaque maladie définie mais absente.
-#Chaque dossier contiendra un fichier fiche_maladie.json prêt à être enrichi avec des images.
-#Tu peux ensuite annoter, collecter ou générer des images pour ces maladies.
 import os
 import json
 
 # Chemins
 base_path = r"C:/plateforme-agricole-complete-v2/plantdataset"
 json_en_path = os.path.join(base_path, "EN_mapping_fiches_maladies.json")
-json_fr_path = os.path.join(base_path, "mapping_fiches_maladies_fr.json")
-output_dir = os.path.join(base_path, "train")  # ou "val" selon ton choix
 
-# Charger les JSONs
+# Charger le JSON anglais uniquement
 with open(json_en_path, encoding="utf-8") as f_en:
     en_data = json.load(f_en)
-with open(json_fr_path, encoding="utf-8") as f_fr:
-    fr_data = json.load(f_fr)
 
 # Normalisation
 def normalize(name):
@@ -32,32 +24,31 @@ for subset in ["train", "val"]:
         ])
 
 # Clés JSON normalisées
-json_keys = {}
-for key in set(en_data.keys()) | set(fr_data.keys()):
-    json_keys[normalize(key)] = key
+json_keys = {normalize(k): k for k in en_data.keys()}
 
-# Création des dossiers manquants
+# Création dans train/ et val/
 created = []
 
 for norm_key, original_key in json_keys.items():
     if norm_key not in existing_folders:
-        folder_path = os.path.join(output_dir, original_key)
-        os.makedirs(folder_path, exist_ok=True)
+        for subset in ["train", "val"]:
+            new_path = os.path.join(base_path, subset, original_key)
+            os.makedirs(new_path, exist_ok=True)
 
-        fiche = {
-            "dossier": original_key,
-            "en": en_data.get(original_key, {}),
-            "fr": fr_data.get(original_key, {}),
-            "images": []  # vide pour l’instant
-        }
+            # Créer fiche maladie
+            fiche = {
+                "dossier": original_key,
+                "en": en_data.get(original_key, {}),
+                "images": []  # vide pour l'instant
+            }
 
-        # Sauvegarde de la fiche dans le dossier
-        fiche_path = os.path.join(folder_path, "fiche_maladie.json")
-        with open(fiche_path, "w", encoding="utf-8") as f_out:
-            json.dump(fiche, f_out, indent=4, ensure_ascii=False)
+            # Sauvegarder dans le dossier
+            fiche_path = os.path.join(new_path, "fiche_maladie.json")
+            with open(fiche_path, "w", encoding="utf-8") as f_out:
+                json.dump(fiche, f_out, indent=4, ensure_ascii=False)
 
         created.append(original_key)
-        print(f"📁 Dossier créé : {original_key}")
+        print(f"📁 Dossiers 'train' et 'val' créés pour : {original_key}")
 
 # Résumé
-print(f"\n✅ {len(created)} dossiers manquants ont été créés dans : {output_dir}")
+print(f"\n✅ {len(created)} nouvelles maladies ajoutées à 'train' et 'val'")
