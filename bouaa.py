@@ -11,11 +11,7 @@ os.makedirs(output_dir, exist_ok=True)
 with open(json_path, encoding="utf-8") as f:
     stress_data = json.load(f).get("abiotic_stress", {})
 
-# 🔄 Normalisation simple
-def normalize(name):
-    return name.lower().strip().replace("_", " ").replace("-", " ")
-
-# 📦 Traitement
+# 🔄 Traitement pour chaque stress
 for key, content in stress_data.items():
     folder_name = key.strip()
     folder_path = os.path.join(base_path, folder_name)
@@ -23,30 +19,37 @@ for key, content in stress_data.items():
         print(f"⚠️ Dossier introuvable pour : {folder_name}")
         continue
 
-    fiche = {
-        "code": key,
-        "name": content.get("name", ""),
+    # 🧠 Annotation commune à toutes les images
+    annotation = {
+        "type": "stress",
+        "label": content.get("name", ""),
         "symptoms": content.get("symptoms", ""),
         "effects": content.get("effects", {}),
         "impact_on_yield": content.get("impact_on_yield", ""),
         "correction": content.get("correction", ""),
-        "translations": content.get("translations", {}),
+        "translations": content.get("translations", {})
+    }
+
+    fiche = {
+        "code": key,
+        "label": content.get("name", ""),
         "images": []
     }
 
-    # 📸 Ajouter les images
+    # 📸 Annoter chaque image
     for img in os.listdir(folder_path):
         if os.path.isfile(os.path.join(folder_path, img)):
             fiche["images"].append({
                 "filename": img,
-                "path": os.path.join(folder_name, img)
+                "path": os.path.join(folder_name, img),
+                "annotation": annotation
             })
 
-    # 💾 Sauvegarde
+    # 💾 Sauvegarde JSON
     out_path = os.path.join(output_dir, f"{folder_name}.json")
     with open(out_path, "w", encoding="utf-8") as f_out:
         json.dump(fiche, f_out, indent=4, ensure_ascii=False)
 
-    print(f"✅ Fiche générée pour : {folder_name}")
+    print(f"✅ Fiche annotée : {folder_name}")
 
-print(f"\n🎉 Toutes les fiches de stress ont été générées dans : {output_dir}")
+print(f"\n🎯 Toutes les fiches stress annotées sont dans : {output_dir}")
