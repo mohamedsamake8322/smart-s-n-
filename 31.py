@@ -4,28 +4,17 @@ import shutil
 train_dir = r"C:\plateforme-agricole-complete-v2\plantdataset\train"
 val_dir = r"C:\plateforme-agricole-complete-v2\plantdataset\val"
 
-# Parcours rapide seulement des dossiers déjà existants dans val
-val_folders = [f for f in os.listdir(val_dir) if os.path.isdir(os.path.join(val_dir, f))]
+# Liste dossiers dans train
+train_folders = [f for f in os.listdir(train_dir) if os.path.isdir(os.path.join(train_dir, f))]
 
-for folder in val_folders:
-    train_folder_path = os.path.join(train_dir, folder)
-    val_folder_path = os.path.join(val_dir, folder)
-    if not os.path.exists(train_folder_path):
-        # Si dossier absent dans train (peu probable), skip
-        continue
+# Liste dossiers dans val (pour savoir lesquels existent déjà)
+val_folders = set(f for f in os.listdir(val_dir) if os.path.isdir(os.path.join(val_dir, f)))
 
-    train_files = set(os.listdir(train_folder_path))
-    val_files = set(os.listdir(val_folder_path))
+for folder in train_folders:
+    if folder not in val_folders:
+        src = os.path.join(train_dir, folder)
+        dst = os.path.join(val_dir, folder)
+        print(f"Copying folder '{folder}' with all contents...")
+        shutil.copytree(src, dst)
 
-    missing_files = train_files - val_files
-    for file in missing_files:
-        src = os.path.join(train_folder_path, file)
-        dst = os.path.join(val_folder_path, file)
-        if os.path.isdir(src):
-            shutil.copytree(src, dst)
-            print(f"Copied missing folder '{file}' in '{folder}'")
-        else:
-            shutil.copy2(src, dst)
-            print(f"Copied missing file '{file}' in folder '{folder}'")
-
-print("Copying missing files done.")
+print("Copy complete.")
