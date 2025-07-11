@@ -23,8 +23,9 @@ with open(file_path, 'r', encoding='utf-8') as f:
 # ✨ Ajouter les emojis aux champs concernés
 for disease, info in data.items():
     for key, emoji in emojis.items():
-        if key in info and not info[key].startswith(emoji):
-            info[key] = f"{emoji} {info[key]}"
+        value = info.get(key)
+        if isinstance(value, str) and not value.startswith(emoji):
+            info[key] = f"{emoji} {value}"
 
 # 💾 Sauvegarder le fichier modifié
 with open(output_path, 'w', encoding='utf-8') as f:
