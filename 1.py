@@ -12,8 +12,8 @@ emojis = {
     "description": "📝",
     "symptoms": "⚠️",
     "evolution": "🔁",
-    "recommended_active_materials": "💊",
-    "management": "🛠️"
+    "active_material": "💊",
+    "treatment": "🛠️"
 }
 
 # 🔄 Charger le fichier JSON
