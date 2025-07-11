@@ -1,3 +1,4 @@
+#Supprimer images corrompus
 import os
 from PIL import Image
 from concurrent.futures import ThreadPoolExecutor, as_completed
