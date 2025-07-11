@@ -10,22 +10,8 @@ SERPAPI_KEY = "639c911a059fa04eb8f43179c0cafbfcf775b342"
 
 # Chemin du dataset
 base_path = r"C:/plateforme-agricole-complete-v2/plantdataset"
-
-# Paramètres de téléchargement
-train_range = (20, 30)
-val_range = (10, 15)
+query_file = os.path.join(base_path, "search_queries.json")
 image_extensions = [".jpg", ".jpeg", ".png"]
-
-# Fonction pour chercher des images via SerpAPI
-def fetch_image_urls(query, max_results=30):
-    search = GoogleSearch({
-        "q": query,
-        "tbm": "isch",
-        "api_key": SERPAPI_KEY
-    })
-    results = search.get_dict()
-    images = results.get("images_results", [])
-    return [img["original"] for img in images[:max_results] if "original" in img]
 
 # Fonction pour télécharger une image
 def download_image(url, save_path):
@@ -42,32 +28,46 @@ def download_image(url, save_path):
         pass
     return False
 
-# Parcours des dossiers
-for subset, (min_img, max_img) in [("train", train_range), ("val", val_range)]:
-    subset_path = os.path.join(base_path, subset)
-    for folder in os.listdir(subset_path):
-        folder_path = os.path.join(subset_path, folder)
-        if not os.path.isdir(folder_path):
-            continue
+# Lecture du fichier de requêtes
+with open(query_file, encoding="utf-8") as f:
+    queries = json.load(f)
 
-        # Vérifie si le dossier contient déjà des images
-        existing = [f for f in os.listdir(folder_path) if f.lower().endswith(tuple(image_extensions))]
-        if len(existing) >= min_img:
-            continue  # Skip si déjà rempli
+# Traitement de chaque requête
+for item in queries:
+    subset = item["subset"]
+    folder = item["folder"]
+    query = item["query"]
+    min_img = item["min_images"]
+    max_img = item["max_images"]
+    target_path = os.path.join(base_path, subset, folder)
 
-        print(f"🔍 Recherche d’images pour : {folder} ({subset})")
-        query = folder.replace("_", " ").replace("-", " ")
-        urls = fetch_image_urls(query, max_results=max_img)
+    if not os.path.exists(target_path):
+        continue
 
-        count = 0
-        for i, url in enumerate(urls):
-            filename = f"img_{i+1}"
-            save_path = os.path.join(folder_path, filename)
-            if download_image(url, save_path):
-                count += 1
-            if count >= max_img:
-                break
+    # Vérifie les images déjà présentes
+    existing = [f for f in os.listdir(target_path) if f.lower().endswith(tuple(image_extensions))]
+    if len(existing) >= min_img:
+        continue
 
-        print(f"✅ {count} images ajoutées à : {folder} ({subset})")
+    print(f"🔍 {subset}/{folder} → {query}")
+    search = GoogleSearch({
+        "q": query,
+        "tbm": "isch",
+        "api_key": SERPAPI_KEY
+    })
+    results = search.get_dict()
+    images = results.get("images_results", [])
+    urls = [img["original"] for img in images if "original" in img]
 
-print("\n🎉 Téléchargement terminé pour tous les dossiers.")
+    count = 0
+    for i, url in enumerate(urls):
+        filename = f"img_{len(existing) + i + 1}"
+        save_path = os.path.join(target_path, filename)
+        if download_image(url, save_path):
+            count += 1
+        if count >= max_img:
+            break
+
+    print(f"✅ {count} images ajoutées à : {folder} ({subset})")
+
+print("\n🎉 Téléchargement terminé pour toutes les requêtes.")
