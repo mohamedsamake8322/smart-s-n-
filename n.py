@@ -1,28 +1,33 @@
-import os
 import json
 
-# 📁 Chemins
-base_path = r"C:/plateforme-agricole-complete-v2/plantdataset"
-input_dir = os.path.join(base_path, "file_by_stress")
-output_path = os.path.join(base_path, "fiche_stress_complete.json")
+# 📁 Fichiers
+input_path = r"C:/plateforme-agricole-complete-v2/plantdataset/maladie_dataset.json"
+output_path = r"C:/plateforme-agricole-complete-v2/plantdataset/maladie_dataset.jsonl"
 
-# 📦 Dictionnaire fusionné
-fiche_by_stress = {}
+# 🔄 Transformation
+with open(input_path, encoding="utf-8") as f_in, open(output_path, "w", encoding="utf-8") as f_out:
+    data = json.load(f_in)
+    for item in data:
+        annotation = item.get("annotation", {})
+        caption_parts = []
 
-# 🔁 Parcours des fichiers JSON
-for file_name in os.listdir(input_dir):
-    if not file_name.endswith(".json"):
-        continue
+        # 📝 Choix des champs
+        label = annotation.get("label", "").strip()
+        symptoms = annotation.get("symptoms", "").strip()
+        culture = annotation.get("culture", "").strip()
 
-    file_path = os.path.join(input_dir, file_name)
-    with open(file_path, encoding="utf-8") as f:
-        data = json.load(f)
+        if label:
+            caption_parts.append(f"Disease: {label}")
+        if culture:
+            caption_parts.append(f"Affects: {culture}")
+        if symptoms:
+            caption_parts.append(f"Symptoms: {symptoms}")
 
-    key = os.path.splitext(file_name)[0]  # "salinity" depuis "salinity.json"
-    fiche_by_stress[key] = data
+        caption = " ".join(caption_parts).strip()
+        record = {
+            "image": item.get("path", ""),
+            "caption": caption
+        }
+        f_out.write(json.dumps(record, ensure_ascii=False) + "\n")
 
-# 💾 Sauvegarde du fichier fusionné
-with open(output_path, "w", encoding="utf-8") as f_out:
-    json.dump(fiche_by_stress, f_out, indent=4, ensure_ascii=False)
-
-print(f"✅ Fichier fusionné sauvegardé dans : {output_path}")
+print(f"✅ Export JSONL terminé : {output_path}")
