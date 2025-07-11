@@ -1,35 +1,43 @@
 import os
 from PIL import Image
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-def nettoyer_images_corrompues(dossier_racine):
-    extensions_images = {'.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff'}
-    count_total = 0
-    count_supprimees = 0
+extensions_images = {'.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff'}
 
+def verifier_image(chemin_fichier):
+    try:
+        with Image.open(chemin_fichier) as img:
+            img.verify()
+        return (chemin_fichier, True)
+    except:
+        return (chemin_fichier, False)
+
+def nettoyer_images_corrompues_parallel(dossier_racine, max_workers=8):
+    chemins_images = []
     for root, dirs, files in os.walk(dossier_racine):
         for file in files:
             ext = os.path.splitext(file)[1].lower()
             if ext in extensions_images:
-                count_total += 1
-                chemin_fichier = os.path.join(root, file)
+                chemins_images.append(os.path.join(root, file))
+
+    print(f"Nombre total d'images à vérifier : {len(chemins_images)}")
+
+    supprimees = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(verifier_image, img): img for img in chemins_images}
+
+        for future in as_completed(futures):
+            chemin, valide = future.result()
+            if not valide:
                 try:
-                    # Essayer d'ouvrir l'image
-                    with Image.open(chemin_fichier) as img:
-                        img.verify()  # Vérifie que l’image n’est pas corrompue
+                    os.remove(chemin)
+                    print(f"Supprimée image corrompue : {chemin}")
+                    supprimees += 1
                 except Exception as e:
-                    print(f"Image corrompue détectée et supprimée : {chemin_fichier}")
-                    os.remove(chemin_fichier)
-                    count_supprimees += 1
+                    print(f"Erreur suppression {chemin}: {e}")
 
-    print(f"Total images vérifiées : {count_total}")
-    print(f"Images corrompues supprimées : {count_supprimees}")
+    print(f"Total images corrompues supprimées : {supprimees}")
 
-# Exemple d’utilisation
+# Exemple d'utilisation
 dossier_train = r"C:\plateforme-agricole-complete-v2\plantdataset\train"
-dossier_val = r"C:\plateforme-agricole-complete-v2\plantdataset\val"
-
-print("Nettoyage des images dans TRAIN...")
-nettoyer_images_corrompues(dossier_train)
-
-print("\nNettoyage des images dans VAL...")
-nettoyer_images_corrompues(dossier_val)
+nettoyer_images_corrompues_parallel(dossier_train, max_workers=16)
