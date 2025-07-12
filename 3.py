@@ -46,3 +46,4 @@ for p in properties[1:]:
     df_final = df_final.merge(dfs[p], on=["x", "y"], how="outer")
 
 print(df_final.head())
+df_final.to_csv("soil_profile_africa.csv", index=False)
