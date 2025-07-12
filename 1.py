@@ -1,36 +1,41 @@
-import os
-from soilgrids import SoilGrids
+import requests
+import pandas as pd
 
-sg = SoilGrids()
+def get_meteo_power(lat, lon, start_year=2020, end_year=2024):
+    url = "https://power.larc.nasa.gov/api/temporal/yearly/point"
 
-# Propriétés et profondeurs à récupérer
-properties = ["soc", "phh2o", "cec", "clay", "sand"]
-depths = ["0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm", "100-200cm"]
+    parameters = [
+        "T2M",       # Température moyenne (°C)
+        "PRECTOT",   # Précipitations totales (mm)
+        "ALLSKY_SFC_SW_DWN"  # Radiation solaire (MJ/m²)
+    ]
 
-# Coordonnées Afrique en LAEA
-west, south, east, north = -1784000, 1356000, -1140000, 1863000
-crs_code = "urn:ogc:def:crs:EPSG::152160"
+    params = {
+        "parameters": ",".join(parameters),
+        "community": "AG",
+        "longitude": lon,
+        "latitude": lat,
+        "start": start_year,
+        "end": end_year,
+        "format": "JSON"
+    }
 
-# Boucle principale
-for prop in properties:
-    folder_path = f"soilgrids_africa/{prop}"
-    os.makedirs(folder_path, exist_ok=True)
+    response = requests.get(url, params=params)
+    data = response.json()["properties"]["parameter"]
 
-    for depth in depths:
-        cov_id = f"{prop}_{depth}_mean"
-        output_file = os.path.join(folder_path, f"{cov_id}.tif")
-        print(f"🔄 Téléchargement : {cov_id}")
-        try:
-            sg.get_coverage_data(
-                service_id=prop,
-                coverage_id=cov_id,
-                west=west,
-                south=south,
-                east=east,
-                north=north,
-                crs=crs_code,
-                output=output_file
-            )
-            print(f"✅ Fichier enregistré : {output_file}")
-        except Exception as e:
-            print(f"⚠️ Échec pour {cov_id} → {e}")
+    df = pd.DataFrame({
+        "year": list(data["T2M"].keys()),
+        "temperature": list(data["T2M"].values()),
+        "precipitation": list(data["PRECTOT"].values()),
+        "radiation": list(data["ALLSKY_SFC_SW_DWN"].values())
+    })
+
+    return df
+
+# 📍 Exemple : Sahel (latitude, longitude)
+lat = 14.5
+lon = -3.5
+
+df_meteo = get_meteo_power(lat, lon)
+df_meteo.to_csv("weather_africa_2020_2024.csv", index=False)
+print(df_meteo)
