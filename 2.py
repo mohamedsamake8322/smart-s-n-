@@ -53,7 +53,7 @@ grilles_par_pays = {
 
 # 📌 Paramètres météo (6 bien tolérés par l'API)
 parameters = [
-    "PRECTOT", "PRECTOTCORR", "IMERG_PRECTOT", "PS", "WS2M", "WS2M_MAX",
+     "PRECTOTCORR", "IMERG_PRECTOT", "PS", "WS2M", "WS2M_MAX",
 ]
 
 # 📅 Période
