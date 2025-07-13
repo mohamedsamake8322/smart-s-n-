@@ -60,6 +60,10 @@ parameters = [
 start_date = "20210101"
 end_date = "20241231"
 
+# 📐 Espacement de la grille (en degrés)
+lat_step = 2.0
+lon_step = 2.0
+
 # 🧱 Fonction : construire URL API NASA POWER
 def build_power_url(lat, lon, params, start, end):
     param_str = ",".join(params)
@@ -85,9 +89,13 @@ def get_power_data(lat, lon, params, start, end, country_name):
         print(f"❌ Failed ({response.status_code}) at {lat}, {lon}")
         return False
 
-# 🔁 Boucle sur tous les pays et points
-for country, points in grilles_par_pays.items():
-    print(f"\n🌍 Processing: {country} ({len(points)} points)")
-    for lat, lon in points:
-        success = get_power_data(lat, lon, parameters, start_date, end_date, country)
-        time.sleep(2)  # 💤 Pause anti-saturation API
+# 🔁 Boucle sur tous les pays et génération de la grille
+for code, (name, [lon_min, lat_min, lon_max, lat_max]) in grilles_par_pays.items():
+    print(f"\n🌍 Processing {name} ({code})")
+    latitudes = np.arange(lat_min, lat_max + lat_step, lat_step)
+    longitudes = np.arange(lon_min, lon_max + lon_step, lon_step)
+
+    for lat in latitudes:
+        for lon in longitudes:
+            success = get_power_data(lat, lon, parameters, start_date, end_date, name)
+            time.sleep(2)
