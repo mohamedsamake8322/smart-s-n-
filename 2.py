@@ -9,14 +9,11 @@ os.makedirs(output_folder, exist_ok=True)
 # 📌 Paramètres (max 23 par requête)
 parameters_group1 = [
     "T2M_RANGE", "T2M_MAX", "T2M_MIN", "ALLSKY_SFC_LW_DWN", "QV2M", "RH2M",
-    "PRECTOT", "PRECTOTCORR", "IMERG_PRECTOT", "PS", "WS2M", "WS2M_MAX",
-    "WS2M_MIN", "WS2M_RANGE", "WD2M", "WS10M", "WS10M_MAX", "WS10M_MIN",
-    "WS10M_RANGE", "WD10M", "GWETTOP", "GWETROOT", "GWETPROF"
 ]
 
 # 📅 Période
-start_date = "20200101"
-end_date = "20231231"
+start_date = "20210101"
+end_date = "20241231"
 
 # 🌍 Exemple de point (latitude, longitude)
 point = (10.1, -12.17)  # Mali
