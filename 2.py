@@ -9,13 +9,7 @@ os.makedirs(output_folder, exist_ok=True)
 
 # 🌍 Grille simplifiée — à compléter avec les points générés depuis ta grille
 grilles_par_pays = {
-    "SS": ["South Sudan", [23.89, 3.51, 35.3, 12.25]],
-    "SN": ["Senegal", [-17.63, 12.33, -11.47, 16.6]],
-    "TD": ["Chad", [13.54, 7.42, 23.89, 23.41]],
-    "TG": ["Togo", [-0.05, 5.93, 1.87, 11.02]],
-    "TZ": ["Tanzania", [29.34, -11.72, 40.32, -0.95]],
-    "UG": ["Uganda", [29.58, -1.44, 35.04, 4.25]],
-    "ZA": ["South Africa", [16.34, -34.82, 32.83, -22.09]],
+
     "ZM": ["Zambia", [21.89, -17.96, 33.49, -8.24]],
     "ZW": ["Zimbabwe", [25.26, -22.27, 32.85, -15.51]]
     # ➕ Continue avec les autres pays
