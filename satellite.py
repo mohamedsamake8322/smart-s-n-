@@ -23,7 +23,7 @@ if st.button("📡 Générer NDVI"):
     region = point.buffer(buffer_m).bounds()
 
     # 🛰️ Import collection Sentinel-2
-    collection = ee.ImageCollection("COPERNICUS/S2") \
+    collection = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED") \
         .filterBounds(point) \
         .filterDate('2023-06-01', '2023-07-01') \
         .sort('CLOUDY_PIXEL_PERCENTAGE')
