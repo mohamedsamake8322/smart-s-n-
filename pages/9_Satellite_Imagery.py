@@ -16,34 +16,35 @@ except Exception as e:
 # 🌍 Load GeoJSON regions
 regions = gpd.read_file("africa_admin_level2.geojson")
 
-# 🎯 Streamlit Interface Setup
-st.set_page_config(page_title="NDVI Viewer - Sama AgroLink", layout="wide")
-st.title("🛰️ NDVI Viewer for Sama AgroLink Africa")
-st.markdown("Analyze NDVI dynamically based on GPS or region selection.")
+# 🧪 Load Soil Profile
+df_soil = pd.read_csv("soil_profile_africa.csv")
+soil_gdf = gpd.GeoDataFrame(df_soil, geometry=gpd.points_from_xy(df_soil.x, df_soil.y), crs="EPSG:4326")
+soil_cols = [col for col in df_soil.columns if "_" in col and col != "geometry"]
 
-# ⚙️ Mode selector
+# 🎯 Streamlit Setup
+st.set_page_config(page_title="NDVI + Soil Viewer - Sama AgroLink", layout="wide")
+st.title("🛰️ NDVI & Soil Viewer for Sama AgroLink Africa")
+
 mode = st.radio("NDVI Target Mode", ["GPS Coordinates", "Administrative Region"])
 
-# 📍 User Input - GPS Mode
 if mode == "GPS Coordinates":
     lat = st.number_input("Latitude", value=11.174, format="%.6f")
     lon = st.number_input("Longitude", value=-1.562, format="%.6f")
     buffer_m = st.slider("Buffer around field (meters)", 100, 2000, 1000)
     geometry = ee.Geometry.Point([lon, lat]).buffer(buffer_m).bounds()
+    poly_geom = gpd.GeoSeries([gpd.points_from_xy([lon], [lat])[0].buffer(buffer_m/111000)], crs="EPSG:4326")
 else:
-    # 📌 Region mode
     countries = sorted(regions["GID_0"].dropna().unique())
     selected_country = st.selectbox("Country", countries)
     filtered = regions[regions["GID_0"] == selected_country]
     region_names = sorted(filtered["NAME_2"].dropna().unique())
     selected_region = st.selectbox("Region", region_names)
-
     selected_geom = filtered[filtered["NAME_2"] == selected_region].geometry.iloc[0]
     bounds = selected_geom.bounds
     minx, miny, maxx, maxy = bounds
     geometry = ee.Geometry.Rectangle([minx, miny, maxx, maxy])
+    poly_geom = gpd.GeoSeries([selected_geom], crs="EPSG:4326")
 
-# 📅 Dates
 start_date = st.date_input("Start Date", value=datetime.date(2023, 6, 1))
 end_date = st.date_input("End Date", value=datetime.date(2023, 7, 1))
 
@@ -70,13 +71,15 @@ crop = st.selectbox("Crop Type", ["Maize", "Rice", "Millet", "Cotton", "Sorghum"
 agro_zone = st.text_input("Agroecological Zone (e.g. Sudan West)", "Sudan West")
 
 # ☁️ Cloud Masking
+selected_soil_col = st.selectbox("Soil Property to Display", soil_cols)
+
+# ☁️ Cloud Masking
 def mask_clouds(image):
     qa = image.select('QA60')
     cloud_mask = qa.bitwiseAnd(1 << 10).eq(0)
     return image.updateMask(cloud_mask)
 
-# 📡 NDVI
-if st.button("🔍 Generate NDVI"):
+if st.button("🔍 Generate NDVI + Soil Map"):
     collection = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED") \
         .filterBounds(geometry) \
         .filterDate(str(start_date), str(end_date)) \
@@ -87,7 +90,6 @@ if st.button("🔍 Generate NDVI"):
     ndvi = image.normalizedDifference(['B8', 'B4']).rename('NDVI')
     ndvi_params = {'min': 0, 'max': 1, 'palette': ['red', 'yellow', 'green']}
 
-    # 🗺️ Map setup
     if mode == "GPS Coordinates":
         Map = geemap.Map(center=[lat, lon], zoom=12)
         Map.addLayer(ee.Geometry.Point([lon, lat]), {}, 'Field')
@@ -98,9 +100,21 @@ if st.button("🔍 Generate NDVI"):
         Map.addLayer(selected_geom.__geo_interface__, {}, 'Selected Region')
 
     Map.addLayer(ndvi, ndvi_params, 'NDVI')
+
+    # 🧭 Soil data overlay
+    soil_within = soil_gdf[soil_gdf.within(poly_geom.iloc[0])]
+    Map.add_points_from_xy(
+        soil_within,
+        column=selected_soil_col,
+        color_column=selected_soil_col,
+        color_palette="viridis",
+        layer_name=f"Soil: {selected_soil_col}",
+        radius=5,
+        info_mode="on_hover"
+    )
+
     Map.to_streamlit(height=600)
 
-    # 📥 NDVI download
     url = ndvi.getThumbURL({
         'min': 0,
         'max': 1,
@@ -110,7 +124,9 @@ if st.button("🔍 Generate NDVI"):
     })
     st.markdown(f"📥 [Download NDVI Image]({url})")
 
-    # 📦 Output JSON
+    # 📊 Soil stats
+    soil_stats = soil_within.mean(numeric_only=True).to_dict()
+
     result_json = {
         "mode": mode,
         "latitude": lat if mode == "GPS Coordinates" else None,
@@ -124,8 +140,10 @@ if st.button("🔍 Generate NDVI"):
             "start": str(start_date),
             "end": str(end_date)
         },
-        "recommendation": f"Monitor vegetation for {crop} in the {agro_zone} zone."
+        "soil_property": selected_soil_col,
+        "soil_profile": soil_stats,
+        "recommendation": f"Monitor vegetation for {crop} in the {agro_zone} zone. Soil {selected_soil_col} may influence response."
     }
 
-    st.subheader("🧪 NDVI Data Output (for Sama AgroLink API)")
+    st.subheader("🧪 NDVI + Soil Data Output (for Sama AgroLink API)")
     st.code(json.dumps(result_json, indent=2), language='json')
