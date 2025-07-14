@@ -1,44 +1,51 @@
 import os
 import rasterio
-import pandas as pd
-from tqdm import tqdm
+import numpy as np
+import csv
 
-# 📁 Chemin du dossier GAEZ Thème 6
+# 📁 Répertoire principal contenant les données GAEZ
 base_path = r"C:\Users\moham\Music\2\Écarts de rendement et de production"
+output_csv = "gaez_gap_extracted_stream.csv"
 
-# 📋 Initialisation liste pour collecter les données
-records = []
+# ✍️ Créer le fichier CSV dès le départ
+with open(output_csv, mode='w', newline='', encoding='utf-8') as f:
+    writer = csv.writer(f)
+    writer.writerow(["x", "y", "value", "year", "category", "layer"])  # En-tête
 
-# 🔁 Parcours des sous-dossiers
-for category in ["I", "R", "T", "V"]:
-    for year in ["2000", "2010"]:
-        folder_path = os.path.join(base_path, category, year)
-        if not os.path.exists(folder_path):
+    # 🔁 Parcours des sous-dossiers
+    for category in os.listdir(base_path):
+        cat_path = os.path.join(base_path, category)
+        if not os.path.isdir(cat_path):
             continue
 
-        # 🔁 Parcours des fichiers .tif
-        for filename in tqdm(os.listdir(folder_path), desc=f"{category}/{year}"):
-            if filename.endswith(".tif"):
-                file_path = os.path.join(folder_path, filename)
-                with rasterio.open(file_path) as src:
-                    band = src.read(1)
-                    transform = src.transform
+        for year in os.listdir(cat_path):
+            year_path = os.path.join(cat_path, year)
+            if not os.path.isdir(year_path):
+                continue
 
-                    for row in range(band.shape[0]):
-                        for col in range(band.shape[1]):
-                            value = band[row, col]
-                            if value != src.nodata and value is not None:
-                                x, y = transform * (col, row)
-                                records.append({
-                                    "x": x,
-                                    "y": y,
-                                    "value": value,
-                                    "year": int(year),
-                                    "category": category,
-                                    "layer": filename
-                                })
+            print(f"🔍 Traitement : {category}/{year}")
 
-# 📄 Conversion en DataFrame et export
-df = pd.DataFrame(records)
-df.to_csv("gaez_yield_gap_data.csv", index=False, encoding="utf-8")
-print("✅ Données exportées dans gaez_yield_gap_data.csv")
+            for filename in os.listdir(year_path):
+                if not filename.endswith(".tif"):
+                    continue
+
+                file_path = os.path.join(year_path, filename)
+                try:
+                    with rasterio.open(file_path) as src:
+                        band = src.read(1)
+                        transform = src.transform
+                        nodata = src.nodata
+
+                        # Masquer les valeurs invalides
+                        mask = (band != nodata) & (~np.isnan(band))
+                        rows, cols = np.where(mask)
+                        xs, ys = rasterio.transform.xy(transform, rows, cols)
+
+                        # Écrire ligne par ligne
+                        for x, y, val in zip(xs, ys, band[rows, cols]):
+                            writer.writerow([x, y, val, int(year), category, filename])
+
+                except Exception as e:
+                    print(f"❌ Erreur sur {file_path} : {e}")
+
+print(f"✅ Terminé : les résultats sont dans {output_csv}")
