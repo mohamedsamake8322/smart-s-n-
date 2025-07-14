@@ -1,24 +1,33 @@
-import geopandas as gpd
+import fitz  # PyMuPDF
 import pandas as pd
-import os
+import re
 
-# 📁 Dossier contenant tous les GeoJSON par pays
-path = "gadm_africa_geojson"
-geojson_files = [os.path.join(path, f) for f in os.listdir(path) if f.endswith(".geojson")]
+def extract_text_from_pdf(pdf_path):
+    doc = fitz.open(pdf_path)
+    text = ""
+    for page in doc:
+        text += page.get_text()
+    return text
 
-# 🔄 Fusion des GeoJSON
-gdfs = [gpd.read_file(f) for f in geojson_files]
-merged = pd.concat(gdfs, ignore_index=True)
+def parse_fertilizer_prices(text):
+    lines = text.split("\n")
+    data = []
+    for line in lines:
+        if re.search(r"(Urea|NPK|DAP|MOP)", line):
+            match = re.findall(r"([A-Za-z\s]+)\s+(Urea|NPK|DAP|MOP)\s+(\d+\.?\d*)", line)
+            for m in match:
+                data.append({
+                    "Country": m[0].strip(),
+                    "Product": m[1],
+                    "Price": float(m[2])
+                })
+    return pd.DataFrame(data)
 
-# 📊 Infos
-print(f"🔗 Total entités fusionnées : {len(merged)}")
-# merged.plot()  # facultatif si tu veux visualiser
+def export_to_csv(df, out_path="data/fertilizer/fertilizer_prices.csv"):
+    df.to_csv(out_path, index=False)
 
-# 📂 Chemin d'export structuré
-export_dir = "data/geo"
-os.makedirs(export_dir, exist_ok=True)
-output_path = os.path.join(export_dir, "africa_admin_level2.geojson")
-
-# 💾 Sauvegarde du fichier fusionné
-merged.to_file(output_path, driver="GeoJSON")
-print(f"✅ Fichier fusionné sauvegardé ici : {output_path}")
+# 🧪 Exemple d'utilisation
+text = extract_text_from_pdf("data/fertilizer/FertilizerWatch_July2025.pdf")
+df_prices = parse_fertilizer_prices(text)
+export_to_csv(df_prices)
+print(df_prices.head())
