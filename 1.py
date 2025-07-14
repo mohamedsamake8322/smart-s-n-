@@ -1,13 +1,13 @@
 import geopandas as gpd
+import pandas as pd
 import os
 
 path = "gadm_africa_geojson"
-merged = gpd.GeoDataFrame()
+geojson_files = [os.path.join(path, f) for f in os.listdir(path) if f.endswith(".geojson")]
 
-for file in os.listdir(path):
-    if file.endswith(".geojson"):
-        gdf = gpd.read_file(os.path.join(path, file))
-        merged = merged.append(gdf, ignore_index=True)
+# 🔄 Fusion avec pd.concat()
+gdfs = [gpd.read_file(f) for f in geojson_files]
+merged = pd.concat(gdfs, ignore_index=True)
 
 print(f"🔗 Total entités fusionnées : {len(merged)}")
 merged.plot()
