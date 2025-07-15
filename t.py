@@ -5,15 +5,15 @@ import geopandas as gpd
 from rasterio.mask import mask
 import pandas as pd
 from tqdm import tqdm
-import geopandas as gpd
 
-# Chemin local du shapefile dézippé
+# 📍 Chemin du shapefile
 shapefile_path = r"C:\Users\moham\Documents\naturalearth_lowres\ne_110m_admin_0_countries.shp"
 
+# 🌍 Charger les pays d'Afrique
 gdf = gpd.read_file(shapefile_path)
-africa = gdf[gdf['CONTINENT'] == 'Africa'].to_crs("EPSG:4326")
+africa = gdf[gdf['CONTINENT'].str.lower() == 'africa'].to_crs("EPSG:4326")
 
-# 📁 Répertoire des .tif
+# 📁 Répertoires des variables climatiques
 base_dir = r"C:\Users\moham\Music\3\2.5 min"
 folders = {
     'precip': os.path.join(base_dir, 'Precipitation'),
@@ -21,50 +21,46 @@ folders = {
     'tmin': os.path.join(base_dir, 'Température min'),
 }
 
-# 🌍 Charger les pays d'Afrique (via Natural Earth)
-gdf = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-africa = gdf[gdf['continent'] == 'Africa'].to_crs("EPSG:4326")
-
-# 🔁 Fonction pour lire et calculer la moyenne par pays
+# 🔁 Fonction pour la moyenne zonale
 def zonal_mean_by_country(tif_path, country_geom):
-    with rasterio.open(tif_path) as src:
-        try:
+    try:
+        with rasterio.open(tif_path) as src:
             out_image, _ = mask(src, [country_geom], crop=True)
             data = out_image[0].astype(float)
             data[data == src.nodata] = np.nan
             return np.nanmean(data)
-        except Exception:
-            return np.nan
+    except Exception:
+        return np.nan
 
-# 📄 Résultats
+# 📊 Stockage des résultats
 results = []
 
-# 🔁 Pour chaque mois
+# 📆 Boucle mensuelle
 for month in tqdm(range(1, 13), desc="📆 Traitement des mois"):
     month_str = f"{month:02d}"
+    tif_paths = {var: None for var in folders}
 
-    # 📂 Chemins TIF de ce mois
-    tif_paths = {}
+    # 📂 Récupérer le fichier .tif correspondant pour chaque variable
     for var, folder in folders.items():
-        for file in os.listdir(folder):
-            if file.endswith(f"{month_str}.tif"):
-                tif_paths[var] = os.path.join(folder, file)
-                break
+        matched_files = [file for file in os.listdir(folder) if file.endswith(f"{month_str}.tif")]
+        if matched_files:
+            tif_paths[var] = os.path.join(folder, matched_files[0])
 
-    # 📍 Pour chaque pays
+    # 📍 Boucle par pays
     for _, row in africa.iterrows():
-        country = row['name']
-        geom = row['geometry']
         entry = {
-            'pays': country,
+            'pays': row['NAME'],
             'mois': month,
         }
+
         for var in ['precip', 'tmax', 'tmin']:
-            val = zonal_mean_by_country(tif_paths[var], geom)
-            entry[f"{var}_moy"] = round(val, 2) if not np.isnan(val) else None
+            tif_path = tif_paths[var]
+            val = zonal_mean_by_country(tif_path, row['geometry']) if tif_path else None
+            entry[f"{var}_moy"] = round(val, 2) if val is not None and not np.isnan(val) else None
+
         results.append(entry)
 
-# 📄 Sauvegarde
+# 💾 Export CSV
 df = pd.DataFrame(results)
 output_csv = os.path.join(base_dir, "worldclim_2.5min_afrique_par_pays.csv")
 df.to_csv(output_csv, index=False)
