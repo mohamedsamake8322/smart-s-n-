@@ -22,13 +22,23 @@ weather_list = []
 for file in weather_files:
     try:
         df = pd.read_csv(file, low_memory=False)
-        df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
-        df["year"] = df["DATE"].dt.year
-        df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
-        weather_list.append(df)
+
+        # ⛔ Vérifie que la structure est raisonnable
+        if df.shape[1] > 150:
+            print(f"⚠️ Trop de colonnes dans {os.path.basename(file)} → ignoré.")
+            continue
+
+        # ✔️ Colonnes essentielles
+        if all(col in df.columns for col in ["DATE", "Latitude", "Longitude"]):
+            df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
+            df["year"] = df["DATE"].dt.year
+            df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
+            weather_list.append(df)
+        else:
+            print(f"❌ Colonnes manquantes dans {os.path.basename(file)} → ignoré.")
     except Exception as e:
         print(f"⛔ Erreur lecture {os.path.basename(file)} : {e}")
-
+        print(f"✅ Fichiers météo valides chargés : {len(weather_list)}")
 weather_df = pd.concat(weather_list, ignore_index=True)
 weather_soil_df = pd.merge(weather_df, soil_df, on="latlon", how="inner")
 
