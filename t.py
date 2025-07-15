@@ -1,39 +1,29 @@
 import pandas as pd
 import os
+from glob import glob
 
-# Fichier à corriger
-file_path = r"C:\plateforme-agricole-complete-v2\weather_cleaned\weather_Togo.csv"
+weather_folder = r"C:\plateforme-agricole-complete-v2\weather_final"
+output_folder = r"C:\plateforme-agricole-complete-v2\weather_reduit"
+os.makedirs(output_folder, exist_ok=True)
 
-try:
-    # 🧪 Essai avec différents séparateurs
-    df_try1 = pd.read_csv(file_path, sep=",", engine="python")
-    df_try2 = pd.read_csv(file_path, sep=";", engine="python")
+# 🔎 Colonnes à conserver
+variables_clés = ["Country", "Latitude", "Longitude", "DATE"]
+patterns_utiles = ["PRECTOT", "WS2M", "PS", "IMERG"]
 
-    # Sélectionne la version avec le plus grand nombre de colonnes utiles
-    if df_try2.shape[1] > df_try1.shape[1]:
-        df = df_try2
-    else:
-        df = df_try1
+# 📦 Parcours et copie réduite
+weather_files = glob(os.path.join(weather_folder, "*.csv"))
 
-    # ✔️ Corriger Longitude si elle contient '.csv'
-    if "Longitude" in df.columns:
-        df["Longitude"] = df["Longitude"].astype(str).str.replace(".csv", "", regex=False)
-        df["Longitude"] = pd.to_numeric(df["Longitude"], errors="coerce")
+for file_path in weather_files:
+    try:
+        file_name = os.path.basename(file_path)
+        df = pd.read_csv(file_path, low_memory=False)
 
-    if "Latitude" in df.columns:
-        df["Latitude"] = pd.to_numeric(df["Latitude"], errors="coerce")
+        keep = [c for c in df.columns if any(p in c for p in patterns_utiles)] + variables_clés
+        df_reduit = df[keep]
 
-    # ✔️ Convertir les dates
-    if "DATE" in df.columns:
-        df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
-        df["year"] = df["DATE"].dt.year
+        output_path = os.path.join(output_folder, file_name)
+        df_reduit.to_csv(output_path, index=False)
+        print(f"✅ Fichier réduit : {file_name} ({df_reduit.shape[0]} lignes, {df_reduit.shape[1]} colonnes)")
 
-    # 🔍 Vérification finale
-    if all(col in df.columns for col in ["DATE", "Latitude", "Longitude"]):
-        df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
-        df.to_csv(file_path.replace("weather_cleaned", "weather_final"), index=False)
-        print(f"✅ {os.path.basename(file_path)} corrigé et déplacé dans weather_final.")
-    else:
-        print(f"⚠️ Colonnes essentielles manquantes après tentative — à corriger manuellement.")
-except Exception as e:
-    print(f"⛔ Échec de lecture : {e}")
+    except Exception as e:
+        print(f"⛔ Erreur réduction {file_name} : {e}")
