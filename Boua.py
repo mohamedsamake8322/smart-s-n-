@@ -89,7 +89,11 @@ merged_df = pd.merge(merged_df, prod_pivot, left_on=["Country", "year"], right_o
 
 # 7️⃣ Rendements agricoles
 crop_prod = pd.read_csv(os.path.join(boua_folder, "Production_Crops_Livestock_Afrique.csv"), header=None)
-crop_prod.columns = ["AreaCode", "M49Code", "Country", "ItemCode", "CropName", "ElementCode", "Element", "YearCode", "Year", "Unit", "Value", "Flag", "FlagDescription"]
+crop_prod.columns = [
+    "AreaCode", "M49Code", "Country", "ItemCode", "CropName",
+    "ElementCode", "Element", "YearCode", "Year", "Unit",
+    "Value", "Flag", "FlagDescription"
+]
 crop_prod["Year"] = pd.to_numeric(crop_prod["Year"], errors="coerce")
 crop_prod = crop_prod[crop_prod["Element"] == "Area harvested"]
 crop_prod = crop_prod.groupby(["Country", "Year", "CropName"])["Value"].sum().reset_index()
