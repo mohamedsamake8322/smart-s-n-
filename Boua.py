@@ -98,11 +98,22 @@ crop_prod = pd.read_csv(
     header=None
 )
 
-crop_prod.columns = [
-    "AreaCode", "M49Code", "Country", "ItemCode", "CropName",
-    "ElementCode", "Element", "YearCode", "Year", "Unit",
-    "Value", "Flag", "FlagDescription"
-]
+# 📊 Vérifie la structure avant d’attribuer les noms
+if crop_prod.shape[1] == 15:
+    crop_prod.columns = [
+        "AreaCode", "M49Code", "Country", "ItemCode", "CropName",
+        "ElementCode", "Element", "YearCode", "Year", "Unit",
+        "Value", "Flag", "FlagDescription", "Extra"
+    ]
+    crop_prod = crop_prod.drop(columns=["Extra"], errors="ignore")
+elif crop_prod.shape[1] == 14:
+    crop_prod.columns = [
+        "AreaCode", "M49Code", "Country", "ItemCode", "CropName",
+        "ElementCode", "Element", "YearCode", "Year", "Unit",
+        "Value", "Flag", "FlagDescription"
+    ]
+else:
+    raise ValueError(f"⚠️ Format inattendu : {crop_prod.shape[1]} colonnes détectées")
 
 # 🧼 Nettoyage et filtrage
 crop_prod["Year"] = pd.to_numeric(crop_prod["Year"], errors="coerce")
@@ -110,10 +121,11 @@ crop_prod = crop_prod[crop_prod["Element"] == "Area harvested"]
 crop_prod = crop_prod.groupby(["Country", "Year", "CropName"])["Value"].sum().reset_index()
 crop_prod = crop_prod.rename(columns={"Value": "Harvested_Area_ha"})
 
-# 🔁 Fusion avec le dataset principal
+# 🔁 Fusion finale
 final_df = pd.merge(merged_df, crop_prod, on=["Country", "Year"], how="left")
 
 # 💾 Sauvegarde
 output_path = r"C:\plateforme-agricole-complete-v2\dataset_prediction_rendement.csv"
 final_df.to_csv(output_path, index=False)
 print(f"✅ Dataset fusionné sauvegardé ici : {output_path}")
+
