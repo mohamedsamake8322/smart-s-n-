@@ -83,6 +83,7 @@ merged_df = pd.merge(merged_df, pest_pivot, left_on=["Country", "year"], right_o
 fert_prod = pd.read_csv(os.path.join(boua_folder, "FAOSTAT_data_en_7-12-2025_engrais_par_produit.csv"))
 fert_prod["Year"] = pd.to_numeric(fert_prod["Year"], errors="coerce")
 prod_agg = fert_prod.groupby(["Area", "Year", "Item"])["Value"].sum().reset_index()
+merged_df = merged_df.drop(columns=["Area", "Year"], errors="ignore")
 prod_pivot = prod_agg.pivot_table(index=["Area", "Year"], columns="Item", values="Value").reset_index()
 merged_df = pd.merge(merged_df, prod_pivot, left_on=["Country", "year"], right_on=["Area", "Year"], how="left")
 
