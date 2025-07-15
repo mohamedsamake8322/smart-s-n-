@@ -5,7 +5,6 @@ from glob import glob
 # 📁 Dossiers
 soil_path = r"C:\plateforme-agricole-complete-v2\soilgrids_africa\soil_profile_africa.csv"
 weather_folder = r"C:\Users\moham\Music\3\worldclim"
-
 boua_folder = r"C:\plateforme-agricole-complete-v2\Boua"
 
 # 1️⃣ Sol
@@ -15,10 +14,19 @@ soil_df["Longitude"] = soil_df["x"]
 soil_df["latlon"] = soil_df["Latitude"].round(4).astype(str) + "_" + soil_df["Longitude"].round(4).astype(str)
 soil_df["latlon"] = soil_df["latlon"].str.strip()
 
-# 2️⃣ Météo
-weather_files = [f for f in glob(os.path.join(weather_folder, "*.csv")) if "report" not in os.path.basename(f).lower()]
+# 🌐 Météo agrégée (2.5min / 5min / 10min)
+res_comp_path = os.path.join(weather_folder, "worldclim_comparatif_resolutions.csv")
+if os.path.exists(res_comp_path):
+    clim_avg_df = pd.read_csv(res_comp_path)
+    clim_avg_df["mois"] = clim_avg_df["mois"].astype(int)
+    clim_avg_df["Country"] = clim_avg_df["pays"].str.strip().str.title()
+else:
+    raise FileNotFoundError(f"⛔ Fichier météo multi-résolution absent : {res_comp_path}")
+
+# 2️⃣ Météo brute
+weather_files = [f for f in glob(os.path.join(weather_folder, "*.csv")) if "report" not in os.path.basename(f).lower() and "comparatif" not in f]
 weather_df = pd.DataFrame()
-print(f"✅ Fichiers météo retenus : {len(weather_files)}")
+print(f"✅ Fichiers météo bruts retenus : {len(weather_files)}")
 
 for file in weather_files:
     try:
@@ -33,16 +41,15 @@ for file in weather_files:
         df["Longitude"] = pd.to_numeric(df["Longitude"].astype(str).str.replace(".csv", "", regex=False), errors="coerce")
         df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
         df["year"] = df["DATE"].dt.year
+        df["month"] = df["DATE"].dt.month
         df["Country"] = df["Country"].str.strip().str.title()
         df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
 
         weather_df = pd.concat([weather_df, df], ignore_index=True)
-        del df
-
-        print(f"📥 Fichier traité : {os.path.basename(file)}")
+        print(f"📥 Fichier météo traité : {os.path.basename(file)}")
 
     except Exception as e:
-        print(f"⛔ Erreur lecture {os.path.basename(file)} : {e}")
+        print(f"⛔ Erreur lecture météo {os.path.basename(file)} : {e}")
 
 print(f"🧮 Lignes météo finales : {weather_df.shape[0]}")
 
@@ -83,6 +90,10 @@ prod_pivot = prod_agg.pivot_table(index=["Area", "Year"], columns="Item", values
 merged_df = merged_df.drop(columns=["Area", "Year"], errors="ignore")
 merged_df = pd.merge(merged_df, prod_pivot, left_on=["Country", "year"], right_on=["Area", "Year"], how="left")
 
+# 🔗 Fusion avec climat agrégé
+merged_df = pd.merge(merged_df, clim_avg_df, left_on=["Country", "month"], right_on=["Country", "mois"], how="left")
+merged_df = merged_df.drop(columns=["pays", "mois"], errors="ignore")
+
 # 8️⃣ Rendements agricoles
 crop_file = os.path.join(boua_folder, "Production_Crops_Livestock_Afrique.csv")
 crop_prod = pd.read_csv(crop_file, sep=",", quotechar='"', engine="python", header=None)
@@ -108,9 +119,9 @@ crop_prod = crop_prod.groupby(["Country", "Year", "CropName"])["Value"].sum().re
 crop_prod = crop_prod.rename(columns={"Value": "Harvested_Area_ha"})
 
 final_df = pd.merge(merged_df, crop_prod, on=["Country", "Year"], how="left")
-print(f"✅ Dataset final prêt : {final_df.shape[0]} lignes, {final_df.shape[1]} colonnes")
+print(f"✅ Dataset final enrichi : {final_df.shape[0]} lignes, {final_df.shape[1]} colonnes")
 
 # 💾 Sauvegarde
 output_path = r"C:\plateforme-agricole-complete-v2\dataset_prediction_rendement.csv"
 final_df.to_csv(output_path, index=False)
-print(f"📁 Sauvegardé ici : {output_path}")
+print(f"📁 Fichier sauvegardé ici : {output_path}")
