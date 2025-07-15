@@ -96,24 +96,28 @@ elif crop_prod.shape[1] == len(expected_cols) + 1:
 else:
     raise ValueError(f"⚠️ Format inattendu : {crop_prod.shape[1]} colonnes détectées")
 
+# 📊 Vérification rapide
 print(f"🧪 crop_prod total avant filtre : {crop_prod.shape[0]}")
 print(f"🔎 Valeurs 'Element' : {crop_prod['Element'].dropna().unique()[:5]}")
-print(f"🔎 Valeurs 'ElementCode' : {crop_prod['ElementCode'].dropna().unique()[:5]}")
 
-# 🔄 Utilise le code FAO pour "Area harvested" : 5312
-crop_prod = crop_prod[crop_prod["ElementCode"] == 5312]
-print(f"🌱 crop_prod après filtre 'Area harvested (code 5312)' : {crop_prod.shape[0]}")
+# ✅ Filtrage par libellé (et non par code)
+crop_prod = crop_prod[crop_prod["Element"] == "Area harvested"]
+
+print(f"🌱 crop_prod après filtre 'Area harvested' : {crop_prod.shape[0]}")
 print(f"📋 Pays crop_prod : {crop_prod['Country'].dropna().unique()[:5]}")
 print(f"📋 Années crop_prod : {crop_prod['Year'].dropna().unique()[:5]}")
 
+# 🧮 Agrégation
 crop_prod = crop_prod.groupby(["Country", "Year", "CropName"])["Value"].sum().reset_index()
 crop_prod = crop_prod.rename(columns={"Value": "Harvested_Area_ha"})
 
+# 🔗 Diagnostic de jointure
 print("🔗 Pays communs avec merged_df :")
 print(set(merged_df["Country"].dropna()) & set(crop_prod["Country"].dropna()))
 print("🔗 Années communes :")
 print(set(merged_df["year"].dropna()) & set(crop_prod["Year"].dropna()))
 
+# 🔁 Fusion finale
 final_df = pd.merge(merged_df, crop_prod, on=["Country", "Year"], how="left")
 print(f"✅ Lignes finales dans dataset : {final_df.shape[0]}")
 
