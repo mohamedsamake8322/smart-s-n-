@@ -1,51 +1,34 @@
 import pandas as pd
 import numpy as np
-from glob import glob
 import os
+from glob import glob
 
-# 📁 Dossiers source
+# 📁 Dossiers
 soil_path = r"C:\plateforme-agricole-complete-v2\soilgrids_africa\soil_profile_africa.csv"
-weather_folder = r"C:\plateforme-agricole-complete-v2\weather_by_country"
+weather_folder = r"C:\plateforme-agricole-complete-v2\weather_cleaned"
 boua_folder = r"C:\plateforme-agricole-complete-v2\Boua"
 
-# 1️⃣ Sol
+# 1️⃣ Données de sol
 soil_df = pd.read_csv(soil_path)
 soil_df["latlon"] = soil_df["y"].round(4).astype(str) + "_" + soil_df["x"].round(4).astype(str)
 
-# 2️⃣ Météo — Lecture filtrée et normalisation
-weather_list = []
+# 2️⃣ Données météo nettoyées
 weather_files = glob(os.path.join(weather_folder, "*.csv"))
-
+weather_list = []
 for file in weather_files:
     try:
-        df = pd.read_csv(file, sep=",", engine="python", low_memory=False)
-
-        # ✔️ Corriger colonne Longitude s’il y a ".csv"
-        if "Longitude" in df.columns:
-            df["Longitude"] = df["Longitude"].astype(str).str.replace(".csv", "", regex=False)
-            df["Longitude"] = pd.to_numeric(df["Longitude"], errors="coerce")
-
-        if all(col in df.columns for col in ["DATE", "Latitude", "Longitude"]):
-            df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
-            df["Latitude"] = pd.to_numeric(df["Latitude"], errors="coerce")
-            df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
-            df["year"] = df["DATE"].dt.year
-
-            if df.shape[1] < 150:
-                weather_list.append(df)
-            else:
-                print(f"⚠️ Trop de colonnes ({df.shape[1]}), ignoré : {os.path.basename(file)}")
-        else:
-            print(f"❌ Colonnes essentielles manquantes dans {os.path.basename(file)}")
-
+        df = pd.read_csv(file, low_memory=False)
+        df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
+        df["year"] = df["DATE"].dt.year
+        df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
+        weather_list.append(df)
     except Exception as e:
         print(f"⛔ Erreur lecture {os.path.basename(file)} : {e}")
 
-# ➕ Fusion météo + sol
 weather_df = pd.concat(weather_list, ignore_index=True)
 weather_soil_df = pd.merge(weather_df, soil_df, on="latlon", how="inner")
 
-# 3️⃣ Engrais par nutriment
+# 3️⃣ Engrais par nutriments
 fert_nutrient = pd.read_csv(os.path.join(boua_folder, "FAOSTAT_data_en_7-12-2025_engrais_nutriment.csv"))
 fert_nutrient["Year"] = pd.to_numeric(fert_nutrient["Year"], errors="coerce")
 fert_nutrient = fert_nutrient.groupby(["Area", "Year", "Item"])["Value"].sum().reset_index()
@@ -59,7 +42,7 @@ manure_agg = manure_df.groupby(["Area", "Year"])["Value"].sum().reset_index()
 manure_agg = manure_agg.rename(columns={"Value": "Manure_N_total_kg"})
 merged_df = pd.merge(merged_df, manure_agg, on=["Country", "Year"], how="left")
 
-# 5️⃣ Pesticides
+# 5️⃣ Utilisation des pesticides
 pest_df = pd.read_csv(os.path.join(boua_folder, "FAOSTAT_data_en_7-12-2025_utilisation_des_pesticides.csv"))
 pest_df["Year"] = pd.to_numeric(pest_df["Year"], errors="coerce")
 pest_agg = pest_df.groupby(["Area", "Year", "Element"])["Value"].sum().reset_index()
@@ -73,7 +56,7 @@ prod_agg = fert_prod.groupby(["Area", "Year", "Item"])["Value"].sum().reset_inde
 prod_pivot = prod_agg.pivot_table(index=["Area", "Year"], columns="Item", values="Value").reset_index()
 merged_df = pd.merge(merged_df, prod_pivot, left_on=["Country", "Year"], right_on=["Area", "Year"], how="left")
 
-# 7️⃣ Rendement agricole
+# 7️⃣ Données de culture et rendement
 crop_prod = pd.read_csv(os.path.join(boua_folder, "Production_Crops_Livestock_Afrique.csv"), header=None)
 crop_prod.columns = ["AreaCode", "M49Code", "Country", "ItemCode", "CropName", "ElementCode", "Element", "YearCode", "Year", "Unit", "Value", "Flag", "FlagDescription"]
 crop_prod["Year"] = pd.to_numeric(crop_prod["Year"], errors="coerce")
@@ -81,10 +64,10 @@ crop_prod = crop_prod[crop_prod["Element"] == "Area harvested"]
 crop_prod = crop_prod.groupby(["Country", "Year", "CropName"])["Value"].sum().reset_index()
 crop_prod = crop_prod.rename(columns={"Value": "Harvested_Area_ha"})
 
-# ➕ Fusion finale
+# 🔗 Fusion finale
 final_df = pd.merge(merged_df, crop_prod, on=["Country", "Year"], how="left")
 
-# 💾 Sauvegarde finale
+# 💾 Sauvegarde du dataset final
 output_path = r"C:\plateforme-agricole-complete-v2\dataset_prediction_rendement.csv"
 final_df.to_csv(output_path, index=False)
 print(f"✅ Dataset fusionné sauvegardé ici : {output_path}")
