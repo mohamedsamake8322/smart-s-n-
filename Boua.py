@@ -4,7 +4,7 @@ from glob import glob
 
 # 📁 Dossiers
 soil_path = r"C:\plateforme-agricole-complete-v2\soilgrids_africa\soil_profile_africa.csv"
-weather_folder = r"C:\plateforme-agricole-complete-v2\weather_reduit"
+weather_folder = r"C:\Users\moham\Music\3\worldclim"
 
 boua_folder = r"C:\plateforme-agricole-complete-v2\Boua"
 
