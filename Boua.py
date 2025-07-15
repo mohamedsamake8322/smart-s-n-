@@ -43,8 +43,12 @@ print(f"🎯 Colonnes communes retenues : {len(common_cols)}")
 
 weather_df = pd.concat(weather_list, ignore_index=True)
 print(f"🧮 Lignes dans weather_df : {weather_df.shape[0]}")
+
 weather_soil_df = pd.merge(weather_df, soil_df, on="latlon", how="inner")
-print(f"🧮 Lignes dans weather_df : {weather_df.shape[0]}")
+print(f"🧮 Lignes après fusion sol : {weather_soil_df.shape[0]}")
+print(f"📋 Pays météo/sol : {weather_soil_df['Country'].dropna().unique()[:5]}")
+print(f"📋 Années météo/sol : {weather_soil_df['year'].dropna().unique()[:5]}")
+
 # 3️⃣ Engrais NPK
 fert_nutrient = pd.read_csv(os.path.join(boua_folder, "FAOSTAT_data_en_7-12-2025_engrais_nutriment.csv"))
 fert_nutrient["Year"] = pd.to_numeric(fert_nutrient["Year"], errors="coerce")
@@ -92,27 +96,24 @@ elif crop_prod.shape[1] == len(expected_cols) + 1:
 else:
     raise ValueError(f"⚠️ Format inattendu : {crop_prod.shape[1]} colonnes détectées")
 
-# 🔍 Diagnostic sur crop_prod brut
 print(f"🧪 crop_prod total avant filtre : {crop_prod.shape[0]}")
 print(f"🔎 Valeurs 'Element' : {crop_prod['Element'].dropna().unique()[:5]}")
+print(f"🔎 Valeurs 'ElementCode' : {crop_prod['ElementCode'].dropna().unique()[:5]}")
 
-# 🧼 Nettoyage
-crop_prod["Year"] = pd.to_numeric(crop_prod["Year"], errors="coerce")
-crop_prod = crop_prod[crop_prod["Element"] == "Area harvested"]
-print(f"🌱 crop_prod après filtre 'Area harvested' : {crop_prod.shape[0]}")
+# 🔄 Utilise le code FAO pour "Area harvested" : 5312
+crop_prod = crop_prod[crop_prod["ElementCode"] == 5312]
+print(f"🌱 crop_prod après filtre 'Area harvested (code 5312)' : {crop_prod.shape[0]}")
 print(f"📋 Pays crop_prod : {crop_prod['Country'].dropna().unique()[:5]}")
 print(f"📋 Années crop_prod : {crop_prod['Year'].dropna().unique()[:5]}")
 
 crop_prod = crop_prod.groupby(["Country", "Year", "CropName"])["Value"].sum().reset_index()
 crop_prod = crop_prod.rename(columns={"Value": "Harvested_Area_ha"})
 
-# 🔗 Vérification de correspondance
-print("🔗 Pays communs avec weather_soil_df :")
-print(set(weather_soil_df["Country"].dropna()) & set(crop_prod["Country"].dropna()))
+print("🔗 Pays communs avec merged_df :")
+print(set(merged_df["Country"].dropna()) & set(crop_prod["Country"].dropna()))
 print("🔗 Années communes :")
-print(set(weather_soil_df["year"].dropna()) & set(crop_prod["Year"].dropna()))
+print(set(merged_df["year"].dropna()) & set(crop_prod["Year"].dropna()))
 
-# 🔁 Fusion finale
 final_df = pd.merge(merged_df, crop_prod, on=["Country", "Year"], how="left")
 print(f"✅ Lignes finales dans dataset : {final_df.shape[0]}")
 
