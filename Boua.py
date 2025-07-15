@@ -5,7 +5,8 @@ from glob import glob
 
 # 📁 Dossiers
 soil_path = r"C:\plateforme-agricole-complete-v2\soilgrids_africa\soil_profile_africa.csv"
-weather_folder = r"C:\plateforme-agricole-complete-v2\weather_cleaned"
+weather_folder = r"C:\plateforme-agricole-complete-v2\weather_final"
+
 boua_folder = r"C:\plateforme-agricole-complete-v2\Boua"
 
 # 1️⃣ Chargement des données de sol
