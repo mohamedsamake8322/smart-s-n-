@@ -1,29 +1,35 @@
 import pandas as pd
-import os
-from glob import glob
 
-weather_folder = r"C:\plateforme-agricole-complete-v2\weather_final"
-output_folder = r"C:\plateforme-agricole-complete-v2\weather_reduit"
-os.makedirs(output_folder, exist_ok=True)
+# 🔗 Chemins vers tes fichiers
+soil_path = r"C:\plateforme-agricole-complete-v2\soilgrids_africa\soil_profile_africa.csv"
+weather_path = r"C:\plateforme-agricole-complete-v2\weather_reduit\weather_Mali.csv"  # ← choisis un fichier réduit
 
-# 🔎 Colonnes à conserver
-variables_clés = ["Country", "Latitude", "Longitude", "DATE"]
-patterns_utiles = ["PRECTOT", "WS2M", "PS", "IMERG"]
+# 🌱 Chargement du sol
+soil_df = pd.read_csv(soil_path)
+soil_df["Latitude"] = soil_df["y"]
+soil_df["Longitude"] = soil_df["x"]
+soil_df["latlon"] = soil_df["Latitude"].round(4).astype(str) + "_" + soil_df["Longitude"].round(4).astype(str)
+soil_latlon = set(soil_df["latlon"].dropna().unique())
 
-# 📦 Parcours et copie réduite
-weather_files = glob(os.path.join(weather_folder, "*.csv"))
+print(f"🌱 Points sol : {len(soil_latlon)}")
+print("🔎 Exemples latlon sol :", list(soil_latlon)[:5])
 
-for file_path in weather_files:
-    try:
-        file_name = os.path.basename(file_path)
-        df = pd.read_csv(file_path, low_memory=False)
+# 🌦️ Chargement météo (réduit)
+weather_df = pd.read_csv(weather_path, low_memory=False)
+weather_df["Latitude"] = pd.to_numeric(weather_df["Latitude"], errors="coerce")
+weather_df["Longitude"] = pd.to_numeric(weather_df["Longitude"].astype(str).str.replace(".csv", "", regex=False), errors="coerce")
+weather_df["latlon"] = weather_df["Latitude"].round(4).astype(str) + "_" + weather_df["Longitude"].round(4).astype(str)
+weather_latlon = set(weather_df["latlon"].dropna().unique())
 
-        keep = [c for c in df.columns if any(p in c for p in patterns_utiles)] + variables_clés
-        df_reduit = df[keep]
+print(f"🌦️ Points météo : {len(weather_latlon)}")
+print("🔎 Exemples latlon météo :", list(weather_latlon)[:5])
 
-        output_path = os.path.join(output_folder, file_name)
-        df_reduit.to_csv(output_path, index=False)
-        print(f"✅ Fichier réduit : {file_name} ({df_reduit.shape[0]} lignes, {df_reduit.shape[1]} colonnes)")
+# 🧩 Intersections
+common_latlon = soil_latlon & weather_latlon
+print(f"🔗 Points communs latlon : {len(common_latlon)}")
 
-    except Exception as e:
-        print(f"⛔ Erreur réduction {file_name} : {e}")
+# 🗺️ Vérification de la clé Country/Year
+print("🌍 Exemples pays météo :", weather_df["Country"].dropna().unique()[:5])
+weather_df["DATE"] = pd.to_datetime(weather_df["DATE"], errors="coerce")
+weather_df["year"] = weather_df["DATE"].dt.year
+print("📆 Exemples années météo :", sorted(weather_df["year"].dropna().unique())[:5])
