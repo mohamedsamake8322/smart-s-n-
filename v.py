@@ -1,37 +1,45 @@
 import pandas as pd
 import os
 
-# 📁 Dossiers d'origine
-base_path = r"C:\Users\moham\Music\3"
+# 📁 Dossier contenant les fichiers
+weather_folder = r"C:\Users\moham\Music\3\worldclim"
+
+# 🔍 Localiser les fichiers
 files = {
-    "2.5min": os.path.join(base_path, "2.5 min", "worldclim_2.5min_afrique_par_pays.csv"),
-    "5min": os.path.join(base_path, "5 min", "worldclim_5min_afrique_par_pays.csv"),
-    "10min": os.path.join(base_path, "10 min", "worldclim_10min_afrique_par_pays.csv"),
+    "2.5min": os.path.join(weather_folder, "worldclim_2.5min_afrique_par_pays.csv"),
+    "5min": os.path.join(weather_folder, "worldclim_5min_afrique_par_pays.csv"),
+    "10min": os.path.join(weather_folder, "worldclim_10min_afrique_par_pays.csv"),
 }
 
-# 🔁 Lecture et renommage des colonnes
-clim_dataframes = []
-for res, path in files.items():
-    df = pd.read_csv(path)
+# 🧰 Charger et renommer les colonnes
+frames = []
+for res, filepath in files.items():
+    if not os.path.exists(filepath):
+        print(f"⛔ Fichier absent : {filepath}")
+        continue
+
+    df = pd.read_csv(filepath)
     df = df.rename(columns={
         "precip_moy": f"precip_{res}",
         "tmax_moy": f"tmax_{res}",
         "tmin_moy": f"tmin_{res}"
     })
     df["mois"] = df["mois"].astype(int)
-    clim_dataframes.append(df)
+    frames.append(df)
 
-# 🔗 Fusion progressive sur ['pays', 'mois']
-merged = clim_dataframes[0]
-for df in clim_dataframes[1:]:
-    merged = pd.merge(merged, df, on=["pays", "mois"], how="outer")
+# 🔗 Fusion des fichiers par 'pays' et 'mois'
+if len(frames) == 3:
+    merged = frames[0]
+    for other_df in frames[1:]:
+        merged = pd.merge(merged, other_df, on=["pays", "mois"], how="outer")
 
-# 🧽 Nettoyage final
-merged = merged.drop_duplicates(subset=["pays", "mois"])
-merged = merged.sort_values(by=["pays", "mois"])
+    # 📦 Nettoyage et tri
+    merged = merged.drop_duplicates(subset=["pays", "mois"])
+    merged = merged.sort_values(["pays", "mois"])
 
-# 💾 Sauvegarde
-output_path = os.path.join(base_path, "worldclim_resolution_comparative.csv")
-merged.to_csv(output_path, index=False)
-
-print(f"✅ Fichier fusionné sauvegardé : {output_path}")
+    # 💾 Sauvegarde
+    output_file = os.path.join(weather_folder, "worldclim_comparatif_resolutions.csv")
+    merged.to_csv(output_file, index=False)
+    print(f"✅ Fichier fusionné créé : {output_file}")
+else:
+    print("⚠️ Fusion impossible : au moins un fichier météo est manquant.")
