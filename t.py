@@ -5,6 +5,13 @@ import geopandas as gpd
 from rasterio.mask import mask
 import pandas as pd
 from tqdm import tqdm
+import geopandas as gpd
+
+# Chemin local du shapefile dézippé
+shapefile_path = r"C:\Users\moham\Documents\naturalearth_lowres\ne_110m_admin_0_countries.shp"
+
+gdf = gpd.read_file(shapefile_path)
+africa = gdf[gdf['CONTINENT'] == 'Africa'].to_crs("EPSG:4326")
 
 # 📁 Répertoire des .tif
 base_dir = r"C:\Users\moham\Music\3\2.5 min"
