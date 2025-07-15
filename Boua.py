@@ -23,20 +23,22 @@ for file in weather_files:
     try:
         df = pd.read_csv(file, low_memory=False)
 
-        # ⛔ Élimination des fichiers aux colonnes trop nombreuses
-        if df.shape[1] > 150:
-            print(f"⚠️ Trop de colonnes dans {os.path.basename(file)} — ignoré.")
+        # 🚫 Éliminer les fichiers suspects
+        if df.shape[1] < 20 or df.shape[1] > 100:
+            print(f"❌ Structure suspecte — ignoré : {os.path.basename(file)} ({df.shape[1]} colonnes)")
             continue
 
+        # ✔️ Vérifier les colonnes essentielles
         if all(col in df.columns for col in ["DATE", "Latitude", "Longitude"]):
             df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
             df["year"] = df["DATE"].dt.year
             df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
             weather_list.append(df)
         else:
-            print(f"❌ Colonnes essentielles manquantes dans {os.path.basename(file)} — ignoré.")
+            print(f"❌ Colonnes manquantes — ignoré : {os.path.basename(file)}")
     except Exception as e:
         print(f"⛔ Erreur lecture {os.path.basename(file)} : {e}")
+        print(f"✅ Fichiers météo retenus pour fusion : {len(weather_list)}")
 
 # Fusion météo + sol
 print(f"✅ Fichiers météo valides chargés : {len(weather_list)}")
