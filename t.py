@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 # Fichier à corriger
-file_path = r"C:\plateforme-agricole-complete-v2\weather_cleaned\weather_Malawi.csv"
+file_path = r"C:\plateforme-agricole-complete-v2\weather_cleaned\weather_Togo.csv"
 
 try:
     # 🧪 Essai avec différents séparateurs
