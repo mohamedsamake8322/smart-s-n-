@@ -13,8 +13,8 @@ shapefile_path = r"C:\Users\moham\Documents\naturalearth_lowres\ne_110m_admin_0_
 gdf = gpd.read_file(shapefile_path)
 africa = gdf[gdf['CONTINENT'].str.lower() == 'africa'].to_crs("EPSG:4326")
 
-# 📁 Répertoires des variables climatiques pour 5min
-base_dir = r"C:\Users\moham\Music\3\5 min"
+# 📁 Répertoires des variables climatiques pour 10min
+base_dir = r"C:\Users\moham\Music\3\10 min"
 folders = {
     'precip': os.path.join(base_dir, 'Precipitation'),
     'tmax': os.path.join(base_dir, 'Température max'),
@@ -62,7 +62,7 @@ for month in tqdm(range(1, 13), desc="📆 Traitement des mois"):
 
 # 💾 Export CSV
 df = pd.DataFrame(results)
-output_csv = os.path.join(base_dir, "worldclim_5min_afrique_par_pays.csv")
+output_csv = os.path.join(base_dir, "worldclim_10min_afrique_par_pays.csv")
 df.to_csv(output_csv, index=False)
 
 print(f"✅ Extraction terminée : {output_csv}")
