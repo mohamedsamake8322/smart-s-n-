@@ -24,22 +24,34 @@ for file in weather_files:
     try:
         df = pd.read_csv(file, low_memory=False)
 
-        # 🚫 Éliminer les fichiers suspects
-        if df.shape[1] < 20 or df.shape[1] > 100:
+        # ⛔ Filtrer les colonnes non utiles ou corrompues
+        # Garder les variables météo + coord + DATE
+        keep_cols = [c for c in df.columns if (
+            "PRECTOT" in c or "WS2M" in c or "PS" in c or "IMERG" in c or
+            c in ["Country", "Latitude", "Longitude", "DATE"]
+        )]
+
+        df = df[keep_cols]
+
+        # 🧪 Vérifier structure cohérente
+        if "DATE" not in df.columns or df.shape[1] < 5 or df.shape[1] > 100:
             print(f"❌ Structure suspecte — ignoré : {os.path.basename(file)} ({df.shape[1]} colonnes)")
             continue
 
-        # ✔️ Vérifier les colonnes essentielles
-        if all(col in df.columns for col in ["DATE", "Latitude", "Longitude"]):
-            df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
-            df["year"] = df["DATE"].dt.year
-            df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
-            weather_list.append(df)
-        else:
-            print(f"❌ Colonnes manquantes — ignoré : {os.path.basename(file)}")
+        # 🧼 Conversion types
+        df["Latitude"] = pd.to_numeric(df["Latitude"], errors="coerce")
+        df["Longitude"] = pd.to_numeric(df["Longitude"].astype(str).str.replace(".csv", "", regex=False), errors="coerce")
+        df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
+
+        df["year"] = df["DATE"].dt.year
+        df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
+
+        weather_list.append(df)
+
     except Exception as e:
         print(f"⛔ Erreur lecture {os.path.basename(file)} : {e}")
-        print(f"✅ Fichiers météo retenus pour fusion : {len(weather_list)}")
+
+print(f"✅ Fichiers météo retenus pour fusion : {len(weather_list)}")
 
 # Fusion météo + sol
 print(f"✅ Fichiers météo valides chargés : {len(weather_list)}")
