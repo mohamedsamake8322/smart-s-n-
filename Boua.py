@@ -13,44 +13,30 @@ soil_df = pd.read_csv(soil_path)
 soil_df["latlon"] = soil_df["y"].round(4).astype(str) + "_" + soil_df["x"].round(4).astype(str)
 
 # 2️⃣ Météo nettoyée
-weather_files = [
-    f for f in glob(os.path.join(weather_folder, "*.csv"))
-    if "report" not in os.path.basename(f).lower()
-]
-
+weather_files = [f for f in glob(os.path.join(weather_folder, "*.csv")) if "report" not in os.path.basename(f).lower()]
 weather_list = []
+
 for file in weather_files:
     try:
         df = pd.read_csv(file, low_memory=False)
-
-        # ✔️ Sélection des colonnes météo utiles
-        keep_cols = [c for c in df.columns if (
-            "PRECTOT" in c or "WS2M" in c or "PS" in c or "IMERG" in c or
-            c in ["Country", "Latitude", "Longitude", "DATE"]
-        )]
+        keep_cols = [c for c in df.columns if ("PRECTOT" in c or "WS2M" in c or "PS" in c or "IMERG" in c or c in ["Country", "Latitude", "Longitude", "DATE"])]
         df = df[keep_cols]
 
-        # ✔️ Vérification structure
         if "DATE" not in df.columns or df.shape[1] < 5 or df.shape[1] > 100:
             print(f"❌ Structure suspecte — ignoré : {os.path.basename(file)} ({df.shape[1]} colonnes)")
             continue
 
-        # 🧼 Nettoyage des types
         df["Latitude"] = pd.to_numeric(df["Latitude"], errors="coerce")
         df["Longitude"] = pd.to_numeric(df["Longitude"].astype(str).str.replace(".csv", "", regex=False), errors="coerce")
         df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
-
         df["year"] = df["DATE"].dt.year
         df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
-
         weather_list.append(df)
 
     except Exception as e:
         print(f"⛔ Erreur lecture {os.path.basename(file)} : {e}")
 
 print(f"✅ Fichiers météo retenus pour fusion : {len(weather_list)}")
-
-# 💡 Harmoniser les colonnes pour concaténation
 common_cols = set.intersection(*(set(df.columns) for df in weather_list))
 weather_list = [df[list(common_cols)] for df in weather_list]
 print(f"🎯 Colonnes communes retenues : {len(common_cols)}")
@@ -89,16 +75,8 @@ merged_df = pd.merge(merged_df, prod_pivot, left_on=["Country", "year"], right_o
 
 # 7️⃣ Rendements agricoles
 crop_file = os.path.join(boua_folder, "Production_Crops_Livestock_Afrique.csv")
+crop_prod = pd.read_csv(crop_file, sep=",", quotechar='"', engine="python", header=None)
 
-crop_prod = pd.read_csv(
-    crop_file,
-    sep=",",
-    quotechar='"',
-    engine="python",
-    header=None
-)
-
-# 🧠 Attribution dynamique
 expected_cols = [
     "AreaCode", "M49Code", "Country", "ItemCode", "CropName",
     "ElementCode", "Element", "YearCode", "Year", "Unit",
@@ -113,18 +91,24 @@ elif crop_prod.shape[1] == len(expected_cols) + 1:
 else:
     raise ValueError(f"⚠️ Format inattendu : {crop_prod.shape[1]} colonnes détectées")
 
-# 🧼 Nettoyage
 crop_prod["Year"] = pd.to_numeric(crop_prod["Year"], errors="coerce")
 crop_prod = crop_prod[crop_prod["Element"] == "Area harvested"]
 crop_prod = crop_prod.groupby(["Country", "Year", "CropName"])["Value"].sum().reset_index()
 crop_prod = crop_prod.rename(columns={"Value": "Harvested_Area_ha"})
 
-# 🔁 Fusion avec le dataset principal
-final_df = pd.merge(merged_df, crop_prod, on=["Country", "Year"], how="left")
+# 🧪 Diagnostic avant dernière fusion
+print(f"📦 Lignes merged_df : {merged_df.shape[0]}")
+print(f"🌾 Lignes crop_prod : {crop_prod.shape[0]}")
+print(f"📋 Pays dans crop_prod : {crop_prod['Country'].unique()[:5]}")
+print(f"📋 Pays dans merged_df : {merged_df['Country'].unique()[:5]}")
+print(f"📋 Années crop_prod : {sorted(crop_prod['Year'].dropna().unique())[:5]}")
+print(f"📋 Années merged_df : {sorted(merged_df['year'].dropna().unique())[:5]}")
 
+# 🔁 Fusion finale
+final_df = pd.merge(merged_df, crop_prod, on=["Country", "Year"], how="left")
+print(f"✅ Lignes finales dans dataset : {final_df.shape[0]}")
 
 # 💾 Sauvegarde
 output_path = r"C:\plateforme-agricole-complete-v2\dataset_prediction_rendement.csv"
 final_df.to_csv(output_path, index=False)
 print(f"✅ Dataset fusionné sauvegardé ici : {output_path}")
-
