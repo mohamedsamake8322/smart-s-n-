@@ -3,7 +3,7 @@ import os
 
 boua_folder = r"C:\plateforme-agricole-complete-v2\Boua"
 soil_path = r"C:\plateforme-agricole-complete-v2\soilgrids_africa\soil_profile_africa.csv"
-weather_sample = r"C:\plateforme-agricole-complete-v2\weather_final\sample_weather.csv"  # ⬅️ change ce nom si nécessaire
+weather_sample = r"C:\plateforme-agricole-complete-v2\weather_final\weather_Angola.csv"  # ⬅️ change ce nom si nécessaire
 
 def show_info(df, name, country_col="Country", year_col="Year"):
     print(f"\n📦 {name}")
