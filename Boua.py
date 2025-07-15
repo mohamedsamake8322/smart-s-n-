@@ -8,11 +8,11 @@ soil_path = r"C:\plateforme-agricole-complete-v2\soilgrids_africa\soil_profile_a
 weather_folder = r"C:\plateforme-agricole-complete-v2\weather_cleaned"
 boua_folder = r"C:\plateforme-agricole-complete-v2\Boua"
 
-# 1️⃣ Sol
+# 1️⃣ Chargement des données de sol
 soil_df = pd.read_csv(soil_path)
 soil_df["latlon"] = soil_df["y"].round(4).astype(str) + "_" + soil_df["x"].round(4).astype(str)
 
-# 2️⃣ Météo nettoyée
+# 2️⃣ Chargement des fichiers météo nettoyés (hors rapport)
 weather_files = [
     f for f in glob(os.path.join(weather_folder, "*.csv"))
     if "report" not in os.path.basename(f).lower()
@@ -23,22 +23,23 @@ for file in weather_files:
     try:
         df = pd.read_csv(file, low_memory=False)
 
-        # ⛔ Vérifie que la structure est raisonnable
+        # ⛔ Élimination des fichiers aux colonnes trop nombreuses
         if df.shape[1] > 150:
-            print(f"⚠️ Trop de colonnes dans {os.path.basename(file)} → ignoré.")
+            print(f"⚠️ Trop de colonnes dans {os.path.basename(file)} — ignoré.")
             continue
 
-        # ✔️ Colonnes essentielles
         if all(col in df.columns for col in ["DATE", "Latitude", "Longitude"]):
             df["DATE"] = pd.to_datetime(df["DATE"], errors="coerce")
             df["year"] = df["DATE"].dt.year
             df["latlon"] = df["Latitude"].round(4).astype(str) + "_" + df["Longitude"].round(4).astype(str)
             weather_list.append(df)
         else:
-            print(f"❌ Colonnes manquantes dans {os.path.basename(file)} → ignoré.")
+            print(f"❌ Colonnes essentielles manquantes dans {os.path.basename(file)} — ignoré.")
     except Exception as e:
         print(f"⛔ Erreur lecture {os.path.basename(file)} : {e}")
-        print(f"✅ Fichiers météo valides chargés : {len(weather_list)}")
+
+# Fusion météo + sol
+print(f"✅ Fichiers météo valides chargés : {len(weather_list)}")
 weather_df = pd.concat(weather_list, ignore_index=True)
 weather_soil_df = pd.merge(weather_df, soil_df, on="latlon", how="inner")
 
@@ -78,10 +79,10 @@ crop_prod = crop_prod[crop_prod["Element"] == "Area harvested"]
 crop_prod = crop_prod.groupby(["Country", "Year", "CropName"])["Value"].sum().reset_index()
 crop_prod = crop_prod.rename(columns={"Value": "Harvested_Area_ha"})
 
-# 🔗 Fusion finale
+# Fusion finale
 final_df = pd.merge(merged_df, crop_prod, on=["Country", "Year"], how="left")
 
-# 💾 Sauvegarde du dataset final
+# 💾 Export final
 output_path = r"C:\plateforme-agricole-complete-v2\dataset_prediction_rendement.csv"
 final_df.to_csv(output_path, index=False)
 print(f"✅ Dataset fusionné sauvegardé ici : {output_path}")
