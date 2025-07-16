@@ -70,3 +70,4 @@ fusion_meteo_sol_continental(
     fichier_sol  = r"C:\plateforme-agricole-complete-v2\soil_profile_africa_with_country.csv",
     max_distance_deg=0.1
 )
+
