@@ -54,6 +54,6 @@ def fusion_meteo_sol_continental(
 
 # 🔧 Exemple d’usage :
 fusion_meteo_sol_continental(
-    folder_meteo=r"C:\plateforme-agricole-complete-v2\meteo_par_pays",
-    fichier_sol=r"C:\plateforme-agricole-complete-v2\soilgrids_afrique.csv"
+    folder_meteo=r"C:\plateforme-agricole-complete-v2\weather_by_country",
+    fichier_sol=r"C:\plateforme-agricole-complete-v2\soil_profile_africa_reprojected.csv"
 )
