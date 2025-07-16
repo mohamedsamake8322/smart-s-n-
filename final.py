@@ -72,7 +72,11 @@ def fusion_par_pays(
                 print(f"❌ {fichier} : colonnes manquantes, ignoré")
                 continue
 
+            if df_met.empty:
+                print(f"⚠️ {fichier} : fichier météo vide après nettoyage")
+                continue
             pays_nom = normaliser_pays(df_met['Country'].iloc[0])
+
             df_met['Longitude'] = pd.to_numeric(df_met['Longitude'], errors='coerce').round(4)
             df_met['Latitude'] = pd.to_numeric(df_met['Latitude'], errors='coerce').round(4)
             df_met = df_met.dropna(subset=['Longitude', 'Latitude'])
