@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv(r"C:\plateforme-agricole-complete-v2\soil_profile_africa_with_country.csv")
+df = pd.read_csv(r"C:\plateforme-agricole-complete-v2\soil_profile_africa.csv")
 
 # 🔧 Nettoyage des coordonnées
 df['Longitude'] = pd.to_numeric(df['Longitude'], errors='coerce')

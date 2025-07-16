@@ -42,7 +42,7 @@ def attribuer_pays_aux_points(
 
 # 🔧 Exemple d’usage
 attribuer_pays_aux_points(
-    fichier_points = r"C:\plateforme-agricole-complete-v2\soil_profile_africa_reprojected.csv",
+    fichier_points = r"C:\plateforme-agricole-complete-v2\soilgrids_africa\soil_profile_africa.csv",
     shapefile_pays = r"C:\Users\moham\Documents\naturalearth_lowres\ne_110m_admin_0_countries.shp",
     output_path = r"C:\plateforme-agricole-complete-v2\soil_profile_africa_with_country.csv"
 )
