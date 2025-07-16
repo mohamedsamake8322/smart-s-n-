@@ -3,9 +3,8 @@ import os
 import numpy as np
 from scipy.spatial import cKDTree
 
-# 🧠 Alias pays pour harmonisation
+# 🧠 Alias pays pour normalisation
 alias_pays = {
-    "Algeria": ["Algeria"],
     "Angola": ["Angola"],
     "Benin": ["Benin", "Bénin", "Republic of Benin"],
     "Burkina Faso": ["Burkina", "Burkina Faso"],
@@ -47,75 +46,63 @@ def normaliser_pays(nom):
             return canonique
     return nom
 
-def fusion_meteo_sol_continental(
+def fusion_par_pays(
     folder_meteo,
     fichier_sol,
-    output_path="soil_weather_africa_joined.csv",
-    max_distance_deg=0.1
+    dossier_sortie="fusion_par_pays",
+    rayon_deg=0.1
 ):
-    # 📥 Charger sol + nettoyage
+    os.makedirs(dossier_sortie, exist_ok=True)
+
+    # 🧱 Charger sol avec coordonnées
     df_sol = pd.read_csv(fichier_sol)
     df_sol['Country'] = df_sol.get('Country', np.nan).apply(normaliser_pays)
     df_sol['soil_Longitude'] = pd.to_numeric(df_sol['Longitude'], errors='coerce').round(4)
-    df_sol['soil_Latitude']  = pd.to_numeric(df_sol['Latitude'], errors='coerce').round(4)
+    df_sol['soil_Latitude'] = pd.to_numeric(df_sol['Latitude'], errors='coerce').round(4)
     df_sol = df_sol.dropna(subset=['soil_Longitude', 'soil_Latitude'])
-    tree = cKDTree(df_sol[['soil_Longitude', 'soil_Latitude']].values)
+    sol_tree = cKDTree(df_sol[['soil_Longitude', 'soil_Latitude']].values)
 
-    all_dfs = []
-    total_points = 0
-
-    for file in os.listdir(folder_meteo):
-        if not file.endswith(".csv"):
+    for fichier in os.listdir(folder_meteo):
+        if not fichier.endswith(".csv"):
             continue
-        path = os.path.join(folder_meteo, file)
-
+        chemin = os.path.join(folder_meteo, fichier)
         try:
-            df_met = pd.read_csv(path)
+            df_met = pd.read_csv(chemin)
             if not {'Longitude', 'Latitude', 'Country', 'DATE'}.issubset(df_met.columns):
-                print(f"❌ {file} : colonnes essentielles manquantes, ignoré")
+                print(f"❌ {fichier} : colonnes manquantes, ignoré")
                 continue
 
-            df_met['Country'] = df_met['Country'].apply(normaliser_pays)
+            pays_nom = normaliser_pays(df_met['Country'].iloc[0])
             df_met['Longitude'] = pd.to_numeric(df_met['Longitude'], errors='coerce').round(4)
-            df_met['Latitude']  = pd.to_numeric(df_met['Latitude'], errors='coerce').round(4)
+            df_met['Latitude'] = pd.to_numeric(df_met['Latitude'], errors='coerce').round(4)
             df_met = df_met.dropna(subset=['Longitude', 'Latitude'])
 
             met_coords = df_met[['Longitude', 'Latitude']].values
-            dist, idx = tree.query(met_coords, distance_upper_bound=max_distance_deg)
-
-            valid = dist < max_distance_deg
+            dist, idx = sol_tree.query(met_coords, distance_upper_bound=rayon_deg)
+            valid = dist < rayon_deg
             if valid.sum() == 0:
-                print(f"⚠️ {file} : aucun point météo matché avec le sol à {max_distance_deg}°")
+                print(f"⚠️ {pays_nom} : aucun point matché avec le sol")
                 continue
 
-            df_met_valid = df_met.iloc[np.where(valid)[0]].reset_index(drop=True)
-            df_sol_match = df_sol.iloc[idx[valid]].reset_index(drop=True)
+            df_met_valid = df_met.iloc[np.where(valid)[0]].copy()
+            df_sol_match = df_sol.iloc[idx[valid]].copy()
+
+            df_met_valid.reset_index(drop=True, inplace=True)
+            df_sol_match.reset_index(drop=True, inplace=True)
+            df_sol_match = df_sol_match.add_prefix("soil_")
 
             df_fusion = pd.concat([df_sol_match, df_met_valid], axis=1)
-            pays_fusionnes = df_met_valid['Country'].unique()
-            print(f"✅ {file} fusionné : {len(df_met_valid)} points | Pays : {', '.join(pays_fusionnes)}")
-
-            all_dfs.append(df_fusion)
-            total_points += len(df_met_valid)
+            chemin_sortie = os.path.join(dossier_sortie, f"soil_weather_joined_{pays_nom}.csv")
+            df_fusion.to_csv(chemin_sortie, index=False)
+            print(f"✅ {pays_nom} fusionné : {len(df_fusion)} points → {chemin_sortie}")
 
         except Exception as e:
-            print(f"🔥 Erreur dans {file} : {e}")
+            print(f"🔥 Erreur {fichier} : {e}")
 
-    # 📦 Fusion finale
-    if not all_dfs:
-        print("⚠️ Aucun fichier météo n’a pu être fusionné — vérifie la couverture spatiale et les noms de pays.")
-        return pd.DataFrame()
-
-    df_final = pd.concat(all_dfs, ignore_index=True)
-    df_final.to_csv(output_path, index=False)
-    print(f"\n✅ Fusion continentale terminée → {output_path}")
-    print(f"📌 Points couverts : {total_points} | Pays inclus : {df_final['Country'].nunique()}")
-
-    return df_final
-
-# 🔧 Exemple d’usage
-fusion_meteo_sol_continental(
-    folder_meteo=r"C:\plateforme-agricole-complete-v2\weather_cleaned",
-    fichier_sol=r"C:\plateforme-agricole-complete-v2\soil_profile_africa_with_country.csv",
-    max_distance_deg=0.1
+# 🔧 Exemple d’usage :
+fusion_par_pays(
+    folder_meteo = r"C:\plateforme-agricole-complete-v2\weather_cleaned",
+    fichier_sol  = r"C:\plateforme-agricole-complete-v2\soil_profile_africa_with_country.csv",
+    dossier_sortie = r"C:\plateforme-agricole-complete-v2\fusion_par_pays",
+    rayon_deg=0.1
 )
