@@ -13,8 +13,8 @@ gdf_sol = gpd.GeoDataFrame(df_sol, geometry=geometry, crs="EPSG:4326")
 
 # Chargement du shapefile des pays africains (à télécharger au préalable)
 # Exemple : shapefile du continent africain issu de Natural Earth (ne_10m_admin_0_countries)
-africa = gpd.read_file("africa_countries.shp")  # Assure-toi que ce fichier contient les pays africains
-
+africa = gpd.read_file(r"C:\Users\moham\Documents\naturalearth_lowres\naturalearth_lowres.shp")
+africa = africa[africa['continent'] == 'Africa']
 # Jointure spatiale pour associer chaque point à son pays
 gdf_sol_with_country = gpd.sjoin(gdf_sol, africa[['ADMIN', 'geometry']], how="left", predicate="intersects")
 gdf_sol_with_country.rename(columns={"ADMIN": "Country"}, inplace=True)
