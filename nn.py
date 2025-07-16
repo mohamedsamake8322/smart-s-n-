@@ -119,3 +119,5 @@ def fusion_meteo_sol_continental(folder_meteo, fichier_sol, output_path="soil_we
         print(f"📌 Total lignes fusionnées : {len(df_final)} | Pays inclus : {df_final['Country'].nunique()}")
     else:
         print("\n❌ Aucun fichier météo n’a pu être fusionné.")
+        print("✅ Script exécuté jusqu’au bout avec max_distance_deg =", max_distance_deg)
+        print("🔎 Fusion réussie :", df_final.shape)
