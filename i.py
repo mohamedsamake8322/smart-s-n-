@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv(r"C:\plateforme-agricole-complete-v2\soil_profile_africa_with_country.csv")
+df = pd.read_csv(r"C:\plateforme-agricole-complete-v2\soil_profile_africa_reprojected.csv")
 
 # 🧠 Aperçu des colonnes
 print("🔎 Colonnes disponibles :", df.columns.tolist())
