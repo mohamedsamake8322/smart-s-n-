@@ -33,4 +33,8 @@ def join_soil_weather(soil_csv, weather_csv, max_distance_km=5):
     return combined_df
 
 # Exemple d’usage :
-soil_weather = join_soil_weather("soil_profile_africa_reprojected.csv", "weather_africa_cleaned.csv", max_distance_km=5)
+soil_weather = join_soil_weather(
+    "soil_profile_africa_reprojected.csv",
+    "weather_africa_cleaned_filtered.csv",
+    max_distance_km=5
+)
