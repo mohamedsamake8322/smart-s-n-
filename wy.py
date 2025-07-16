@@ -59,7 +59,7 @@ def fusion_multi_pays(
 
 # 🔧 Exemple d’usage :
 fusion_multi_pays(
-    soil_weather_csv=r"C:\plateforme-agricole-complete-v2\soil_weather_engrais_aggregated.csv",
+    soil_weather_csv = r"C:\plateforme-agricole-complete-v2\soil_weather_africa_joined.csv",
     engrais_npk_csv=r"C:\plateforme-agricole-complete-v2\engrais_nutriment_kgha.csv",
     engrais_types_csv=r"C:\plateforme-agricole-complete-v2\engrais_produit_encoded.csv",
     annees_ciblees=list(range(2015, 2024))
