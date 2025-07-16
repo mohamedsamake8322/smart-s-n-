@@ -15,7 +15,8 @@ def convert_npk_to_kgha(nutrient_csv, crop_csv, output_path="engrais_nutriment_k
     # Charger culture (superficie récoltée)
     df_crop = pd.read_csv(crop_csv, header=None)
     df_crop.columns = ['dummy1', 'AreaCode', 'Country', 'dummy2', 'ItemCode', 'Item', 'ElementCode',
-                       'Element', 'YearCode', 'Year', 'Unit', 'Value', 'Flag']
+                   'Element', 'YearCode', 'Year', 'Unit', 'Value', 'Flag', 'Note']
+
     df_crop['Unit'] = df_crop['Unit'].astype(str).str.strip()
     df_crop = df_crop[df_crop['Unit'] == 'ha']
     df_crop['Value'] = pd.to_numeric(df_crop['Value'], errors='coerce')
