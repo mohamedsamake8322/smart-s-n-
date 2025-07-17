@@ -9,7 +9,7 @@ import numpy as np
 gdf_soil = gpd.read_file("isdasoil_points.geojson")
 
 # 📥 Charger les données météo restructurées
-df_meteo = pd.read_csv("weather_afrique_restruc.csv")
+df_meteo = pd.read_csv("weather_afrique_restruc_total.csv")
 
 # 📥 Charger les indicateurs FAOSTAT
 df_inputs = pd.read_csv("indicateurs_agronomiques_FAOSTAT.csv")
