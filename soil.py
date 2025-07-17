@@ -1,7 +1,6 @@
 # 📦 Chargement des packages
 import datacube
-from deafrica_tools.load_isda import load_isda
-
+from deafrica.load_isda import load_isda
 dc = datacube.Datacube(app='iSDAsoil_full_loader')
 
 # 🧠 Liste des variables à charger
