@@ -1,42 +1,48 @@
-import os
-import requests
-from pathlib import Path
+# 📦 Chargement des packages
+import datacube
+from deafrica_tools.load_isda import load_isda
 
-# 📁 Dossier de sortie
-output_dir = Path("soilgrids_v2")
-output_dir.mkdir(exist_ok=True)
-# 🌍 Liste des 33 pays (codes ISO ou noms pour filtrage ultérieur si tu veux découper par shapefile)
-countries = [
-    "Algeria", "Angola", "Benin", "Botswana", "Burkina Faso", "Burundi", "Cameroon", "Central African Republic",
-    "Chad", "Congo", "DR Congo", "Djibouti", "Egypt", "Equatorial Guinea", "Eritrea", "Eswatini", "Ethiopia",
-    "Gabon", "Gambia", "Ghana", "Guinea", "Ivory Coast", "Kenya", "Lesotho", "Liberia", "Madagascar", "Malawi",
-    "Mali", "Mauritania", "Morocco", "Mozambique", "Namibia", "Niger"
+dc = datacube.Datacube(app='iSDAsoil_full_loader')
+
+# 🧠 Liste des variables à charger
+variables = [
+    'profondeur_du_substrat_rocheux',
+    'densité_volumique',
+    'carbone_organique',
+    'carbone_total',
+    'ph',
+    'azote_total',
+    'phosphore_extractible',
+    'extractible_au_potassium',
+    'calcium_extractible',
+    'magnésium_extractible',
+    'extractible_au_soufre',
+    'zinc_extractible',
+    'extractible_de_fer',
+    'aluminium_extractible',
+    'argile_contenu',
+    'contenu_sable',
+    'teneur_en_limon',
+    'contenu_en_pierre',
+    'classe_de_texture',
+    'capacité_d’échange_de_cations',
+    'FCC'
 ]
 
-# 🧪 Variables et profondeurs
-# 🔬 Variables ISRIC + Profondeurs
-variables = ["clay", "sand", "silt", "bdod", "soc", "cec", "phh2o"]
-depths = ["0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm", "100-200cm"]
+# 🌍 Définir ta zone d’intérêt (ex. : Afrique de l’Ouest)
+lat_range = (-5.0, 15.0)  # latitude min, max
+lon_range = (-20.0, 10.0) # longitude min, max
 
-# 🌐 Base URL pour GeoTIFF
-base_url = "https://files.isric.org/soilgrids/latest/data"
-
-# 📥 Boucle de téléchargement
+# 📊 Charger chaque variable
+loaded_data = {}
 for var in variables:
-    for depth in depths:
-        filename = f"{var}_mean_{depth}.tif"
-        url = f"{base_url}/{var}/{filename}"
-        out_path = output_dir / filename
-
-        if out_path.exists():
-            print(f"✅ Déjà présent : {filename}")
-            continue
-
-        print(f"⬇️ Téléchargement : {filename}")
-        response = requests.get(url)
-
-        if response.status_code == 200:
-            with open(out_path, "wb") as f:
-                f.write(response.content)
-        else:
-            print(f"❌ Erreur {response.status_code} pour {filename}")
+    print(f"⏳ Chargement : {var}")
+    try:
+        data = load_isda(dc=dc,
+                         variable=var,
+                         lat=lat_range,
+                         lon=lon_range)
+        loaded_data[var] = data
+        print(f"✅ Terminé : {var}")
+    except Exception as e:
+        print(f"⚠️ Échec pour {var} : {e}")
