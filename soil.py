@@ -1,47 +1,36 @@
-# 📦 Chargement des packages
-import datacube
-from deafrica.load_isda import load_isda
-dc = datacube.Datacube(app='iSDAsoil_full_loader')
+from pystac_client import Client
+import requests
+import os
 
-# 🧠 Liste des variables à charger
-variables = [
-    'profondeur_du_substrat_rocheux',
-    'densité_volumique',
-    'carbone_organique',
-    'carbone_total',
-    'ph',
-    'azote_total',
-    'phosphore_extractible',
-    'extractible_au_potassium',
-    'calcium_extractible',
-    'magnésium_extractible',
-    'extractible_au_soufre',
-    'zinc_extractible',
-    'extractible_de_fer',
-    'aluminium_extractible',
-    'argile_contenu',
-    'contenu_sable',
-    'teneur_en_limon',
-    'contenu_en_pierre',
-    'classe_de_texture',
-    'capacité_d’échange_de_cations',
-    'FCC'
-]
+# 📁 Crée un dossier local pour stocker les téléchargements
+output_folder = "./isdasoil_downloads"
+os.makedirs(output_folder, exist_ok=True)
 
-# 🌍 Définir ta zone d’intérêt (ex. : Afrique de l’Ouest)
-lat_range = (-5.0, 15.0)  # latitude min, max
-lon_range = (-20.0, 10.0) # longitude min, max
+# 🌍 Charger le catalogue STAC
+catalog_url = "https://isdasoil.s3.amazonaws.com/catalog.json"
+catalog = Client.open(catalog_url)
 
-# 📊 Charger chaque variable
-loaded_data = {}
-for var in variables:
-    print(f"⏳ Chargement : {var}")
-    try:
-        data = load_isda(dc=dc,
-                         variable=var,
-                         lat=lat_range,
-                         lon=lon_range)
-        loaded_data[var] = data
-        print(f"✅ Terminé : {var}")
-    except Exception as e:
-        print(f"⚠️ Échec pour {var} : {e}")
+# 📦 Accéder à la collection "soil_data"
+soil_collection = catalog.get_child("soil_data")
+
+# 🌾 Variables que tu veux télécharger
+variables_cibles = ["ph", "carbon", "nitrogen", "clay", "sand", "silt"]
+
+# 🔁 Boucle sur tous les items
+for item in soil_collection.get_items():
+    props = item.to_dict().get("properties", {})
+    var_name = props.get("soil_property")
+
+    if var_name and any(v in var_name.lower() for v in variables_cibles):
+        asset = item.assets.get("image")
+        if asset:
+            url = asset.href
+            filename = os.path.join(output_folder, url.split("/")[-1])
+
+            print(f"⬇️ Téléchargement : {filename}")
+            with requests.get(url, stream=True) as r:
+                r.raise_for_status()
+                with open(filename, "wb") as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+            print(f"✅ Terminé : {filename}")
