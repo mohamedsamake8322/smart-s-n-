@@ -38,6 +38,8 @@ criteria = (
     (df_clean["ph"] >= 5.8) & (df_clean["ph"] <= 6.8) &
     (df_clean["carbon_organic"] >= 1.5)
 )
+print(df_clean[["ph", "carbon_organic", "PRECTOTCORR"]].describe())
+print("Pays présents :", df_clean["country"].unique())
 
 # ✅ Ajouter critère météo uniquement si PRECTOTCORR existe
 if "PRECTOTCORR" in df_clean.columns:
