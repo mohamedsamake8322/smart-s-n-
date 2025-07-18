@@ -1,44 +1,41 @@
-#🧪 Script Python — Fusion Sol + Climat + Engrais
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point
 from sklearn.neighbors import BallTree
 import numpy as np
 
-# 📥 Charger les données de sol (GeoDataFrame déjà créée)
-gdf_soil = gpd.read_file("isdasoil_points.geojson")
+# 📥 1. Charger les données
+gdf_soil = gpd.read_file("isdasoil_points.geojson")  # Données sol en GeoDataFrame
+df_meteo = pd.read_csv("merged_weather_africa.csv")  # Données météo enrichies
+df_inputs = pd.read_csv("indicateurs_agronomiques_FAOSTAT.csv")  # Indicateurs par pays et année
 
-# 📥 Charger les données météo restructurées
-df_meteo = pd.read_csv("weather_afrique_restruc_total.csv")
+# 📍 2. Appariement météo-sol par proximité géographique
 
-# 📥 Charger les indicateurs FAOSTAT
-df_inputs = pd.read_csv("indicateurs_agronomiques_FAOSTAT.csv")
-
-# 🧭 Étape 1 — Associer météo par proximité géographique
-
-# Convertir points sol en radians
+# Préparer les coordonnées en radians
 soil_coords = np.deg2rad(gdf_soil[['latitude', 'longitude']].values)
-tree = BallTree(soil_coords, metric='haversine')
-
-# Associer chaque point météo au point de sol le plus proche
 weather_coords = np.deg2rad(df_meteo[['latitude', 'longitude']].values)
+
+# Construire l'index spatial BallTree
+tree = BallTree(soil_coords, metric='haversine')
 dist, idx = tree.query(weather_coords, k=1)
 
-# Créer fusion météo+sol
+# Ajouter les infos d'appariement
 df_meteo['soil_index'] = idx.flatten()
-df_meteo['distance_km'] = dist.flatten() * 6371  # rayon terrestre
+df_meteo['distance_km'] = dist.flatten() * 6371  # conversion en km
 
-# Filtrer les paires trop éloignées (> 50 km)
+# ⚠️ Filtrer les appariements trop éloignés (> 50 km)
 df_meteo_filtered = df_meteo[df_meteo['distance_km'] <= 50]
 
-# 🧠 Étape 2 — Fusion sol + météo
+# 🔗 3. Fusion météo + sol
 gdf_soil = gdf_soil.reset_index()
 df_meteo_joined = df_meteo_filtered.merge(gdf_soil, left_on='soil_index', right_on='index')
 
-# 📊 Étape 3 — Ajouter FAOSTAT (par pays et année)
-df_meteo_joined['year'] = pd.DatetimeIndex(df_meteo_joined['date']).year
+# 🕒 4. Ajout de l'année à partir de la date
+df_meteo_joined['year'] = pd.to_datetime(df_meteo_joined['date']).dt.year
+
+# 📊 5. Fusion météo+sol avec FAOSTAT (par pays et année)
 df_final = df_meteo_joined.merge(df_inputs, on=['country', 'year'], how='left')
 
-# 💾 Exporter le jeu d’apprentissage final
+# 💾 6. Export du jeu final
 df_final.to_csv("dataset_agronomique_final.csv", index=False)
-print("✅ Fusion complète terminée : dataset_agronomique_final.csv")
+print("✅ Fusion complète terminée : dataset_agronomique_final.csv avec météo + sol + FAOSTAT")
