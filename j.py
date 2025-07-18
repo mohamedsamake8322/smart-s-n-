@@ -23,8 +23,12 @@ def get_country_from_coords(lat, lon):
     point = Point(lon, lat)
     match = world[world.contains(point)]
     if not match.empty:
-        return match.iloc[0]['name']
+        for col in ['ADMIN', 'NAME', 'SOVEREIGNT', 'name']:
+            if col in match.columns:
+                return match.iloc[0][col]
     return "Unknown"
+    print(world.columns.tolist())
+
 
 def extract_location_header(lines):
     lat = lon = None
