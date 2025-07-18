@@ -9,23 +9,34 @@ import matplotlib.pyplot as plt
 # 🧪 ÉTAPE 1 : Chargement du Dataset
 # ================================
 
-# 📥 Charger le dataset préparé
 df = pd.read_csv("dataset_agricole_prepared.csv")
 
-# 🧼 Nettoyage des colonnes principales
-df["year"] = pd.to_numeric(df["year"], errors="coerce")
-df["yield_target"] = pd.to_numeric(df["yield_target"], errors="coerce")
+# 🧼 Normaliser les noms de colonnes
+df.columns = [col.strip().lower() for col in df.columns]
+
+# 📋 Vérification des colonnes
+print("\n🧠 Colonnes disponibles :")
+print(df.columns.tolist())
 
 # 🎯 Sélection des variables explicatives
 features = [
-    "Production", "pesticides_use",
-    "PRECTOTCORR", "WS10M_RANGE", "T2M_MAX", "T2M_MIN", "QV2M", "RH2M",
+    "production", "pesticides_use",
+    "prectotcorr", "ws10m_range", "t2m_max",
+    "t2m_min", "qv2m", "rh2m",
     "ph", "carbon_organic", "nitrogen_total"
 ]
 
-# 🔍 Extraction des variables X et y
-X = df[features].dropna()
-y = df.loc[X.index, "yield_target"]
+# 🔍 Vérification des colonnes existantes
+missing_features = [f for f in features if f not in df.columns]
+if missing_features:
+    print(f"\n⚠️ Colonnes manquantes : {missing_features}")
+    features = [f for f in features if f in df.columns]
+    print(f"✅ Utilisation des colonnes disponibles : {features}")
+
+# 🎯 Extraction des données
+df = df.dropna(subset=features + ["yield_target"])
+X = df[features]
+y = df["yield_target"]
 
 # 🎓 Séparation train/test
 X_train, X_test, y_train, y_test = train_test_split(
@@ -33,7 +44,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # ================================
-# 🤖 ÉTAPE 2 : Entraînement du Modèle
+# 🚀 ÉTAPE 2 : Entraînement du Modèle
 # ================================
 
 model = XGBRegressor(
@@ -48,7 +59,7 @@ model = XGBRegressor(
 
 model.fit(X_train, y_train)
 
-# 📈 Évaluation du modèle
+# 📈 Évaluation
 y_pred = model.predict(X_test)
 rmse = mean_squared_error(y_test, y_pred, squared=False)
 r2 = r2_score(y_test, y_pred)
@@ -58,7 +69,7 @@ print(f"✅ RMSE : {rmse:.2f}")
 print(f"✅ R²    : {r2:.2f}")
 
 # ================================
-# 🔍 ÉTAPE 3 : Visualisation des Importances
+# 📊 ÉTAPE 3 : Visualisation des Importances
 # ================================
 
 importances = model.feature_importances_
