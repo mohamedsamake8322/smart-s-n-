@@ -6,86 +6,36 @@ from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 
 # ================================
-# 🧪 ÉTAPE 1 : Préparation du Dataset
+# 🧪 ÉTAPE 1 : Chargement du Dataset
 # ================================
 
-# 📥 Charger le fichier fusionné
-df = pd.read_csv("dataset_agronomique_final.csv")
+# 📥 Charger le dataset préparé
+df = pd.read_csv("dataset_agricole_prepared.csv")
 
-# 🔄 Transformer les variables météo verticales en colonnes
-df_pivot = df.pivot_table(
-    index=["country", "year", "latitude_x", "longitude_x"],
-    columns="variable",
-    values="value"
-).reset_index()
-
-# 📌 Récupérer les colonnes de sol et intrants agricoles
-df_sol = df.drop_duplicates(subset=["latitude_y", "longitude_y"])[[
-    "latitude_y", "longitude_y", "ph", "carbon_organic", "nitrogen_total",
-    "Value_engrais", "Value_pesticides"
-]]
-
-# 🔗 Fusion météo + sol
-df_merged = pd.merge(
-    df_pivot,
-    df_sol,
-    left_on=["latitude_x", "longitude_x"],
-    right_on=["latitude_y", "longitude_y"],
-    how="left"
-)
-
-# 📦 Charger les données FAOSTAT (rendement)
-df_fao = pd.read_csv("FAOSTAT_data_en_7-18-2025.csv", encoding="utf-8", quotechar='"')
-
-# 🧼 Nettoyage et filtrage
-df_fao["Element"] = df_fao["Element"].astype(str).str.strip().str.lower()
-df_fao["Area"] = df_fao["Area"].astype(str).str.strip()
-df_fao["Item"] = df_fao["Item"].astype(str).str.strip()
-df_fao["Year"] = pd.to_numeric(df_fao["Year"], errors="coerce")
-df_fao["Value"] = pd.to_numeric(df_fao["Value"], errors="coerce")
-
-df_yield = df_fao[df_fao["Element"] == "yield"]
-df_yield = df_yield.rename(columns={
-    "Area": "country",
-    "Year": "year",
-    "Item": "culture",
-    "Value": "yield_target"
-})
-df_yield = df_yield.dropna(subset=["yield_target"])
-
-# 🔗 Fusion finale
-df_final = pd.merge(
-    df_merged,
-    df_yield[["country", "year", "culture", "yield_target"]],
-    on=["country", "year"],
-    how="left"
-)
-
-# 🧼 Nettoyage
-df_final = df_final.dropna(subset=["yield_target"])
-
-# ================================
-# 🧠 ÉTAPE 2 : Entraînement du modèle
-# ================================
+# 🧼 Nettoyage des colonnes principales
+df["year"] = pd.to_numeric(df["year"], errors="coerce")
+df["yield_target"] = pd.to_numeric(df["yield_target"], errors="coerce")
 
 # 🎯 Sélection des variables explicatives
 features = [
-    "ph", "carbon_organic", "nitrogen_total",
-    "Value_engrais", "Value_pesticides",
-    "PRECTOTCORR", "WS10M_RANGE", "T2M_MAX",
-    "T2M_MIN", "QV2M", "RH2M"
+    "Production", "pesticides_use",
+    "PRECTOTCORR", "WS10M_RANGE", "T2M_MAX", "T2M_MIN", "QV2M", "RH2M",
+    "ph", "carbon_organic", "nitrogen_total"
 ]
 
-# 🔍 Extraction des données
-X = df_final[features]
-y = df_final["yield_target"]
+# 🔍 Extraction des variables X et y
+X = df[features].dropna()
+y = df.loc[X.index, "yield_target"]
 
-# 🎓 Séparation en train/test
+# 🎓 Séparation train/test
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-# ⚡️ Modèle XGBoost
+# ================================
+# 🤖 ÉTAPE 2 : Entraînement du Modèle
+# ================================
+
 model = XGBRegressor(
     n_estimators=500,
     learning_rate=0.05,
@@ -95,9 +45,10 @@ model = XGBRegressor(
     tree_method="hist",
     verbosity=1
 )
+
 model.fit(X_train, y_train)
 
-# 📈 Évaluation
+# 📈 Évaluation du modèle
 y_pred = model.predict(X_test)
 rmse = mean_squared_error(y_test, y_pred, squared=False)
 r2 = r2_score(y_test, y_pred)
@@ -107,7 +58,7 @@ print(f"✅ RMSE : {rmse:.2f}")
 print(f"✅ R²    : {r2:.2f}")
 
 # ================================
-# 🔍 ÉTAPE 3 : Visualisation des importances
+# 🔍 ÉTAPE 3 : Visualisation des Importances
 # ================================
 
 importances = model.feature_importances_
