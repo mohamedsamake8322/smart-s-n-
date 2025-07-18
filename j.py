@@ -39,7 +39,8 @@ for filename in os.listdir(data_folder):
     df = pd.read_csv(filepath, skiprows=len(lines) - len([l for l in lines if "YEAR" in l]))
 
     # Melt the dataframe
-    df["date"] = df.apply(lambda row: datetime.strptime(f"{int(row.YEAR)}-{int(row.DOY)}", "%Y-%j").date(), axis=1)
+    df["date"] = pd.to_datetime(df["YEAR"].astype(str) + df["DOY"].astype(str), format="%Y%j")
+
     melted = df.melt(id_vars=["date"], value_vars=["WS10M_RANGE", "WD10M", "GWETTOP", "GWETROOT", "GWETPROF"],
                      var_name="variable", value_name="value")
 
