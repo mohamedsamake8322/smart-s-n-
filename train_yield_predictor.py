@@ -41,7 +41,8 @@ column_names = [
     "unit", "value", "flag"
 ]
 df_fao = pd.read_csv("Production_Crops_Livestock_Afrique.csv")
-df_fao = df_fao[df_fao["Element"] == "Production"]
+df_fao.columns = [col.strip().lower() for col in df_fao.columns]
+df_fao = df_fao[df_fao["element"] == "Production"]
 df_fao = df_fao.rename(columns={
     "Area": "country",
     "Year": "year",
