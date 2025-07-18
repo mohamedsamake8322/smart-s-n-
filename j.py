@@ -22,13 +22,20 @@ records = []
 def get_country_from_coords(lat, lon):
     point = Point(lon, lat)
     match = world[world.contains(point)]
+
     if not match.empty:
         for col in ['ADMIN', 'NAME', 'SOVEREIGNT', 'name']:
             if col in match.columns:
                 return match.iloc[0][col]
-    return "Unknown"
-    print(world.columns.tolist())
 
+    # 🔁 Fallback : chercher le pays le plus proche
+    world['distance'] = world.geometry.distance(point)
+    nearest = world.sort_values('distance').iloc[0]
+    for col in ['ADMIN', 'NAME', 'SOVEREIGNT', 'name']:
+        if col in nearest.index:
+            return nearest[col]
+
+    return "Unknown"
 
 def extract_location_header(lines):
     lat = lon = None
