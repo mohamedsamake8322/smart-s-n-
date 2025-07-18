@@ -34,27 +34,29 @@ df_merged = pd.merge(
     how="left"
 )
 
-# 📦 Charger et préparer la cible FAOSTAT (production)
-column_names = [
-    "domain_code", "domain", "country", "item_code", "item",
-    "element_code", "element", "year_code", "year",
-    "unit", "value", "flag"
-]
-df_fao = pd.read_csv("Production_Crops_Livestock_Afrique.csv")
-df_fao.columns = [col.strip().lower() for col in df_fao.columns]
-df_fao = df_fao[df_fao["element"] == "Production"]
-df_fao = df_fao.rename(columns={
+# 📦 Charger les données FAOSTAT (rendement)
+df_fao = pd.read_csv("FAOSTAT_data_en_7-18-2025.csv", encoding="utf-8", quotechar='"')
+
+# 🧼 Nettoyage et filtrage
+df_fao["Element"] = df_fao["Element"].astype(str).str.strip().str.lower()
+df_fao["Area"] = df_fao["Area"].astype(str).str.strip()
+df_fao["Item"] = df_fao["Item"].astype(str).str.strip()
+df_fao["Year"] = pd.to_numeric(df_fao["Year"], errors="coerce")
+df_fao["Value"] = pd.to_numeric(df_fao["Value"], errors="coerce")
+
+df_yield = df_fao[df_fao["Element"] == "yield"]
+df_yield = df_yield.rename(columns={
     "Area": "country",
     "Year": "year",
     "Item": "culture",
     "Value": "yield_target"
 })
-print(df_fao.columns.tolist())
+df_yield = df_yield.dropna(subset=["yield_target"])
 
 # 🔗 Fusion finale
 df_final = pd.merge(
     df_merged,
-    df_fao[["country", "year", "culture", "yield_target"]],
+    df_yield[["country", "year", "culture", "yield_target"]],
     on=["country", "year"],
     how="left"
 )
@@ -90,7 +92,7 @@ model = XGBRegressor(
     max_depth=8,
     subsample=0.8,
     colsample_bytree=0.8,
-    tree_method="hist",  # Compatible avec TPU/GPU
+    tree_method="hist",
     verbosity=1
 )
 model.fit(X_train, y_train)
