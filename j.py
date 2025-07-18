@@ -6,7 +6,7 @@ import geopandas as gpd
 from shapely.geometry import Point
 from tqdm import tqdm
 from colorama import Fore, Style, init
-print(world.columns)
+
 
 # 🎨 Initialiser colorama pour couleur terminal
 init(autoreset=True)
@@ -109,3 +109,4 @@ if records:
     print(Style.BRIGHT + Fore.GREEN + f"\n✅ Fusion terminée : {len(final_df)} lignes exportées vers {output_path}\n")
 else:
     print(Style.BRIGHT + Fore.YELLOW + "\n⚠️ Aucun fichier valide traité.\n")
+    print(world.columns)
