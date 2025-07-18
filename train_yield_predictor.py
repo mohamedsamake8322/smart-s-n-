@@ -35,6 +35,11 @@ df_merged = pd.merge(
 )
 
 # 📦 Charger et préparer la cible FAOSTAT (production)
+column_names = [
+    "domain_code", "domain", "country", "item_code", "item",
+    "element_code", "element", "year_code", "year",
+    "unit", "value", "flag"
+]
 df_fao = pd.read_csv("Production_Crops_Livestock_Afrique.csv")
 df_fao = df_fao[df_fao["Element"] == "Production"]
 df_fao = df_fao.rename(columns={
@@ -43,6 +48,7 @@ df_fao = df_fao.rename(columns={
     "Item": "culture",
     "Value": "yield_target"
 })
+print(df_fao.columns.tolist())
 
 # 🔗 Fusion finale
 df_final = pd.merge(
