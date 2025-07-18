@@ -1,34 +1,3 @@
-file,status,rows,cols
-weather_Angola.csv,✅ Corrigé et sauvegardé,105192,44
-weather_Benin.csv,✅ Corrigé et sauvegardé,30681,19
-weather_Burkina.csv,Skipped (colonnes essentielles manquantes),5844,54
-weather_Cameroon.csv,✅ Corrigé et sauvegardé,61362,34
-weather_Chad.csv,✅ Corrigé et sauvegardé,92043,39
-weather_Congo.csv,Skipped (colonnes essentielles manquantes),27759,138
-weather_Djibouti.csv,✅ Corrigé et sauvegardé,5844,14
-weather_Egypt.csv,✅ Corrigé et sauvegardé,70128,44
-weather_Equatorial.csv,Skipped (colonnes essentielles manquantes),2922,13
-weather_Ethiopia.csv,✅ Corrigé et sauvegardé,92043,49
-weather_Gabon.csv,✅ Corrigé et sauvegardé,35064,24
-weather_Gambia.csv,✅ Corrigé et sauvegardé,8766,19
-weather_Ghana.csv,✅ Corrigé et sauvegardé,43830,34
-weather_Guinea.csv,✅ Corrigé et sauvegardé,55518,34
-weather_Ivory.csv,Skipped (colonnes essentielles manquantes),7305,38
-weather_Kenya.csv,✅ Corrigé et sauvegardé,80355,29
-weather_Malawi.csv,✅ Corrigé et sauvegardé,21915,19
-weather_Malaysia.csv,Skipped (structure suspecte),80355,4
-weather_Mali.csv,Skipped (structure suspecte),144639,4
-weather_Mauritania.csv,Skipped (structure suspecte),185547,4
-weather_Morocco.csv,Skipped (structure suspecte),144639,4
-weather_Mozambique.csv,✅ Corrigé et sauvegardé,143178,39
-weather_Namibia.csv,✅ Corrigé et sauvegardé,93504,44
-weather_Niger.csv,Skipped (structure suspecte),153405,4
-weather_Nigeria.csv,Skipped (structure suspecte),113958,4
-weather_Senegal.csv,✅ Corrigé et sauvegardé,52596,49
-weather_South.csv,Skipped (colonnes essentielles manquantes),20454,88
-weather_Sudan.csv,Skipped (structure suspecte),175320,4
-weather_Tanzania.csv,Skipped (structure suspecte),122724,4
-weather_Togo.csv,✅ Corrigé et sauvegardé,11688,14
-weather_Uganda.csv,✅ Corrigé et sauvegardé,29220,24
-weather_Zambia.csv,✅ Corrigé et sauvegardé,71589,39
-weather_Zimbabwe.csv,✅ Corrigé et sauvegardé,43830,34
+version https://git-lfs.github.com/spec/v1
+oid sha256:a31e66fc6e6dd8775009afc85f12286f155c4da4b55d4a1b0bdd24ce4190599f
+size 1997
