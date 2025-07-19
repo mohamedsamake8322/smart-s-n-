@@ -28,16 +28,19 @@ dataset:
   search_fields:
     id:
       description: Unique identifier
-      offset: 0
+      offset:
+        - id
       type: string
       indexed: true
     label:
       description: Dataset label
-      offset: 0
+      offset:
+        - label
       type: string
       indexed: true
     creation_dt:
-      description: Creation timestamp
-      offset: 0
+      description: Creation datetime
+      offset:
+        - creation_dt
       type: datetime
       indexed: true
