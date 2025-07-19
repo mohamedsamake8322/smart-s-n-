@@ -1,7 +1,8 @@
 name: eo_plus
 description: Extended metadata definition
 dataset:
-  id: auto
+  id:
+    - auto
   label: {type: string}
   creation_dt: {type: datetime}
   format:
