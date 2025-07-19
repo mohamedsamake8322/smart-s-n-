@@ -23,8 +23,9 @@ dataset:
   lineage:
     source_datasets:
       - lineage.source_datasets
-  sources:
-    - lineage.source_datasets
+
+sources:
+  - lineage.source_datasets
 
 search_fields:
   id:
