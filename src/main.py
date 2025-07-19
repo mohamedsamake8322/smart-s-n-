@@ -44,7 +44,10 @@ def main(year, culture, export_format):
     ndvi_path = "outputs/ndvi_africa.csv"
     ndvi_df.to_csv(ndvi_path, index=False)
     print("📁 NDVI exporté :", ndvi_path)
-
+    ndvi_df = ndvi_df.dropna(subset=["latitude", "longitude", "ndvi_mean"])
+    if ndvi_df.empty:
+            print("❌ Aucun point NDVI valide après extraction. Arrêt du pipeline.")
+    sys.exit(1)
     # 🌾 Étape 3 : Fusion agronomique
     fusion_df = fuse_with_agronomic_data(ndvi_df)
     fusion_path = "outputs/data_for_model.csv"

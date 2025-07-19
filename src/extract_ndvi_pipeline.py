@@ -15,7 +15,11 @@ def extract_ndvi_batch(df_coords, buffer=0.05):
 
         try:
             ds = load_ard(dc, products=["s2_l2a"], x=lon_range, y=lat_range,
-                          time=time_range, output_crs="EPSG:4326", cloud_mask=True)
+              time=time_range, output_crs="EPSG:4326", cloud_mask=True)
+
+            if ds is None or not hasattr(ds, "measurements") or ds.measurements is None:
+                    print(f"⚠️ Donnée Sentinel vide ou corrompue pour zone {idx}")
+                    continue
             ds = calculate_indices(ds, index="NDVI", satellite_mission="s2")
 
             if ds is not None and hasattr(ds, "NDVI") and ds.NDVI.size > 0:
