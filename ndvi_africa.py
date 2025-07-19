@@ -1,7 +1,7 @@
-from datacube import Datacube
-from deafrica_tools.datahandling import load_ard
-from deafrica_tools.bandindices import calculate_indices
-import pandas as pd
+from datacube import Datacube # type: ignore
+from deafrica_tools.datahandling import load_ard # type: ignore
+from deafrica_tools.bandindices import calculate_indices # type: ignore
+import pandas as pd # type: ignore
 
 dc = Datacube(app="senesmart")
 
