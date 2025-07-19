@@ -27,8 +27,16 @@ dataset:
     - lineage.source_datasets
   search_fields:
     id:
-      - id
+      description: Unique identifier
+      type: string
+      indexed: true
+
     label:
-      - label
+      description: Dataset label
+      type: string
+      indexed: true
+
     creation_dt:
-      - creation_dt
+      description: Creation datetime
+      type: datetime
+      indexed: true
