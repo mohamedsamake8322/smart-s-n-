@@ -6,6 +6,8 @@ metadata:
   instrument: MSI
   product_type: Level-2A
   format: GeoTIFF
+  dataset_metadata:
+    id: auto
 
 measurements:
   - name: red
