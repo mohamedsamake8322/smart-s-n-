@@ -41,6 +41,3 @@ storage:
     - time
     - y
     - x
-
-accessories:
-  metadata: "*_metadata.yaml"
