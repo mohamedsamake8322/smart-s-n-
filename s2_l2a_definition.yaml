@@ -5,7 +5,6 @@ metadata:
   platform: sentinel-2
   instrument: MSI
   product_type: Level-2A
-  format: GeoTIFF
 
 measurements:
   - name: red
