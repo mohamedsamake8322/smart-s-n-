@@ -2,16 +2,29 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 import pyproj
-pyproj.datadir.set_data_dir(pyproj.datadir.get_default_data_dir())
 from shapely.geometry import Point
 from db_interface.connector import connect_db
 from db_interface.ndvi_storage import store_ndvi_profile
 
+# Vérification et configuration du chemin PROJ si nécessaire
+# Dans pyproj >= 3.4, get_default_data_dir() n'existe plus.
+# En général, pyproj trouve les données PROJ automatiquement.
+# Si besoin, on peut forcer un chemin.
+if not pyproj.datadir.get_data_dir():
+    try:
+        pyproj.datadir.set_data_dir("C:/Users/moham/anaconda3/envs/smartgeo310/Library/share/proj")
+    except Exception as e:
+        print(f"⚠️ Impossible de définir le chemin PROJ : {e}")
+
 # Chargement du fichier CSV
 df_agri = pd.read_csv("../data/dataset_agricole_prepared.csv")
 
-gdf_agri = gpd.GeoDataFrame(df_agri, geometry=gpd.points_from_xy(
-    df_agri.longitude, df_agri.latitude), crs="EPSG:4326")
+# Création d'une GeoDataFrame
+gdf_agri = gpd.GeoDataFrame(
+    df_agri,
+    geometry=gpd.points_from_xy(df_agri.longitude, df_agri.latitude),
+    crs="EPSG:4326"
+)
 
 # Fonction d'enrichissement NDVI
 def compute_ndvi_stats(profile):
@@ -30,7 +43,11 @@ def process_single_ndvi(conn):
     lat, lon, year = 19.66, 4.3, 2021
 
     stats = compute_ndvi_stats(profile)
-    match = gdf_agri[(gdf_agri.year == year) & (gdf_agri.latitude == lat) & (gdf_agri.longitude == lon)]
+    match = gdf_agri[
+        (gdf_agri.year == year) &
+        (gdf_agri.latitude == lat) &
+        (gdf_agri.longitude == lon)
+    ]
 
     if not match.empty:
         culture = match.iloc[0]["culture"]
