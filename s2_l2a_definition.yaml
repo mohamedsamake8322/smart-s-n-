@@ -6,8 +6,6 @@ metadata:
   instrument: MSI
   product_type: Level-2A
   format: GeoTIFF
-  dataset_metadata:
-    id: auto
 
 measurements:
   - name: red
@@ -30,15 +28,8 @@ measurements:
 storage:
   crs: EPSG:4326
   resolution:
-    x: 8.98315e-05
-    y: -8.98315e-05
-  tile_size:
-    x: 10000
-    y: 10000
-  chunking:
-    x: 500
-    y: 500
-    time: 1
+    x: 0.0000898315
+    y: -0.0000898315
   dimension_order:
     - time
     - y
