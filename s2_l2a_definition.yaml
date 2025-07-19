@@ -28,8 +28,8 @@ measurements:
 storage:
   crs: EPSG:4326
   resolution:
-    x: 8.98315e-05
-    y: -8.98315e-05
+    x: 0.0000898315
+    y: -0.0000898315
   tile_size:
     x: 10000
     y: 10000
@@ -41,4 +41,3 @@ storage:
     - time
     - y
     - x
-
