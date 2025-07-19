@@ -1,0 +1,17 @@
+name: eo_plus
+description: Extended metadata definition
+dataset:
+  id: auto
+  label: {type: string}
+  creation_dt: {type: datetime}
+  format:
+    name: {type: string}
+  grid_spatial:
+    projection:
+      spatial_reference: {type: string}
+      geo_ref_points:
+        ll: {x: {type: float}, y: {type: float}}
+        lr: {x: {type: float}, y: {type: float}}
+        ul: {x: {type: float}, y: {type: float}}
+        ur: {x: {type: float}, y: {type: float}}
+  lineage: {source_datasets: {type: object}}
