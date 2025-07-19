@@ -32,7 +32,7 @@ def main(year, culture, export_format):
         sys.exit(1)
 
     coords_df = pd.read_csv(csv_path)
-    coords_df = coords_df[(coords_df["year"] == year) & (coords_df["culture"] == culture)]
+    coords_df = coords_df[(coords_df["year"] == year) & (coords_df["culture"].str.lower() == culture.lower())]
 
     if coords_df.empty:
         print(f"⚠️ Aucun point trouvé pour l’année {year} et la culture '{culture}'")
@@ -44,10 +44,19 @@ def main(year, culture, export_format):
     ndvi_path = "outputs/ndvi_africa.csv"
     ndvi_df.to_csv(ndvi_path, index=False)
     print("📁 NDVI exporté :", ndvi_path)
-    ndvi_df = ndvi_df.dropna(subset=["latitude", "longitude", "ndvi_mean"])
+
+    # 🧼 Vérification du contenu
+    expected_cols = ["latitude", "longitude", "ndvi_mean"]
+    if not all(col in ndvi_df.columns for col in expected_cols):
+        print("❌ NDVI export incomplet : colonnes manquantes.")
+        print("📋 Colonnes présentes :", list(ndvi_df.columns))
+        sys.exit(1)
+
+    ndvi_df = ndvi_df.dropna(subset=expected_cols)
     if ndvi_df.empty:
-            print("❌ Aucun point NDVI valide après extraction. Arrêt du pipeline.")
-    sys.exit(1)
+        print("❌ Aucun point NDVI utilisable après filtrage.")
+        sys.exit(1)
+
     # 🌾 Étape 3 : Fusion agronomique
     fusion_df = fuse_with_agronomic_data(ndvi_df)
     fusion_path = "outputs/data_for_model.csv"
@@ -73,6 +82,7 @@ def main(year, culture, export_format):
     else:
         output_path = "outputs/rapport_intrants_producteurs.csv"
         intrants_df.to_csv(output_path, index=False)
+
     print(f"✅ Rapport généré : {output_path}")
 
 if __name__ == "__main__":
