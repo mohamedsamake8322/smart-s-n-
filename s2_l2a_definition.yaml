@@ -28,8 +28,12 @@ measurements:
 storage:
   crs: EPSG:4326
   resolution:
-    x: 0.0000898315
-    y: -0.0000898315
+    x: 8.98315e-05
+    y: -8.98315e-05
+  chunking:
+    x: 500
+    y: 500
+    time: 1
   dimension_order:
     - time
     - y
