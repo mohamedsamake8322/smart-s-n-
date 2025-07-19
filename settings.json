@@ -1,7 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./",
-        "./utils"
-    ],
-    "python.defaultInterpreterPath": "./smartyield-env/Scripts/python.exe"
-}
