@@ -23,3 +23,12 @@ dataset:
   lineage:
     source_datasets:
       - lineage.source_datasets
+  sources:
+    - lineage.source_datasets
+  search_fields:
+    id:
+      - id
+    label:
+      - label
+    creation_dt:
+      - creation_dt
