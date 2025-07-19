@@ -1,7 +1,17 @@
 name: s2_l2a
-description: Sentinel-2 Level 2A surface reflectance product
+description: Sentinel-2 Level 2A surface reflectance product for African coverage
 metadata_type: eo3
 license: CC-BY-4.0
+
+storage:
+  crs: "EPSG:4326"
+  resolution:
+    x: 0.0001
+    y: -0.0001
+  origin:
+    x: 0.0
+    y: 0.0
+
 measurements:
   - name: red
     aliases: [B04]
