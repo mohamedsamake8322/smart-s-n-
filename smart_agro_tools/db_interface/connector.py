@@ -1,4 +1,4 @@
-from db_interface.connector import connect_db
+from .connector import connect_db  # Import relatif
 
 conn = connect_db(
     host="localhost",
