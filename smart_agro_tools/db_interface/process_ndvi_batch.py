@@ -6,7 +6,6 @@ from shapely.geometry import Point
 from db_interface.connector import connect_db
 from db_interface.ndvi_storage import store_ndvi_profile
 import os
-
 # Forcer le chemin PROJ si nécessaire
 proj_path = r"C:\Users\moham\anaconda3\envs\smartgeo310\Library\share\proj"
 if os.path.exists(proj_path):
