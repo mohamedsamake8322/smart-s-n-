@@ -1,5 +1,6 @@
 name: eo_plus
-description: Extended metadata definition
+description: Extended EO metadata
+
 dataset:
   id:
     - auto
@@ -15,4 +16,5 @@ dataset:
         lr: {x: {type: float}, y: {type: float}}
         ul: {x: {type: float}, y: {type: float}}
         ur: {x: {type: float}, y: {type: float}}
-  lineage: {source_datasets: {type: object}}
+  lineage:
+    source_datasets: {type: object}
