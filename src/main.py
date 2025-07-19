@@ -1,3 +1,5 @@
+import sys
+sys.path.append('./deafrica-tools')  # ou le chemin absolu si nécessaire
 import argparse
 import pandas as pd
 from extract_ndvi_pipeline import extract_ndvi_batch
