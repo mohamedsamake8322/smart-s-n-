@@ -8,16 +8,15 @@ storage:
   resolution:
     x: 0.0001
     y: -0.0001
-  origin:
-    x: 0.0
-    y: 0.0
   tile_size:
     x: 1000
     y: 1000
   chunking:
     x: 100
     y: 100
-  dimension_order: [time, y, x]
+  origin:
+    x: 0.0
+    y: 0.0
 
 measurements:
   - name: red
