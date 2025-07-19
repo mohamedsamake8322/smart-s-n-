@@ -71,7 +71,7 @@ if __name__ == "__main__":
         host="localhost",
         dbname="datacube",
         user="mohamedsamake2000",
-        password="Mot70179877Moh#",
+        password="70179877Moh#",
         port=5432
     )
     process_single_ndvi(conn)
