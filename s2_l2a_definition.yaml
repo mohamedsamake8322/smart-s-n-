@@ -5,21 +5,25 @@ metadata:
   platform: sentinel-2
   instrument: MSI
   product_type: Level-2A
-  format: GeoTIFF
+  format:
+    - GeoTIFF
 
 measurements:
   - name: red
     dtype: int16
     nodata: -999
     units: '1'
+
   - name: nir
     dtype: int16
     nodata: -999
     units: '1'
+
   - name: green
     dtype: int16
     nodata: -999
     units: '1'
+
   - name: blue
     dtype: int16
     nodata: -999
@@ -30,13 +34,16 @@ storage:
   resolution:
     x: 0.0000898315
     y: -0.0000898315
+
   tile_size:
     x: 10000
     y: 10000
+
   chunking:
     x: 500
     y: 500
     time: 1
+
   dimension_order:
     - time
     - y

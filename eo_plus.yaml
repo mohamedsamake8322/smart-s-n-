@@ -9,8 +9,7 @@ dataset:
   creation_dt:
     - creation_dt
   format:
-    name:
-      - format.name
+    - format.name
   grid_spatial:
     projection:
       spatial_reference:
