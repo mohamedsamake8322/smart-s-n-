@@ -1,49 +1,11 @@
 name: eo_plus
-description: Extended EO metadata
-
-dataset:
-  id:
-    - id
-  label:
-    - label
-  creation_dt:
-    - creation_dt
+description: EO Plus metadata type for Sentinel-2 L2A products
+metadata_type: eo3
+metadata:
+  product_type: s2_l2a
+  platform:
+    code: sentinel-2
+  instrument:
+    name: MSI
   format:
-    - format.name
-  grid_spatial:
-    - grid_spatial.projection.spatial_reference
-    - grid_spatial.projection.geo_ref_points.ll.x
-    - grid_spatial.projection.geo_ref_points.ll.y
-    - grid_spatial.projection.geo_ref_points.lr.x
-    - grid_spatial.projection.geo_ref_points.lr.y
-    - grid_spatial.projection.geo_ref_points.ul.x
-    - grid_spatial.projection.geo_ref_points.ul.y
-    - grid_spatial.projection.geo_ref_points.ur.x
-    - grid_spatial.projection.geo_ref_points.ur.y
-  lineage:
-    source_datasets:
-      - lineage.source_datasets
-  sources:
-    - lineage.source_datasets
-
-search_fields:
-  id:
-    description: Unique identifier
-    offset:
-      - id
-    type: string
-    indexed: true
-
-  label:
-    description: Dataset label
-    offset:
-      - label
-    type: string
-    indexed: true
-
-  creation_dt:
-    description: Creation datetime
-    offset:
-      - creation_dt
-    type: datetime
-    indexed: true
+    name: GeoTIFF

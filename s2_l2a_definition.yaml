@@ -1,50 +1,54 @@
 name: s2_l2a
-description: Sentinel-2 Level-2A surface reflectance for NDVI extraction
-
-metadata:
-  platform: sentinel-2
-  instrument: MSI
-  product_type: Level-2A
-  format:
-    - GeoTIFF
-
+description: Surface reflectance from Sentinel-2 Level 2A
+metadata_type: eo_plus
 measurements:
   - name: red
+    aliases: [B04]
     dtype: int16
-    nodata: -999
+    nodata: 0
     units: '1'
-
   - name: nir
+    aliases: [B08]
     dtype: int16
-    nodata: -999
+    nodata: 0
     units: '1'
-
   - name: green
+    aliases: [B03]
     dtype: int16
-    nodata: -999
+    nodata: 0
     units: '1'
-
   - name: blue
+    aliases: [B02]
     dtype: int16
-    nodata: -999
+    nodata: 0
     units: '1'
-
-storage:
-  crs: EPSG:4326
-  resolution:
-    x: 0.0000898315
-    y: -0.0000898315
-
-  tile_size:
-    x: 10000
-    y: 10000
-
-  chunking:
-    x: 500
-    y: 500
-    time: 1
-
-  dimension_order:
-    - time
-    - y
-    - x
+  - name: swir1
+    aliases: [B11]
+    dtype: int16
+    nodata: 0
+    units: '1'
+  - name: swir2
+    aliases: [B12]
+    dtype: int16
+    nodata: 0
+    units: '1'
+  - name: red_edge_1
+    aliases: [B05]
+    dtype: int16
+    nodata: 0
+    units: '1'
+  - name: red_edge_2
+    aliases: [B06]
+    dtype: int16
+    nodata: 0
+    units: '1'
+  - name: red_edge_3
+    aliases: [B07]
+    dtype: int16
+    nodata: 0
+    units: '1'
+  - name: scl
+    aliases: [SCL]
+    dtype: uint8
+    nodata: 0
+    units: '1'
