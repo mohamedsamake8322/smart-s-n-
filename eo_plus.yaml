@@ -11,30 +11,15 @@ dataset:
   format:
     - format.name
   grid_spatial:
-    projection:
-      spatial_reference:
-        - grid_spatial.projection.spatial_reference
-      geo_ref_points:
-        ll:
-          x:
-            - grid_spatial.projection.geo_ref_points.ll.x
-          y:
-            - grid_spatial.projection.geo_ref_points.ll.y
-        lr:
-          x:
-            - grid_spatial.projection.geo_ref_points.lr.x
-          y:
-            - grid_spatial.projection.geo_ref_points.lr.y
-        ul:
-          x:
-            - grid_spatial.projection.geo_ref_points.ul.x
-          y:
-            - grid_spatial.projection.geo_ref_points.ul.y
-        ur:
-          x:
-            - grid_spatial.projection.geo_ref_points.ur.x
-          y:
-            - grid_spatial.projection.geo_ref_points.ur.y
+    - grid_spatial.projection.spatial_reference
+    - grid_spatial.projection.geo_ref_points.ll.x
+    - grid_spatial.projection.geo_ref_points.ll.y
+    - grid_spatial.projection.geo_ref_points.lr.x
+    - grid_spatial.projection.geo_ref_points.lr.y
+    - grid_spatial.projection.geo_ref_points.ul.x
+    - grid_spatial.projection.geo_ref_points.ul.y
+    - grid_spatial.projection.geo_ref_points.ur.x
+    - grid_spatial.projection.geo_ref_points.ur.y
   lineage:
     source_datasets:
       - lineage.source_datasets
