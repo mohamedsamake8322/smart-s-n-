@@ -30,6 +30,9 @@ storage:
   resolution:
     x: 8.98315e-05
     y: -8.98315e-05
+  tile_size:
+    x: 10000
+    y: 10000
   chunking:
     x: 500
     y: 500
@@ -38,3 +41,4 @@ storage:
     - time
     - y
     - x
+
