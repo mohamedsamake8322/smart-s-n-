@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
-from shapely.geometry import Point
 import geopandas as gpd
+import pyproj
+pyproj.datadir.set_data_dir(pyproj.datadir.get_default_data_dir())
+from shapely.geometry import Point
 from db_interface.connector import connect_db
 from db_interface.ndvi_storage import store_ndvi_profile
 
