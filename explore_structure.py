@@ -1,6 +1,6 @@
 import os
 
-def save_directory_tree(startpath, output_file, max_depth=5):
+def save_filtered_tree(startpath, output_file, max_depth=5):
     def safe_write(line):
         try:
             f.write(line + "\n")
@@ -13,15 +13,20 @@ def save_directory_tree(startpath, output_file, max_depth=5):
             depth = root.replace(startpath, "").count(os.sep)
             if depth >= max_depth:
                 continue
+
+            # Affichage du dossier
             indent = "│   " * depth
             safe_write(f"{indent}├── {os.path.basename(root)}/")
-            for file_name in files:
-                safe_write(f"{indent}│   └── {file_name}")
+
+            # Filtrer les fichiers .py et .csv
+            for file_name in sorted(files):
+                if file_name.endswith((".py", ".csv")):
+                    safe_write(f"{indent}│   └── {file_name}")
 
 # Chemin vers ton projet
 project_path = r"C:\plateforme-agricole-complete-v2"
 output_file = "arborescence.txt"
 
-save_directory_tree(project_path, output_file)
+save_filtered_tree(project_path, output_file)
 
-print(f"✅ Arborescence sauvegardée dans {output_file}")
+print(f"✅ Arborescence filtrée sauvegardée dans {output_file}")
