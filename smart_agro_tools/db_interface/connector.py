@@ -14,10 +14,3 @@ def connect_db(host, dbname, user, password, port):
         print("Erreur de connexion ❌ :", e)
         return None
 
-conn = connect_db(
-    host="localhost",
-    dbname="datacube",
-    user="mohamedsamake2000",
-    password="70179877Moh#",
-    port=5432
-)
