@@ -1,6 +1,15 @@
+import sys
+import os
+import pandas as pd
+deafrica_module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'deafrica-tools', 'deafrica_tools'))
+if os.path.exists(deafrica_module_path):
+    sys.path.append(deafrica_module_path)
+else:
+    print(f"❌ Module deafrica_tools introuvable à : {deafrica_module_path}")
+    sys.exit(1)
 from datacube import Datacube
 from deafrica_tools.datahandling import load_ard
-import pandas as pd
+
 
 dc = Datacube(app="ndvi_filter")
 
