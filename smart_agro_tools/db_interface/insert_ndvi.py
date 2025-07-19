@@ -58,7 +58,7 @@ if __name__ == "__main__":
         host="localhost",
         dbname="datacube",
         user="mohamedsamake2000",
-        password="Motdepasse",  # modifie ici ton vrai mot de passe
+        password="70179877Moh#",  # modifie ici ton vrai mot de passe
         port=5432
     )
 
