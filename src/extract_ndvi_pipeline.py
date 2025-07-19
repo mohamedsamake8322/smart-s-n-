@@ -1,6 +1,6 @@
 from datacube import Datacube
-from deafrica_tools.datahandling import load_ard
-from deafrica_tools.bandindices import calculate_indices
+from datahandling import load_ard
+from bandindices import calculate_indices
 import pandas as pd
 
 dc = Datacube(app="ndvi_extraction")
