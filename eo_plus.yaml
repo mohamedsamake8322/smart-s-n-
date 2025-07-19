@@ -25,22 +25,25 @@ dataset:
       - lineage.source_datasets
   sources:
     - lineage.source_datasets
-  search_fields:
-    id:
-      description: Unique identifier
-      offset:
-        - id
-      type: string
-      indexed: true
-    label:
-      description: Dataset label
-      offset:
-        - label
-      type: string
-      indexed: true
-    creation_dt:
-      description: Creation datetime
-      offset:
-        - creation_dt
-      type: datetime
-      indexed: true
+
+search_fields:
+  id:
+    description: Unique identifier
+    offset:
+      - id
+    type: string
+    indexed: true
+
+  label:
+    description: Dataset label
+    offset:
+      - label
+    type: string
+    indexed: true
+
+  creation_dt:
+    description: Creation datetime
+    offset:
+      - creation_dt
+    type: datetime
+    indexed: true
