@@ -5,6 +5,15 @@ import pyproj
 from shapely.geometry import Point
 from db_interface.connector import connect_db
 from db_interface.ndvi_storage import store_ndvi_profile
+import pyproj
+import os
+
+# Forcer le chemin des données PROJ
+proj_data_path = r"C:\Users\moham\anaconda3\envs\smartgeo310\Library\share\proj"
+if os.path.exists(proj_data_path):
+    pyproj.datadir.set_data_dir(proj_data_path)
+else:
+    print(f"⚠️ Chemin PROJ introuvable : {proj_data_path}")
 
 # Vérification et configuration du chemin PROJ si nécessaire
 # Dans pyproj >= 3.4, get_default_data_dir() n'existe plus.
