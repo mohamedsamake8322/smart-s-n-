@@ -1,19 +1,32 @@
-import pandas as pd
-import numpy as np
-import psycopg2  # pour la connexion PostgreSQL
+import pandas as pd  # type: ignore
+import numpy as np  # type: ignore
+import psycopg2  # type: ignore
+import psycopg2.extras
 import os
 
-# Fonction pour stocker le profil NDVI dans la base
-def store_ndvi_profile(conn, lat, lon, profile, mission, year):
+# Fonction pour stocker le profil NDVI et stats dans la base
+def store_ndvi_profile(conn, lat, lon, profile, mission, year, stats):
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO ndvi_profiles (latitude, longitude, profile, mission, year)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO ndvi_profiles
+            (latitude, longitude, ndvi_profile, mission, year, mean, max, min, std, peak_index)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
-            (lat, lon, profile, mission, year)
+            (
+                lat,
+                lon,
+                profile,
+                mission,
+                year,
+                stats["mean"],
+                stats["max"],
+                stats["min"],
+                stats["std"],
+                stats["peak_index"],
+            )
         )
-    conn.commit()  # valide l'insertion
+    conn.commit()
 
 # Simule un profil NDVI avec 6 valeurs aléatoires entre 0.1 et 0.6
 def simulate_ndvi_profile():
@@ -31,8 +44,10 @@ def compute_ndvi_stats(profile):
     }
 
 # Traite tout le CSV, insert ligne par ligne
-def process_all_ndvi(conn, csv_path=r"C:\plateforme-agricole-complete-v2\data\dataset_agricole_prepared.csv"):
-
+def process_all_ndvi(
+    conn,
+    csv_path=r"C:\plateforme-agricole-complete-v2\data\dataset_agricole_prepared.csv",
+):
     df_agri = pd.read_csv(csv_path)
 
     for idx, row in df_agri.iterrows():
@@ -44,24 +59,27 @@ def process_all_ndvi(conn, csv_path=r"C:\plateforme-agricole-complete-v2\data\da
 
         print(f"[{idx}] Insertion 📍({lat}, {lon}) | {culture}, {year} | NDVI stats: {stats}")
 
+        # Ici on passe la liste Python directement ; psycopg2 gère la conversion en array PostgreSQL
         store_ndvi_profile(
             conn=conn,
             lat=lat,
             lon=lon,
             profile=profile,
             mission="Sentinel-2",
-            year=int(year)
+            year=int(year),
+            stats=stats,
         )
 
+
 if __name__ == "__main__":
-    # Connexion à la base PostgreSQL
     conn = psycopg2.connect(
         host="localhost",
         dbname="datacube",
         user="mohamedsamake2000",
-        password="70179877Moh#",  # modifie ici ton vrai mot de passe
-        port=5432
+        password="70179877Moh#",  # Remplace par ton mot de passe réel
+        port=5432,
     )
-
-    process_all_ndvi(conn)
-    conn.close()
+    try:
+        process_all_ndvi(conn)
+    finally:
+        conn.close()
