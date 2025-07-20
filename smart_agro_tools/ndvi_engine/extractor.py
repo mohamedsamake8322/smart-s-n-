@@ -1,16 +1,15 @@
 import rasterio  # type: ignore
 from rasterio.windows import Window  # type: ignore
 import logging
-import xarray as xr
+import xarray as xr # type: ignore
 from smart_agro_tools.ndvi_engine.validator import is_sentinel_available
 from smart_agro_tools.ndvi_engine.config import MISSION_PRIORITY
 from smart_agro_tools.ndvi_engine.dataset_loader import load_agricultural_data  # fonction existante
 
 from smart_agro_tools.ndvi_core import calculate_indices  # type: ignore
 from smart_agro_tools.masking_utils import masking  # type: ignore
-from smart_agro_tools.ndvi_engine.extractor import extract_ndvi_profile
-from smart_agro_tools.ndvi_engine.ndvi_core import calculate_indices
-from smart_agro_tools.ndvi_engine.masking_utils import masking
+from smart_agro_tools.ndvi_engine.ndvi_core import calculate_indices # type: ignore
+from smart_agro_tools.ndvi_engine.masking_utils import masking # type: ignore
 
 def extract_ndvi_profile(dataset: xr.Dataset) -> dict:
     """
