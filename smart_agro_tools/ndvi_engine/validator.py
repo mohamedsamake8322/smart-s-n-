@@ -1,4 +1,4 @@
-from smart_agro_tools.ard_loader import load_ard
+from smart_agro_tools.dataset_loader import load_ard
 
 def is_sentinel_available(lat, lon, year):
     """
