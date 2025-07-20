@@ -1,12 +1,13 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
+import logging
 import numpy as np  # type: ignore
 import psycopg2  # type: ignore
-import logging
+import pandas as pd  # type: ignore
 from typing import Dict, Any, List
-from smart_agro_tools.ndvi_engine.dataset_loader import load_agricultural_data
+
+# --- Imports locaux
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from smart_agro_tools.ndvi_engine.extractor import extract_ndvi_profile
 from smart_agro_tools.ndvi_engine.validator import check as ndvi_check
 from smart_agro_tools.input_recommender.climate_filter import adjust_for_climate
@@ -15,12 +16,13 @@ from smart_agro_tools.input_recommender.soil_matcher import adjust_for_soil
 from smart_agro_tools.input_recommender.recommender import suggest_inputs
 from smart_agro_tools.db_interface.ndvi_storage import store_ndvi_profile
 
-# Configuration
+# --- Configuration ---
 CSV_PATH = r"C:\plateforme-agricole-complete-v2\data\dataset_agricole_prepared.csv"
 NDVI_FOLDER = r"C:\plateforme-agricole-complete-v2\data\ndvi_rasters"
 
-# Logging
+# --- Logging ---
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
 
 def compute_ndvi_stats(profile: List[float]) -> Dict[str, Any]:
     """Compute basic statistics from NDVI profile."""
@@ -33,28 +35,42 @@ def compute_ndvi_stats(profile: List[float]) -> Dict[str, Any]:
         "peak_index": int(np.argmax(arr)),
     }
 
+
 def process_ndvi_data(conn: psycopg2.extensions.connection) -> None:
     """Process NDVI data and insert into PostgreSQL database."""
-    df = load_agricultural_data(CSV_PATH)
+    logging.info(f"📥 Chargement du CSV : {CSV_PATH}")
+    df = pd.read_csv(CSV_PATH)
 
     for idx, row in df.iterrows():
-        lat, lon, year = row["latitude"], row["longitude"], row["year"]
-        crop = row.get("culture", "unknown")
+        lat, lon, year = float(row["latitude"]), float(row["longitude"]), int(row["year"])
+        crop = str(row.get("culture", "unknown"))
+        soil_data = {
+            "GWETPROF": row.get("GWETPROF"),
+            "GWETROOT": row.get("GWETROOT"),
+            "GWETTOP": row.get("GWETTOP"),
+        }
+        climate_data = {
+            "WD10M": row.get("WD10M"),
+            "WS10M_RANGE": row.get("WS10M_RANGE"),
+        }
 
         try:
             # Step 1: NDVI Extraction
             profile = extract_ndvi_profile(lat, lon, NDVI_FOLDER)
+            if not profile:
+                logging.warning(f"[{idx}] ❌ NDVI vide pour {crop} ({lat}, {lon})")
+                continue
 
             # Step 2: NDVI Validation
             if not ndvi_check(profile):
-                logging.warning(f"[{idx}] ❌ Invalid NDVI for {crop} ({lat}, {lon})")
+                logging.warning(f"[{idx}] ❌ NDVI invalide pour {crop} ({lat}, {lon})")
                 continue
 
             # Step 3: Input Recommendation
-            soil = match_soil(lat, lon)
-            climate = adjust_for_climate(lat, lon)
+            soil_factor = adjust_for_soil(soil_data)
+            climate_factor = adjust_for_climate(climate_data)
             stress = detect_stress_from_ndvi(profile)
-            recommendation = suggest_npk(profile, soil, climate, crop)
+            recommendation = suggest_inputs(profile, soil_data, climate_data, crop, row.get("yield_target"))
             stats = compute_ndvi_stats(profile)
 
             # Step 4: Store NDVI Profile
@@ -65,7 +81,8 @@ def process_ndvi_data(conn: psycopg2.extensions.connection) -> None:
             )
 
         except Exception as e:
-            logging.error(f"[{idx}] ❌ Error processing {crop} ({lat}, {lon}): {e}")
+            logging.error(f"[{idx}] ❌ Erreur sur {crop} ({lat}, {lon}): {e}")
+
 
 def get_database_connection() -> psycopg2.extensions.connection:
     """Establish a PostgreSQL connection."""
@@ -76,6 +93,7 @@ def get_database_connection() -> psycopg2.extensions.connection:
         password="70179877Moh#",  # 🔒 TIP: Use os.environ.get("DB_PASSWORD") for production
         port=5432
     )
+
 
 if __name__ == "__main__":
     try:
