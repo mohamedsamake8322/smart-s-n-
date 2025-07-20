@@ -13,8 +13,11 @@ def adjust_for_climate(climate_data):
     score = (wind_speed + variability) / 2
 
     if score > 150:
-        return 0.85
+        return 0.85  # stress élevé → réduction
     elif score > 100:
-        return 1.0
+        return 1.0   # neutre
     else:
-        return 1.1
+        return 1.1   # conditions favorables → petit boost
+if __name__ == "__main__":
+    test = {"WD10M": 90, "WS10M_RANGE": 80}
+    print("Facteur climatique :", adjust_for_climate(test))

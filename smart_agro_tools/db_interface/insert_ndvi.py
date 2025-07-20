@@ -1,7 +1,7 @@
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 import psycopg2  # type: ignore
-import psycopg2.extras
+import psycopg2.extras # type: ignore
 import os
 
 # Fonction pour stocker le profil NDVI et stats dans la base

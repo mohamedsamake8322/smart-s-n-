@@ -1,4 +1,4 @@
-import psycopg2
+import psycopg2 # type: ignore
 def connect_db(host, dbname, user, password, port):
     try:
         conn = psycopg2.connect(
