@@ -1,12 +1,31 @@
 import pandas as pd # type: ignore
 import os
-
+import rasterio
 REQUIRED_COLUMNS = [
     "country", "year", "latitude", "longitude",
     "GWETPROF", "GWETROOT", "GWETTOP", "WD10M", "WS10M_RANGE",
     "Export quantity", "Import quantity", "Production", "pesticides_use",
     "culture", "yield_target"
 ]
+def load_ard(file_path):
+    """
+    Charge un jeu de données ARD (Analytical Ready Data) depuis un fichier raster.
+
+    Args:
+        file_path (str): Chemin vers le fichier raster (ex: GeoTIFF).
+
+    Returns:
+        tuple: (data, profile, transform, crs)
+    """
+    try:
+        with rasterio.open(file_path) as src:
+            data = src.read(1)  # lit la première bande
+            profile = src.profile
+            transform = src.transform
+            crs = src.crs
+        return data, profile, transform, crs
+    except Exception as e:
+        raise RuntimeError(f"Erreur lors du chargement du fichier ARD : {e}")
 
 def load_agricultural_data(path="data/dataset_agricole_prepared.csv"):
     """
