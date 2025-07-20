@@ -1,6 +1,6 @@
 # smart_agro_tools/masking_utils.py
 
-import numpy as np
+import numpy as np # type: ignore
 
 def masking(image_data, cloud_mask=None, nodata_value=None):
     """
