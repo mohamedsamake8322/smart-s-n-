@@ -1,5 +1,3 @@
-from smart_agro_tools.input_recommender.soil_matcher import match_soil
-
 
 def adjust_for_soil(soil_data: dict) -> float:
     """
