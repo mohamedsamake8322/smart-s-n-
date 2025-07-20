@@ -1,6 +1,6 @@
 import pandas as pd # type: ignore
 import os
-import rasterio
+import rasterio # type: ignore
 REQUIRED_COLUMNS = [
     "country", "year", "latitude", "longitude",
     "GWETPROF", "GWETROOT", "GWETTOP", "WD10M", "WS10M_RANGE",

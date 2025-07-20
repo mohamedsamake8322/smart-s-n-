@@ -2,7 +2,7 @@ import rasterio # type: ignore
 from rasterio.windows import Window # type: ignore
 from smart_agro_tools.ndvi_engine.validator import is_sentinel_available
 from smart_agro_tools.ndvi_engine.config import MISSION_PRIORITY
-from smart_agro_tools.ard_loader import load_ard # type: ignore
+from smart_agro_tools.ndvi_engine.dataset_loader import load_ard
 from smart_agro_tools.ndvi_core import calculate_indices # type: ignore
 from smart_agro_tools.masking_utils import masking # type: ignore
 

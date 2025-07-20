@@ -16,4 +16,4 @@ def suggest_inputs_from_dataset(df, lat, lon, crop_target):
     yield_target = sub_df["yield_target"].mean()
 
     # Appel à la fonction principale
-    return suggest_inputs(ndvi_profile=[], soil_data=soil, climate_data=climate, crop_target=crop_target, yield_target=yield_target)
+    return suggest_inputs(ndvi_profile=[], soil_data=soil, climate_data=climate, crop_target=crop_target, yield_target=yield_target) # type: ignore
