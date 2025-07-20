@@ -1,7 +1,7 @@
 import os
 import logging
 import rasterio  # type: ignore
-import numpy as np
+import numpy as np # type: ignore
 import xarray as xr  # type: ignore
 from smart_agro_tools.ndvi_engine.config import MISSION_PRIORITY
 from smart_agro_tools.ndvi_engine.dataset_loader import load_agricultural_data  # fonction existante
