@@ -2,7 +2,6 @@ import rasterio  # type: ignore
 from rasterio.windows import Window  # type: ignore
 import logging
 import xarray as xr # type: ignore
-from smart_agro_tools.ndvi_engine.validator import is_sentinel_available
 from smart_agro_tools.ndvi_engine.config import MISSION_PRIORITY
 from smart_agro_tools.ndvi_engine.dataset_loader import load_agricultural_data  # fonction existante
 
