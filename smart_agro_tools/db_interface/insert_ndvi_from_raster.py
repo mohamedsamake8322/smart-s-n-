@@ -12,7 +12,7 @@ from smart_agro_tools.ndvi_engine.validator import check as ndvi_check
 from smart_agro_tools.input_recommender.climate_filter import adjust_for_climate
 from smart_agro_tools.input_recommender.stress_detector import detect_stress_from_ndvi
 from smart_agro_tools.input_recommender.soil_matcher import adjust_for_soil
-from smart_agro_tools.input_recommender.recommender import suggest_npk
+from smart_agro_tools.input_recommender.recommender import suggest_inputs
 from smart_agro_tools.db_interface.ndvi_storage import store_ndvi_profile
 
 # Configuration
