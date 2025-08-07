@@ -9,6 +9,7 @@ soil_df = pd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv")
 bio_df = pd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv")
 clim_df = pd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv")
 faostat_crop_df = pd.read_csv(f"{data_dir}\\CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv")
+indicators_df = pd.read_csv(f"{data_dir}\\agriculture_indicators_africa.csv")
 yield_df = pd.read_csv(f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv")
 
 print("✅ Fichiers chargés.")
@@ -16,6 +17,7 @@ print(f"FAOSTAT CULTURES : {faostat_crop_df.shape}")
 print(f"BIOCLIM : {bio_df.shape}")
 print(f"CLIMAT MENSUEL : {clim_df.shape}")
 print(f"SOIL : {soil_df.shape}")
+print(f"INDICATEURS AGRICOLES : {indicators_df.shape}")
 print(f"RENDEMENT RÉEL : {yield_df.shape}")
 
 # 🔍 Reconstruction du rendement
@@ -57,6 +59,16 @@ country_mapping = {
 
 # 🔄 Remplacement des noms FAOSTAT
 merged_yield_df['Area'] = merged_yield_df['Area'].replace(country_mapping)
+indicators_df['Country Name'] = indicators_df['Country Name'].replace(country_mapping)
+
+# 🔗 Fusion avec les indicateurs agricoles
+print("🔗 Fusion avec les indicateurs agricoles...")
+merged_yield_df = merged_yield_df.merge(
+    indicators_df,
+    left_on=['Area', 'Year'],
+    right_on=['Country Name', 'Year'],
+    how='left'
+)
 
 # 📊 Vérification des pays non appariés
 faostat_countries = set(merged_yield_df['Area'].unique())
