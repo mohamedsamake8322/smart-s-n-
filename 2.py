@@ -8,89 +8,65 @@ print("📥 Chargement des fichiers...")
 soil_df = pd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv")
 bio_df = pd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv")
 clim_df = pd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv")
-faostat_df = pd.read_csv(f"{data_dir}\\FAOSTAT_data_en_8-7-2025.csv")
+faostat_crop_df = pd.read_csv(f"{data_dir}\\CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv")
 yield_df = pd.read_csv(f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv")
 
 print("✅ Fichiers chargés.")
-print(f"FAOSTAT : {faostat_df.shape}")
+print(f"FAOSTAT CULTURES : {faostat_crop_df.shape}")
 print(f"BIOCLIM : {bio_df.shape}")
 print(f"CLIMAT MENSUEL : {clim_df.shape}")
 print(f"SOIL : {soil_df.shape}")
 print(f"RENDEMENT RÉEL : {yield_df.shape}")
 
-# 🎯 Filtrage FAOSTAT pour le rendement
-faostat_yield = faostat_df[faostat_df['Element'] == 'Yield'].copy()
-print(f"🎯 FAOSTAT - Rendement uniquement : {faostat_yield.shape}")
+# 🔍 Reconstruction du rendement
+print("🧮 Reconstruction des rendements FAOSTAT...")
+area_df = faostat_crop_df[faostat_crop_df['Element'].str.contains("Area harvested", case=False)].copy()
+prod_df = faostat_crop_df[faostat_crop_df['Element'].str.contains("Production", case=False)].copy()
+
+merged_yield_df = pd.merge(
+    area_df,
+    prod_df,
+    on=['Area', 'Item', 'Year'],
+    suffixes=('_area', '_prod'),
+    how='inner'
+)
+
+merged_yield_df['Yield_t_ha'] = merged_yield_df['Value_prod'] / merged_yield_df['Value_area']
+print("✅ Rendements reconstruits :", merged_yield_df.shape)
+print(merged_yield_df[['Area', 'Item', 'Year', 'Value_area', 'Value_prod', 'Yield_t_ha']].head())
 
 # 🧭 Dictionnaire de correspondance des noms de pays
 country_mapping = {
-    "Algérie": "Algeria",
-    "Angola": "Angola",
-    "Bénin": "Benin",
-    "Botswana": "Botswana",
-    "Burkina Faso": "Burkina Faso",
-    "Burundi": "Burundi",
-    "Cabo Verde": "Cape Verde",
-    "Cameroun": "Cameroon",
-    "République centrafricaine": "CAR",
-    "Tchad": "Chad",
-    "Comores": "Comoros",
-    "République du Congo": "Congo",
-    "République démocratique du Congo": "DR Congo",
-    "Côte d'Ivoire": "Ivory Coast",
-    "Djibouti": "Djibouti",
-    "Égypte": "Egypt",
-    "Guinée équatoriale": "Equatorial Guinea",
-    "Érythrée": "Eritrea",
-    "Eswatini": "Swaziland",
-    "Éthiopie": "Ethiopia",
-    "Gabon": "Gabon",
-    "Gambie": "The Gambia",
-    "Ghana": "Ghana",
-    "Guinée": "Guinea",
-    "Guinée-Bissau": "Guinea Bissau",
-    "Kenya": "Kenya",
-    "Lesotho": "Lesotho",
-    "Libéria": "Liberia",
-    "Libye": "Libya",
-    "Madagascar": "Madagascar",
-    "Malawi": "Malawi",
-    "Mali": "Mali",
-    "Mauritanie": "Mauritania",
-    "Maurice": "Mauritius",
-    "Maroc": "Morocco",
-    "Mozambique": "Mozambique",
-    "Namibie": "Namibia",
-    "Niger": "Niger",
-    "Nigéria": "Nigeria",
-    "Rwanda": "Rwanda",
-    "Sao Tomé-et-Principe": "Sao Tome and Principe",
-    "Sénégal": "Senegal",
-    "Seychelles": "Seychelles",
-    "Sierra Leone": "Sierra Leone",
-    "Somalie": "Somalia",
-    "Afrique du Sud": "South Africa",
-    "Soudan du Sud": "South Sudan",
-    "Soudan": "Sudan",
-    "Tanzanie": "Tanzania",
-    "Togo": "Togo",
-    "Tunisie": "Tunisia",
-    "Ouganda": "Uganda",
-    "Zambie": "Zambia",
-    "Zimbabwe": "Zimbabwe",
+    "Algérie": "Algeria", "Angola": "Angola", "Bénin": "Benin", "Botswana": "Botswana",
+    "Burkina Faso": "Burkina Faso", "Burundi": "Burundi", "Cabo Verde": "Cape Verde",
+    "Cameroun": "Cameroon", "République centrafricaine": "CAR", "Tchad": "Chad",
+    "Comores": "Comoros", "République du Congo": "Congo", "République démocratique du Congo": "DR Congo",
+    "Côte d'Ivoire": "Ivory Coast", "Djibouti": "Djibouti", "Égypte": "Egypt",
+    "Guinée équatoriale": "Equatorial Guinea", "Érythrée": "Eritrea", "Eswatini": "Swaziland",
+    "Éthiopie": "Ethiopia", "Gabon": "Gabon", "Gambie": "The Gambia", "Ghana": "Ghana",
+    "Guinée": "Guinea", "Guinée-Bissau": "Guinea Bissau", "Kenya": "Kenya", "Lesotho": "Lesotho",
+    "Libéria": "Liberia", "Libye": "Libya", "Madagascar": "Madagascar", "Malawi": "Malawi",
+    "Mali": "Mali", "Mauritanie": "Mauritania", "Maurice": "Mauritius", "Maroc": "Morocco",
+    "Mozambique": "Mozambique", "Namibie": "Namibia", "Niger": "Niger", "Nigéria": "Nigeria",
+    "Rwanda": "Rwanda", "Sao Tomé-et-Principe": "Sao Tome and Principe", "Sénégal": "Senegal",
+    "Seychelles": "Seychelles", "Sierra Leone": "Sierra Leone", "Somalie": "Somalia",
+    "Afrique du Sud": "South Africa", "Soudan du Sud": "South Sudan", "Soudan": "Sudan",
+    "Tanzanie": "Tanzania", "Togo": "Togo", "Tunisie": "Tunisia", "Ouganda": "Uganda",
+    "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
+
 # 🔄 Remplacement des noms FAOSTAT
-faostat_yield['Area'] = faostat_yield['Area'].replace(country_mapping)
+merged_yield_df['Area'] = merged_yield_df['Area'].replace(country_mapping)
 
 # 📊 Vérification des pays non appariés
-faostat_countries = set(faostat_yield['Area'].unique())
+faostat_countries = set(merged_yield_df['Area'].unique())
 bioclim_countries = set(bio_df['ADM0_NAME'].unique())
 missing = faostat_countries - bioclim_countries
 print("🌍 Pays non appariés :", missing)
 
 # 🔗 Fusion FAOSTAT + BIOCLIM
 print("🔗 Fusion FAOSTAT + BIOCLIM...")
-step1_df = faostat_yield.merge(bio_df, left_on='Area', right_on='ADM0_NAME', how='left')
+step1_df = merged_yield_df.merge(bio_df, left_on='Area', right_on='ADM0_NAME', how='left')
 print("✅ Après FAOSTAT + BIOCLIM :", step1_df.shape)
 
 # 🔗 Fusion avec climat mensuel
@@ -104,7 +80,7 @@ step3_df = step2_df.merge(soil_df, on=['ADM0_NAME', 'ADM1_NAME'], how='left')
 print("✅ Après ajout sol :", step3_df.shape)
 
 # 🧼 Nettoyage final
-final_df = step3_df.dropna(subset=['Value'])  # garder les lignes avec rendement FAOSTAT
+final_df = step3_df.dropna(subset=['Yield_t_ha'])  # garder les lignes avec rendement calculé
 print("🧹 Après suppression des lignes sans rendement :", final_df.shape)
 
 # 🔍 Aperçu des colonnes
