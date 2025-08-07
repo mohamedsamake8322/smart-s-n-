@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-
+#Pour lire les dossiers
 # Dossier contenant les fichiers
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
