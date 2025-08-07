@@ -17,6 +17,8 @@ def load_and_clean_csv(file_name):
     print(f"✅ Fichier chargé : {file_name} | Colonnes : {len(df.columns)}")
     return df
 
+# ━━━━━━━━━━━━ 📄 3bis. Chargement des fichiers ━━━━━━━━━━━━
+
 # Données principales
 ndmi = load_and_clean_csv('NDMI_Afrique_fusionné.csv')
 weather = load_and_clean_csv('WorldClim_Monthly_Fusion.csv')
@@ -24,21 +26,22 @@ soil = load_and_clean_csv('Soil_AllLayers_AllAfrica-002.csv')
 culture = load_and_clean_csv('CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv')
 yield_data = load_and_clean_csv("X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv")
 
-# Données supplémentaires
-ndvi = load_and_clean_csv("NDVI_Afrique.csv")
-gdd = load_and_clean_csv("GDD_Afrique.csv")
-fertilizer = load_and_clean_csv("FAOSTAT_fertilizer_africa.csv")
-pesticides = load_and_clean_csv("FAOSTAT_pesticides_africa.csv")
-manure = load_and_clean_csv("FAOSTAT_manure_africa.csv")
-gaez_gap = load_and_clean_csv("GAEZ_yield_gap.csv")
-gaez_potential = load_and_clean_csv("GAEZ_potential_yield.csv")
+# Nouvelles données FAOSTAT et GEDI
+fertilizer_nutrient = load_and_clean_csv("FertilizersbyNutrientFAOSTAT_data_en_7-22-2025.csv")
+pesticides_use = load_and_clean_csv("PesticidesUseFAOSTAT_data_en_7-22-2025.csv")
+production_indices = load_and_clean_csv("ProductionIndicesFAOSTAT_data_en_7-22-2025.csv")
+agri_indicators = load_and_clean_csv("agriculture_indicators_africa.csv")
+land_use = load_and_clean_csv("LandUseFAOSTAT_data_en_7-22-2025.csv")
+land_cover = load_and_clean_csv("LandCoverFAOSTAT_data_en_7-22-2025.csv")
+gedi_mangrove = load_and_clean_csv("GEDI_Mangrove_CSV.csv")
 
 # ━━━━━━━━━━━━ 📊 4. Affichage des colonnes ━━━━━━━━━━━━
 print("\n📋 Liste des colonnes par dataset :")
 datasets = {
     'NDMI': ndmi, 'Weather': weather, 'Soil': soil, 'Culture': culture, 'Yield': yield_data,
-    'NDVI': ndvi, 'GDD': gdd, 'Fertilizer': fertilizer, 'Pesticides': pesticides,
-    'Manure': manure, 'GAEZ_Gap': gaez_gap, 'GAEZ_Potential': gaez_potential
+    'Fertilizer_Nutrient': fertilizer_nutrient, 'Pesticides_Use': pesticides_use,
+    'Production_Indices': production_indices, 'Agri_Indicators': agri_indicators,
+    'Land_Use': land_use, 'Land_Cover': land_cover, 'GEDI_Mangrove': gedi_mangrove
 }
 for name, df in datasets.items():
     print(f"  - {name}: {df.columns.tolist()}")
@@ -51,7 +54,6 @@ def smart_merge(df1, df2, how='inner', label=''):
         return df1
     print(f"\n🔗 Fusion avec {label} sur colonnes : {common_cols}")
     merged = pd.merge(df1, df2, on=common_cols, how=how)
-    # Vérifier les doublons
     if merged.duplicated().any():
         nb_duplicates = merged.duplicated().sum()
         print(f"⚠️ {nb_duplicates} doublons détectés dans la fusion avec {label}")
@@ -60,19 +62,19 @@ def smart_merge(df1, df2, how='inner', label=''):
     return merged
 
 # ━━━━━━━━━━━━ 🔗 6. Fusions successives ━━━━━━━━━━━━
-
-# Étapes de fusion
 step1 = smart_merge(ndmi, weather, how='inner', label='météo')
 step2 = smart_merge(step1, soil, how='left', label='sol')
-step3 = smart_merge(step2, ndvi, how='left', label='NDVI')
-step4 = smart_merge(step3, gdd, how='left', label='GDD')
-step5 = smart_merge(step4, fertilizer, how='left', label='engrais')
-step6 = smart_merge(step5, pesticides, how='left', label='pesticides')
-step7 = smart_merge(step6, manure, how='left', label='fumier')
-step8 = smart_merge(step7, gaez_gap, how='left', label='GAEZ gap')
-step9 = smart_merge(step8, gaez_potential, how='left', label='GAEZ potentiel')
-step10 = smart_merge(step9, culture, how='left', label='culture')
-final_dataset = smart_merge(step10, yield_data, how='inner', label='rendement')
+step3 = smart_merge(step2, culture, how='left', label='culture')
+step4 = smart_merge(step3, yield_data, how='inner', label='rendement')
+
+# Fusion des nouvelles données
+step5 = smart_merge(step4, fertilizer_nutrient, how='left', label='engrais par nutriment')
+step6 = smart_merge(step5, pesticides_use, how='left', label='usage des pesticides')
+step7 = smart_merge(step6, production_indices, how='left', label='indices de production')
+step8 = smart_merge(step7, agri_indicators, how='left', label='indicateurs agricoles')
+step9 = smart_merge(step8, land_use, how='left', label='utilisation des terres')
+step10 = smart_merge(step9, land_cover, how='left', label='occupation des sols')
+final_dataset = smart_merge(step10, gedi_mangrove, how='left', label='GEDI mangrove')
 
 # ━━━━━━━━━━━━ 🧼 7. Vérification finale ━━━━━━━━━━━━
 print("\n📌 Vérification finale du dataset fusionné :")
