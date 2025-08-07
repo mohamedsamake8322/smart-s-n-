@@ -18,7 +18,7 @@ os.environ["STREAMLIT_WATCH_USE_POLLING"] = "true"
 
 # ✅ Configuration de la page (doit être la première commande Streamlit)
 st.set_page_config(
-    page_title="SènèSmart Yield Predictor",
+    page_title="SmartSènè Yield Predictor",
     page_icon="🌾",
     layout="wide",
     initial_sidebar_state="expanded"
