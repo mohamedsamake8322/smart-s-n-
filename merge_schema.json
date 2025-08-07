@@ -1,0 +1,63 @@
+{
+    "groups": [
+        {
+            "name": "geo",
+            "files": [
+                "yield_target.csv.gz"
+            ],
+            "keys": [
+                "lon",
+                "lat"
+            ]
+        },
+        {
+            "name": "admin_temporal",
+            "files": [
+                "vegetation.csv.gz",
+                "monthly_climate.csv.gz"
+            ],
+            "keys": [
+                "adm0_name",
+                "adm1_name",
+                "adm2_name",
+                "year",
+                "month"
+            ]
+        },
+        {
+            "name": "soil",
+            "files": [
+                "soil_data.csv.gz"
+            ],
+            "keys": [
+                "adm0_name",
+                "band_name",
+                "layer"
+            ]
+        },
+        {
+            "name": "economic",
+            "files": [
+                "agro_economic_context.csv.gz",
+                "culture_country.csv.gz"
+            ],
+            "keys": [
+                "area",
+                "item",
+                "year"
+            ]
+        }
+    ],
+    "fallbacks": {
+        "adm2_name": [
+            "adm1_name",
+            "adm0_name"
+        ],
+        "month": [
+            "year"
+        ],
+        "item": [
+            "item_code"
+        ]
+    }
+}
