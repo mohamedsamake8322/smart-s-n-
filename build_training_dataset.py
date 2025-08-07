@@ -17,15 +17,29 @@ def load_and_clean_csv(file_name):
     print(f"✅ Fichier chargé : {file_name} | Colonnes : {len(df.columns)}")
     return df
 
+# Données principales
 ndmi = load_and_clean_csv('NDMI_Afrique_fusionné.csv')
 weather = load_and_clean_csv('WorldClim_Monthly_Fusion.csv')
 soil = load_and_clean_csv('Soil_AllLayers_AllAfrica-002.csv')
 culture = load_and_clean_csv('CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv')
 yield_data = load_and_clean_csv("X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv")
 
+# Données supplémentaires
+ndvi = load_and_clean_csv("NDVI_Afrique.csv")
+gdd = load_and_clean_csv("GDD_Afrique.csv")
+fertilizer = load_and_clean_csv("FAOSTAT_fertilizer_africa.csv")
+pesticides = load_and_clean_csv("FAOSTAT_pesticides_africa.csv")
+manure = load_and_clean_csv("FAOSTAT_manure_africa.csv")
+gaez_gap = load_and_clean_csv("GAEZ_yield_gap.csv")
+gaez_potential = load_and_clean_csv("GAEZ_potential_yield.csv")
+
 # ━━━━━━━━━━━━ 📊 4. Affichage des colonnes ━━━━━━━━━━━━
 print("\n📋 Liste des colonnes par dataset :")
-datasets = {'NDMI': ndmi, 'Weather': weather, 'Soil': soil, 'Culture': culture, 'Yield': yield_data}
+datasets = {
+    'NDMI': ndmi, 'Weather': weather, 'Soil': soil, 'Culture': culture, 'Yield': yield_data,
+    'NDVI': ndvi, 'GDD': gdd, 'Fertilizer': fertilizer, 'Pesticides': pesticides,
+    'Manure': manure, 'GAEZ_Gap': gaez_gap, 'GAEZ_Potential': gaez_potential
+}
 for name, df in datasets.items():
     print(f"  - {name}: {df.columns.tolist()}")
 
@@ -46,10 +60,19 @@ def smart_merge(df1, df2, how='inner', label=''):
     return merged
 
 # ━━━━━━━━━━━━ 🔗 6. Fusions successives ━━━━━━━━━━━━
-ndmi_weather = smart_merge(ndmi, weather, how='inner', label='météo')
-ndmi_weather_soil = smart_merge(ndmi_weather, soil, how='left', label='sol')
-ndmi_weather_soil_culture = smart_merge(ndmi_weather_soil, culture, how='left', label='culture')
-final_dataset = smart_merge(ndmi_weather_soil_culture, yield_data, how='inner', label='rendement')
+
+# Étapes de fusion
+step1 = smart_merge(ndmi, weather, how='inner', label='météo')
+step2 = smart_merge(step1, soil, how='left', label='sol')
+step3 = smart_merge(step2, ndvi, how='left', label='NDVI')
+step4 = smart_merge(step3, gdd, how='left', label='GDD')
+step5 = smart_merge(step4, fertilizer, how='left', label='engrais')
+step6 = smart_merge(step5, pesticides, how='left', label='pesticides')
+step7 = smart_merge(step6, manure, how='left', label='fumier')
+step8 = smart_merge(step7, gaez_gap, how='left', label='GAEZ gap')
+step9 = smart_merge(step8, gaez_potential, how='left', label='GAEZ potentiel')
+step10 = smart_merge(step9, culture, how='left', label='culture')
+final_dataset = smart_merge(step10, yield_data, how='inner', label='rendement')
 
 # ━━━━━━━━━━━━ 🧼 7. Vérification finale ━━━━━━━━━━━━
 print("\n📌 Vérification finale du dataset fusionné :")
@@ -63,6 +86,6 @@ else:
     print("✅ Aucune valeur manquante détectée.")
 
 # ━━━━━━━━━━━━ 📤 8. Export du dataset final ━━━━━━━━━━━━
-output_path = os.path.join(base_path, 'X_training_dataset_without_NDVI.csv')
+output_path = os.path.join(base_path, 'X_training_dataset_FINAL.csv')
 final_dataset.to_csv(output_path, index=False)
 print(f"\n✅ Dataset fusionné exporté avec succès : {output_path}")
