@@ -22,7 +22,7 @@ from yield_predictor import train_model, predict_yield
 from optimizer import optimize_inputs
 
 def main(year, culture, export_format):
-    print("🚀 Initialisation du moteur SènèSmart Africa...")
+    print("🚀 Initialisation du moteur SmartSènè Africa...")
     print("🕒 Exécution le", datetime.now().strftime("%Y-%m-%d %H:%M"))
 
     # 📥 Étape 1 : Chargement des coordonnées filtrées
@@ -86,7 +86,7 @@ def main(year, culture, export_format):
     print(f"✅ Rapport généré : {output_path}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="SènèSmart Engine Africa 🚀")
+    parser = argparse.ArgumentParser(description="SmartSènè Engine Africa 🚀")
     parser.add_argument("--year", type=int, required=True, help="Année ciblée")
     parser.add_argument("--culture", type=str, required=True, help="Culture ciblée (maize, millet, etc.)")
     parser.add_argument("--export", type=str, choices=["excel", "csv"], default="csv", help="Format d’export")

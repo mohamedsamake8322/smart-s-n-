@@ -26,12 +26,12 @@ st.set_page_config(
 
 # ✅ Effet d’apparition progressif sur le titre
 title_placeholder = st.empty()
-typewriting_effect(title_placeholder, "🌾 SènèSmart Yield Predictor")
+typewriting_effect(title_placeholder, "🌾 SmartSènè Yield Predictor")
 
 
 # ✅ Effet de "typewriting" sur le sous-titre
 subtitle_placeholder = st.empty()
-typewriting_effect(subtitle_placeholder, "### 🚀 SènèSmart Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SènèSmart Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈.")
+typewriting_effect(subtitle_placeholder, "### 🚀 SmartSènè Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SmartSènè Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈.")
 pulsing_title(components)
 # 🔹 Sidebar
 st.sidebar.title("Navigation")
@@ -42,7 +42,7 @@ st.sidebar.markdown("- **Weather Data**: Real-time and historical weather inform
 st.sidebar.markdown("- **Soil Monitoring**: Soil condition analysis")
 st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 
-st.write("🚀 SènèSmart Yield Predictor is running!")
+st.write("🚀 SmartSènè Yield Predictor is running!")
 
  # 🔧 Forcer Streamlit Cloud à utiliser le bon port
 # Main dashboard overview
@@ -194,7 +194,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666666; padding: 20px;'>
-    🌾 SènèSmart Yield Predictor - Empowering African farmers with AI-driven insights
+    🌾 SmartSènè Yield Predictor - Empowering African farmers with AI-driven insights
     🚀 Developed by <strong>plateforme-agricole-complete-v2 SAMAKE</strong> | Precision farming for a better future
     </div>
     """,
