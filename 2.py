@@ -4,14 +4,23 @@ import pandas as pd
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
 # 📄 Chargement des fichiers
+print("📥 Chargement des fichiers...")
 soil_df = pd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv")
 bio_df = pd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv")
 clim_df = pd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv")
 faostat_df = pd.read_csv(f"{data_dir}\\FAOSTAT_data_en_8-7-2025.csv")
 yield_df = pd.read_csv(f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv")
 
+print("✅ Fichiers chargés.")
+print(f"FAOSTAT : {faostat_df.shape}")
+print(f"BIOCLIM : {bio_df.shape}")
+print(f"CLIMAT MENSUEL : {clim_df.shape}")
+print(f"SOIL : {soil_df.shape}")
+print(f"RENDEMENT RÉEL : {yield_df.shape}")
+
 # 🎯 Filtrage FAOSTAT pour le rendement
 faostat_yield = faostat_df[faostat_df['Element'] == 'Yield'].copy()
+print(f"🎯 FAOSTAT - Rendement uniquement : {faostat_yield.shape}")
 
 # 🧭 Dictionnaire de correspondance des noms de pays
 country_mapping = {
@@ -70,18 +79,8 @@ country_mapping = {
     "Zambie": "Zambia",
     "Zimbabwe": "Zimbabwe",
 }
-
 # 🔄 Remplacement des noms FAOSTAT
 faostat_yield['Area'] = faostat_yield['Area'].replace(country_mapping)
-
-# 🔗 Fusion FAOSTAT + BIOCLIM
-merged_df = faostat_yield.merge(bio_df, left_on='Area', right_on='ADM0_NAME', how='left')
-
-# 🔗 Fusion avec climat mensuel
-merged_df = merged_df.merge(clim_df, on=['ADM0_NAME', 'ADM1_NAME'], how='left')
-
-# 🔗 Fusion avec données de sol
-merged_df = merged_df.merge(soil_df, on=['ADM0_NAME', 'ADM1_NAME'], how='left')
 
 # 📊 Vérification des pays non appariés
 faostat_countries = set(faostat_yield['Area'].unique())
@@ -89,9 +88,24 @@ bioclim_countries = set(bio_df['ADM0_NAME'].unique())
 missing = faostat_countries - bioclim_countries
 print("🌍 Pays non appariés :", missing)
 
-# 🧼 Nettoyage final
-final_df = merged_df.dropna(subset=['Value'])  # garder les lignes avec rendement FAOSTAT
+# 🔗 Fusion FAOSTAT + BIOCLIM
+print("🔗 Fusion FAOSTAT + BIOCLIM...")
+step1_df = faostat_yield.merge(bio_df, left_on='Area', right_on='ADM0_NAME', how='left')
+print("✅ Après FAOSTAT + BIOCLIM :", step1_df.shape)
 
-# 📈 Aperçu
-print("✅ Fusion terminée. Dimensions :", final_df.shape)
+# 🔗 Fusion avec climat mensuel
+print("🔗 Fusion avec climat mensuel...")
+step2_df = step1_df.merge(clim_df, on=['ADM0_NAME', 'ADM1_NAME'], how='left')
+print("✅ Après ajout climat mensuel :", step2_df.shape)
+
+# 🔗 Fusion avec données de sol
+print("🔗 Fusion avec données de sol...")
+step3_df = step2_df.merge(soil_df, on=['ADM0_NAME', 'ADM1_NAME'], how='left')
+print("✅ Après ajout sol :", step3_df.shape)
+
+# 🧼 Nettoyage final
+final_df = step3_df.dropna(subset=['Value'])  # garder les lignes avec rendement FAOSTAT
+print("🧹 Après suppression des lignes sans rendement :", final_df.shape)
+
+# 🔍 Aperçu des colonnes
 print("🔍 Colonnes disponibles :", list(final_df.columns))
