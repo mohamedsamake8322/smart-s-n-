@@ -69,7 +69,7 @@ merged_yield_df = merged_yield_df.merge(
     right_on=['Country Name', 'Year'],
     how='left'
 )
-
+print("✅ Après ajout des indicateurs agricoles :", merged_yield_df.shape)
 # 📊 Vérification des pays non appariés
 faostat_countries = set(merged_yield_df['Area'].unique())
 bioclim_countries = set(bio_df['ADM0_NAME'].unique())
