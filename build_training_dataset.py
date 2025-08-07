@@ -9,7 +9,7 @@ base_path = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 # ━━━━━━━━━━━━ 📄 3. Chargement des fichiers ━━━━━━━━━━━━
 ndmi = pd.read_csv(os.path.join(base_path, 'NDMI_Afrique_fusionné.csv'))
 weather = pd.read_csv(os.path.join(base_path, 'WorldClim_Monthly_Fusion.csv'))
-soil = pd.read_csv(os.path.join(base_path, 'Soil_AllLayers_AllAfrica.csv'))
+soil = pd.read_csv(os.path.join(base_path, 'Soil_AllLayers_AllAfrica-002.csv'))
 culture = pd.read_csv(os.path.join(base_path, 'CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv'))
 yield_data = pd.read_csv(os.path.join(base_path, "X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv"))
 
