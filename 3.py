@@ -102,5 +102,5 @@ print("🧹 Après suppression des lignes sans rendement :", final_df.shape)
 print("🔍 Colonnes disponibles :", list(final_df.columns))
 
 # 💾 Sauvegarde
-final_df.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente.csv", index=False)
+final_df.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente.csv.gz", index=False, compression='gzip')
 print("📁 Fichier sauvegardé : Fusion_agronomique_intelligente.csv")
