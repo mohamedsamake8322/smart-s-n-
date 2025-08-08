@@ -109,6 +109,7 @@ merged = dd.merge(
 
 print("🔗 Fusion avec Bioclim...")
 bio_df = bio_df[["ADM0_NAME", "ADM1_NAME", "bio1", "bio12", "bio15"]]  # limiter colonnes
+print("📋 Colonnes disponibles dans BIOCLIM :", bio_df.columns.compute())
 merged = dd.merge(merged, bio_df, left_on="Area", right_on="ADM0_NAME", how="left")
 
 print("🔗 Fusion avec climat mensuel...")
