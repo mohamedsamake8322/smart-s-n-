@@ -71,7 +71,8 @@ def clean_custom_df(df, name):
 
     # 🌍 Harmonisation des pays
     if "ADM0_NAME" in df.columns:
-        df["ADM0_NAME"] = df["ADM0_NAME"].map(country_mapping).fillna(df["ADM0_NAME"])
+        df["ADM0_NAME"] = df["ADM0_NAME"].map(country_mapping, meta=('ADM0_NAME', 'object'))
+
 
     # 📅 Conversion de l’année
     if "Year" in df.columns:
@@ -143,10 +144,12 @@ def generate_column_report(dataframes, output_path="rapport_colonnes.csv"):
     print(f"\n📄 Rapport colonnes sauvegardé : {output_path}")
 
 # 🔗 Fusion thématique
+# 🔗 Fusion thématique progressive
 def fusion_progressive(dfs, name, verbose=True):
     print(f"\n🔗 Fusion progressive du bloc {name}...")
     required_cols = {"ADM0_NAME", "Year"}
     dfs_valid = [df for df in dfs if required_cols.issubset(df.columns)]
+
     if not dfs_valid:
         print(f"⚠️ Aucun fichier valide pour le bloc {name}")
         return None
@@ -156,8 +159,8 @@ def fusion_progressive(dfs, name, verbose=True):
 
     for i, df in enumerate(dfs_valid[1:], start=2):
         fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"], suffixes=("", f"_{name}_{i}"))
-        print(f"🔄 Progression fusion {name} : {int((i/total)*100)}%")
         if verbose:
+            print(f"🔄 Progression fusion {name} : {int((i / total) * 100)}%")
             time.sleep(0.2)
 
     return fused
@@ -185,31 +188,32 @@ if df_climate is not None and df_production is not None:
     )
 
     # 🧮 Conversion en pandas pour entraînement
-print("\n🧮 Conversion en pandas pour entraînement...")
-df_final_pd = df_final.persist().compute()
+    print("\n🧮 Conversion en pandas pour entraînement...")
+    df_final_pd = df_final.persist().compute()
 
-# ✅ Log de confirmation
-n_rows, n_cols = df_final_pd.shape
-print(f"\n✅ Fusion finale réussie : {n_rows:,} lignes, {n_cols} colonnes")
-print(f"📋 Colonnes fusionnées (extrait) : {df_final_pd.columns.tolist()[:15]} ...")
+    # ✅ Log de confirmation
+    n_rows, n_cols = df_final_pd.shape
+    print(f"\n✅ Fusion finale réussie : {n_rows:,} lignes, {n_cols} colonnes")
+    print(f"📋 Colonnes fusionnées (extrait) : {df_final_pd.columns.tolist()[:15]} ...")
 
-# 📉 Valeurs manquantes
-missing = df_final_pd.isna().sum().sort_values(ascending=False)
-missing_nonzero = missing[missing > 0]
-if not missing_nonzero.empty:
-    print("\n📉 Valeurs manquantes par colonne :")
-    print(missing_nonzero)
+    # 📉 Valeurs manquantes
+    missing = df_final_pd.isna().sum().sort_values(ascending=False)
+    missing_nonzero = missing[missing > 0]
+    if not missing_nonzero.empty:
+        print("\n📉 Valeurs manquantes par colonne :")
+        print(missing_nonzero)
+    else:
+        print("\n✅ Aucune valeur manquante détectée.")
+
+    # 💾 Sauvegarde du fichier final
+    output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
+    df_final_pd.to_csv(output_path, index=False, compression="gzip")
+    print(f"\n✅ Fichier sauvegardé : {output_path}")
 else:
-    print("\n✅ Aucune valeur manquante détectée.")
-
-# 💾 Sauvegarde du fichier final
-output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
-df_final_pd.to_csv(output_path, index=False, compression="gzip")
-print(f"\n✅ Fichier sauvegardé : {output_path}")
+    print("❌ Fusion finale impossible : blocs manquants.")
 
 # 📁 Fichiers ignorés
 if ignored_files:
     print(f"\n📁 Fichiers ignorés pour la fusion : {', '.join(ignored_files)}")
 else:
     print("\n📁 Tous les fichiers ont été pris en compte dans la fusion.")
-
