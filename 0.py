@@ -1,70 +1,74 @@
-import pandas as pd
+import dask.dataframe as dd
 
-# Dossier des fichiers
+# 📁 Chemin vers les données
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
-# Liste des fichiers à vérifier avec les colonnes clés attendues pour fusion
-files_info = {
-    "soil_df": {
-        "filename": f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv",
-        "key_columns": ["ADM0_NAME", "ADM1_NAME", "ADM2_NAME"]  # Ajuste selon usage
-    },
-    "bio_df": {
-        "filename": f"{data_dir}\\WorldClim BIO Variables V1.csv",
-        "key_columns": ["ADM0_NAME", "ADM1_NAME"]
-    },
-    "clim_df": {
-        "filename": f"{data_dir}\\WorldClim_Monthly_Fusion.csv",
-        "key_columns": ["ADM0_NAME", "ADM1_NAME"]
-    },
-    "faostat_crop_df": {
-        "filename": f"{data_dir}\\CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv",
-        "key_columns": ["Area", "Year"]
-    },
-    "indicators_df": {
-        "filename": f"{data_dir}\\agriculture_indicators_africa.csv",
-        "key_columns": ["Country Name", "Year"]
-    },
-    "yield_df": {
-        "filename": f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv",
-        "key_columns": ["lon", "lat"]  # probablement pas de clé commune avec les autres
-    }
-}
+def check_and_cast_columns(df, cols):
+    """Vérifie la présence des colonnes, les crée si absentes, et convertit en string"""
+    for col in cols:
+        if col not in df.columns:
+            print(f"⚠️ Colonne manquante ajoutée : {col}")
+            df[col] = ""
+        df[col] = df[col].astype("string")
+    return df
 
-# Chargement des DataFrames
-dfs = {}
-for name, info in files_info.items():
-    print(f"Chargement de {name} depuis {info['filename']} ...")
-    dfs[name] = pd.read_csv(info['filename'], nrows=5)  # charge juste 5 lignes pour rapidité
-    print(f"Colonnes de {name} : {list(dfs[name].columns)}")
-    print()
+print("📥 Chargement des fichiers avec Dask...")
+soil_df = dd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv", assume_missing=True)
+bio_df = dd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv", assume_missing=True)
+clim_df = dd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv", assume_missing=True)
+faostat_crop_df = dd.read_csv(f"{data_dir}\\CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv", assume_missing=True)
+indicators_df = dd.read_csv(f"{data_dir}\\agriculture_indicators_africa.csv", assume_missing=True)
+yield_df = dd.read_csv(f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv", assume_missing=True)
 
-# Fonction pour tester la présence des colonnes clés entre deux DataFrames
-def check_key_columns_compatibility(df1_name, df2_name, df1, df2, keys1, keys2):
-    print(f"Vérification des colonnes clés entre {df1_name} et {df2_name}...")
-    for k1, k2 in zip(keys1, keys2):
-        in_df1 = k1 in df1.columns
-        in_df2 = k2 in df2.columns
-        status = "OK" if in_df1 and in_df2 else "MANQUANT"
-        print(f" - Clé {k1} (df1) vs {k2} (df2) : {status}")
-    print()
+print("✅ Fichiers chargés.")
 
-# Comparaison des colonnes clés entre paires importantes
-pairs_to_check = [
-    ("soil_df", "bio_df"),
-    ("bio_df", "clim_df"),
-    ("faostat_crop_df", "indicators_df"),
-    ("indicators_df", "faostat_crop_df"),
-    # Ajoute d'autres paires importantes pour ta fusion ici
-]
+# Colonnes clés à vérifier
+cols_adm = ["ADM0_NAME", "ADM1_NAME"]
+cols_area = ["Area", "Year"]
+cols_country = ["Country Name", "Year"]
 
-for df1_name, df2_name in pairs_to_check:
-    df1 = dfs[df1_name]
-    df2 = dfs[df2_name]
-    keys1 = files_info[df1_name]["key_columns"]
-    keys2 = files_info[df2_name]["key_columns"]
-    # Ajuster la longueur des clés à comparer pour éviter erreur zip si tailles différentes
-    min_len = min(len(keys1), len(keys2))
-    check_key_columns_compatibility(df1_name, df2_name, df1, df2, keys1[:min_len], keys2[:min_len])
+print("🔍 Vérification et conversion des colonnes clés en string...")
 
-print("Vérification terminée.")
+# Soil, Bio, Clim doivent avoir ADM0_NAME et ADM1_NAME
+soil_df = check_and_cast_columns(soil_df, cols_adm)
+bio_df = check_and_cast_columns(bio_df, cols_adm)
+clim_df = check_and_cast_columns(clim_df, cols_adm)
+
+# FAOSTAT et Yield : 'Area', 'Year', 'Item' (pour FAOSTAT) à convertir aussi
+faostat_crop_df["Area"] = faostat_crop_df["Area"].astype("string")
+faostat_crop_df["Year"] = faostat_crop_df["Year"].astype("int64")
+faostat_crop_df["Item"] = faostat_crop_df["Item"].astype("string")
+
+yield_df["Area"] = yield_df["Area"].astype("string") if "Area" in yield_df.columns else yield_df
+
+# Indicators : 'Country Name', 'Year' en string et int
+indicators_df["Country Name"] = indicators_df["Country Name"].astype("string")
+indicators_df["Year"] = indicators_df["Year"].astype("int64")
+
+print("✅ Colonnes clés converties.")
+
+print("⏳ Forçage d'inférence des métadonnées avec .head() sur chaque dataframe...")
+print("soil_df", soil_df.head(3))
+print("bio_df", bio_df.head(3))
+print("clim_df", clim_df.head(3))
+print("faostat_crop_df", faostat_crop_df.head(3))
+print("indicators_df", indicators_df.head(3))
+print("yield_df", yield_df.head(3))
+
+# Tu peux maintenant continuer ta logique fusion en Dask
+# Exemple simple : fusion test entre faostat_crop_df et indicators_df sur Area/Country Name et Year
+
+print("🔗 Test fusion FAOSTAT & indicateurs...")
+
+test_merge = faostat_crop_df.merge(
+    indicators_df,
+    left_on=["Area", "Year"],
+    right_on=["Country Name", "Year"],
+    how="left"
+)
+
+print(test_merge.head(5))  # affiche les 5 premières lignes fusionnées
+
+print("✅ Test fusion OK, tu peux maintenant procéder avec les autres merges en Dask.")
+
+# --- Fin script de vérification et prépa Dask ---
