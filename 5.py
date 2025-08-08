@@ -1,103 +1,133 @@
 import dask.dataframe as dd
-from dask.diagnostics import ProgressBar
+import pandas as pd
 
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
 print("📥 Chargement des fichiers avec Dask...")
 
-# 1. Soil : colonnes utiles et dtype
-soil_cols = ['ADM0_NAME', 'ADM1_NAME', 'max', 'mean', 'min', 'stdDev']
-soil_dtypes = {'ADM0_NAME': 'string', 'ADM1_NAME': 'string', 'max': 'float64', 'mean': 'float64', 'min': 'float64', 'stdDev': 'float64'}
-soil_df = dd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv", usecols=soil_cols, dtype=soil_dtypes)
-
-# 2. BioClim
-bio_cols = ['ADM0_NAME', 'ADM1_NAME'] + [f'bio{str(i).zfill(2)}' for i in range(1, 20)]
-bio_dtypes = {col: 'float64' for col in bio_cols[2:]}
-bio_dtypes.update({'ADM0_NAME': 'string', 'ADM1_NAME': 'string'})
-bio_df = dd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv", usecols=bio_cols, dtype=bio_dtypes)
-
-# 3. Climat mensuel
-clim_cols = ['ADM0_NAME', 'ADM1_NAME', 'prec', 'tavg', 'tmax', 'tmin']
-clim_dtypes = {col: 'float64' for col in clim_cols[2:]}
-clim_dtypes.update({'ADM0_NAME': 'string', 'ADM1_NAME': 'string'})
-clim_df = dd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv", usecols=clim_cols, dtype=clim_dtypes)
-
-# 4. FAOSTAT crops
-faostat_cols = ['Area', 'Element', 'Item', 'Year', 'Value']
-faostat_dtypes = {'Area': 'string', 'Element': 'string', 'Item': 'string', 'Year': 'int64', 'Value': 'float64'}
-faostat_crop_df = dd.read_csv(f"{data_dir}\\CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv", usecols=faostat_cols, dtype=faostat_dtypes)
-
-# 5. Indicateurs agricoles
-indicators_cols = None  # charger tout
-indicators_dtypes = {'Country Name': 'string', 'Year': 'int64'}
-indicators_df = dd.read_csv(f"{data_dir}\\agriculture_indicators_africa.csv", dtype=indicators_dtypes)
-
-# Mapping pays FAOSTAT <-> indicateurs (si besoin)
-country_mapping = {
-    "Algérie": "Algeria", "Angola": "Angola", "Bénin": "Benin", "Botswana": "Botswana",
-    "Burkina Faso": "Burkina Faso", "Burundi": "Burundi", "Cabo Verde": "Cape Verde",
-    "Cameroun": "Cameroon", "République centrafricaine": "CAR", "Tchad": "Chad",
-    "Comores": "Comoros", "République du Congo": "Congo", "République démocratique du Congo": "DR Congo",
-    "Côte d'Ivoire": "Ivory Coast", "Djibouti": "Djibouti", "Égypte": "Egypt",
-    "Guinée équatoriale": "Equatorial Guinea", "Érythrée": "Eritrea", "Eswatini": "Swaziland",
-    "Éthiopie": "Ethiopia", "Gabon": "Gabon", "Gambie": "The Gambia", "Ghana": "Ghana",
-    "Guinée": "Guinea", "Guinée-Bissau": "Guinea Bissau", "Kenya": "Kenya", "Lesotho": "Lesotho",
-    "Libéria": "Liberia", "Libye": "Libya", "Madagascar": "Madagascar", "Malawi": "Malawi",
-    "Mali": "Mali", "Mauritanie": "Mauritania", "Maurice": "Mauritius", "Maroc": "Morocco",
-    "Mozambique": "Mozambique", "Namibie": "Namibia", "Niger": "Niger", "Nigéria": "Nigeria",
-    "Rwanda": "Rwanda", "Sao Tomé-et-Principe": "Sao Tome and Principe", "Sénégal": "Senegal",
-    "Seychelles": "Seychelles", "Sierra Leone": "Sierra Leone", "Somalie": "Somalia",
-    "Afrique du Sud": "South Africa", "Soudan du Sud": "South Sudan", "Soudan": "Sudan",
-    "Tanzanie": "Tanzania", "Togo": "Togo", "Tunisie": "Tunisia", "Ouganda": "Uganda",
-    "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
-}
+soil_df = dd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv")
+bio_df = dd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv")
+clim_df = dd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv")
+faostat_crop_df = dd.read_csv(f"{data_dir}\\CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv")
+indicators_df = dd.read_csv(f"{data_dir}\\agriculture_indicators_africa.csv")
+yield_df = dd.read_csv(f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv")
 
 print("🧮 Reconstruction des rendements FAOSTAT (Yield = Production / Area)...")
 
-area_df = faostat_crop_df[faostat_crop_df['Element'].str.contains("Area harvested", case=False)]
-prod_df = faostat_crop_df[faostat_crop_df['Element'].str.contains("Production", case=False)]
+# Préparer FAOSTAT: filtrer culture, et calcul rendement (yield)
+faostat_crop_df = faostat_crop_df.rename(columns={
+    'Area': 'Area',
+    'Year': 'Year',
+    'Element': 'Element',
+    'Value': 'Value'
+})
 
-# Fusion area + production pour calcul yield
-merged_yield_df = area_df.merge(prod_df, on=['Area', 'Item', 'Year'], suffixes=('_area', '_prod'), how='inner')
+# Produire tables production et surface cultivée
+production = faostat_crop_df[faostat_crop_df['Element'] == 'Production']
+area = faostat_crop_df[faostat_crop_df['Element'] == 'Area harvested']
 
-# Yield en t/ha
-merged_yield_df['Yield_t_ha'] = merged_yield_df['Value_prod'] / merged_yield_df['Value_area']
+# On fait merge production x area sur Area et Year
+prod_area = production.merge(area, on=['Area', 'Year'], suffixes=('_prod', '_area'))
+# Calcul yield = production / area (colonne 'Value_prod' et 'Value_area')
+prod_area = prod_area.assign(yield_value = prod_area['Value_prod'] / prod_area['Value_area'])
+
+# Garder colonnes d'intérêt : Area, Year, yield_value
+yield_df_faostat = prod_area[['Area', 'Year', 'yield_value']]
 
 print("🔄 Harmonisation noms pays dans FAOSTAT et indicateurs...")
 
-# Conversion noms pays FAOSTAT -> EN pour fusion cohérente avec indicateurs
-merged_yield_df['Area'] = merged_yield_df['Area'].replace(country_mapping)
-indicators_df['Country Name'] = indicators_df['Country Name'].replace(country_mapping)
+# Harmoniser noms pays (exemple simple, adapte selon tes données)
+def harmonize_country_names(df, col_name):
+    mapping = {
+        "Côte d'Ivoire": "Ivory Coast",
+        "Democratic Republic of the Congo": "DR Congo",
+        "United Republic of Tanzania": "Tanzania",
+        # ajoute ici les autres mappings nécessaires
+    }
+    return df.map_partitions(lambda pdf: pdf.replace({col_name: mapping}), meta=df)
 
-# Uniformiser colonnes clés en string (attention Dask demande ça)
-merged_yield_df['Area'] = merged_yield_df['Area'].astype('string')
-indicators_df['Country Name'] = indicators_df['Country Name'].astype('string')
+yield_df_faostat['Area'] = harmonize_country_names(yield_df_faostat['Area'], 'Area')
+indicators_df['Country Name'] = harmonize_country_names(indicators_df['Country Name'], 'Country Name')
 
 print("🔗 Fusion rendements FAOSTAT avec indicateurs agricoles...")
-merged = merged_yield_df.merge(indicators_df, left_on=['Area', 'Year'], right_on=['Country Name', 'Year'], how='left')
+
+merged = yield_df_faostat.merge(
+    indicators_df,
+    left_on=['Area', 'Year'],
+    right_on=['Country Name', 'Year'],
+    how='left'
+)
+
+print("🔄 Ajout des colonnes géographiques ADM0_NAME et ADM1_NAME à partir de bio_df...")
+
+# Extraire mapping unique (Area → ADM0_NAME, ADM1_NAME) depuis bio_df (en mode pandas pour éviter soucis Dask)
+mapping_geo = bio_df[['ADM0_NAME', 'ADM1_NAME']].drop_duplicates().compute()
+
+# Extraire la liste unique des pays pour Area dans merged (pandas)
+area_unique = merged['Area'].drop_duplicates().compute()
+
+# Construire table de correspondance simple Area → ADM0_NAME (en supposant que ADM0_NAME correspond au nom pays FAOSTAT)
+# ATTENTION : adapter cette correspondance selon tes données réelles.
+mapping_area_adm0 = pd.DataFrame({
+    'Area': area_unique,
+    'ADM0_NAME': area_unique  # Hypothèse que Area = ADM0_NAME sinon il faut un mapping précis ici
+})
+
+# Convertir en Dask
+mapping_area_adm0_dd = dd.from_pandas(mapping_area_adm0, npartitions=1)
+
+# Fusionner dans merged pour ajouter ADM0_NAME
+merged = merged.merge(mapping_area_adm0_dd, on='Area', how='left')
+
+# Fusionner ensuite pour ajouter ADM1_NAME via bio_df (on merge sur ADM0_NAME)
+# Pour ça on prend bio_df subset (ADM0_NAME, ADM1_NAME) unique
+bio_geo_sub = bio_df[['ADM0_NAME', 'ADM1_NAME']].drop_duplicates()
+
+merged = merged.merge(
+    bio_geo_sub,
+    on=['ADM0_NAME'],
+    how='left',
+    suffixes=('', '_bio')
+)
 
 print("🔗 Fusion avec Bioclim...")
-merged = merged.merge(bio_df, left_on=['Area', 'ADM1_NAME'], right_on=['ADM0_NAME', 'ADM1_NAME'], how='left')
+
+merged = merged.merge(
+    bio_df,
+    on=['ADM0_NAME', 'ADM1_NAME'],
+    how='left',
+    suffixes=('', '_bio')
+)
 
 print("🔗 Fusion avec climat mensuel...")
-merged = merged.merge(clim_df, left_on=['ADM0_NAME', 'ADM1_NAME'], right_on=['ADM0_NAME', 'ADM1_NAME'], how='left')
 
-print("📊 Agrégation des données sol...")
-soil_agg = soil_df.groupby(['ADM0_NAME', 'ADM1_NAME']).agg({
-    'max': 'mean',
-    'mean': 'mean',
-    'min': 'mean',
-    'stdDev': 'mean',
-}).reset_index()
+merged = merged.merge(
+    clim_df,
+    on=['ADM0_NAME', 'ADM1_NAME'],
+    how='left',
+    suffixes=('', '_clim')
+)
 
-print("🔗 Fusion avec données sol agrégées...")
-merged = merged.merge(soil_agg, on=['ADM0_NAME', 'ADM1_NAME'], how='left')
+print("🔗 Fusion avec soil_df...")
 
-print("🧹 Nettoyage : suppression lignes sans rendement...")
-final_df = merged.dropna(subset=['Yield_t_ha'])
+merged = merged.merge(
+    soil_df,
+    on=['ADM0_NAME', 'ADM1_NAME'],
+    how='left',
+    suffixes=('', '_soil')
+)
 
-print("💾 Sauvegarde du résultat compressé...")
-with ProgressBar():
-    final_df.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente.csv.gz", index=False, compression='gzip', single_file=True)
+print("🔗 Fusion avec rendement réel (yield_df)...")
 
-print("✅ Traitement terminé avec succès.")
+merged = merged.merge(
+    yield_df,
+    left_on=['lon', 'lat'],
+    right_on=['lon', 'lat'],
+    how='left'
+)
+
+print("💾 Sauvegarde du fichier fusionné compressé...")
+
+merged.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente.csv.gz", compression='gzip', single_file=True, index=False)
+
+print("✅ Terminé avec succès !")
