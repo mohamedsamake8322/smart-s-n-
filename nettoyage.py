@@ -120,6 +120,31 @@ for key, filename in files.items():
 
     except Exception as e:
         print(f"❌ Erreur chargement {key} : {e}")
+def generate_column_report(dataframes, output_path="rapport_colonnes.csv"):
+    rows = []
+    for name, df in dataframes.items():
+        try:
+            cols = df.columns
+            types = df.dtypes
+            fusionnable = "✅" if {"ADM0_NAME", "Year"}.issubset(cols) else "❌"
+            for col in cols:
+                rows.append({
+                    "Fichier": name,
+                    "Colonne": col,
+                    "Type": str(types[col]),
+                    "Fusionnable": fusionnable
+                })
+        except Exception as e:
+            rows.append({
+                "Fichier": name,
+                "Colonne": "❌ Erreur",
+                "Type": str(e),
+                "Fusionnable": "❌"
+            })
+
+    df_report = pd.DataFrame(rows)
+    df_report.to_csv(os.path.join(data_dir, output_path), index=False)
+    print(f"\n📄 Rapport colonnes sauvegardé : {output_path}")
 
 # 🔗 Fusion thématique
 def fusion_progressive(dfs, name):
@@ -134,7 +159,7 @@ def fusion_progressive(dfs, name):
     total = len(dfs_valid)
 
     for i, df in enumerate(dfs_valid[1:], start=2):
-        fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"])
+        fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"], suffixes=("", f"_{name}_{i}"))
         print(f"🔄 Progression fusion {name} : {int((i/total)*100)}%")
         time.sleep(0.2)
 
