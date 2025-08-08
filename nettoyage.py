@@ -75,6 +75,7 @@ def clean_custom_df(df, name):
         print(f"⚠️ {name} n’a ni ADM0_NAME ni Year — fusion latérale uniquement")
     elif name == "gedi":
         print(f"⚠️ {name} n’a pas de colonne Year — fusion latérale uniquement")
+    print(f"📊 Types dans {name} : {df.dtypes.to_dict()}")
 
     # 🌍 Harmonisation des pays
     if "ADM0_NAME" in df.columns:
@@ -102,16 +103,15 @@ dataframes = {}
 for key, filename in files.items():
     path = os.path.join(data_dir, filename)
     try:
-        # 🧠 Forcer les types si nécessaire
-        forced_dtypes = {}
-        if key in [
-            "production", "manure", "fert_nutrient", "fert_product",
-            "trade_matrix", "nutrient_balance", "land_use", "land_cover"
-        ]:
-            forced_dtypes = {
-                "Item_Code": "object",
-                "Item_Code_(CPC)": "object"
-            }
+        # 🧠 Forçage universel des colonnes sensibles
+        forced_dtypes = {
+            "Item_Code": "object",
+            "Item_Code_(CPC)": "object",
+            "Item Code (CPC)": "object",
+            "Area_Code_(M49)": "object",
+            "Reporter_Country_Code_(M49)": "object",
+            "Partner_Country_Code_(M49)": "object"
+        }
 
         df = dd.read_csv(path, assume_missing=True, dtype=forced_dtypes)
         df_clean = clean_custom_df(df, key)
@@ -120,6 +120,7 @@ for key, filename in files.items():
 
     except Exception as e:
         print(f"❌ Erreur chargement {key} : {e}")
+
 def generate_column_report(dataframes, output_path="rapport_colonnes.csv"):
     rows = []
     for name, df in dataframes.items():
