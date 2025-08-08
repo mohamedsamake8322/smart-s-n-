@@ -2,7 +2,8 @@ import dask.dataframe as dd
 import pandas as pd
 import os
 import time
-import dataframes
+
+
 # 📁 Dossier des fichiers
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
@@ -44,6 +45,7 @@ country_mapping = {
 
 # 🧼 Nettoyage générique
 # 🧼 Nettoyage générique et robuste
+# 🧼 Nettoyage générique et robuste
 def clean_dask_df(df, name):
     df = df.rename(columns=lambda x: x.strip().replace(' ', '_'))
     df = df.rename(columns={
@@ -61,6 +63,18 @@ def clean_dask_df(df, name):
         df['Year'] = dd.to_numeric(df['Year'], errors='coerce')
 
     return df
+
+# 📊 Chargement des fichiers
+dataframes = {}
+for key, filename in files.items():
+    path = os.path.join(data_dir, filename)
+    try:
+        df = dd.read_csv(path, dtype={'Item_Code_(CPC)': 'object'}, assume_missing=True)
+        df_clean = clean_dask_df(df, key)
+        dataframes[key] = df_clean
+        print(f"✅ {key} chargé avec {df_clean.shape[0].compute():,} lignes")
+    except Exception as e:
+        print(f"❌ Erreur chargement {key} : {e}")
 
 # 🔗 Fusion thématique avec filtrage sécurisé
 def fusion_progressive(dfs, name):
