@@ -47,39 +47,34 @@ country_mapping = {
 # 📂 Liste des fichiers ignorés
 ignored_files = []
 
-def clean_dask_df(df, name):
-    # 🔁 Supprimer les colonnes dupliquées par nom
+def clean_custom_df(df, name):
     df = df.loc[:, ~df.columns.duplicated()]
-
-    # Nettoyage des noms de colonnes
     df.columns = df.columns.str.strip().str.replace(' ', '_')
 
-    # Renommage intelligent
-    df = df.rename(columns={
-        'Year': 'Year',
-        'Area': 'ADM0_NAME',
-        'Area_Code_(M49)': 'ADM0_CODE',
-        'Year_Code': 'Year_Code'  # conservé si utile, mais ignoré pour la fusion
-    })
+    if name == "chirps":
+        df = df.rename(columns={"EXP1_YEAR": "Year"})
+    elif name == "smap":
+        df = df.rename(columns={"EXP1_YEAR": "Year"})
+    elif name == "trade_matrix":
+        df = df.rename(columns={"Reporter_Countries": "ADM0_NAME"})
+    elif name == "resources":
+        print(f"⚠️ {name} n’a ni ADM0_NAME ni Year — fusion latérale uniquement")
+    elif name == "gedi":
+        print(f"⚠️ {name} n’a pas de colonne Year — fusion latérale uniquement")
+
+    if "ADM0_NAME" in df.columns:
+        df["ADM0_NAME"] = df["ADM0_NAME"].str.strip().apply(lambda x: country_mapping.get(x, x), meta=('ADM0_NAME', 'object'))
+
+    if "Year" in df.columns:
+        df["Year"] = dd.to_numeric(df["Year"], errors="coerce")
 
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
 
-    # Harmonisation des noms de pays
-    if 'ADM0_NAME' in df.columns:
-        df['ADM0_NAME'] = df['ADM0_NAME'].str.strip().apply(lambda x: country_mapping.get(x, x), meta=('ADM0_NAME', 'object'))
-
-    # Conversion de l'année en numérique
-    if 'Year' in df.columns:
-        df['Year'] = dd.to_numeric(df['Year'], errors='coerce')
-
-    # Vérification des colonnes clés
-    if 'ADM0_NAME' not in df.columns or 'Year' not in df.columns:
-        print(f"⚠️ {name} ne contient pas ADM0_NAME ou Year — il sera ignoré pour la fusion.")
+    if "ADM0_NAME" not in df.columns or "Year" not in df.columns:
         ignored_files.append(name)
+        print(f"⚠️ {name} ignoré pour fusion thématique")
 
     return df
-
-
 
 # 📊 Chargement des fichiers
 dataframes = {}
@@ -87,19 +82,16 @@ for key, filename in files.items():
     path = os.path.join(data_dir, filename)
     try:
         df = dd.read_csv(path, dtype={'Item_Code_(CPC)': 'object'}, assume_missing=True)
-        df_clean = clean_dask_df(df, key)
+        df_clean = clean_custom_df(df, key)
         dataframes[key] = df_clean
         print(f"✅ {key} chargé avec {df_clean.shape[0].compute():,} lignes")
     except Exception as e:
         print(f"❌ Erreur chargement {key} : {e}")
 
-
+# 🔗 Fusion thématique
 def fusion_progressive(dfs, name):
-    """Fusion sécurisée des DataFrames par thème"""
     print(f"\n🔗 Fusion progressive du bloc {name}...")
     required_cols = {"ADM0_NAME", "Year"}
-
-    # Garder uniquement les DF ayant les colonnes nécessaires
     dfs_valid = [df for df in dfs if required_cols.issubset(df.columns)]
     if not dfs_valid:
         print(f"⚠️ Aucun fichier valide pour le bloc {name}")
@@ -114,7 +106,6 @@ def fusion_progressive(dfs, name):
         time.sleep(0.2)
 
     return fused
-
 
 # 🧩 Fusion par blocs
 df_climate = fusion_progressive(
@@ -138,16 +129,13 @@ if df_climate is not None and df_production is not None:
         )
     )
 
-    # 🧮 Conversion en Pandas
     print("\n🧮 Conversion en pandas pour entraînement...")
     df_final_pd = df_final.compute()
 
-    # 📊 Rapport final
     print(f"\n🧬 Colonnes finales : {list(df_final_pd.columns)}")
     print("\n📉 Valeurs manquantes par colonne :")
     print(df_final_pd.isna().sum().sort_values(ascending=False))
 
-    # 💾 Sauvegarde
     output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
     df_final_pd.to_csv(output_path, index=False, compression="gzip")
     print(f"\n✅ Fichier sauvegardé : {output_path}")
