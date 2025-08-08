@@ -1,8 +1,8 @@
-import dask.dataframe as dd
-import pandas as pd
 import os
 import time
-
+import pandas as pd
+import dask.dataframe as dd
+from tabulate import tabulate
 
 # 📁 Dossier des fichiers
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
@@ -42,21 +42,30 @@ country_mapping = {
     "Tanzanie": "Tanzania", "Togo": "Togo", "Tunisie": "Tunisia", "Ouganda": "Uganda",
     "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
-
-# 🧼 Nettoyage générique et robuste
-# 📂 Liste des fichiers ignorés
 ignored_files = []
+log_info = []
 
 def clean_dask_df(df, name):
-    """Nettoyage et harmonisation d'un DataFrame Dask"""
+    """Nettoyage et harmonisation d'un DataFrame Dask avec logs détaillés"""
 
-    # 🔁 Supprimer les colonnes dupliquées par nom
+    # 🔍 Log avant nettoyage
+    cols_before = list(df.columns)
+    rows_before = df.shape[0].compute()
+    log_entry = {
+        "Fichier": name,
+        "Colonnes_initiales": cols_before,
+        "Lignes_initiales": rows_before,
+        "Colonnes_manquantes": [],
+        "Statut": "OK"
+    }
+
+    # 🔁 Supprimer les colonnes dupliquées
     df = df.loc[:, ~df.columns.duplicated()]
 
-    # 🧹 Nettoyage des noms de colonnes
+    # 🧹 Nettoyage noms colonnes
     df.columns = df.columns.str.strip().str.replace(' ', '_')
 
-    # 📛 Renommage intelligent des colonnes clés
+    # 📛 Renommage
     rename_map = {
         'Year_Code': 'Year',
         'Area': 'ADM0_NAME',
@@ -64,25 +73,52 @@ def clean_dask_df(df, name):
     }
     df = df.rename(columns={col: rename_map.get(col, col) for col in df.columns})
 
-    print(f"📋 Colonnes dans {name} : {list(df.columns)}")
-
-    # 🌍 Harmonisation des noms de pays si colonne présente
+    # 🌍 Harmonisation noms de pays
     if 'ADM0_NAME' in df.columns:
         df['ADM0_NAME'] = df['ADM0_NAME'].astype(str).str.strip().apply(
             lambda x: country_mapping.get(x, x),
             meta=('ADM0_NAME', 'object')
         )
 
-    # 🔢 Conversion de l'année en numérique si colonne présente
+    # 🔢 Conversion année
     if 'Year' in df.columns:
         df['Year'] = dd.to_numeric(df['Year'], errors='coerce')
 
-    # 📌 Vérification des colonnes nécessaires
-    if not {'ADM0_NAME', 'Year'}.issubset(df.columns):
-        print(f"⚠️ {name} ne contient pas ADM0_NAME ou Year — ignoré pour fusion.")
+    # 📌 Vérif colonnes clés
+    required_cols = {'ADM0_NAME', 'Year'}
+    missing_cols = required_cols - set(df.columns)
+    if missing_cols:
+        log_entry["Colonnes_manquantes"] = list(missing_cols)
+        log_entry["Statut"] = "Ignoré"
         ignored_files.append(name)
 
+    log_info.append(log_entry)
     return df
+
+
+def fusion_progressive(dfs, name):
+    """Fusion sécurisée des DataFrames avec logs"""
+    print(f"\n🔗 Fusion progressive du bloc {name}...")
+    required_cols = {"ADM0_NAME", "Year"}
+
+    dfs_valid = [df for df in dfs if required_cols.issubset(df.columns)]
+    if not dfs_valid:
+        print(f"⚠️ Aucun fichier valide pour le bloc {name}")
+        return None
+
+    fused = dfs_valid[0]
+    print(f"   ➡️ Départ : {fused.shape[0].compute():,} lignes / {len(fused.columns)} colonnes")
+    total = len(dfs_valid)
+
+    for i, df in enumerate(dfs_valid[1:], start=2):
+        before_rows = fused.shape[0].compute()
+        fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"])
+        after_rows = fused.shape[0].compute()
+        print(f"   🔄 Fusion {i}/{total} : {before_rows:,} ➡ {after_rows:,} lignes")
+        time.sleep(0.2)
+
+    print(f"   ✅ Bloc {name} final : {fused.shape[0].compute():,} lignes / {len(fused.columns)} colonnes")
+    return fused
 
 
 # 📊 Chargement des fichiers
@@ -93,43 +129,21 @@ for key, filename in files.items():
         df = dd.read_csv(path, dtype={'Item_Code_(CPC)': 'object'}, assume_missing=True)
         df_clean = clean_dask_df(df, key)
         dataframes[key] = df_clean
-        print(f"✅ {key} chargé avec {df_clean.shape[0].compute():,} lignes")
+        print(f"✅ {key} chargé ({df_clean.shape[0].compute():,} lignes)")
     except Exception as e:
         print(f"❌ Erreur chargement {key} : {e}")
 
 
-def fusion_progressive(dfs, name):
-    """Fusion sécurisée des DataFrames par thème"""
-    print(f"\n🔗 Fusion progressive du bloc {name}...")
-    required_cols = {"ADM0_NAME", "Year"}
-
-    # Garder uniquement les DF ayant les colonnes nécessaires
-    dfs_valid = [df for df in dfs if required_cols.issubset(df.columns)]
-    if not dfs_valid:
-        print(f"⚠️ Aucun fichier valide pour le bloc {name}")
-        return None
-
-    fused = dfs_valid[0]
-    total = len(dfs_valid)
-
-    for i, df in enumerate(dfs_valid[1:], start=2):
-        fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"])
-        print(f"🔄 Progression fusion {name} : {int((i/total)*100)}%")
-        time.sleep(0.2)
-
-    return fused
-
-
-# 🧩 Fusion par blocs
+# 🧩 Fusions par blocs
 df_climate = fusion_progressive(
     [dataframes[k] for k in ['chirps', 'smap', 'land_cover', 'land_use'] if k in dataframes],
     "climat"
 )
-
 df_production = fusion_progressive(
     [dataframes[k] for k in ['production', 'manure'] if k in dataframes],
     "production"
 )
+
 
 # 🧬 Fusion finale
 if df_climate is not None and df_production is not None:
@@ -142,22 +156,24 @@ if df_climate is not None and df_production is not None:
         )
     )
 
-    # 🧮 Conversion en Pandas
-    print("\n🧮 Conversion en pandas pour entraînement...")
+    print("\n🧮 Conversion en pandas...")
     df_final_pd = df_final.compute()
 
-    # 📊 Rapport final
     print(f"\n🧬 Colonnes finales : {list(df_final_pd.columns)}")
     print("\n📉 Valeurs manquantes par colonne :")
     print(df_final_pd.isna().sum().sort_values(ascending=False))
 
-    # 💾 Sauvegarde
     output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
     df_final_pd.to_csv(output_path, index=False, compression="gzip")
     print(f"\n✅ Fichier sauvegardé : {output_path}")
 else:
     print("❌ Fusion finale impossible : blocs manquants.")
 
-# 📁 Fichiers ignorés
+
+# 📋 Rapport final
+print("\n📋 Rapport fichiers :")
+rapport_df = pd.DataFrame(log_info)
+print(tabulate(rapport_df, headers="keys", tablefmt="pretty", showindex=False))
+
 if ignored_files:
-    print(f"\n📁 Fichiers ignorés pour la fusion : {', '.join(ignored_files)}")
+    print(f"\n📁 Fichiers ignorés : {', '.join(ignored_files)}")
