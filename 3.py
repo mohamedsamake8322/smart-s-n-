@@ -1,4 +1,5 @@
 import pandas as pd
+from dask.diagnostics import ProgressBar
 
 # 📁 Dossier des données
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
@@ -101,6 +102,10 @@ print("🧹 Après suppression des lignes sans rendement :", final_df.shape)
 # 🔍 Aperçu des colonnes
 print("🔍 Colonnes disponibles :", list(final_df.columns))
 
-# 💾 Sauvegarde
-final_df.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente.csv.gz", index=False, compression='gzip')
-print("📁 Fichier sauvegardé : Fusion_agronomique_intelligente.csv")
+# 💾 Sauvegarde avec barre de progression
+print("💾 Sauvegarde du fichier Fusion_agronomique_intelligente.csv.gz...")
+with ProgressBar():
+    final_df.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente.csv.gz",
+                    index=False, compression='gzip', single_file=True)
+
+print("📁 Fichier sauvegardé : Fusion_agronomique_intelligente.csv.gz")
