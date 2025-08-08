@@ -1,7 +1,28 @@
-import os
 import dask.dataframe as dd
+import pandas as pd
+import os
+import time
 
-# 📌 Mapping pays (à adapter selon ton contexte)
+# 📁 Dossier des fichiers
+data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
+
+# 📦 Liste des fichiers à charger
+files = {
+    "chirps": "CHIRPS_DAILY_PENTAD.csv",
+    "nutrient_balance": "Cropland Nutrient BalanceFAOSTAT_data_en_8-8-2025.csv",
+    "trade_matrix": "Detailed trade matrix (fertilizers)FAOSTAT_data_en_8-8-2025.csv",
+    "fert_nutrient": "FertilizersbyNutrientFAOSTAT_data_en_8-8-2025.csv",
+    "fert_product": "FertilizersbyProductFAOSTAT_data_en_7-22-2025.csv",
+    "gedi": "GEDI_Mangrove_CSV.csv",
+    "land_cover": "Land CoverFAOSTAT_data_en_8-8-2025.csv",
+    "land_use": "Land UseFAOSTAT_data_en_8-8-2025.csv",
+    "smap": "SMAP_SoilMoisture.csv",
+    "production": "ProductionIndicesFAOSTAT_data_en_7-22-2025.csv",
+    "manure": "Livestock ManureFAOSTAT_data_en_8-8-2025.csv",
+    "resources": "X_land_water_cleanedRessources en terres et en eau.csv"
+}
+
+# 🌍 Mapping pays
 country_mapping = {
     "Algérie": "Algeria", "Angola": "Angola", "Bénin": "Benin", "Botswana": "Botswana",
     "Burkina Faso": "Burkina Faso", "Burundi": "Burundi", "Cabo Verde": "Cape Verde",
@@ -21,7 +42,7 @@ country_mapping = {
     "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
 
-# ✅ Nettoyage et standardisation des colonnes
+# 🧼 Nettoyage générique
 def clean_dask_df(df, name):
     df = df.rename(columns=lambda x: x.strip().replace(' ', '_'))
     df = df.rename(columns={
@@ -32,68 +53,59 @@ def clean_dask_df(df, name):
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
 
     if 'ADM0_NAME' in df.columns:
-        df['ADM0_NAME'] = df['ADM0_NAME'].map(country_mapping).fillna(df['ADM0_NAME'], meta=('ADM0_NAME', 'object'))
+        df['ADM0_NAME'] = df['ADM0_NAME'].str.strip().map(country_mapping).fillna(df['ADM0_NAME'], meta=('ADM0_NAME', 'object'))
     if 'Year' in df.columns:
         df['Year'] = dd.to_numeric(df['Year'], errors='coerce')
     return df
 
-# 🔗 Fusion progressive avec filtrage
-def fusion_progressive(dfs):
-    required_cols = {"ADM0_NAME", "Year"}
-    dfs_valid = [df for df in dfs if required_cols.issubset(set(df.columns))]
-    print(f"\n🔗 Fusion de {len(dfs_valid)} blocs sur {len(dfs)}")
-    fused = dfs_valid[0]
-    for df in dfs_valid[1:]:
-        fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"])
-    return fused
-
-# 📂 Chargement des fichiers
-def charger_csv(path, name):
+# 📊 Chargement des fichiers
+dataframes = {}
+for key, filename in files.items():
+    path = os.path.join(data_dir, filename)
     try:
         df = dd.read_csv(path, dtype={'Item_Code_(CPC)': 'object'}, assume_missing=True)
-        df = clean_dask_df(df, name)
-        print(f"✅ {name} chargé avec {len(df):,} lignes")
-        return df
+        df_clean = clean_dask_df(df, key)
+        dataframes[key] = df_clean
+        print(f"✅ {key} chargé avec {df_clean.shape[0].compute():,} lignes")
     except Exception as e:
-        print(f"❌ Erreur chargement {name} : {e}")
-        return None
+        print(f"❌ Erreur chargement {key} : {e}")
 
-# 📁 Liste des fichiers à charger
-fichiers = {
-    "chirps": "data/chirps.csv",
-    "nutrient_balance": "data/nutrient_balance.csv",
-    "trade_matrix": "data/trade_matrix.csv",
-    "fert_nutrient": "data/fert_nutrient.csv",
-    "fert_product": "data/fert_product.csv",
-    "gedi": "data/gedi.csv",
-    "land_cover": "data/land_cover.csv",
-    "land_use": "data/land_use.csv",
-    "smap": "data/smap.csv",
-    "production": "data/production.csv",
-    "manure": "data/manure.csv",
-    "resources": "data/resources.csv"
-}
+# 🔗 Fusion thématique
+def fusion_progressive(dfs, name):
+    print(f"\n🔗 Fusion progressive du bloc {name}...")
+    required_cols = {"ADM0_NAME", "Year"}
+    dfs_valid = [df for df in dfs if required_cols.issubset(set(df.columns))]
+    total = len(dfs_valid)
+    fused = dfs_valid[0]
+    for i, df in enumerate(dfs_valid[1:], start=2):
+        fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"])
+        print(f"🔄 Progression fusion {name} : {int((i/total)*100)}%")
+        time.sleep(0.2)
+    return fused
 
-# 📦 Chargement des DataFrames
-dfs = []
-for name, path in fichiers.items():
-    df = charger_csv(path, name)
-    if df is not None:
-        dfs.append(df)
+df_climate = fusion_progressive([
+    dataframes['chirps'],
+    dataframes['smap'],
+    dataframes['land_cover'],
+    dataframes['land_use']
+], "climat")
 
-# 🔗 Fusion finale
-df_final = fusion_progressive(dfs)
+df_production = fusion_progressive([
+    dataframes['production'],
+    dataframes['manure']
+], "production")
+
+df_final = (
+    df_climate
+    .merge(df_production, on=["ADM0_NAME", "Year"], how="left")
+    .merge(dataframes['gedi'], on=["ADM0_NAME"], how="left")
+)
+
+# 🧮 Conversion en pandas
+print("\n🧮 Conversion en pandas pour entraînement...")
 df_final_pd = df_final.compute()
 
-# 💾 Sauvegarde
-output_path = "output/fusion_agriculture.csv"
-os.makedirs(os.path.dirname(output_path), exist_ok=True)
-df_final_pd.to_csv(output_path, index=False)
-print(f"\n💾 Fichier fusionné sauvegardé dans : {output_path}")
-
-# 📊 Rapport final
-print("\n📊 Résumé du fichier fusionné :")
-print(f"- Nombre de lignes : {len(df_final_pd):,}")
-print(f"- Nombre de colonnes : {len(df_final_pd.columns)}")
-print(f"- Taille approximative : {round(os.path.getsize(output_path) / (1024**2), 2)} MB")
-print(f"- Colonnes : {list(df_final_pd.columns)}")
+# 💾 Sauvegarde compressée
+output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
+df_final_pd.to_csv(output_path, index=False, compression="gzip")
+print(f"✅ Fichier sauvegardé : {output_path}")
