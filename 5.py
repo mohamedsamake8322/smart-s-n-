@@ -107,9 +107,15 @@ merged = dd.merge(
     how="left"
 )
 
-print("🔗 Fusion avec Bioclim...")
-bio_df = bio_df[["ADM0_NAME", "ADM1_NAME", "bio1", "bio12", "bio15"]]  # limiter colonnes
-print("📋 Colonnes disponibles dans BIOCLIM :", bio_df.columns.compute())
+wanted_bio = ["bio01", "bio12", "bio15"]  # adapte selon les colonnes réelles
+available_bio = [col for col in wanted_bio if col in bio_df.columns]
+missing_bio = [col for col in wanted_bio if col not in bio_df.columns]
+
+if missing_bio:
+    print(f"⚠️ Colonnes manquantes dans BIOCLIM : {missing_bio}")
+
+bio_df = bio_df[["ADM0_NAME", "ADM1_NAME"] + available_bio]
+
 merged = dd.merge(merged, bio_df, left_on="Area", right_on="ADM0_NAME", how="left")
 
 print("🔗 Fusion avec climat mensuel...")
