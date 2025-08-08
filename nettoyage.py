@@ -42,9 +42,20 @@ country_mapping = {
     "Tanzanie": "Tanzania", "Togo": "Togo", "Tunisie": "Tunisia", "Ouganda": "Uganda",
     "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
+# 📁 Liste des fichiers ignorés
+ignored_files = []
+
+# 🌍 Mapping pays
+country_mapping = {
+    "Algeria": "DZA",
+    "Liberia": "LBR",
+    "Libya": "LBY",
+    "Burkina Faso": "BFA",
+    # Ajoute les autres si besoin
+}
+
 # 🧼 Nettoyage personnalisé
 def clean_custom_df(df, name):
-    # 🔄 Supprimer les doublons de colonnes
     df = df.loc[:, ~df.columns.duplicated()]
     df.columns = df.columns.str.strip().str.replace(' ', '_')
 
@@ -86,16 +97,27 @@ def clean_custom_df(df, name):
 
     return df
 
-
 # 📊 Chargement des fichiers
 dataframes = {}
 for key, filename in files.items():
     path = os.path.join(data_dir, filename)
     try:
-        df = dd.read_csv(path, dtype={'Item_Code_(CPC)': 'object'}, assume_missing=True)
+        # 🧠 Forcer les types si nécessaire
+        forced_dtypes = {}
+        if key in [
+            "production", "manure", "fert_nutrient", "fert_product",
+            "trade_matrix", "nutrient_balance", "land_use", "land_cover"
+        ]:
+            forced_dtypes = {
+                "Item_Code": "object",
+                "Item_Code_(CPC)": "object"
+            }
+
+        df = dd.read_csv(path, assume_missing=True, dtype=forced_dtypes)
         df_clean = clean_custom_df(df, key)
         dataframes[key] = df_clean
         print(f"✅ {key} chargé avec {df_clean.shape[0].compute():,} lignes")
+
     except Exception as e:
         print(f"❌ Erreur chargement {key} : {e}")
 
@@ -125,7 +147,7 @@ df_climate = fusion_progressive(
 )
 
 df_production = fusion_progressive(
-    [dataframes[k] for k in ['production', 'manure'] if k in dataframes],
+    [dataframes[k] for k in ['production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance'] if k in dataframes],
     "production"
 )
 
