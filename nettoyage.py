@@ -1,9 +1,28 @@
 import dask.dataframe as dd
 import pandas as pd
-import xgboost as xgb
-import shap
+import os
+import time
 
-# 🌍 Mapping pays (à adapter selon ton contexte)
+# 📁 Dossier des fichiers
+data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
+
+# 📦 Liste des fichiers à charger
+files = {
+    "chirps": "CHIRPS_DAILY_PENTAD.csv",
+    "nutrient_balance": "Cropland Nutrient BalanceFAOSTAT_data_en_8-8-2025.csv",
+    "trade_matrix": "Detailed trade matrix (fertilizers)FAOSTAT_data_en_8-8-2025.csv",
+    "fert_nutrient": "FertilizersbyNutrientFAOSTAT_data_en_8-8-2025.csv",
+    "fert_product": "FertilizersbyProductFAOSTAT_data_en_7-22-2025.csv",
+    "gedi": "GEDI_Mangrove_CSV.csv",
+    "land_cover": "Land CoverFAOSTAT_data_en_8-8-2025.csv",
+    "land_use": "Land UseFAOSTAT_data_en_8-8-2025.csv",
+    "smap": "SMAP_SoilMoisture.csv",
+    "production": "ProductionIndicesFAOSTAT_data_en_7-22-2025.csv",
+    "manure": "Livestock ManureFAOSTAT_data_en_8-8-2025.csv",
+    "resources": "X_land_water_cleanedRessources en terres et en eau.csv"
+}
+
+# 🌍 Mapping pays
 country_mapping = {
     "Algérie": "Algeria", "Angola": "Angola", "Bénin": "Benin", "Botswana": "Botswana",
     "Burkina Faso": "Burkina Faso", "Burundi": "Burundi", "Cabo Verde": "Cape Verde",
@@ -23,87 +42,62 @@ country_mapping = {
     "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
 
-# 🧼 Fonction de nettoyage
-def clean_dask_df(df, country_col='Area', year_col='Year'):
+# 🧼 Nettoyage générique
+def clean_dask_df(df, name, country_col='Area', year_col='Year'):
     df = df.rename(columns=lambda x: x.strip().replace(' ', '_'))
+    print(f"📋 Colonnes dans {name} : {list(df.columns)}")
     if country_col in df.columns:
         df[country_col] = df[country_col].str.strip().map(country_mapping).fillna(df[country_col])
     if year_col in df.columns:
         df[year_col] = dd.to_numeric(df[year_col], errors='coerce')
     return df
 
-# 📁 Chargement des fichiers
-files = {
-    "chirps": "CHIRPS_DAILY_PENTAD.csv",
-    "nutrient_balance": "Cropland Nutrient BalanceFAOSTAT_data_en_8-8-2025.csv",
-    "trade_matrix": "Detailed trade matrix (fertilizers)FAOSTAT_data_en_8-8-2025.csv",
-    "fert_nutrient": "FertilizersbyNutrientFAOSTAT_data_en_8-8-2025.csv",
-    "fert_product": "FertilizersbyProductFAOSTAT_data_en_7-22-2025.csv",
-    "gedi": "GEDI_Mangrove_CSV.csv",
-    "land_cover": "Land CoverFAOSTAT_data_en_8-8-2025.csv",
-    "land_use": "Land UseFAOSTAT_data_en_8-8-2025.csv",
-    "smap": "SMAP_SoilMoisture.csv",
-    "production": "ProductionIndicesFAOSTAT_data_en_7-22-2025.csv",
-    "manure": "Livestock ManureFAOSTAT_data_en_8-8-2025.csv",
-    "resources": "X_land_water_cleanedRessources en terres et en eau.csv"
-}
-
-# 📊 Chargement et nettoyage
+# 📊 Chargement des fichiers
 dataframes = {}
-for key, path in files.items():
+for key, filename in files.items():
+    path = os.path.join(data_dir, filename)
     try:
         df = dd.read_csv(path, assume_missing=True)
-        df_clean = clean_dask_df(df)
+        df_clean = clean_dask_df(df, key)
         dataframes[key] = df_clean
-        print(f"✅ {key} loaded with shape {df_clean.shape}")
+        print(f"✅ {key} chargé avec {df_clean.shape[0].compute():,} lignes")
     except Exception as e:
-        print(f"❌ Error loading {key}: {e}")
+        print(f"❌ Erreur chargement {key} : {e}")
 
-# 🔗 Fusions thématiques
-df_climate = (
-    dataframes['chirps']
-    .merge(dataframes['smap'], on=['ADM0_NAME', 'Year'], how='outer')
-    .merge(dataframes['land_cover'], on=['ADM0_NAME', 'Year'], how='outer')
-    .merge(dataframes['land_use'], on=['ADM0_NAME', 'Year'], how='outer')
-)
+# 🔗 Fusion thématique
+def fusion_progressive(dfs, name):
+    print(f"\n🔗 Fusion progressive du bloc {name}...")
+    total = len(dfs)
+    fused = dfs[0]
+    for i, df in enumerate(dfs[1:], start=2):
+        fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"])
+        print(f"🔄 Progression fusion {name} : {int((i/total)*100)}%")
+        time.sleep(0.2)
+    return fused
 
-df_fertilization = (
-    dataframes['fert_product']
-    .merge(dataframes['fert_nutrient'], on=['Area', 'Item', 'Year'], how='outer')
-    .merge(dataframes['trade_matrix'], on=['Area', 'Item', 'Year'], how='outer')
-    .merge(dataframes['nutrient_balance'], on=['Area', 'Item', 'Year'], how='outer')
-)
+df_climate = fusion_progressive([
+    dataframes['chirps'],
+    dataframes['smap'],
+    dataframes['land_cover'],
+    dataframes['land_use']
+], "climat")
 
-df_production = (
-    dataframes['production']
-    .merge(dataframes['manure'], on=['Area', 'Item', 'Year'], how='outer')
-)
+df_production = fusion_progressive([
+    dataframes['production'],
+    dataframes['manure']
+], "production")
 
-df_resources = dataframes['resources']
-df_gedi = dataframes['gedi']
-
-# 🧠 Fusion finale pour prédiction de rendement
 df_final = (
     df_climate
-    .merge(df_production, on=['ADM0_NAME', 'Year'], how='left')
-    .merge(df_gedi, on=['ADM0_NAME'], how='left')
+    .merge(df_production, on=["ADM0_NAME", "Year"], how="left")
+    .merge(dataframes['gedi'], on=["ADM0_NAME"], how="left")
 )
 
 # 🧮 Conversion en pandas
+print("\n🧮 Conversion en pandas pour entraînement...")
 df_final_pd = df_final.compute()
-df_fertilization_pd = df_fertilization.compute()
 
-# 🧪 Entraînement XGBoost
-X = df_final_pd.drop(columns=["Yield_t_ha"], errors='ignore')
-y = df_final_pd["Yield_t_ha"]
-model = xgb.XGBRegressor()
-model.fit(X, y)
-
-# 📈 SHAP
-explainer = shap.Explainer(model)
-shap_values = explainer(X)
-shap.plots.beeswarm(shap_values)
-
-# 💾 Sauvegarde
-df_final_pd.to_csv("dataset_rendement_prepared.csv", index=False)
-df_fertilization_pd.to_csv("dataset_fertilisation_prepared.csv", index=False)
+# 💾 Sauvegarde compressée
+output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
+df_final_pd.to_csv(output_path, index=False, compression="gzip")
+print(f"✅ Fichier sauvegardé : {output_path}")
