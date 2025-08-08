@@ -53,7 +53,8 @@ def clean_dask_df(df, name):
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
 
     if 'ADM0_NAME' in df.columns:
-        df['ADM0_NAME'] = df['ADM0_NAME'].str.strip().map(country_mapping).fillna(df['ADM0_NAME'], meta=('ADM0_NAME', 'object'))
+        df['ADM0_NAME'] = df['ADM0_NAME'].str.strip().map(country_mapping, meta=('ADM0_NAME', 'object')).fillna(df['ADM0_NAME'])
+
     if 'Year' in df.columns:
         df['Year'] = dd.to_numeric(df['Year'], errors='coerce')
     return df
