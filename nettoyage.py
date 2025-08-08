@@ -186,10 +186,28 @@ if df_climate is not None and df_production is not None:
             on=["ADM0_NAME"], how="left"
         )
     )
+# 🔗 Fusion latérale avec GEDI
+if 'gedi' in dataframes:
+    df_gedi = dataframes['gedi']
+    df_final = df_final.merge(df_gedi, on="ADM0_NAME", how="left")
+    print("🔗 Fusion latérale avec GEDI par ADM0_NAME")
+
+# 🔗 Fusion spatiale ou broadcast avec resources
+if 'resources' in dataframes:
+    df_resources = dataframes['resources']
+    if {'lat', 'lon'}.issubset(df_final.columns):
+        df_final = df_final.merge(df_resources, on=["lat", "lon"], how="left")
+        print("🔗 Fusion spatiale avec resources par lat/lon")
+    else:
+        df_resources_broadcast = df_resources.compute()
+        for col in df_resources_broadcast.columns:
+            df_final[col] = df_resources_broadcast[col].iloc[0]
+        print("🔗 Broadcast des variables resources sur tout le dataset")
 
     # 🧮 Conversion en pandas pour entraînement
     print("\n🧮 Conversion en pandas pour entraînement...")
-    df_final_pd = df_final.persist().compute()
+    if df_final is not None:
+        df_final_pd = df_final.persist().compute()
 
     # ✅ Log de confirmation
     n_rows, n_cols = df_final_pd.shape
@@ -204,6 +222,10 @@ if df_climate is not None and df_production is not None:
         print(missing_nonzero)
     else:
         print("\n✅ Aucune valeur manquante détectée.")
+# 🧪 Colonnes constantes
+constant_cols = [col for col in df_final_pd.columns if df_final_pd[col].nunique(dropna=False) <= 1]
+if constant_cols:
+    print(f"\n⚠️ Colonnes constantes détectées : {constant_cols}")
 
     # 💾 Sauvegarde du fichier final
     output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
