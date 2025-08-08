@@ -1,0 +1,17 @@
+import os
+
+# Définir le chemin du dossier
+folder_path = r"C:\plateforme-agricole-complete-v2\SmartSènè"
+
+# Vérifier si le dossier existe
+if os.path.exists(folder_path):
+    print(f"📁 Contenu du dossier : {folder_path}\n")
+
+    for item in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item)
+        if os.path.isdir(item_path):
+            print(f"📂 Dossier : {item}")
+        else:
+            print(f"📄 Fichier : {item}")
+else:
+    print("❌ Le dossier spécifié n'existe pas.")
