@@ -53,6 +53,9 @@ def clean_dask_df(df, name):
         'Area': 'ADM0_NAME',
         'Area_Code_(M49)': 'ADM0_CODE'
     })
+
+    # Supprimer les colonnes dupliquées
+    df.columns = pd.Index(df.columns).drop_duplicates()
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
 
     if 'ADM0_NAME' in df.columns:
@@ -62,7 +65,11 @@ def clean_dask_df(df, name):
     if 'Year' in df.columns:
         df['Year'] = dd.to_numeric(df['Year'], errors='coerce')
 
+    if 'ADM0_NAME' not in df.columns or 'Year' not in df.columns:
+        print(f"⚠️ {name} ne contient pas ADM0_NAME ou Year — il sera ignoré pour la fusion.")
+
     return df
+
 
 # 📊 Chargement des fichiers
 dataframes = {}
