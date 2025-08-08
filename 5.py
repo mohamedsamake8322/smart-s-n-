@@ -1,3 +1,5 @@
+import os
+import pandas as pd
 import dask.dataframe as dd
 from dask.diagnostics import ProgressBar
 
@@ -9,14 +11,43 @@ print("📥 Chargement des fichiers avec Dask...")
 soil_df = dd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv", assume_missing=True)
 bio_df = dd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv", assume_missing=True)
 clim_df = dd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv", assume_missing=True)
-faostat_crop_df = dd.read_csv(f"{data_dir}\\CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv", assume_missing=True)
+
+# --- 🔍 Scan sécurisé FAOSTAT ---
+faostat_file = os.path.join(data_dir, "CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv")
+print("📥 Scan rapide du fichier FAOSTAT...")
+
+# Lecture échantillon
+sample = pd.read_csv(faostat_file, nrows=500)
+sample.columns = sample.columns.str.strip()
+
+# Détection colonnes mixtes
+problematic_cols = []
+for col in sample.columns:
+    if sample[col].dtype == object:
+        try:
+            pd.to_numeric(sample[col].dropna(), errors="raise")
+        except Exception:
+            problematic_cols.append(col)
+
+# Ajout forcé si Dask se trompe (sécurité)
+extra_force = ["Item Code (CPC)"]
+for col in extra_force:
+    if col in sample.columns and col not in problematic_cols:
+        problematic_cols.append(col)
+
+print(f"⚠️ Colonnes forcées en object : {problematic_cols}")
+
+dtype_map = {col: "object" for col in problematic_cols}
+faostat_crop_df = dd.read_csv(faostat_file, assume_missing=True, dtype=dtype_map)
+print("✅ Chargement FAOSTAT sécurisé avec Dask.")
+
 indicators_df = dd.read_csv(f"{data_dir}\\agriculture_indicators_africa.csv", assume_missing=True)
-yield_df = dd.read_csv(f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv", assume_missing=True)
+yield_df = dd.read_csv(
+    f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv",
+    assume_missing=True
+)
 
-print("✅ Fichiers chargés.")
-
-print("🔍 Vérification et conversion des colonnes clés en string...")
-
+# --- 🔍 Conversion colonnes clés en string ---
 def safe_str_column(df, col):
     if col in df.columns:
         return df.assign(**{col: df[col].astype("string")})
@@ -38,28 +69,24 @@ faostat_crop_df = safe_str_column(faostat_crop_df, "Year")
 indicators_df = safe_str_column(indicators_df, "Country Name")
 indicators_df = safe_str_column(indicators_df, "Year")
 
-if "Area" in yield_df.columns:
-    yield_df = yield_df.assign(**{"Area": yield_df["Area"].astype("string")})
-if "Year" in yield_df.columns:
-    yield_df = yield_df.assign(**{"Year": yield_df["Year"].astype("string")})
+yield_df = safe_str_column(yield_df, "Area")
+yield_df = safe_str_column(yield_df, "Year")
 
 print("✅ Colonnes clés converties.")
 
+# --- 🧮 Reconstruction rendements ---
 print("🧮 Reconstruction des rendements FAOSTAT (Yield = Production / Area)...")
-
 area_df = faostat_crop_df[faostat_crop_df["Element"].str.contains("Area harvested", case=False, na=False)].persist()
 prod_df = faostat_crop_df[faostat_crop_df["Element"].str.contains("Production", case=False, na=False)].persist()
 
 merged_yield_df = dd.merge(area_df, prod_df, on=["Area", "Item", "Year"], suffixes=("_area", "_prod"), how="inner")
-
 merged_yield_df = merged_yield_df.assign(
     Yield_t_ha = merged_yield_df["Value_prod"] / merged_yield_df["Value_area"]
 ).persist()
-
 print(f"✅ Rendements reconstruits : {merged_yield_df.shape[0].compute()} lignes.")
 
+# --- 🔄 Harmonisation pays ---
 print("🔄 Harmonisation noms pays dans FAOSTAT et indicateurs...")
-
 country_mapping = {
     "Algérie": "Algeria", "Angola": "Angola", "Bénin": "Benin", "Botswana": "Botswana",
     "Burkina Faso": "Burkina Faso", "Burundi": "Burundi", "Cabo Verde": "Cape Verde",
@@ -82,13 +109,12 @@ country_mapping = {
 merged_yield_df = merged_yield_df.map_partitions(
     lambda df: df.assign(Area = df["Area"].replace(country_mapping))
 ).persist()
-
 indicators_df = indicators_df.map_partitions(
     lambda df: df.assign(**{"Country Name": df["Country Name"].replace(country_mapping)})
 ).persist()
 
+# --- 🔗 Fusion ---
 print("🔗 Fusion rendements FAOSTAT avec indicateurs agricoles...")
-
 merged = dd.merge(
     merged_yield_df,
     indicators_df,
@@ -96,66 +122,34 @@ merged = dd.merge(
     right_on=["Country Name", "Year"],
     how="left"
 ).persist()
-
 print(f"✅ Après fusion indicateurs : {merged.shape[0].compute()} lignes.")
 
 print("🔗 Fusion avec Bioclim...")
-
-merged = dd.merge(
-    merged,
-    bio_df,
-    left_on="Area",
-    right_on="ADM0_NAME",
-    how="left"
-).persist()
-
+merged = dd.merge(merged, bio_df, left_on="Area", right_on="ADM0_NAME", how="left").persist()
 print(f"✅ Après fusion Bioclim : {merged.shape[0].compute()} lignes.")
 
 print("🔗 Fusion avec climat mensuel...")
-
-merged = dd.merge(
-    merged,
-    clim_df,
-    left_on=["ADM0_NAME", "ADM1_NAME"],
-    right_on=["ADM0_NAME", "ADM1_NAME"],
-    how="left"
-).persist()
-
+merged = dd.merge(merged, clim_df, left_on=["ADM0_NAME", "ADM1_NAME"], right_on=["ADM0_NAME", "ADM1_NAME"], how="left").persist()
 print(f"✅ Après fusion climat mensuel : {merged.shape[0].compute()} lignes.")
 
+# --- 📊 Sol ---
 print("📊 Agrégation des données de sol...")
-
 soil_agg = soil_df.groupby(["ADM0_NAME", "ADM1_NAME"]).agg({
-    "mean": "mean",
-    "min": "mean",
-    "max": "mean",
-    "stdDev": "mean"
+    "mean": "mean", "min": "mean", "max": "mean", "stdDev": "mean"
 }).reset_index().persist()
-
 print(f"✅ Sol agrégé : {soil_agg.shape[0].compute()} lignes.")
 
 print("🔗 Fusion avec données de sol agrégées...")
-
-merged = dd.merge(
-    merged,
-    soil_agg,
-    on=["ADM0_NAME", "ADM1_NAME"],
-    how="left"
-).persist()
-
+merged = dd.merge(merged, soil_agg, on=["ADM0_NAME", "ADM1_NAME"], how="left").persist()
 print(f"✅ Après ajout sol : {merged.shape[0].compute()} lignes.")
 
+# --- 🧹 Nettoyage ---
 print("🧹 Suppression des lignes sans rendement...")
-
 merged = merged.dropna(subset=["Yield_t_ha"]).persist()
-
 print(f"✅ Après suppression : {merged.shape[0].compute()} lignes.")
 
+# --- 💾 Sauvegarde ---
 print("💾 Sauvegarde du fichier Fusion_agronomique_intelligente.csv.gz avec compression gzip...")
-
 with ProgressBar():
-    merged.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente_*.csv.gz",
-                  index=False, compression="gzip", single_file=False)
-
+    merged.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente_*.csv.gz", index=False, compression="gzip", single_file=False)
 print("✅ Fichier sauvegardé.")
-
