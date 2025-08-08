@@ -22,7 +22,7 @@ files = {
     "manure": "Livestock ManureFAOSTAT_data_en_8-8-2025.csv",
     "resources": "X_land_water_cleanedRessources en terres et en eau.csv"
 }
-
+ignored_files = []
 # 🌍 Mapping pays
 country_mapping = {
     "Algérie": "Algeria", "Angola": "Angola", "Bénin": "Benin", "Botswana": "Botswana",
@@ -42,39 +42,50 @@ country_mapping = {
     "Tanzanie": "Tanzania", "Togo": "Togo", "Tunisie": "Tunisia", "Ouganda": "Uganda",
     "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
-
-# 🧼 Nettoyage générique et robuste
-# 📂 Liste des fichiers ignorés
-ignored_files = []
-
+# 🧼 Nettoyage personnalisé
 def clean_custom_df(df, name):
+    # 🔄 Supprimer les doublons de colonnes
     df = df.loc[:, ~df.columns.duplicated()]
     df.columns = df.columns.str.strip().str.replace(' ', '_')
 
+    # 🎯 Renommage spécifique
     if name == "chirps":
         df = df.rename(columns={"EXP1_YEAR": "Year"})
     elif name == "smap":
         df = df.rename(columns={"EXP1_YEAR": "Year"})
     elif name == "trade_matrix":
         df = df.rename(columns={"Reporter_Countries": "ADM0_NAME"})
+    elif name in [
+        "production", "manure", "land_use", "land_cover",
+        "fert_nutrient", "fert_product", "nutrient_balance"
+    ]:
+        df = df.rename(columns={"Area": "ADM0_NAME"})
     elif name == "resources":
         print(f"⚠️ {name} n’a ni ADM0_NAME ni Year — fusion latérale uniquement")
     elif name == "gedi":
         print(f"⚠️ {name} n’a pas de colonne Year — fusion latérale uniquement")
 
+    # 🌍 Harmonisation des pays
     if "ADM0_NAME" in df.columns:
-        df["ADM0_NAME"] = df["ADM0_NAME"].str.strip().apply(lambda x: country_mapping.get(x, x), meta=('ADM0_NAME', 'object'))
+        df["ADM0_NAME"] = df["ADM0_NAME"].str.strip().apply(
+            lambda x: country_mapping.get(x, x),
+            meta=('ADM0_NAME', 'object')
+        )
 
+    # 📅 Conversion de l’année
     if "Year" in df.columns:
         df["Year"] = dd.to_numeric(df["Year"], errors="coerce")
 
+    # 📋 Log des colonnes
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
 
+    # 📛 Vérification des clés
     if "ADM0_NAME" not in df.columns or "Year" not in df.columns:
         ignored_files.append(name)
         print(f"⚠️ {name} ignoré pour fusion thématique")
 
     return df
+
 
 # 📊 Chargement des fichiers
 dataframes = {}
