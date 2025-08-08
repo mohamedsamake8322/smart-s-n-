@@ -48,9 +48,35 @@ def harmonize_and_merge(df1, df2, keys=None, left_on=None, right_on=None, how="l
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 print("📥 Chargement des fichiers avec Dask...")
 
-soil_df = dd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv", assume_missing=True)
-bio_df = dd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv", assume_missing=True)
-clim_df = dd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv", assume_missing=True)
+soil_df = dd.read_csv(
+    f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv",
+    assume_missing=True,
+    dtype={
+        "ADM1_NAME": "object",
+        "ADM2_NAME": "object",
+        "DISP_AREA": "object",
+        "STATUS": "object"
+    }
+)
+
+bio_df = dd.read_csv(
+    f"{data_dir}\\WorldClim BIO Variables V1.csv",
+    assume_missing=True,
+    dtype={
+        "ADM0_NAME": "object",
+        "ADM1_NAME": "object"
+    }
+)
+
+clim_df = dd.read_csv(
+    f"{data_dir}\\WorldClim_Monthly_Fusion.csv",
+    assume_missing=True,
+    dtype={
+        "ADM0_NAME": "object",
+        "ADM1_NAME": "object"
+    }
+)
+
 
 # 🔍 Scan FAOSTAT
 faostat_file = os.path.join(data_dir, "CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv")
