@@ -145,8 +145,10 @@ def generate_column_report(dataframes, output_path="rapport_colonnes.csv"):
     print(f"\n📄 Rapport colonnes sauvegardé : {output_path}")
 generate_column_report(dataframes)
 
-# 🔗 Fusion thématique
-# 🔗 Fusion thématique progressive
+# 📁 Répertoire de sortie
+data_dir = "outputs"
+os.makedirs(data_dir, exist_ok=True)
+
 def fusion_progressive(dfs, name, verbose=True):
     print(f"\n🔗 Fusion progressive du bloc {name}...")
     required_cols = {"ADM0_NAME", "Year"}
@@ -160,7 +162,8 @@ def fusion_progressive(dfs, name, verbose=True):
     total = len(dfs_valid)
 
     for i, df in enumerate(dfs_valid[1:], start=2):
-        fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"], suffixes=("", f"_{name}_{i}"))
+        source_name = df.attrs.get("source_name", f"{name}_{i}")
+        fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"], suffixes=("", f"_{source_name}"))
         if verbose:
             print(f"🔄 Progression fusion {name} : {int((i / total) * 100)}%")
             time.sleep(0.2)
@@ -168,24 +171,18 @@ def fusion_progressive(dfs, name, verbose=True):
     return fused
 
 # 🧩 Fusion par blocs
-df_climate = fusion_progressive(
-    [dataframes[k] for k in ['chirps', 'smap', 'land_cover', 'land_use'] if k in dataframes],
-    "climat"
-)
+for k in ['chirps', 'smap', 'land_cover', 'land_use']:
+    if k in dataframes:
+        dataframes[k].attrs['source_name'] = k
+df_climate = fusion_progressive([dataframes[k] for k in ['chirps', 'smap', 'land_cover', 'land_use'] if k in dataframes], "climat")
 
-# 🧩 Fusion par blocs
-df_climate = fusion_progressive(
-    [dataframes[k] for k in ['chirps', 'smap', 'land_cover', 'land_use'] if k in dataframes],
-    "climat"
-)
-
-df_production = fusion_progressive(
-    [dataframes[k] for k in ['production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance'] if k in dataframes],
-    "production"
-)
+for k in ['production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance']:
+    if k in dataframes:
+        dataframes[k].attrs['source_name'] = k
+df_production = fusion_progressive([dataframes[k] for k in ['production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance'] if k in dataframes], "production")
 
 # 🧬 Fusion finale
-df_final = None  # 🔒 Sécurité si fusion impossible
+df_final = None
 
 if df_climate is not None and df_production is not None:
     df_final = df_climate.merge(df_production, on=["ADM0_NAME", "Year"], how="left")
@@ -193,7 +190,11 @@ if df_climate is not None and df_production is not None:
 
     # 🔗 Fusion latérale avec GEDI
     if 'gedi' in dataframes:
-        df_final = df_final.merge(dataframes['gedi'], on="ADM0_NAME", how="left")
+        gedi = dataframes['gedi']
+        overlap = set(gedi.columns) - {"ADM0_NAME"} & set(df_final.columns)
+        if overlap:
+            print(f"⚠️ Colonnes GEDI déjà présentes : {overlap}")
+        df_final = df_final.merge(gedi, on="ADM0_NAME", how="left")
         print("🔗 Fusion latérale avec GEDI par ADM0_NAME")
 
     # 🔗 Fusion spatiale ou broadcast avec resources
@@ -210,11 +211,19 @@ if df_climate is not None and df_production is not None:
 
     # 🧮 Conversion en pandas pour entraînement
     print("\n🧮 Conversion en pandas pour entraînement...")
-    df_final_pd = df_final.persist().compute()
+    try:
+        df_final_pd = df_final.persist().compute()
+    except Exception as e:
+        print(f"❌ Erreur lors de la conversion en pandas : {type(e).__name__} - {e}")
+        df_final_pd = None
 else:
     print("❌ Fusion finale impossible : blocs climat ou production manquants")
 
-def audit_final(df: pd.DataFrame, output_path: str = "dataset_rendement_prepared.csv.gz", verbose: bool = True):
+def audit_final(df: pd.DataFrame, output_path: str = "dataset_rendement_prepared.csv.gz", verbose: bool = True, drop_constants: bool = False):
+    if df is None:
+        print("❌ Aucun DataFrame à auditer.")
+        return
+
     # ✅ Dimensions
     n_rows, n_cols = df.shape
     if verbose:
@@ -227,7 +236,6 @@ def audit_final(df: pd.DataFrame, output_path: str = "dataset_rendement_prepared
     if not missing_nonzero.empty:
         print("\n📉 Valeurs manquantes par colonne :")
         print(missing_nonzero)
-        # Optionnel : sauvegarde du rapport
         missing_nonzero.to_csv(os.path.join(data_dir, "rapport_missing_values.csv"))
         print("📝 Rapport des valeurs manquantes sauvegardé.")
     else:
@@ -237,9 +245,11 @@ def audit_final(df: pd.DataFrame, output_path: str = "dataset_rendement_prepared
     constant_cols = [col for col in df.columns if df[col].nunique(dropna=False) <= 1]
     if constant_cols:
         print(f"\n⚠️ Colonnes constantes détectées : {constant_cols}")
-        # Optionnel : sauvegarde du rapport
         pd.Series(constant_cols).to_csv(os.path.join(data_dir, "rapport_colonnes_constantes.csv"), index=False)
         print("📝 Rapport des colonnes constantes sauvegardé.")
+        if drop_constants:
+            df = df.drop(columns=constant_cols)
+            print("🧹 Colonnes constantes supprimées avant sauvegarde.")
     else:
         print("\n✅ Aucune colonne constante détectée.")
 
@@ -247,4 +257,6 @@ def audit_final(df: pd.DataFrame, output_path: str = "dataset_rendement_prepared
     full_path = os.path.join(data_dir, output_path)
     df.to_csv(full_path, index=False, compression="gzip")
     print(f"\n✅ Fichier sauvegardé : {full_path}")
-audit_final(df_final_pd)
+
+# 📋 Audit final
+audit_final(df_final_pd, drop_constants=True)
