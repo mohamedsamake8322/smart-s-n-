@@ -39,7 +39,9 @@ faostat_crop_df["Area"] = faostat_crop_df["Area"].astype("string")
 faostat_crop_df["Year"] = faostat_crop_df["Year"].astype("int64")
 faostat_crop_df["Item"] = faostat_crop_df["Item"].astype("string")
 
-yield_df["Area"] = yield_df["Area"].astype("string") if "Area" in yield_df.columns else yield_df
+# Conversion colonne 'Area' dans yield_df si elle existe
+if "Area" in yield_df.columns:
+    yield_df["Area"] = yield_df["Area"].astype("string")
 
 # Indicators : 'Country Name', 'Year' en string et int
 indicators_df["Country Name"] = indicators_df["Country Name"].astype("string")
