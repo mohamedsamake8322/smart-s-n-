@@ -45,7 +45,8 @@ country_mapping = {
 # 🧼 Nettoyage personnalisé
 def clean_custom_df(df, name):
     df = df.loc[:, ~df.columns.duplicated()]
-    df.columns = df.columns.str.strip().str.replace(' ', '_')
+    df.columns = df.columns.str.strip().str.replace(r'\s+', '_', regex=True)
+
 
     # 🎯 Renommage spécifique
     rename_map = {
@@ -142,6 +143,7 @@ def generate_column_report(dataframes, output_path="rapport_colonnes.csv"):
     df_report = pd.DataFrame(rows)
     df_report.to_csv(os.path.join(data_dir, output_path), index=False)
     print(f"\n📄 Rapport colonnes sauvegardé : {output_path}")
+generate_column_report(dataframes)
 
 # 🔗 Fusion thématique
 # 🔗 Fusion thématique progressive
@@ -171,64 +173,78 @@ df_climate = fusion_progressive(
     "climat"
 )
 
+# 🧩 Fusion par blocs
+df_climate = fusion_progressive(
+    [dataframes[k] for k in ['chirps', 'smap', 'land_cover', 'land_use'] if k in dataframes],
+    "climat"
+)
+
 df_production = fusion_progressive(
     [dataframes[k] for k in ['production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance'] if k in dataframes],
     "production"
 )
 
 # 🧬 Fusion finale
-if df_climate is not None and df_production is not None:
-    df_final = (
-        df_climate
-        .merge(df_production, on=["ADM0_NAME", "Year"], how="left")
-        .merge(
-            dataframes.get('gedi', dd.from_pandas(pd.DataFrame(), npartitions=1)),
-            on=["ADM0_NAME"], how="left"
-        )
-    )
-# 🔗 Fusion latérale avec GEDI
-if 'gedi' in dataframes:
-    df_gedi = dataframes['gedi']
-    df_final = df_final.merge(df_gedi, on="ADM0_NAME", how="left")
-    print("🔗 Fusion latérale avec GEDI par ADM0_NAME")
+df_final = None  # 🔒 Sécurité si fusion impossible
 
-# 🔗 Fusion spatiale ou broadcast avec resources
-if 'resources' in dataframes:
-    df_resources = dataframes['resources']
-    if {'lat', 'lon'}.issubset(df_final.columns):
-        df_final = df_final.merge(df_resources, on=["lat", "lon"], how="left")
-        print("🔗 Fusion spatiale avec resources par lat/lon")
-    else:
-        df_resources_broadcast = df_resources.compute()
-        for col in df_resources_broadcast.columns:
-            df_final[col] = df_resources_broadcast[col].iloc[0]
-        print("🔗 Broadcast des variables resources sur tout le dataset")
+if df_climate is not None and df_production is not None:
+    df_final = df_climate.merge(df_production, on=["ADM0_NAME", "Year"], how="left")
+    print("🔗 Fusion thématique climat + production réussie")
+
+    # 🔗 Fusion latérale avec GEDI
+    if 'gedi' in dataframes:
+        df_final = df_final.merge(dataframes['gedi'], on="ADM0_NAME", how="left")
+        print("🔗 Fusion latérale avec GEDI par ADM0_NAME")
+
+    # 🔗 Fusion spatiale ou broadcast avec resources
+    if 'resources' in dataframes:
+        df_resources = dataframes['resources']
+        if {'lat', 'lon'}.issubset(df_final.columns):
+            df_final = df_final.merge(df_resources, on=["lat", "lon"], how="left")
+            print("🔗 Fusion spatiale avec resources par lat/lon")
+        else:
+            df_resources_broadcast = df_resources.compute()
+            for col in df_resources_broadcast.columns:
+                df_final[col] = df_resources_broadcast[col].iloc[0]
+            print("🔗 Broadcast des variables resources sur tout le dataset")
 
     # 🧮 Conversion en pandas pour entraînement
     print("\n🧮 Conversion en pandas pour entraînement...")
-    if df_final is not None:
-            df_final_pd = df_final.persist().compute()
-
-# ✅ Confirmation
-n_rows, n_cols = df_final_pd.shape
-print(f"\n✅ Fusion finale réussie : {n_rows:,} lignes, {n_cols} colonnes")
-print(f"📋 Colonnes fusionnées (extrait) : {df_final_pd.columns.tolist()[:15]} ...")
-
-# 📉 Valeurs manquantes
-missing = df_final_pd.isna().sum().sort_values(ascending=False)
-missing_nonzero = missing[missing > 0]
-if not missing_nonzero.empty:
-    print("\n📉 Valeurs manquantes par colonne :")
-    print(missing_nonzero)
+    df_final_pd = df_final.persist().compute()
 else:
-    print("\n✅ Aucune valeur manquante détectée.")
+    print("❌ Fusion finale impossible : blocs climat ou production manquants")
 
-# ⚠️ Colonnes constantes
-constant_cols = [col for col in df_final_pd.columns if df_final_pd[col].nunique(dropna=False) <= 1]
-if constant_cols:
-    print(f"\n⚠️ Colonnes constantes détectées : {constant_cols}")
+def audit_final(df: pd.DataFrame, output_path: str = "dataset_rendement_prepared.csv.gz", verbose: bool = True):
+    # ✅ Dimensions
+    n_rows, n_cols = df.shape
+    if verbose:
+        print(f"\n✅ Fusion finale réussie : {n_rows:,} lignes, {n_cols} colonnes")
+        print(f"📋 Colonnes fusionnées (extrait) : {df.columns.tolist()[:15]} ...")
 
-# 💾 Sauvegarde
-output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
-df_final_pd.to_csv(output_path, index=False, compression="gzip")
-print(f"\n✅ Fichier sauvegardé : {output_path}")
+    # 📉 Valeurs manquantes
+    missing = df.isna().sum().sort_values(ascending=False)
+    missing_nonzero = missing[missing > 0]
+    if not missing_nonzero.empty:
+        print("\n📉 Valeurs manquantes par colonne :")
+        print(missing_nonzero)
+        # Optionnel : sauvegarde du rapport
+        missing_nonzero.to_csv(os.path.join(data_dir, "rapport_missing_values.csv"))
+        print("📝 Rapport des valeurs manquantes sauvegardé.")
+    else:
+        print("\n✅ Aucune valeur manquante détectée.")
+
+    # ⚠️ Colonnes constantes
+    constant_cols = [col for col in df.columns if df[col].nunique(dropna=False) <= 1]
+    if constant_cols:
+        print(f"\n⚠️ Colonnes constantes détectées : {constant_cols}")
+        # Optionnel : sauvegarde du rapport
+        pd.Series(constant_cols).to_csv(os.path.join(data_dir, "rapport_colonnes_constantes.csv"), index=False)
+        print("📝 Rapport des colonnes constantes sauvegardé.")
+    else:
+        print("\n✅ Aucune colonne constante détectée.")
+
+    # 💾 Sauvegarde du dataset
+    full_path = os.path.join(data_dir, output_path)
+    df.to_csv(full_path, index=False, compression="gzip")
+    print(f"\n✅ Fichier sauvegardé : {full_path}")
+audit_final(df_final_pd)
