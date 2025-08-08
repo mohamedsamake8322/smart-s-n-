@@ -101,7 +101,11 @@ print("🧹 Après suppression des lignes sans rendement :", final_df.shape)
 
 # 🔍 Aperçu des colonnes
 print("🔍 Colonnes disponibles :", list(final_df.columns))
-
+# Harmonisation globale des colonnes problématiques
+cols_str = ["ADM2_NAME", "DISP_AREA", "STATUS"]
+for col in cols_str:
+    if col in final_df.columns:
+        final_df[col] = final_df[col].astype("string")  # ou "object"
 # 💾 Sauvegarde avec barre de progression
 print("💾 Sauvegarde du fichier Fusion_agronomique_intelligente.csv.gz...")
 with ProgressBar():
