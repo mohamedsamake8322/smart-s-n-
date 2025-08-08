@@ -16,11 +16,10 @@ clim_df = dd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv", assume_missin
 faostat_file = os.path.join(data_dir, "CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv")
 print("📥 Scan rapide du fichier FAOSTAT...")
 
-# Lecture échantillon
+# Lecture échantillon pour détecter colonnes mixtes
 sample = pd.read_csv(faostat_file, nrows=500)
 sample.columns = sample.columns.str.strip()
 
-# Détection colonnes mixtes
 problematic_cols = []
 for col in sample.columns:
     if sample[col].dtype == object:
@@ -29,7 +28,7 @@ for col in sample.columns:
         except Exception:
             problematic_cols.append(col)
 
-# Ajout forcé si Dask se trompe (sécurité)
+# Colonnes à forcer
 extra_force = ["Item Code (CPC)"]
 for col in extra_force:
     if col in sample.columns and col not in problematic_cols:
@@ -47,20 +46,15 @@ yield_df = dd.read_csv(
     assume_missing=True
 )
 
-# --- 🔍 Conversion colonnes clés en string ---
+# --- 🔍 Conversion colonnes clés ---
 def safe_str_column(df, col):
     if col in df.columns:
         return df.assign(**{col: df[col].astype("string")})
     return df
 
-soil_df = safe_str_column(soil_df, "ADM0_NAME")
-soil_df = safe_str_column(soil_df, "ADM1_NAME")
-
-bio_df = safe_str_column(bio_df, "ADM0_NAME")
-bio_df = safe_str_column(bio_df, "ADM1_NAME")
-
-clim_df = safe_str_column(clim_df, "ADM0_NAME")
-clim_df = safe_str_column(clim_df, "ADM1_NAME")
+for df in [soil_df, bio_df, clim_df]:
+    df = safe_str_column(df, "ADM0_NAME")
+    df = safe_str_column(df, "ADM1_NAME")
 
 faostat_crop_df = safe_str_column(faostat_crop_df, "Area")
 faostat_crop_df = safe_str_column(faostat_crop_df, "Item")
@@ -75,81 +69,63 @@ yield_df = safe_str_column(yield_df, "Year")
 print("✅ Colonnes clés converties.")
 
 # --- 🧮 Reconstruction rendements ---
-print("🧮 Reconstruction des rendements FAOSTAT (Yield = Production / Area)...")
-area_df = faostat_crop_df[faostat_crop_df["Element"].str.contains("Area harvested", case=False, na=False)].persist()
-prod_df = faostat_crop_df[faostat_crop_df["Element"].str.contains("Production", case=False, na=False)].persist()
+print("🧮 Reconstruction des rendements FAOSTAT...")
+area_df = faostat_crop_df[faostat_crop_df["Element"].str.contains("Area harvested", case=False, na=False)]
+prod_df = faostat_crop_df[faostat_crop_df["Element"].str.contains("Production", case=False, na=False)]
 
 merged_yield_df = dd.merge(area_df, prod_df, on=["Area", "Item", "Year"], suffixes=("_area", "_prod"), how="inner")
 merged_yield_df = merged_yield_df.assign(
     Yield_t_ha = merged_yield_df["Value_prod"] / merged_yield_df["Value_area"]
-).persist()
-print(f"✅ Rendements reconstruits : {merged_yield_df.shape[0].compute()} lignes.")
+)
 
 # --- 🔄 Harmonisation pays ---
-print("🔄 Harmonisation noms pays dans FAOSTAT et indicateurs...")
+print("🔄 Harmonisation noms pays...")
 country_mapping = {
-    "Algérie": "Algeria", "Angola": "Angola", "Bénin": "Benin", "Botswana": "Botswana",
-    "Burkina Faso": "Burkina Faso", "Burundi": "Burundi", "Cabo Verde": "Cape Verde",
-    "Cameroun": "Cameroon", "République centrafricaine": "CAR", "Tchad": "Chad",
-    "Comores": "Comoros", "République du Congo": "Congo", "République démocratique du Congo": "DR Congo",
-    "Côte d'Ivoire": "Ivory Coast", "Djibouti": "Djibouti", "Égypte": "Egypt",
-    "Guinée équatoriale": "Equatorial Guinea", "Érythrée": "Eritrea", "Eswatini": "Swaziland",
-    "Éthiopie": "Ethiopia", "Gabon": "Gabon", "Gambie": "The Gambia", "Ghana": "Ghana",
-    "Guinée": "Guinea", "Guinée-Bissau": "Guinea Bissau", "Kenya": "Kenya", "Lesotho": "Lesotho",
-    "Libéria": "Liberia", "Libye": "Libya", "Madagascar": "Madagascar", "Malawi": "Malawi",
-    "Mali": "Mali", "Mauritanie": "Mauritania", "Maurice": "Mauritius", "Maroc": "Morocco",
-    "Mozambique": "Mozambique", "Namibie": "Namibia", "Niger": "Niger", "Nigéria": "Nigeria",
-    "Rwanda": "Rwanda", "Sao Tomé-et-Principe": "Sao Tome and Principe", "Sénégal": "Senegal",
-    "Seychelles": "Seychelles", "Sierra Leone": "Sierra Leone", "Somalie": "Somalia",
-    "Afrique du Sud": "South Africa", "Soudan du Sud": "South Sudan", "Soudan": "Sudan",
-    "Tanzanie": "Tanzania", "Togo": "Togo", "Tunisie": "Tunisia", "Ouganda": "Uganda",
-    "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
+    "Algérie": "Algeria", "Bénin": "Benin", "République centrafricaine": "CAR",
+    "République du Congo": "Congo", "République démocratique du Congo": "DR Congo",
+    "Côte d'Ivoire": "Ivory Coast", "Égypte": "Egypt", "Guinée équatoriale": "Equatorial Guinea",
+    "Érythrée": "Eritrea", "Eswatini": "Swaziland", "Éthiopie": "Ethiopia", "Gambie": "The Gambia",
+    "Guinée-Bissau": "Guinea Bissau", "Libéria": "Liberia", "Maurice": "Mauritius",
+    "Mozambique": "Mozambique", "Namibie": "Namibia", "Nigéria": "Nigeria",
+    "Sao Tomé-et-Principe": "Sao Tome and Principe", "Soudan du Sud": "South Sudan",
+    "Tanzanie": "Tanzania"
 }
-
 merged_yield_df = merged_yield_df.map_partitions(
-    lambda df: df.assign(Area = df["Area"].replace(country_mapping))
-).persist()
+    lambda df: df.assign(Area=df["Area"].replace(country_mapping))
+)
 indicators_df = indicators_df.map_partitions(
     lambda df: df.assign(**{"Country Name": df["Country Name"].replace(country_mapping)})
-).persist()
+)
 
-# --- 🔗 Fusion ---
-print("🔗 Fusion rendements FAOSTAT avec indicateurs agricoles...")
+# --- 🔗 Fusions progressives sans persist ---
+print("🔗 Fusion avec indicateurs agricoles...")
 merged = dd.merge(
     merged_yield_df,
     indicators_df,
     left_on=["Area", "Year"],
     right_on=["Country Name", "Year"],
     how="left"
-).persist()
-print(f"✅ Après fusion indicateurs : {merged.shape[0].compute()} lignes.")
+)
 
 print("🔗 Fusion avec Bioclim...")
-merged = dd.merge(merged, bio_df, left_on="Area", right_on="ADM0_NAME", how="left").persist()
-print(f"✅ Après fusion Bioclim : {merged.shape[0].compute()} lignes.")
+bio_df = bio_df[["ADM0_NAME", "ADM1_NAME", "bio1", "bio12", "bio15"]]  # limiter colonnes
+merged = dd.merge(merged, bio_df, left_on="Area", right_on="ADM0_NAME", how="left")
 
 print("🔗 Fusion avec climat mensuel...")
-merged = dd.merge(merged, clim_df, left_on=["ADM0_NAME", "ADM1_NAME"], right_on=["ADM0_NAME", "ADM1_NAME"], how="left").persist()
-print(f"✅ Après fusion climat mensuel : {merged.shape[0].compute()} lignes.")
+clim_df = clim_df[["ADM0_NAME", "ADM1_NAME", "tavg", "prec"]]  # exemple colonnes utiles
+merged = dd.merge(merged, clim_df, on=["ADM0_NAME", "ADM1_NAME"], how="left")
 
-# --- 📊 Sol ---
-print("📊 Agrégation des données de sol...")
+print("📊 Agrégation sol...")
 soil_agg = soil_df.groupby(["ADM0_NAME", "ADM1_NAME"]).agg({
     "mean": "mean", "min": "mean", "max": "mean", "stdDev": "mean"
-}).reset_index().persist()
-print(f"✅ Sol agrégé : {soil_agg.shape[0].compute()} lignes.")
+}).reset_index()
+merged = dd.merge(merged, soil_agg, on=["ADM0_NAME", "ADM1_NAME"], how="left")
 
-print("🔗 Fusion avec données de sol agrégées...")
-merged = dd.merge(merged, soil_agg, on=["ADM0_NAME", "ADM1_NAME"], how="left").persist()
-print(f"✅ Après ajout sol : {merged.shape[0].compute()} lignes.")
+print("🧹 Suppression lignes sans rendement...")
+merged = merged.dropna(subset=["Yield_t_ha"])
 
-# --- 🧹 Nettoyage ---
-print("🧹 Suppression des lignes sans rendement...")
-merged = merged.dropna(subset=["Yield_t_ha"]).persist()
-print(f"✅ Après suppression : {merged.shape[0].compute()} lignes.")
-
-# --- 💾 Sauvegarde ---
-print("💾 Sauvegarde du fichier Fusion_agronomique_intelligente.csv.gz avec compression gzip...")
+# --- 💾 Sauvegarde lazy ---
+print("💾 Sauvegarde fusion finale...")
 with ProgressBar():
-    merged.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente_*.csv.gz", index=False, compression="gzip", single_file=False)
-print("✅ Fichier sauvegardé.")
+    merged.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente_*.csv.gz", index=False, compression="gzip")
+print("✅ Sauvegarde terminée.")
