@@ -2,7 +2,44 @@ import os
 import pandas as pd
 import dask.dataframe as dd
 from dask.diagnostics import ProgressBar
+def safe_merge(df1, df2, keys, how="left", verbose=True):
+    """
+    Fusionne deux Dask DataFrames en harmonisant les types et en vérifiant les clés.
 
+    Args:
+        df1 (dd.DataFrame): Premier DataFrame.
+        df2 (dd.DataFrame): Deuxième DataFrame.
+        keys (list): Liste des colonnes clés pour la fusion.
+        how (str): Type de jointure ('left', 'right', 'inner', 'outer').
+        verbose (bool): Affiche les diagnostics si True.
+
+    Returns:
+        dd.DataFrame: DataFrame fusionné.
+    """
+    # Vérification des colonnes manquantes
+    missing_df1 = [k for k in keys if k not in df1.columns]
+    missing_df2 = [k for k in keys if k not in df2.columns]
+
+    if missing_df1 or missing_df2:
+        raise KeyError(f"❌ Clés manquantes : df1={missing_df1}, df2={missing_df2}")
+
+    # Harmonisation des types
+    for key in keys:
+        dtype1 = df1[key].dtype
+        dtype2 = df2[key].dtype
+        if dtype1 != dtype2:
+            if verbose:
+                print(f"⚠️ Type mismatch on '{key}': df1={dtype1}, df2={dtype2} — conversion en string")
+            df1[key] = df1[key].astype(str)
+            df2[key] = df2[key].astype(str)
+
+    # Fusion
+    merged = dd.merge(df1, df2, on=keys, how=how)
+
+    if verbose:
+        print(f"✅ Fusion réussie sur {keys} avec méthode '{how}'")
+
+    return merged
 # 📁 Dossier des données
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
@@ -81,14 +118,22 @@ merged_yield_df = merged_yield_df.assign(
 # --- 🔄 Harmonisation pays ---
 print("🔄 Harmonisation noms pays...")
 country_mapping = {
-    "Algérie": "Algeria", "Bénin": "Benin", "République centrafricaine": "CAR",
-    "République du Congo": "Congo", "République démocratique du Congo": "DR Congo",
-    "Côte d'Ivoire": "Ivory Coast", "Égypte": "Egypt", "Guinée équatoriale": "Equatorial Guinea",
-    "Érythrée": "Eritrea", "Eswatini": "Swaziland", "Éthiopie": "Ethiopia", "Gambie": "The Gambia",
-    "Guinée-Bissau": "Guinea Bissau", "Libéria": "Liberia", "Maurice": "Mauritius",
-    "Mozambique": "Mozambique", "Namibie": "Namibia", "Nigéria": "Nigeria",
-    "Sao Tomé-et-Principe": "Sao Tome and Principe", "Soudan du Sud": "South Sudan",
-    "Tanzanie": "Tanzania"
+     "Algérie": "Algeria", "Angola": "Angola", "Bénin": "Benin", "Botswana": "Botswana",
+    "Burkina Faso": "Burkina Faso", "Burundi": "Burundi", "Cabo Verde": "Cape Verde",
+    "Cameroun": "Cameroon", "République centrafricaine": "CAR", "Tchad": "Chad",
+    "Comores": "Comoros", "République du Congo": "Congo", "République démocratique du Congo": "DR Congo",
+    "Côte d'Ivoire": "Ivory Coast", "Djibouti": "Djibouti", "Égypte": "Egypt",
+    "Guinée équatoriale": "Equatorial Guinea", "Érythrée": "Eritrea", "Eswatini": "Swaziland",
+    "Éthiopie": "Ethiopia", "Gabon": "Gabon", "Gambie": "The Gambia", "Ghana": "Ghana",
+    "Guinée": "Guinea", "Guinée-Bissau": "Guinea Bissau", "Kenya": "Kenya", "Lesotho": "Lesotho",
+    "Libéria": "Liberia", "Libye": "Libya", "Madagascar": "Madagascar", "Malawi": "Malawi",
+    "Mali": "Mali", "Mauritanie": "Mauritania", "Maurice": "Mauritius", "Maroc": "Morocco",
+    "Mozambique": "Mozambique", "Namibie": "Namibia", "Niger": "Niger", "Nigéria": "Nigeria",
+    "Rwanda": "Rwanda", "Sao Tomé-et-Principe": "Sao Tome and Principe", "Sénégal": "Senegal",
+    "Seychelles": "Seychelles", "Sierra Leone": "Sierra Leone", "Somalie": "Somalia",
+    "Afrique du Sud": "South Africa", "Soudan du Sud": "South Sudan", "Soudan": "Sudan",
+    "Tanzanie": "Tanzania", "Togo": "Togo", "Tunisie": "Tunisia", "Ouganda": "Uganda",
+    "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
 merged_yield_df = merged_yield_df.map_partitions(
     lambda df: df.assign(Area=df["Area"].replace(country_mapping))
@@ -126,6 +171,13 @@ print("📊 Agrégation sol...")
 soil_agg = soil_df.groupby(["ADM0_NAME", "ADM1_NAME"]).agg({
     "mean": "mean", "min": "mean", "max": "mean", "stdDev": "mean"
 }).reset_index()
+merged = dd.merge(merged, soil_agg, on=["ADM0_NAME", "ADM1_NAME"], how="left")
+# 🧼 Harmoniser les types de clés de fusion
+for col in ["ADM0_NAME", "ADM1_NAME"]:
+    merged[col] = merged[col].astype(str)
+    soil_agg[col] = soil_agg[col].astype(str)
+
+# ✅ Fusion sécurisée
 merged = dd.merge(merged, soil_agg, on=["ADM0_NAME", "ADM1_NAME"], how="left")
 
 print("🧹 Suppression lignes sans rendement...")
