@@ -43,30 +43,38 @@ country_mapping = {
     "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
 
-# 🧼 Nettoyage générique
 # 🧼 Nettoyage générique et robuste
-# 🧼 Nettoyage générique et robuste
+ignored_files = []
+
 def clean_dask_df(df, name):
-    df = df.rename(columns=lambda x: x.strip().replace(' ', '_'))
+    # Nettoyage initial des noms de colonnes
+    df.columns = df.columns.str.strip().str.replace(' ', '_')
+
+    # Supprimer les colonnes dupliquées AVANT le renommage
+    df.columns = pd.Series(df.columns).drop_duplicates().tolist()
+
+    # Renommage intelligent
     df = df.rename(columns={
         'Year_Code': 'Year',
         'Area': 'ADM0_NAME',
         'Area_Code_(M49)': 'ADM0_CODE'
     })
 
-    # Supprimer les colonnes dupliquées
-    df.columns = pd.Index(df.columns).drop_duplicates()
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
 
+    # Harmonisation des noms de pays
     if 'ADM0_NAME' in df.columns:
         mapped = df['ADM0_NAME'].str.strip().map(country_mapping, meta=('ADM0_NAME', 'object'))
         df['ADM0_NAME'] = mapped.where(mapped.notnull(), df['ADM0_NAME'])
 
+    # Conversion de l'année en numérique
     if 'Year' in df.columns:
         df['Year'] = dd.to_numeric(df['Year'], errors='coerce')
 
+    # Vérification des colonnes clés
     if 'ADM0_NAME' not in df.columns or 'Year' not in df.columns:
         print(f"⚠️ {name} ne contient pas ADM0_NAME ou Year — il sera ignoré pour la fusion.")
+        ignored_files.append(name)
 
     return df
 
@@ -120,9 +128,18 @@ if df_climate is not None and df_production is not None:
     print("\n🧮 Conversion en pandas pour entraînement...")
     df_final_pd = df_final.compute()
 
+    # 📊 Résumé des colonnes et valeurs manquantes
+    print(f"\n🧬 Colonnes finales : {list(df_final_pd.columns)}")
+    print("\n📉 Valeurs manquantes par colonne :")
+    print(df_final_pd.isna().sum().sort_values(ascending=False))
+
     # 💾 Sauvegarde compressée
     output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
     df_final_pd.to_csv(output_path, index=False, compression="gzip")
-    print(f"✅ Fichier sauvegardé : {output_path}")
+    print(f"\n✅ Fichier sauvegardé : {output_path}")
 else:
     print("❌ Fusion finale impossible : blocs manquants.")
+
+# 📁 Log des fichiers ignorés
+if ignored_files:
+    print(f"\n📁 Fichiers ignorés pour la fusion : {', '.join(ignored_files)}")
