@@ -63,9 +63,11 @@ def clean_dask_df(df, name):
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
 
     # Harmonisation des noms de pays
+    # Harmonisation des noms de pays
     if 'ADM0_NAME' in df.columns:
-        mapped = df['ADM0_NAME'].str.strip().map(country_mapping, meta=('ADM0_NAME', 'object'))
-        df['ADM0_NAME'] = mapped.where(mapped.notnull(), df['ADM0_NAME'])
+        mapped = df['ADM0_NAME'].str.strip().apply(lambda x: country_mapping.get(x, x), meta=('ADM0_NAME', 'object'))
+        df['ADM0_NAME'] = mapped
+
 
     # Conversion de l'année en numérique
     if 'Year' in df.columns:
