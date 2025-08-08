@@ -42,51 +42,43 @@ country_mapping = {
     "Tanzanie": "Tanzania", "Togo": "Togo", "Tunisie": "Tunisia", "Ouganda": "Uganda",
     "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
-# 📁 Liste des fichiers ignorés
-ignored_files = []
-
-# 🌍 Mapping pays
-country_mapping = {
-    "Algeria": "DZA",
-    "Liberia": "LBR",
-    "Libya": "LBY",
-    "Burkina Faso": "BFA",
-    # Ajoute les autres si besoin
-}
-
 # 🧼 Nettoyage personnalisé
 def clean_custom_df(df, name):
     df = df.loc[:, ~df.columns.duplicated()]
     df.columns = df.columns.str.strip().str.replace(' ', '_')
 
     # 🎯 Renommage spécifique
-    if name == "chirps":
-        df = df.rename(columns={"EXP1_YEAR": "Year"})
-    elif name == "smap":
-        df = df.rename(columns={"EXP1_YEAR": "Year"})
-    elif name == "trade_matrix":
-        df = df.rename(columns={"Reporter_Countries": "ADM0_NAME"})
-    elif name in [
-        "production", "manure", "land_use", "land_cover",
-        "fert_nutrient", "fert_product", "nutrient_balance"
-    ]:
-        df = df.rename(columns={"Area": "ADM0_NAME"})
+    rename_map = {
+        "chirps": {"EXP1_YEAR": "Year"},
+        "smap": {"EXP1_YEAR": "Year"},
+        "trade_matrix": {"Reporter_Countries": "ADM0_NAME"},
+        "production": {"Area": "ADM0_NAME"},
+        "manure": {"Area": "ADM0_NAME"},
+        "land_use": {"Area": "ADM0_NAME"},
+        "land_cover": {"Area": "ADM0_NAME"},
+        "fert_nutrient": {"Area": "ADM0_NAME"},
+        "fert_product": {"Area": "ADM0_NAME"},
+        "nutrient_balance": {"Area": "ADM0_NAME"}
+    }
+    if name in rename_map:
+        df = df.rename(columns=rename_map[name])
     elif name == "resources":
         print(f"⚠️ {name} n’a ni ADM0_NAME ni Year — fusion latérale uniquement")
     elif name == "gedi":
         print(f"⚠️ {name} n’a pas de colonne Year — fusion latérale uniquement")
+
     print(f"📊 Types dans {name} : {df.dtypes.to_dict()}")
 
     # 🌍 Harmonisation des pays
     if "ADM0_NAME" in df.columns:
-        df["ADM0_NAME"] = df["ADM0_NAME"].str.strip().apply(
-            lambda x: country_mapping.get(x, x),
-            meta=('ADM0_NAME', 'object')
-        )
+        df["ADM0_NAME"] = df["ADM0_NAME"].map(country_mapping).fillna(df["ADM0_NAME"])
 
     # 📅 Conversion de l’année
     if "Year" in df.columns:
-        df["Year"] = dd.to_numeric(df["Year"], errors="coerce")
+        try:
+            df["Year"] = dd.to_numeric(df["Year"], errors="coerce")
+        except AttributeError:
+            df["Year"] = df["Year"].astype(float)
 
     # 📋 Log des colonnes
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
@@ -103,7 +95,6 @@ dataframes = {}
 for key, filename in files.items():
     path = os.path.join(data_dir, filename)
     try:
-        # 🧠 Forçage universel des colonnes sensibles
         forced_dtypes = {
             "Item_Code": "object",
             "Item_Code_(CPC)": "object",
@@ -116,11 +107,15 @@ for key, filename in files.items():
         df = dd.read_csv(path, assume_missing=True, dtype=forced_dtypes)
         df_clean = clean_custom_df(df, key)
         dataframes[key] = df_clean
-        print(f"✅ {key} chargé avec {df_clean.shape[0].compute():,} lignes")
+
+        n_rows = df_clean.shape[0]
+        n_rows = n_rows.compute() if hasattr(n_rows, "compute") else n_rows
+        print(f"✅ {key} chargé avec {n_rows:,} lignes")
 
     except Exception as e:
         print(f"❌ Erreur chargement {key} : {e}")
 
+# 📄 Rapport des colonnes
 def generate_column_report(dataframes, output_path="rapport_colonnes.csv"):
     rows = []
     for name, df in dataframes.items():
@@ -148,7 +143,7 @@ def generate_column_report(dataframes, output_path="rapport_colonnes.csv"):
     print(f"\n📄 Rapport colonnes sauvegardé : {output_path}")
 
 # 🔗 Fusion thématique
-def fusion_progressive(dfs, name):
+def fusion_progressive(dfs, name, verbose=True):
     print(f"\n🔗 Fusion progressive du bloc {name}...")
     required_cols = {"ADM0_NAME", "Year"}
     dfs_valid = [df for df in dfs if required_cols.issubset(df.columns)]
@@ -162,7 +157,8 @@ def fusion_progressive(dfs, name):
     for i, df in enumerate(dfs_valid[1:], start=2):
         fused = fused.merge(df, how="outer", on=["ADM0_NAME", "Year"], suffixes=("", f"_{name}_{i}"))
         print(f"🔄 Progression fusion {name} : {int((i/total)*100)}%")
-        time.sleep(0.2)
+        if verbose:
+            time.sleep(0.2)
 
     return fused
 
@@ -190,7 +186,6 @@ if df_climate is not None and df_production is not None:
 
     print("\n🧮 Conversion en pandas pour entraînement...")
     df_final_pd = df_final.persist().compute()
-
 
     print(f"\n🧬 Colonnes finales : {list(df_final_pd.columns)}")
     print("\n📉 Valeurs manquantes par colonne :")
