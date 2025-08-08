@@ -2,35 +2,36 @@ import os
 import pandas as pd
 import dask.dataframe as dd
 
-# 📁 Dossier des données
+# 📁 Dossier et fichier
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
-
-# 📄 Fichier FAOSTAT
 faostat_file = os.path.join(
     data_dir, "CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv"
 )
 
-print("📥 Scan rapide du fichier FAOSTAT pour détecter les colonnes mixtes...")
+print("📥 Scan rapide du fichier FAOSTAT...")
 
 # Lecture échantillon
-sample = pd.read_csv(faostat_file, nrows=500)
-
-# Nettoyage des noms de colonnes (pour éviter les soucis d'espaces)
+sample = pd.read_csv(faostat_file, nrows=2000)  # plus grand échantillon
 sample.columns = sample.columns.str.strip()
 
-# Détection des colonnes mixtes
+# Détection auto des colonnes mixtes
 problematic_cols = []
 for col in sample.columns:
     if sample[col].dtype == object:
-        # Si la colonne contient au moins un élément non numérique
         try:
             pd.to_numeric(sample[col].dropna(), errors="raise")
         except Exception:
             problematic_cols.append(col)
 
-print(f"⚠️ Colonnes mixtes détectées ({len(problematic_cols)}) :", problematic_cols)
+# Colonnes connues à risque à ajouter si présentes
+known_risky = ["Item Code (CPC)"]
+for col in known_risky:
+    if col in sample.columns and col not in problematic_cols:
+        problematic_cols.append(col)
 
-# 📥 Lecture complète avec Dask en forçant les colonnes détectées en string
+print(f"⚠️ Colonnes forcées en object : {problematic_cols}")
+
+# Lecture Dask en forçant le type
 dtype_map = {col: "object" for col in problematic_cols}
 
 faostat_crop_df = dd.read_csv(
