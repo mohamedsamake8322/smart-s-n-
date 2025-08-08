@@ -1,16 +1,17 @@
-import pandas as pd
+import dask.dataframe as dd
+from dask.diagnostics import ProgressBar
 
 # 📁 Dossier des données
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
-# 📥 Chargement des fichiers
+# 📥 Chargement des fichiers avec Dask
 print("📥 Chargement des fichiers...")
-soil_df = pd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv")
-bio_df = pd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv")
-clim_df = pd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv")
-faostat_crop_df = pd.read_csv(f"{data_dir}\\CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv")
-indicators_df = pd.read_csv(f"{data_dir}\\agriculture_indicators_africa.csv")
-yield_df = pd.read_csv(f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv")
+soil_df = dd.read_csv(f"{data_dir}\\Soil_AllLayers_AllAfrica-002.csv")
+bio_df = dd.read_csv(f"{data_dir}\\WorldClim BIO Variables V1.csv")
+clim_df = dd.read_csv(f"{data_dir}\\WorldClim_Monthly_Fusion.csv")
+faostat_crop_df = dd.read_csv(f"{data_dir}\\CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv")
+indicators_df = dd.read_csv(f"{data_dir}\\agriculture_indicators_africa.csv")
+yield_df = dd.read_csv(f"{data_dir}\\X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv")
 
 print("✅ Fichiers chargés.")
 print(f"FAOSTAT CULTURES : {faostat_crop_df.shape}")
@@ -22,11 +23,10 @@ print(f"RENDEMENT RÉEL : {yield_df.shape}")
 
 # 🧮 Reconstruction des rendements FAOSTAT
 print("🧮 Reconstruction des rendements FAOSTAT...")
-area_df = faostat_crop_df[faostat_crop_df['Element'].str.contains("Area harvested", case=False)].copy()
-prod_df = faostat_crop_df[faostat_crop_df['Element'].str.contains("Production", case=False)].copy()
+area_df = faostat_crop_df[faostat_crop_df['Element'].str.contains("Area harvested", case=False, regex=False)]
+prod_df = faostat_crop_df[faostat_crop_df['Element'].str.contains("Production", case=False, regex=False)]
 
-merged_yield_df = pd.merge(
-    area_df,
+merged_yield_df = area_df.merge(
     prod_df,
     on=['Area', 'Item', 'Year'],
     suffixes=('_area', '_prod'),
@@ -98,9 +98,17 @@ print("✅ Après ajout sol (agrégé) :", step3_df.shape)
 final_df = step3_df.dropna(subset=['Yield_t_ha'])
 print("🧹 Après suppression des lignes sans rendement :", final_df.shape)
 
-# 🔍 Aperçu des colonnes
-print("🔍 Colonnes disponibles :", list(final_df.columns))
+# 🔍 Aperçu des colonnes (on doit calculer pour afficher)
+print("🔍 Colonnes disponibles :", list(final_df.columns.compute()))
 
-# 💾 Sauvegarde
-final_df.to_csv(f"{data_dir}\\Fusion_agronomique_intelligente.csv.gz", index=False, compression='gzip')
-print("📁 Fichier sauvegardé : Fusion_agronomique_intelligente.csv")
+# 💾 Sauvegarde avec barre de progression
+print("💾 Sauvegarde du fichier Fusion_agronomique_intelligente.csv.gz...")
+with ProgressBar():
+    final_df.to_csv(
+        f"{data_dir}\\Fusion_agronomique_intelligente_*.csv.gz",
+        index=False,
+        compression='gzip',
+        single_file=True
+    )
+
+print("📁 Fichier sauvegardé : Fusion_agronomique_intelligente.csv.gz")
