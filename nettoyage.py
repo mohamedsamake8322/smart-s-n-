@@ -47,11 +47,11 @@ country_mapping = {
 ignored_files = []
 
 def clean_dask_df(df, name):
+    # 🔁 Supprimer les colonnes dupliquées par nom
+    df = df.loc[:, ~df.columns.duplicated()]
+
     # Nettoyage initial des noms de colonnes
     df.columns = df.columns.str.strip().str.replace(' ', '_')
-
-    # Supprimer les colonnes dupliquées AVANT le renommage
-    df.columns = pd.Series(df.columns).drop_duplicates().tolist()
 
     # Renommage intelligent
     df = df.rename(columns={
@@ -63,15 +63,14 @@ def clean_dask_df(df, name):
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
 
     # Harmonisation des noms de pays
-    # Harmonisation des noms de pays
     if 'ADM0_NAME' in df.columns:
         mapped = df['ADM0_NAME'].str.strip().apply(lambda x: country_mapping.get(x, x), meta=('ADM0_NAME', 'object'))
         df['ADM0_NAME'] = mapped
 
-
     # Conversion de l'année en numérique
     if 'Year' in df.columns:
         df['Year'] = dd.to_numeric(df['Year'], errors='coerce')
+
 
     # Vérification des colonnes clés
     if 'ADM0_NAME' not in df.columns or 'Year' not in df.columns:
