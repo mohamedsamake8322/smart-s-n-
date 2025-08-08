@@ -2,7 +2,7 @@ import dask.dataframe as dd
 import pandas as pd
 import os
 import time
-
+import dataframes
 # 📁 Dossier des fichiers
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
@@ -43,6 +43,7 @@ country_mapping = {
 }
 
 # 🧼 Nettoyage générique
+# 🧼 Nettoyage générique et robuste
 def clean_dask_df(df, name):
     df = df.rename(columns=lambda x: x.strip().replace(' ', '_'))
     df = df.rename(columns={
@@ -53,29 +54,22 @@ def clean_dask_df(df, name):
     print(f"📋 Colonnes dans {name} : {list(df.columns)}")
 
     if 'ADM0_NAME' in df.columns:
-        df['ADM0_NAME'] = df['ADM0_NAME'].str.strip().map(country_mapping, meta=('ADM0_NAME', 'object')).fillna(df['ADM0_NAME'])
+        mapped = df['ADM0_NAME'].str.strip().map(country_mapping, meta=('ADM0_NAME', 'object'))
+        df['ADM0_NAME'] = mapped.where(mapped.notnull(), df['ADM0_NAME'])
 
     if 'Year' in df.columns:
         df['Year'] = dd.to_numeric(df['Year'], errors='coerce')
+
     return df
 
-# 📊 Chargement des fichiers
-dataframes = {}
-for key, filename in files.items():
-    path = os.path.join(data_dir, filename)
-    try:
-        df = dd.read_csv(path, dtype={'Item_Code_(CPC)': 'object'}, assume_missing=True)
-        df_clean = clean_dask_df(df, key)
-        dataframes[key] = df_clean
-        print(f"✅ {key} chargé avec {df_clean.shape[0].compute():,} lignes")
-    except Exception as e:
-        print(f"❌ Erreur chargement {key} : {e}")
-
-# 🔗 Fusion thématique
+# 🔗 Fusion thématique avec filtrage sécurisé
 def fusion_progressive(dfs, name):
     print(f"\n🔗 Fusion progressive du bloc {name}...")
     required_cols = {"ADM0_NAME", "Year"}
     dfs_valid = [df for df in dfs if required_cols.issubset(set(df.columns))]
+    if not dfs_valid:
+        print(f"⚠️ Aucun fichier valide pour le bloc {name}")
+        return None
     total = len(dfs_valid)
     fused = dfs_valid[0]
     for i, df in enumerate(dfs_valid[1:], start=2):
@@ -84,29 +78,30 @@ def fusion_progressive(dfs, name):
         time.sleep(0.2)
     return fused
 
+# 🧩 Fusion des blocs disponibles
 df_climate = fusion_progressive([
-    dataframes['chirps'],
-    dataframes['smap'],
-    dataframes['land_cover'],
-    dataframes['land_use']
+    dataframes[key] for key in ['chirps', 'smap', 'land_cover', 'land_use'] if key in dataframes
 ], "climat")
 
 df_production = fusion_progressive([
-    dataframes['production'],
-    dataframes['manure']
+    dataframes[key] for key in ['production', 'manure'] if key in dataframes
 ], "production")
 
-df_final = (
-    df_climate
-    .merge(df_production, on=["ADM0_NAME", "Year"], how="left")
-    .merge(dataframes['gedi'], on=["ADM0_NAME"], how="left")
-)
+# 🧬 Fusion finale
+if df_climate is not None and df_production is not None:
+    df_final = (
+        df_climate
+        .merge(df_production, on=["ADM0_NAME", "Year"], how="left")
+        .merge(dataframes.get('gedi', dd.from_pandas(pd.DataFrame(), npartitions=1)), on=["ADM0_NAME"], how="left")
+    )
 
-# 🧮 Conversion en pandas
-print("\n🧮 Conversion en pandas pour entraînement...")
-df_final_pd = df_final.compute()
+    # 🧮 Conversion en pandas
+    print("\n🧮 Conversion en pandas pour entraînement...")
+    df_final_pd = df_final.compute()
 
-# 💾 Sauvegarde compressée
-output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
-df_final_pd.to_csv(output_path, index=False, compression="gzip")
-print(f"✅ Fichier sauvegardé : {output_path}")
+    # 💾 Sauvegarde compressée
+    output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
+    df_final_pd.to_csv(output_path, index=False, compression="gzip")
+    print(f"✅ Fichier sauvegardé : {output_path}")
+else:
+    print("❌ Fusion finale impossible : blocs manquants.")
