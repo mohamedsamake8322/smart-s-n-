@@ -207,35 +207,28 @@ if 'resources' in dataframes:
     # 🧮 Conversion en pandas pour entraînement
     print("\n🧮 Conversion en pandas pour entraînement...")
     if df_final is not None:
-        df_final_pd = df_final.persist().compute()
+            df_final_pd = df_final.persist().compute()
 
-    # ✅ Log de confirmation
-    n_rows, n_cols = df_final_pd.shape
-    print(f"\n✅ Fusion finale réussie : {n_rows:,} lignes, {n_cols} colonnes")
-    print(f"📋 Colonnes fusionnées (extrait) : {df_final_pd.columns.tolist()[:15]} ...")
+# ✅ Confirmation
+n_rows, n_cols = df_final_pd.shape
+print(f"\n✅ Fusion finale réussie : {n_rows:,} lignes, {n_cols} colonnes")
+print(f"📋 Colonnes fusionnées (extrait) : {df_final_pd.columns.tolist()[:15]} ...")
 
-    # 📉 Valeurs manquantes
-    missing = df_final_pd.isna().sum().sort_values(ascending=False)
-    missing_nonzero = missing[missing > 0]
-    if not missing_nonzero.empty:
-        print("\n📉 Valeurs manquantes par colonne :")
-        print(missing_nonzero)
-    else:
-        print("\n✅ Aucune valeur manquante détectée.")
-# 🧪 Colonnes constantes
+# 📉 Valeurs manquantes
+missing = df_final_pd.isna().sum().sort_values(ascending=False)
+missing_nonzero = missing[missing > 0]
+if not missing_nonzero.empty:
+    print("\n📉 Valeurs manquantes par colonne :")
+    print(missing_nonzero)
+else:
+    print("\n✅ Aucune valeur manquante détectée.")
+
+# ⚠️ Colonnes constantes
 constant_cols = [col for col in df_final_pd.columns if df_final_pd[col].nunique(dropna=False) <= 1]
 if constant_cols:
     print(f"\n⚠️ Colonnes constantes détectées : {constant_cols}")
 
-    # 💾 Sauvegarde du fichier final
-    output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
-    df_final_pd.to_csv(output_path, index=False, compression="gzip")
-    print(f"\n✅ Fichier sauvegardé : {output_path}")
-else:
-    print("❌ Fusion finale impossible : blocs manquants.")
-
-# 📁 Fichiers ignorés
-if ignored_files:
-    print(f"\n📁 Fichiers ignorés pour la fusion : {', '.join(ignored_files)}")
-else:
-    print("\n📁 Tous les fichiers ont été pris en compte dans la fusion.")
+# 💾 Sauvegarde
+output_path = os.path.join(data_dir, "dataset_rendement_prepared.csv.gz")
+df_final_pd.to_csv(output_path, index=False, compression="gzip")
+print(f"\n✅ Fichier sauvegardé : {output_path}")
