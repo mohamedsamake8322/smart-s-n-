@@ -4,7 +4,7 @@ import re
 from functools import reduce
 
 # 📁 Dossier contenant les fichiers CSV
-BASE_DIR = r"C:\chemin\vers\tes\fichiers"
+BASE_DIR = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 OUTPUT_FILE = os.path.join(BASE_DIR, "dataset_fusionne_pour_XGBoost.csv.gz")
 
 # 📌 Liste des fichiers à fusionner
