@@ -41,12 +41,15 @@ df_final.to_parquet(final_file, overwrite=True)
 for file in files[1:]:
     df_temp = load_and_prepare(file)
     df_final = dd.read_parquet(final_file)
+
+    # Forcer Year en string dans les deux DataFrames
+    df_final["Year"] = df_final["Year"].astype(str)
+    df_temp["Year"] = df_temp["Year"].astype(str)
+
     df_merged = dd.merge(df_final, df_temp, on=merge_keys, how="outer")
     df_merged.to_parquet(temp_file, overwrite=True)
-    # Remplace l'ancien fichier par le nouveau
+
     if os.path.exists(final_file):
         shutil.rmtree(final_file)
     os.rename(temp_file, final_file)
     print(f"✅ Fusion terminée pour {os.path.basename(file)}")
-
-print(f"🎯 Fusion complète terminée. Résultat : {final_file}")
