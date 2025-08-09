@@ -1,8 +1,8 @@
 import pandas as pd
-import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
+import geopandas as gpd  # pyright: ignore[reportMissingModuleSource]
 import os
 import json
-from shapely.geometry import Point, shape # pyright: ignore[reportMissingModuleSource]
+from shapely.geometry import Point, shape  # pyright: ignore[reportMissingModuleSource]
 
 BASE_DIR = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
@@ -21,7 +21,6 @@ gedi = pd.read_csv(gedi_file)
 land_water = pd.read_csv(land_water_file)
 
 print("🔄 Harmonisation des colonnes...")
-# Rename pays/année pour fusion commune
 chirps.rename(columns={"ADM0_NAME": "country", "STR1_YEAR": "year", "CHIRPS_Daily": "rainfall"}, inplace=True)
 smap.rename(columns={"ADM0_NAME": "country", "STR1_YEAR": "year", "mean": "soil_moisture"}, inplace=True)
 faostat.rename(columns={"Area": "country", "Year": "year", "Value": "yield"}, inplace=True)
@@ -58,9 +57,17 @@ df = df.merge(faostat, on=["country", "year"], how="outer")
 df = df.merge(land_agg, on="country", how="left")
 df = df.merge(gedi_agg, on="country", how="left")
 
+print("🧹 Suppression des doublons...")
+# Détection des doublons sur les colonnes clés
+before = len(df)
+df.drop_duplicates(subset=["country", "year"], keep="first", inplace=True)
+after = len(df)
+print(f"🔍 {before - after} doublon(s) supprimé(s).")
+
 print("✅ Fusion terminée !")
 print(df.head())
 
-output_file = os.path.join(BASE_DIR, "fusion_finale.csv")
-df.to_csv(output_file, index=False)
-print(f"💾 Fichier final sauvegardé ici : {output_file}")
+# Export compressé
+output_file = os.path.join(BASE_DIR, "fusion_finale.csv.gz")
+df.to_csv(output_file, index=False, compression="gzip")
+print(f"💾 Fichier final compressé sauvegardé ici : {output_file}")
