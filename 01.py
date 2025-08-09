@@ -2,12 +2,13 @@ import pandas as pd
 import os
 import re
 import gc
+import uuid
 
-# 📁 Dossier contenant les fichiers CSV
 BASE_DIR = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 OUTPUT_FILE = os.path.join(BASE_DIR, "dataset_fusionne_pour_XGBoost.csv.gz")
+TEMP_DIR = os.path.join(BASE_DIR, "temp_fusion")
+os.makedirs(TEMP_DIR, exist_ok=True)
 
-# 📌 Liste des fichiers à fusionner
 FILES = [
     "Production IndicesFAOSTAT_data_en_8-8-2025.csv",
     "Value of Agricultural ProductionFAOSTAT_data_en_8-8-2025.csv",
@@ -32,8 +33,7 @@ def detect_keys(columns):
 
 def clean_year(df, year_col):
     df[year_col] = pd.to_numeric(df[year_col], errors="coerce")
-    df = df[df[year_col].between(1900, 2100)]
-    return df
+    return df[df[year_col].between(1900, 2100)]
 
 def load_and_prepare(file_path):
     try:
@@ -50,40 +50,49 @@ def load_and_prepare(file_path):
     except Exception as e:
         print(f"❌ Erreur dans {file_path} : {e}")
         return None
-def fusion_securisee(df1, df2):
-    """Fusionne deux DataFrames uniquement si les clés se chevauchent."""
+
+def fusion_sur_disque(file1, file2, output_path):
+    df1 = pd.read_csv(file1)
+    df2 = pd.read_csv(file2)
     common_countries = set(df1["country"]).intersection(set(df2["country"]))
     common_years = set(df1["year"]).intersection(set(df2["year"]))
     if not common_countries or not common_years:
-        print("⚠️ Pas de chevauchement sur 'country' ou 'year' — fusion ignorée")
-        return df1
-    return pd.merge(df1, df2, on=["country", "year"], how="outer")
+        print(f"⚠️ Pas de chevauchement entre {os.path.basename(file1)} et {os.path.basename(file2)} — fusion ignorée")
+        df1.to_csv(output_path, index=False)
+        return output_path
+    df_merged = pd.merge(df1, df2, on=["country", "year"], how="outer")
+    df_merged.drop_duplicates(subset=["country", "year"], keep="first", inplace=True)
+    df_merged.to_csv(output_path, index=False)
+    gc.collect()
+    return output_path
 
-# 📂 Lecture et fusion progressive sécurisée
-df_final = None
-for i, filename in enumerate(FILES, start=1):
+# 📂 Étape 1 : sauvegarde des fichiers nettoyés
+temp_files = []
+for filename in FILES:
     path = os.path.join(BASE_DIR, filename)
-    print(f"🔍 Lecture de {filename}")
     df = load_and_prepare(path)
-    if df is None:
-        continue
-
-    if df_final is None:
-        df_final = df
-    else:
-        print(f"🔄 Fusion {i}/{len(FILES)} — avant : {df_final.shape}")
-        df_final = fusion_securisee(df_final, df)
-        print(f"✅ Fusion {i} terminée — après : {df_final.shape}")
+    if df is not None:
+        temp_path = os.path.join(TEMP_DIR, f"{uuid.uuid4().hex}.csv")
+        df.to_csv(temp_path, index=False)
+        temp_files.append(temp_path)
         gc.collect()
 
+# 📂 Étape 2 : fusion progressive sur disque
+while len(temp_files) > 1:
+    f1 = temp_files.pop(0)
+    f2 = temp_files.pop(0)
+    merged_path = os.path.join(TEMP_DIR, f"{uuid.uuid4().hex}_merged.csv")
+    print(f"🔗 Fusion de {os.path.basename(f1)} + {os.path.basename(f2)}")
+    result_path = fusion_sur_disque(f1, f2, merged_path)
+    temp_files.insert(0, result_path)
+    os.remove(f1)
+    os.remove(f2)
 
-# 🧹 Nettoyage final
-if df_final is not None:
-    print("🧹 Suppression des doublons...")
-    df_final.drop_duplicates(subset=["country", "year"], keep="first", inplace=True)
-
-    print("💾 Sauvegarde du fichier fusionné...")
+# 📂 Étape 3 : export final compressé
+if temp_files:
+    df_final = pd.read_csv(temp_files[0])
     df_final.to_csv(OUTPUT_FILE, index=False, compression="gzip")
     print(f"✅ Fichier final prêt pour XGBoost : {OUTPUT_FILE}")
+    os.remove(temp_files[0])
 else:
     print("❌ Aucun fichier n'a pu être fusionné.")
