@@ -298,10 +298,10 @@ def fusion_finale(dataframes):
 def audit_final(df: pd.DataFrame,
                 output_path: str = None,
                 verbose: bool = True,
-                drop_constants: bool = False):
-    if df is None:
-        print("❌ Aucun DataFrame à auditer.")
-        return
+                drop_constants: bool = False) -> str:
+    if df is None or df.empty:
+        print("❌ Aucun DataFrame à auditer ou DataFrame vide.")
+        return None
 
     # ✅ Suppression des colonnes dupliquées
     df = df.loc[:, ~df.columns.duplicated()]
@@ -345,19 +345,16 @@ def audit_final(df: pd.DataFrame,
     full_path = os.path.join(data_dir, output_path)
 
     # 💾 Sauvegarde du dataset
-    print(f"\n💾 Sauvegarde en cours vers : {full_path}")
-    df.to_csv(full_path, index=False, compression="gzip")
-
-    # ✅ Vérification post-export
-    if os.path.exists(full_path):
-        print("✅ Fichier .csv.gz bien généré.")
-    else:
-        print("❌ Fichier introuvable après export.")
-df_final = fusion_finale(dataframes)
-if df_final is not None:
-    print("\n🧮 Conversion en pandas pour entraînement...")
     try:
-        df_final_pd = df_final.persist().compute()
-        audit_final(df_final_pd, drop_constants=True)
+        print(f"\n💾 Sauvegarde en cours vers : {full_path}")
+        df.to_csv(full_path, index=False, compression="gzip")
+        if os.path.exists(full_path):
+            print("✅ Fichier .csv.gz bien généré.")
+            return full_path
+        else:
+            print("❌ Fichier introuvable après export.")
+            return None
     except Exception as e:
-        print(f"❌ Erreur lors de la conversion en pandas : {type(e).__name__} - {e}")
+        print(f"❌ Erreur lors de la sauvegarde : {type(e).__name__} - {e}")
+        return None
+
