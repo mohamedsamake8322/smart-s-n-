@@ -149,7 +149,7 @@ generate_column_report(dataframes)
 data_dir = "outputs"
 os.makedirs(data_dir, exist_ok=True)
 
-def fusion_progressive(dfs, name, verbose=True):
+def fusion_progressive(dfs, name, source_names=None, verbose=True):
     print(f"\n🔗 Fusion progressive du bloc {name}...")
     required_cols = {"ADM0_NAME", "Year"}
     dfs_valid = [df for df in dfs if required_cols.issubset(df.columns)]
@@ -162,7 +162,7 @@ def fusion_progressive(dfs, name, verbose=True):
     total = len(dfs_valid)
 
     for i, df in enumerate(dfs_valid[1:], start=2):
-        source_name = df.attrs.get("source_name", f"{name}_{i}")
+        source_name = source_names.get(i, f"{name}_{i}") if source_names else f"{name}_{i}"
         suffix = f"_{source_name}"
         overlap = set(fused.columns) & set(df.columns) - required_cols
         if overlap:
@@ -173,16 +173,24 @@ def fusion_progressive(dfs, name, verbose=True):
             time.sleep(0.2)
 
     return fused
+
 def fusion_finale(dataframes):
-    # 🧩 Préparer les blocs
+    # 🧩 Préparer les noms de source
     thematic_blocks = ['chirps', 'smap', 'land_cover', 'land_use',
                        'production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance']
-    for k in thematic_blocks:
-        if k in dataframes:
-            dataframes[k].attrs['source_name'] = k
+    source_names = {k: k for k in thematic_blocks if k in dataframes}
 
-    df_climate = fusion_progressive([dataframes[k] for k in ['chirps', 'smap', 'land_cover', 'land_use'] if k in dataframes], "climat")
-    df_production = fusion_progressive([dataframes[k] for k in ['production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance'] if k in dataframes], "production")
+    df_climate = fusion_progressive(
+        [dataframes[k] for k in ['chirps', 'smap', 'land_cover', 'land_use'] if k in dataframes],
+        "climat",
+        source_names=source_names
+    )
+
+    df_production = fusion_progressive(
+        [dataframes[k] for k in ['production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance'] if k in dataframes],
+        "production",
+        source_names=source_names
+    )
 
     if df_climate is None or df_production is None:
         print("❌ Fusion finale impossible : blocs climat ou production manquants")
@@ -214,6 +222,7 @@ def fusion_finale(dataframes):
             print("🔗 Broadcast des variables resources sur tout le dataset")
 
     return df_final
+
 df_final = fusion_finale(dataframes)
 
 if df_final is not None:
