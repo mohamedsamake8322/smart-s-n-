@@ -2,7 +2,7 @@ import dask.dataframe as dd
 import pandas as pd
 import os
 import time
-
+import datetime
 
 # 📁 Dossier des fichiers
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
@@ -146,7 +146,7 @@ def generate_column_report(dataframes, output_path="rapport_colonnes.csv"):
 generate_column_report(dataframes)
 
 # 📁 Répertoire de sortie
-data_dir = "outputs"
+data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 os.makedirs(data_dir, exist_ok=True)
 def fusion_gedi(df_final, dataframes, fusion_log):
     if 'gedi' not in dataframes:
@@ -293,9 +293,12 @@ def fusion_finale(dataframes):
     export_fusion_log(fusion_log)
     return df_final
 # 🧬 Lancement de la fusion
-df_final = fusion_finale(dataframes)
-def audit_final(df: pd.DataFrame, output_path: str = "dataset_rendement_prepared.csv.gz",
-                verbose: bool = True, drop_constants: bool = False):
+
+
+def audit_final(df: pd.DataFrame,
+                output_path: str = None,
+                verbose: bool = True,
+                drop_constants: bool = False):
     if df is None:
         print("❌ Aucun DataFrame à auditer.")
         return
@@ -332,13 +335,25 @@ def audit_final(df: pd.DataFrame, output_path: str = "dataset_rendement_prepared
     else:
         print("\n✅ Aucune colonne constante détectée.")
 
-    # 💾 Sauvegarde du dataset
+    # 🕒 Générer horodatage
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%Hh%M")
+
+    # 💾 Définir le nom du fichier si non fourni
+    if output_path is None:
+        output_path = f"dataset_rendement_{timestamp}.csv.gz"
+
     full_path = os.path.join(data_dir, output_path)
+
+    # 💾 Sauvegarde du dataset
+    print(f"\n💾 Sauvegarde en cours vers : {full_path}")
     df.to_csv(full_path, index=False, compression="gzip")
-    print(f"\n✅ Fichier sauvegardé : {full_path}")
 
-
-# 🧮 Conversion en pandas et audit
+    # ✅ Vérification post-export
+    if os.path.exists(full_path):
+        print("✅ Fichier .csv.gz bien généré.")
+    else:
+        print("❌ Fichier introuvable après export.")
+df_final = fusion_finale(dataframes)
 if df_final is not None:
     print("\n🧮 Conversion en pandas pour entraînement...")
     try:
