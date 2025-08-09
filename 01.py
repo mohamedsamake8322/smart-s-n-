@@ -54,17 +54,34 @@ def load_and_prepare(file_path):
 def fusion_sur_disque(file1, file2, output_path):
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
+
+    # Vérification des clés
     common_countries = set(df1["country"]).intersection(set(df2["country"]))
     common_years = set(df1["year"]).intersection(set(df2["year"]))
     if not common_countries or not common_years:
         print(f"⚠️ Pas de chevauchement entre {os.path.basename(file1)} et {os.path.basename(file2)} — fusion ignorée")
         df1.to_csv(output_path, index=False)
         return output_path
-    df_merged = pd.merge(df1, df2, on=["country", "year"], how="outer")
-    df_merged.drop_duplicates(subset=["country", "year"], keep="first", inplace=True)
-    df_merged.to_csv(output_path, index=False)
-    gc.collect()
-    return output_path
+
+    # Fusion avec suffixes personnalisés
+    try:
+        df_merged = pd.merge(
+            df1,
+            df2,
+            on=["country", "year"],
+            how="outer",
+            suffixes=("_left", "_right")
+        )
+        df_merged.drop_duplicates(subset=["country", "year"], keep="first", inplace=True)
+        df_merged.to_csv(output_path, index=False)
+        gc.collect()
+        return output_path
+    except pd.errors.MergeError as e:
+        print(f"❌ Erreur de fusion : {e}")
+        # Option : garder df1 tel quel si fusion échoue
+        df1.to_csv(output_path, index=False)
+        return output_path
+
 
 # 📂 Étape 1 : sauvegarde des fichiers nettoyés
 temp_files = []
