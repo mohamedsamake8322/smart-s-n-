@@ -1,10 +1,10 @@
 import dask.dataframe as dd
 import os
 
-# 📂 Chemin du dossier contenant les fichiers
+# 📂 Chemin du dossier
 base_path = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
-# 📜 Liste des fichiers CSV à fusionner
+# 📜 Liste des fichiers
 fichiers = [
     "Soil_AllLayers_AllAfrica-002.csv",
     "GEDI_Mangrove_CSV.csv",
@@ -16,22 +16,27 @@ fichiers = [
     "WorldClim_Monthly_Fusion.csv"
 ]
 
-# Colonnes inutiles à supprimer si présentes
+# Colonnes à supprimer si présentes
 colonnes_a_supprimer = ["system:index", ".geo", "collection_id", "extraction_date", "band_name", "layer", "level"]
 
-# Fonction pour charger et préparer un fichier
 def charger_et_preparer(chemin):
-    df = dd.read_csv(chemin, assume_missing=True)  # assume_missing = meilleure compatibilité
+    df = dd.read_csv(chemin, assume_missing=True)
 
     # Suppression colonnes inutiles
     df = df.drop(columns=[c for c in colonnes_a_supprimer if c in df.columns], errors="ignore")
 
-    # Harmonisation du nom des colonnes de l'année
+    # Harmonisation colonne Year
+    col_year = None
     for col in df.columns:
         if "YEAR" in col.upper():
-            df = df.rename(columns={col: "Year"})
+            col_year = col
+            break
+    if col_year:
+        df = df.rename(columns={col_year: "Year"})
+    else:
+        df["Year"] = None  # colonne vide si absente
 
-    # Harmonisation noms colonnes pays/région
+    # Harmonisation noms colonnes ADM0/ADM1
     if "ADM0_NAME" not in df.columns:
         df["ADM0_NAME"] = None
     if "ADM1_NAME" not in df.columns:
@@ -39,7 +44,7 @@ def charger_et_preparer(chemin):
 
     return df
 
-# 📌 Chargement et fusion progressive
+# 📌 Fusion progressive
 df_final = None
 
 for fichier in fichiers:
@@ -50,10 +55,9 @@ for fichier in fichiers:
     if df_final is None:
         df_final = df_temp
     else:
-        # Fusion externe sur les clés
         df_final = df_final.merge(df_temp, on=["ADM0_NAME", "ADM1_NAME", "Year"], how="outer")
 
-# 💾 Sauvegarde finale (Parquet recommandé)
+# 💾 Sauvegarde finale en Parquet (rapide et compact)
 output_path = os.path.join(base_path, "fusion_agronomique_dask.parquet")
 df_final.to_parquet(output_path, engine="pyarrow", compression="snappy")
 
