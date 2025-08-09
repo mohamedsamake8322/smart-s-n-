@@ -179,6 +179,11 @@ def fusion_gedi(df_final, dataframes, fusion_log):
 
     return df_final
 
+def filter_resource_columns(df, keywords):
+    """
+    Retourne les colonnes de df qui contiennent au moins un mot-clé.
+    """
+    return [col for col in df.columns if any(k in col.lower() for k in keywords)]
 
 def fusion_resources(df_final, dataframes, fusion_log):
     if 'resources' not in dataframes:
@@ -187,9 +192,13 @@ def fusion_resources(df_final, dataframes, fusion_log):
     df_resources = dataframes['resources'].loc[:, ~dataframes['resources'].columns.duplicated()]
     fusion_type = None
 
+    keywords = ["aez", "soil", "alt", "slp", "access", "pop", "hydro", "fao", "sq", "si", "GLCS", "pa"]
+    cols_to_keep = filter_resource_columns(df_resources, keywords)
+    df_resources = df_resources[cols_to_keep + ["lat", "lon"]] if {"lat", "lon"}.issubset(df_resources.columns) else df_resources[cols_to_keep]
+
     if {'lat', 'lon'}.issubset(df_final.columns):
         df_final = df_final.merge(df_resources, on=["lat", "lon"], how="left")
-        print("🔗 Fusion spatiale avec resources par lat/lon")
+        print(f"🔗 Fusion spatiale avec resources par lat/lon ({len(cols_to_keep)} colonnes filtrées)")
         fusion_type = "spatiale"
         fusion_key = "lat + lon"
     else:
@@ -197,7 +206,7 @@ def fusion_resources(df_final, dataframes, fusion_log):
         for col in df_resources_broadcast.columns:
             if col not in {"lat", "lon"}:
                 df_final[col] = df_resources_broadcast[col].iloc[0]
-        print("🔗 Broadcast des variables resources sur tout le dataset")
+        print(f"🔗 Broadcast des variables resources ({len(cols_to_keep)} colonnes filtrées)")
         fusion_type = "broadcast"
         fusion_key = "none"
 
@@ -206,10 +215,11 @@ def fusion_resources(df_final, dataframes, fusion_log):
         "type": fusion_type,
         "méthode": "left" if fusion_type == "spatiale" else "broadcast",
         "clé": fusion_key,
-        "colonnes_utiles": [col for col in df_resources.columns if col not in {"lat", "lon"}]
+        "colonnes_utiles": cols_to_keep
     })
 
     return df_final
+
 
 
 def export_fusion_log(fusion_log, path="rapport_fusion.csv"):
