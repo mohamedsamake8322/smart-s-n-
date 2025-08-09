@@ -50,8 +50,16 @@ def load_and_prepare(file_path):
     except Exception as e:
         print(f"❌ Erreur dans {file_path} : {e}")
         return None
+def fusion_securisee(df1, df2):
+    """Fusionne deux DataFrames uniquement si les clés se chevauchent."""
+    common_countries = set(df1["country"]).intersection(set(df2["country"]))
+    common_years = set(df1["year"]).intersection(set(df2["year"]))
+    if not common_countries or not common_years:
+        print("⚠️ Pas de chevauchement sur 'country' ou 'year' — fusion ignorée")
+        return df1
+    return pd.merge(df1, df2, on=["country", "year"], how="outer")
 
-# 📂 Lecture et fusion progressive
+# 📂 Lecture et fusion progressive sécurisée
 df_final = None
 for i, filename in enumerate(FILES, start=1):
     path = os.path.join(BASE_DIR, filename)
@@ -64,9 +72,10 @@ for i, filename in enumerate(FILES, start=1):
         df_final = df
     else:
         print(f"🔄 Fusion {i}/{len(FILES)} — avant : {df_final.shape}")
-        df_final = pd.merge(df_final, df, on=["country", "year"], how="outer")
+        df_final = fusion_securisee(df_final, df)
         print(f"✅ Fusion {i} terminée — après : {df_final.shape}")
-        gc.collect()  # 🧹 Libère la mémoire
+        gc.collect()
+
 
 # 🧹 Nettoyage final
 if df_final is not None:
