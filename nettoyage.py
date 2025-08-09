@@ -377,13 +377,29 @@ df_final = fusion_finale(dataframes)
 if df_final is not None:
     print("\n🧮 Conversion en pandas pour entraînement...")
     try:
+        # 🔄 Conversion Dask → Pandas
         df_final_pd = df_final.persist().compute()
-        print(f"📐 Dimensions du DataFrame final (Pandas) : {df_final_pd.shape}")
-        export_path = audit_final(df_final_pd, drop_constants=True)
-        if export_path:
-            print(f"\n📁 ✅ Fichier final disponible ici : {export_path}")
+
+        # 📐 Vérification des dimensions
+        n_rows, n_cols = df_final_pd.shape
+        print(f"📐 Dimensions du DataFrame final (Pandas) : {n_rows:,} lignes, {n_cols} colonnes")
+
+        # 📋 Aperçu des colonnes
+        print(f"📋 Colonnes : {df_final_pd.columns.tolist()[:10]}")
+
+        # 🔍 Aperçu des données
+        print(f"🔍 Aperçu :\n{df_final_pd.head(3)}")
+
+        # ⚠️ Vérification si vide
+        if n_rows == 0:
+            print("⚠️ Le DataFrame final est vide — aucune donnée à exporter.")
         else:
-            print("⚠️ Export échoué malgré la conversion.")
+            # 💾 Audit et export
+            export_path = audit_final(df_final_pd, drop_constants=True)
+            if export_path:
+                print(f"\n📁 ✅ Fichier final disponible ici : {export_path}")
+            else:
+                print("⚠️ Export échoué malgré la conversion.")
     except Exception as e:
         print(f"❌ Erreur lors de la conversion en pandas : {type(e).__name__} - {e}")
 else:
