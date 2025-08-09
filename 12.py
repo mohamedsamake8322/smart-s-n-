@@ -13,12 +13,13 @@ df_resources = pd.read_csv(file_path)
 geometry = [Point(xy) for xy in zip(df_resources["lon"], df_resources["lat"])]
 gdf_resources = gpd.GeoDataFrame(df_resources, geometry=geometry, crs="EPSG:4326")
 
-# 🔹 Étape 4 : Charger les frontières des pays (Natural Earth)
-world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
+# 🔹 Étape 4 : Charger les frontières des pays (Natural Earth depuis ton dossier local)
+world_shp_path = r"C:\plateforme-agricole-complete-v2\data\Natural Earth 110m Cultural Vectors\ne_110m_admin_0_countries.shp"
+world = gpd.read_file(world_shp_path)
 
 # 🔹 Étape 5 : Spatial join pour associer chaque point à un pays
-gdf_joined = gpd.sjoin(gdf_resources, world[["geometry", "name"]], how="left", predicate="intersects")
-gdf_joined.rename(columns={"name": "country"}, inplace=True)
+gdf_joined = gpd.sjoin(gdf_resources, world[["geometry", "NAME"]], how="left", predicate="intersects")
+gdf_joined.rename(columns={"NAME": "country"}, inplace=True)
 
 # 🔹 Étape 6 : Agréger les données par pays
 df_aggregated = gdf_joined.groupby("country").mean(numeric_only=True).reset_index()
