@@ -111,3 +111,14 @@ else:
 output_file = os.path.join(BASE_DIR, "fusion_finale.csv.gz")
 df.to_csv(output_file, index=False, compression="gzip")
 print(f"💾 Fichier final compressé sauvegardé ici : {output_file}")
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+pivot = df.pivot_table(index="country", columns="year", values="rainfall", aggfunc="count", fill_value=0)
+plt.figure(figsize=(12, 8))
+sns.heatmap(pivot, cmap="YlGnBu", linewidths=0.5)
+plt.title("📊 Couverture des données par pays et année")
+plt.xlabel("Année")
+plt.ylabel("Pays")
+plt.tight_layout()
+plt.show()
