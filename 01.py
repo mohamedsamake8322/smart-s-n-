@@ -63,6 +63,12 @@ def fusion_sur_disque(file1, file2, output_path):
         df1.to_csv(output_path, index=False)
         return output_path
 
+    # Supprimer les colonnes dupliquées identiques
+    overlapping = set(df1.columns).intersection(set(df2.columns)) - {"country", "year"}
+    for col in overlapping:
+        if df1[col].equals(df2[col]):
+            df2.drop(columns=[col], inplace=True)
+
     # Fusion avec suffixes personnalisés
     try:
         df_merged = pd.merge(
@@ -78,10 +84,8 @@ def fusion_sur_disque(file1, file2, output_path):
         return output_path
     except pd.errors.MergeError as e:
         print(f"❌ Erreur de fusion : {e}")
-        # Option : garder df1 tel quel si fusion échoue
         df1.to_csv(output_path, index=False)
         return output_path
-
 
 # 📂 Étape 1 : sauvegarde des fichiers nettoyés
 temp_files = []
