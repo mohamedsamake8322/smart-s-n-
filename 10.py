@@ -1,24 +1,13 @@
 import pandas as pd
 import os
+import gzip
 
 # 📁 Dossier des fichiers
 data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
+output_path = os.path.join(data_dir, "dataset_rendement_pandas.csv.gz")
 
-# 📦 Liste des fichiers à charger
-files = {
-    "chirps": "CHIRPS_DAILY_PENTAD.csv",
-    "nutrient_balance": "Cropland Nutrient BalanceFAOSTAT_data_en_8-8-2025.csv",
-    "trade_matrix": "Detailed trade matrix (fertilizers)FAOSTAT_data_en_8-8-2025.csv",
-    "fert_nutrient": "FertilizersbyNutrientFAOSTAT_data_en_8-8-2025.csv",
-    "fert_product": "FertilizersbyProductFAOSTAT_data_en_7-22-2025.csv",
-    "gedi": "GEDI_Mangrove_CSV.csv",
-    "land_cover": "Land CoverFAOSTAT_data_en_8-8-2025.csv",
-    "land_use": "Land UseFAOSTAT_data_en_8-8-2025.csv",
-    "smap": "SMAP_SoilMoisture.csv",
-    "production": "ProductionIndicesFAOSTAT_data_en_7-22-2025.csv",
-    "manure": "Livestock ManureFAOSTAT_data_en_8-8-2025.csv",
-    "resources": "X_land_water_cleanedRessources en terres et en eau.csv"
-}
+# 📛 Fichiers ignorés
+ignored_files = []
 
 # 🌍 Mapping pays
 country_mapping = {
@@ -40,8 +29,21 @@ country_mapping = {
     "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
 }
 
-# 📛 Fichiers ignorés
-ignored_files = []
+# 📦 Liste des fichiers à charger
+files = {
+    "chirps": "CHIRPS_DAILY_PENTAD.csv",
+    "nutrient_balance": "Cropland Nutrient BalanceFAOSTAT_data_en_8-8-2025.csv",
+    "trade_matrix": "Detailed trade matrix (fertilizers)FAOSTAT_data_en_8-8-2025.csv",
+    "fert_nutrient": "FertilizersbyNutrientFAOSTAT_data_en_8-8-2025.csv",
+    "fert_product": "FertilizersbyProductFAOSTAT_data_en_7-22-2025.csv",
+    "gedi": "GEDI_Mangrove_CSV.csv",
+    "land_cover": "Land CoverFAOSTAT_data_en_8-8-2025.csv",
+    "land_use": "Land UseFAOSTAT_data_en_8-8-2025.csv",
+    "smap": "SMAP_SoilMoisture.csv",
+    "production": "ProductionIndicesFAOSTAT_data_en_7-22-2025.csv",
+    "manure": "Livestock ManureFAOSTAT_data_en_8-8-2025.csv",
+    "resources": "X_land_water_cleanedRessources en terres et en eau.csv"
+}
 
 # 🧼 Nettoyage personnalisé
 def clean_custom_df(df, name):
@@ -74,8 +76,6 @@ def clean_custom_df(df, name):
     if "Year" in df.columns:
         df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
 
-    print(f"📋 Colonnes dans {name} : {list(df.columns)}")
-
     if "ADM0_NAME" not in df.columns or "Year" not in df.columns:
         ignored_files.append(name)
         print(f"⚠️ {name} ignoré pour fusion thématique")
@@ -96,23 +96,51 @@ for key, filename in files.items():
 
 # 🔗 Fusion thématique
 df_base = dataframes.get("chirps")
-df_climat = df_base.merge(dataframes.get("smap"), on=["ADM0_NAME", "Year"], how="outer")
-df_climat_prod = df_climat.merge(dataframes.get("production"), on=["ADM0_NAME", "Year"], how="outer")
+df_smap = dataframes.get("smap")
+df_production = dataframes.get("production")
 
-# 🔗 Fusion latérale
-for key in ["gedi", "resources"]:
-    if key in dataframes:
-        df_climat_prod = df_climat_prod.merge(dataframes[key], on=["ADM0_NAME"], how="left")
+if df_base is None or df_smap is None or df_production is None:
+    raise ValueError("❌ Fichiers critiques manquants : chirps, smap ou production")
 
-# 📦 Fusion finale avec les autres fichiers thématiques
+df_climat = df_base.merge(df_smap, on=["ADM0_NAME", "Year"], how="outer")
+df_climat_prod = df_climat.merge(df_production, on=["ADM0_NAME", "Year"], how="outer")
+print(f"🔗 Fusion climat + production → {df_climat_prod.shape}")
+
+# 🔗 Fusion latérale GEDI
+if "gedi" in dataframes:
+    df_climat_prod = df_climat_prod.merge(dataframes["gedi"], on="ADM0_NAME", how="left")
+    print(f"🔗 Fusion GEDI → {df_climat_prod.shape}")
+
+# 🔗 Fusion latérale optimisée pour resources
+if "resources" in dataframes:
+    df_resources = dataframes["resources"]
+    df_resources = df_resources.loc[:, ~df_resources.columns.duplicated()]
+    df_resources_reduced = df_resources.groupby("ADM0_NAME").mean(numeric_only=True).reset_index()
+    df_climat_prod = df_climat_prod.merge(df_resources_reduced, on="ADM0_NAME", how="left")
+    print(f"🔗 Fusion resources (réduite) → {df_climat_prod.shape}")
+
+# 🔗 Fusion finale avec les autres fichiers thématiques
 for key, df in dataframes.items():
     if key not in ["chirps", "smap", "production", "gedi", "resources"] and key not in ignored_files:
-        df_climat_prod = df_climat_prod.merge(df, on=["ADM0_NAME", "Year"], how="outer")
+        try:
+            df_climat_prod = df_climat_prod.merge(df, on=["ADM0_NAME", "Year"], how="outer")
+            print(f"🔗 Fusion {key} → {df_climat_prod.shape}")
+        except Exception as e:
+            print(f"❌ Erreur fusion {key} : {e}")
 
 # 📐 Dimensions finales
+n_rows = len(df_climat_prod)
 print(f"📐 Dimensions du DataFrame final : {df_climat_prod.shape}")
 
-# 💾 Sauvegarde
-output_path = os.path.join(data_dir, "dataset_rendement_pandas.csv")
-df_climat_prod.to_csv(output_path, index=False)
-print(f"✅ Dataset fusionné sauvegardé : {output_path}")
+# 💾 Sauvegarde compressée avec suivi de progression
+print(f"📦 Export en cours vers : {output_path}")
+chunk_size = 10000
+with gzip.open(output_path, "wt", encoding="utf-8") as gzfile:
+    for i in range(0, n_rows, chunk_size):
+        chunk = df_climat_prod.iloc[i:i+chunk_size]
+        header = (i == 0)
+        chunk.to_csv(gzfile, index=False, header=header, mode="a")
+        progress = min(100, int((i + chunk_size) / n_rows * 100))
+        print(f"🔄 Progression export : {progress}%")
+
+print(f"✅ Export terminé : {output_path}")
