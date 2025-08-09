@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import re
-from functools import reduce
+import gc
 
 # 📁 Dossier contenant les fichiers CSV
 BASE_DIR = r"C:\plateforme-agricole-complete-v2\SmartSènè"
@@ -21,58 +21,60 @@ FILES = [
     "Land CoverFAOSTAT_data_en_8-8-2025.csv",
     "Land UseFAOSTAT_data_en_8-8-2025.csv",
     "CropsandlivestockproductsFAOSTAT_data_en_7-22-2025.csv",
-    "GEDI_Mangrove_CSV.csv",
     "CHIRPS_DAILY_PENTAD.csv",
     "SMAP_SoilMoisture.csv",
-    "X_dataset_enriched Écarts de rendement et de production_Rendements et production réels.csv"
 ]
 
 def detect_keys(columns):
-    """Détecte les colonnes 'country' et 'year' même si elles ont des noms différents."""
     country = next((c for c in columns if re.search(r"country|area|adm0|region", c, re.IGNORECASE)), None)
     year = next((c for c in columns if re.search(r"year|annee|str1_year", c, re.IGNORECASE)), None)
     return country, year
 
 def clean_year(df, year_col):
-    """Nettoie les années invalides et convertit en entier."""
     df[year_col] = pd.to_numeric(df[year_col], errors="coerce")
     df = df[df[year_col].between(1900, 2100)]
     return df
 
 def load_and_prepare(file_path):
-    """Charge un fichier CSV et prépare les colonnes clés."""
     try:
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, low_memory=False)
         country_col, year_col = detect_keys(df.columns)
         if not country_col or not year_col:
-            print(f"⚠️ Colonnes clés manquantes dans {os.path.basename(file_path)}")
+            print(f"⚠️ Colonnes clés manquantes dans {os.path.basename(file_path)} — ignoré")
             return None
         df.rename(columns={country_col: "country", year_col: "year"}, inplace=True)
         df = clean_year(df, "year")
         df = df.dropna(subset=["country", "year"])
+        print(f"✅ {os.path.basename(file_path)} → {df.shape[0]} lignes, {df.shape[1]} colonnes")
         return df
     except Exception as e:
         print(f"❌ Erreur dans {file_path} : {e}")
         return None
 
-# 📂 Lecture et préparation des fichiers
-dataframes = []
-for filename in FILES:
+# 📂 Lecture et fusion progressive
+df_final = None
+for i, filename in enumerate(FILES, start=1):
     path = os.path.join(BASE_DIR, filename)
     print(f"🔍 Lecture de {filename}")
     df = load_and_prepare(path)
-    if df is not None:
-        dataframes.append(df)
+    if df is None:
+        continue
 
-# 🔗 Fusion intelligente sur 'country' et 'year'
-print("🔗 Fusion des fichiers...")
-df_final = reduce(lambda left, right: pd.merge(left, right, on=["country", "year"], how="outer"), dataframes)
+    if df_final is None:
+        df_final = df
+    else:
+        print(f"🔄 Fusion {i}/{len(FILES)} — avant : {df_final.shape}")
+        df_final = pd.merge(df_final, df, on=["country", "year"], how="outer")
+        print(f"✅ Fusion {i} terminée — après : {df_final.shape}")
+        gc.collect()  # 🧹 Libère la mémoire
 
 # 🧹 Nettoyage final
-print("🧹 Suppression des doublons...")
-df_final.drop_duplicates(subset=["country", "year"], keep="first", inplace=True)
+if df_final is not None:
+    print("🧹 Suppression des doublons...")
+    df_final.drop_duplicates(subset=["country", "year"], keep="first", inplace=True)
 
-# 💾 Exportation
-print("💾 Sauvegarde du fichier fusionné...")
-df_final.to_csv(OUTPUT_FILE, index=False, compression="gzip")
-print(f"✅ Fichier final prêt pour XGBoost : {OUTPUT_FILE}")
+    print("💾 Sauvegarde du fichier fusionné...")
+    df_final.to_csv(OUTPUT_FILE, index=False, compression="gzip")
+    print(f"✅ Fichier final prêt pour XGBoost : {OUTPUT_FILE}")
+else:
+    print("❌ Aucun fichier n'a pu être fusionné.")
