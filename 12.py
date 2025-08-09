@@ -1,5 +1,5 @@
 import pandas as pd
-import geopandas as gpd
+import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
 import os
 
 # === CONFIGURATION ===
@@ -40,8 +40,11 @@ if "country" not in gedi.columns:
 
 # === 3. Spatial join pour land_water et gedi ===
 print("🌍 Récupération contours pays...")
-world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))[["name", "geometry"]]
-world.rename(columns={"name": "country"}, inplace=True)
+
+world_shp_path = r"C:\plateforme-agricole-complete-v2\data\Natural Earth 110m Cultural Vectors\ne_110m_admin_0_countries.shp"
+world = gpd.read_file(world_shp_path)[["NAME", "geometry"]]
+world.rename(columns={"NAME": "country"}, inplace=True)
+
 
 # Land_water
 print("🗺 Traitement Land/Water...")
