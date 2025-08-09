@@ -1,52 +1,73 @@
 import pandas as pd
+import geopandas as gpd  # pyright: ignore[reportMissingModuleSource]
+import os
+import json
+from shapely.geometry import Point, shape  # pyright: ignore[reportMissingModuleSource]
 
-file_path = r"C:\plateforme-agricole-complete-v2\SmartSènè\fusion_finale_clean_dedup.csv"
+BASE_DIR = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
-print("📥 Chargement du fichier nettoyé...")
-df = pd.read_csv(file_path)
+# Fichiers
+chirps_file = os.path.join(BASE_DIR, "CHIRPS_DAILY_PENTAD.csv")
+smap_file = os.path.join(BASE_DIR, "SMAP_SoilMoisture.csv")
+faostat_file = os.path.join(BASE_DIR, "ProductionIndicesFAOSTAT_data_en_7-22-2025.csv")
+gedi_file = os.path.join(BASE_DIR, "GEDI_Mangrove_CSV.csv")
+land_water_file = os.path.join(BASE_DIR, "X_land_water_cleanedRessources en terres et en eau.csv")
 
-print(f"\n📊 Dimensions du dataset : {df.shape}")
+print("📥 Lecture des fichiers...")
+chirps = pd.read_csv(chirps_file)
+smap = pd.read_csv(smap_file)
+faostat = pd.read_csv(faostat_file)
+gedi = pd.read_csv(gedi_file)
+land_water = pd.read_csv(land_water_file)
 
-# 1. Doublons sur (country, year)
-print("\n🔎 Vérification des doublons sur (country, year)...")
-dups = df.duplicated(subset=["country", "year"])
-print(f"Nombre de doublons détectés : {dups.sum()}")
-if dups.sum() > 0:
-    print("Exemples de doublons :")
-    print(df[dups].head())
+print("🔄 Harmonisation des colonnes...")
+chirps.rename(columns={"ADM0_NAME": "country", "STR1_YEAR": "year", "CHIRPS_Daily": "rainfall"}, inplace=True)
+smap.rename(columns={"ADM0_NAME": "country", "STR1_YEAR": "year", "mean": "soil_moisture"}, inplace=True)
+faostat.rename(columns={"Area": "country", "Year": "year", "Value": "yield"}, inplace=True)
+gedi.rename(columns={"ADM0_NAME": "country"}, inplace=True)
 
-# 2. Vérification années aberrantes
-print("\n🔎 Vérification des années aberrantes (hors 1900-2100)...")
-aberrant_years = df[(df["year"] < 1900) | (df["year"] > 2100)]
-print(f"Nombre de lignes avec années aberrantes : {len(aberrant_years)}")
-if len(aberrant_years) > 0:
-    print(aberrant_years[["country", "year"]].drop_duplicates())
+print("🌍 Récupération contours pays...")
+world_shp_path = r"C:\plateforme-agricole-complete-v2\data\Natural Earth 110m Cultural Vectors\ne_110m_admin_0_countries.shp"
+world = gpd.read_file(world_shp_path)[["NAME", "geometry"]]
+world.rename(columns={"NAME": "country"}, inplace=True)
 
-# 3. Statistiques descriptives variables clés
-print("\n📊 Statistiques descriptives variables clés :")
-for col in ["rainfall", "soil_moisture"]:
-    if col in df.columns:
-        print(f"\nVariable : {col}")
-        print(df[col].describe())
+print("🗺 Traitement Land/Water...")
+gdf_land = gpd.GeoDataFrame(land_water, geometry=gpd.points_from_xy(land_water.lon, land_water.lat), crs="EPSG:4326")
+gdf_land = gpd.sjoin(gdf_land, world, how="left", predicate="within")
+land_agg = gdf_land.groupby("country").mean(numeric_only=True).reset_index()
 
-# 4. Vérification valeurs négatives (ex: rainfall)
-print("\n🔎 Vérification des valeurs négatives (rainfall)...")
-if "rainfall" in df.columns:
-    negs = df[df["rainfall"] < 0]
-    print(f"Nombre de valeurs négatives dans rainfall : {len(negs)}")
-    if len(negs) > 0:
-        print(negs[["country", "year", "rainfall"]])
+print("🗺 Traitement GEDI...")
 
-# 5. Valeurs manquantes par colonne
-print("\n🔍 Nombre de valeurs manquantes par colonne :")
-print(df.isna().sum())
+def geojson_to_geom(geojson_str):
+    try:
+        geojson_dict = json.loads(geojson_str)
+        return shape(geojson_dict)
+    except Exception as e:
+        print(f"Erreur conversion GeoJSON: {e}")
+        return None
 
-# 6. Distribution lignes par pays
-print("\n🌍 Nombre de lignes par pays :")
-print(df["country"].value_counts())
+gedi["geometry"] = gedi[".geo"].apply(geojson_to_geom)
+gdf_gedi = gpd.GeoDataFrame(gedi, geometry="geometry", crs="EPSG:4326")
+gdf_gedi = gdf_gedi.drop(columns=[".geo", "system:index"], errors="ignore")
+gedi_agg = gdf_gedi.groupby("country").mean(numeric_only=True).reset_index()
 
-# 7. Distribution lignes par année
-print("\n📆 Nombre de lignes par année :")
-print(df["year"].value_counts().sort_index())
+print("🔗 Fusion des datasets...")
+df = chirps.merge(smap, on=["country", "year"], how="outer", suffixes=("_chirps", "_smap"))
+df = df.merge(faostat, on=["country", "year"], how="outer")
+df = df.merge(land_agg, on="country", how="left")
+df = df.merge(gedi_agg, on="country", how="left")
 
-print("\n✅ Rapport de validation terminé.")
+print("🧹 Suppression des doublons...")
+# Détection des doublons sur les colonnes clés
+before = len(df)
+df.drop_duplicates(subset=["country", "year"], keep="first", inplace=True)
+after = len(df)
+print(f"🔍 {before - after} doublon(s) supprimé(s).")
+
+print("✅ Fusion terminée !")
+print(df.head())
+
+# Export compressé
+output_file = os.path.join(BASE_DIR, "fusion_finale.csv.gz")
+df.to_csv(output_file, index=False, compression="gzip")
+print(f"💾 Fichier final compressé sauvegardé ici : {output_file}")
