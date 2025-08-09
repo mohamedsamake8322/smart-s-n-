@@ -1,10 +1,10 @@
-import pandas as pd
+import dask.dataframe as dd
 import os
 
 # 📂 Chemin du dossier contenant les fichiers
 base_path = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
-# 📜 Liste des fichiers CSV à analyser
+# 📜 Liste des fichiers CSV à fusionner
 fichiers = [
     "Soil_AllLayers_AllAfrica-002.csv",
     "GEDI_Mangrove_CSV.csv",
@@ -16,23 +16,45 @@ fichiers = [
     "WorldClim_Monthly_Fusion.csv"
 ]
 
-colonnes_communes = None
+# Colonnes inutiles à supprimer si présentes
+colonnes_a_supprimer = ["system:index", ".geo", "collection_id", "extraction_date", "band_name", "layer", "level"]
+
+# Fonction pour charger et préparer un fichier
+def charger_et_preparer(chemin):
+    df = dd.read_csv(chemin, assume_missing=True)  # assume_missing = meilleure compatibilité
+
+    # Suppression colonnes inutiles
+    df = df.drop(columns=[c for c in colonnes_a_supprimer if c in df.columns], errors="ignore")
+
+    # Harmonisation du nom des colonnes de l'année
+    for col in df.columns:
+        if "YEAR" in col.upper():
+            df = df.rename(columns={col: "Year"})
+
+    # Harmonisation noms colonnes pays/région
+    if "ADM0_NAME" not in df.columns:
+        df["ADM0_NAME"] = None
+    if "ADM1_NAME" not in df.columns:
+        df["ADM1_NAME"] = None
+
+    return df
+
+# 📌 Chargement et fusion progressive
+df_final = None
 
 for fichier in fichiers:
-    chemin = os.path.join(base_path, fichier)
-    try:
-        df = pd.read_csv(chemin)
-        print(f"\n📄 Fichier : {fichier}")
-        print(f"   Dimensions : {df.shape[0]} lignes × {df.shape[1]} colonnes")
-        print(f"   Colonnes : {list(df.columns[:10])}...")  # On affiche les 10 premières
-        print(f"   Types :\n{df.dtypes.head(5)}")
+    chemin_fichier = os.path.join(base_path, fichier)
+    print(f"📥 Traitement : {fichier}")
+    df_temp = charger_et_preparer(chemin_fichier)
 
-        # Comparaison colonnes communes
-        if colonnes_communes is None:
-            colonnes_communes = set(df.columns)
-        else:
-            colonnes_communes &= set(df.columns)
-    except Exception as e:
-        print(f"❌ Erreur lecture {fichier} : {e}")
+    if df_final is None:
+        df_final = df_temp
+    else:
+        # Fusion externe sur les clés
+        df_final = df_final.merge(df_temp, on=["ADM0_NAME", "ADM1_NAME", "Year"], how="outer")
 
-print("\n🔍 Colonnes communes à tous les fichiers :", colonnes_communes if colonnes_communes else "Aucune")
+# 💾 Sauvegarde finale (Parquet recommandé)
+output_path = os.path.join(base_path, "fusion_agronomique_dask.parquet")
+df_final.to_parquet(output_path, engine="pyarrow", compression="snappy")
+
+print(f"✅ Fusion terminée. Fichier sauvegardé : {output_path}")
