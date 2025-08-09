@@ -306,6 +306,9 @@ def fusion_finale(dataframes):
         print(f"⚠️ Impossible d’afficher les dimensions Dask : {e}")
 
     return df_final
+# 🧬 Lancement de la fusion
+
+
 def audit_final(df: pd.DataFrame,
                 output_path: str = None,
                 verbose: bool = True,
@@ -348,8 +351,11 @@ def audit_final(df: pd.DataFrame,
 
     # 🕒 Générer horodatage
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%Hh%M")
+
+    # 💾 Définir le nom du fichier si non fourni
     if output_path is None:
         output_path = f"dataset_rendement_{timestamp}.csv.gz"
+
     full_path = os.path.join(data_dir, output_path)
 
     # 💾 Sauvegarde du dataset
@@ -365,3 +371,20 @@ def audit_final(df: pd.DataFrame,
     except Exception as e:
         print(f"❌ Erreur lors de la sauvegarde : {type(e).__name__} - {e}")
         return None
+# 🧬 Lancement de la fusion
+df_final = fusion_finale(dataframes)
+
+if df_final is not None:
+    print("\n🧮 Conversion en pandas pour entraînement...")
+    try:
+        df_final_pd = df_final.persist().compute()
+        print(f"📐 Dimensions du DataFrame final (Pandas) : {df_final_pd.shape}")
+        export_path = audit_final(df_final_pd, drop_constants=True)
+        if export_path:
+            print(f"\n📁 ✅ Fichier final disponible ici : {export_path}")
+        else:
+            print("⚠️ Export échoué malgré la conversion.")
+    except Exception as e:
+        print(f"❌ Erreur lors de la conversion en pandas : {type(e).__name__} - {e}")
+else:
+    print("❌ Fusion finale échouée — aucun DataFrame à convertir.")
