@@ -1,6 +1,6 @@
 import pandas as pd
-import geopandas as gpd
-from shapely.geometry import Point
+import geopandas as gpd # type: ignore
+from shapely.geometry import Point # type: ignore
 import os
 
 # 📁 Dossier principal
