@@ -357,4 +357,18 @@ def audit_final(df: pd.DataFrame,
     except Exception as e:
         print(f"❌ Erreur lors de la sauvegarde : {type(e).__name__} - {e}")
         return None
+df_final = fusion_finale(dataframes)
+if df_final is not None:
+    print("\n🧮 Conversion en pandas pour entraînement...")
+    try:
+        df_final_pd = df_final.persist().compute()
+        export_path = audit_final(df_final_pd, drop_constants=True)
+        if export_path:
+            print(f"\n📁 Fichier final disponible ici : {export_path}")
+        else:
+            print("⚠️ Export échoué malgré la conversion.")
+    except Exception as e:
+        print(f"❌ Erreur lors de la conversion en pandas : {type(e).__name__} - {e}")
+else:
+    print("❌ Fusion finale échouée — aucun DataFrame à convertir.")
 
