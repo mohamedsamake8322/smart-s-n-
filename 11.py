@@ -1,113 +1,90 @@
 import pandas as pd
-import dask.dataframe as dd
 import os
 
-# 📁 Dossier des fichiers
-data_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè"
-output_path = os.path.join(data_dir, "dataset_rendement_pandas.csv.gz")
+base_path = r"C:\plateforme-agricole-complete-v2\SmartSènè"
 
-# 📛 Fichiers ignorés
-ignored_files = []
+def check_fusion():
+    print("📥 Chargement du fichier fusionné...")
+    df = pd.read_csv(os.path.join(base_path, "fusion_finale.csv"))
+    print("📊 Dimensions du dataset fusionné :", df.shape)
 
-# 🌍 Mapping pays
-country_mapping = {
-    "Algérie": "Algeria", "Angola": "Angola", "Bénin": "Benin", "Botswana": "Botswana",
-    "Burkina Faso": "Burkina Faso", "Burundi": "Burundi", "Cabo Verde": "Cape Verde",
-    "Cameroun": "Cameroon", "République centrafricaine": "CAR", "Tchad": "Chad",
-    "Comores": "Comoros", "République du Congo": "Congo", "République démocratique du Congo": "DR Congo",
-    "Côte d'Ivoire": "Ivory Coast", "Djibouti": "Djibouti", "Égypte": "Egypt",
-    "Guinée équatoriale": "Equatorial Guinea", "Érythrée": "Eritrea", "Eswatini": "Swaziland",
-    "Éthiopie": "Ethiopia", "Gabon": "Gabon", "Gambie": "The Gambia", "Ghana": "Ghana",
-    "Guinée": "Guinea", "Guinée-Bissau": "Guinea Bissau", "Kenya": "Kenya", "Lesotho": "Lesotho",
-    "Libéria": "Liberia", "Libye": "Libya", "Madagascar": "Madagascar", "Malawi": "Malawi",
-    "Mali": "Mali", "Mauritanie": "Mauritania", "Maurice": "Mauritius", "Maroc": "Morocco",
-    "Mozambique": "Mozambique", "Namibie": "Namibia", "Niger": "Niger", "Nigéria": "Nigeria",
-    "Rwanda": "Rwanda", "Sao Tomé-et-Principe": "Sao Tome and Principe", "Sénégal": "Senegal",
-    "Seychelles": "Seychelles", "Sierra Leone": "Sierra Leone", "Somalie": "Somalia",
-    "Afrique du Sud": "South Africa", "Soudan du Sud": "South Sudan", "Soudan": "Sudan",
-    "Tanzanie": "Tanzania", "Togo": "Togo", "Tunisie": "Tunisia", "Ouganda": "Uganda",
-    "Zambie": "Zambia", "Zimbabwe": "Zimbabwe",
-}
+    keys = ["country", "year"]
+    unique_keys = df[keys].drop_duplicates()
+    print(f"Nombre de couples (pays, année) uniques : {len(unique_keys)}")
 
-# 📦 Liste des fichiers à charger
-files = {
-    "chirps": "CHIRPS_DAILY_PENTAD.csv",
-    "smap": "SMAP_SoilMoisture.csv",
-    "production": "ProductionIndicesFAOSTAT_data_en_7-22-2025.csv",
-    "gedi": "GEDI_Mangrove_CSV.csv",
-    "resources": "X_land_water_cleanedRessources en terres et en eau.csv"
-}
+    na_total = df.isna().sum()
+    print("\n🔍 Nombre de valeurs manquantes par colonne :")
+    print(na_total[na_total > 0].sort_values(ascending=False))
 
-# 🧼 Nettoyage personnalisé
-def clean_custom_df(df, name):
-    df = df.loc[:, ~df.columns.duplicated()]
-    df.columns = df.columns.str.strip().str.replace(r'\s+', '_', regex=True)
+    # Exemple check clé source CHIRPS
+    print("\n📥 Chargement fichier CHIRPS...")
+    chirps = pd.read_csv(os.path.join(base_path, "CHIRPS_DAILY_PENTAD.csv"))
+    # Harmonisation colonnes clés pour comparaison
+    chirps = chirps.rename(columns={"ADM0_NAME": "country", "STR1_YEAR": "year"})
+    chirps_keys = chirps[keys].drop_duplicates()
 
-    rename_map = {
-        "chirps": {"EXP1_YEAR": "Year"},
-        "smap": {"EXP1_YEAR": "Year"},
-        "production": {"Area": "ADM0_NAME"}
-    }
+    missing_in_fusion = chirps_keys.merge(unique_keys, on=keys, how="left", indicator=True)
+    missing_count = (missing_in_fusion["_merge"] == "left_only").sum()
+    print(f"Clés CHIRPS absentes dans fusion : {missing_count}")
 
-    if name in rename_map:
-        df = df.rename(columns=rename_map[name])
+    # Ici tu peux ajouter pareil pour SMAP, FAOSTAT, GEDI etc.
 
-    if "ADM0_NAME" in df.columns:
-        df["ADM0_NAME"] = df["ADM0_NAME"].map(country_mapping)
+    print("\n🔎 Exemple lignes avec NaN :")
+    print(df[df.isna().any(axis=1)].head())
 
-    if "Year" in df.columns:
-        df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
+def clean_columns():
+    df = pd.read_csv(os.path.join(base_path, "fusion_finale.csv"))
+    cols_to_drop = [col for col in df.columns if
+                    col.startswith("system:index") or
+                    col.endswith("_right") or
+                    col in ["geometry", ".geo", "index_right"]]
 
-    if "ADM0_NAME" not in df.columns or "Year" not in df.columns:
-        ignored_files.append(name)
-        print(f"⚠️ {name} ignoré pour fusion thématique")
+    print(f"Suppression de {len(cols_to_drop)} colonnes inutiles.")
+    df_clean = df.drop(columns=cols_to_drop)
 
-    return df
+    output_path = os.path.join(base_path, "fusion_finale_clean.csv")
+    df_clean.to_csv(output_path, index=False)
+    print(f"✅ Nettoyage terminé. Fichier sauvegardé : {output_path}")
 
-# 📊 Chargement des fichiers
-dataframes = {}
-for key, filename in files.items():
-    path = os.path.join(data_dir, filename)
-    try:
-        df = pd.read_csv(path, low_memory=False)
-        df_clean = clean_custom_df(df, key)
-        dataframes[key] = df_clean
-        print(f"✅ {key} chargé avec {len(df_clean):,} lignes")
-    except Exception as e:
-        print(f"❌ Erreur chargement {key} : {e}")
+def validate_data():
+    df = pd.read_csv(os.path.join(base_path, "fusion_finale_clean.csv"))
+    print("📊 Statistiques descriptives :")
+    print(df.describe())
 
-# 🔗 Fusion thématique avec Pandas
-df_base = dataframes.get("chirps")
-df_smap = dataframes.get("smap")
-df_production = dataframes.get("production")
+    print("\nNombre de lignes par pays :")
+    print(df["country"].value_counts())
 
-if df_base is None or df_smap is None or df_production is None:
-    raise ValueError("❌ Fichiers critiques manquants : chirps, smap ou production")
+    print("\nNombre de lignes par année :")
+    print(df["year"].value_counts())
 
-df_climat = df_base.merge(df_smap, on=["ADM0_NAME", "Year"], how="outer")
-df_climat_prod = df_climat.merge(df_production, on=["ADM0_NAME", "Year"], how="outer")
-print(f"🔗 Fusion climat + production → {df_climat_prod.shape}")
+    if "rainfall" in df.columns:
+        if (df["rainfall"] < 0).any():
+            print("⚠️ Valeurs négatives détectées dans rainfall !")
+        else:
+            print("Rainfall OK : pas de valeurs négatives.")
+    else:
+        print("Colonne 'rainfall' non trouvée.")
 
-# 🔄 Conversion en Dask pour fusion latérale
-dd_climat_prod = dd.from_pandas(df_climat_prod, npartitions=10)
+def main():
+    print("=== MENU ===")
+    print("1 - Vérification fusion")
+    print("2 - Nettoyage colonnes inutiles")
+    print("3 - Validation finale")
+    print("4 - Tout faire")
+    choice = input("Choisis une option (1,2,3,4): ")
 
-# 🔗 Fusion latérale GEDI
-if "gedi" in dataframes:
-    df_gedi = dataframes["gedi"]
-    dd_gedi = dd.from_pandas(df_gedi, npartitions=1)
-    dd_climat_prod = dd_climat_prod.merge(dd_gedi, on="ADM0_NAME", how="left")
-    print("🔗 Fusion GEDI réussie")
+    if choice == "1":
+        check_fusion()
+    elif choice == "2":
+        clean_columns()
+    elif choice == "3":
+        validate_data()
+    elif choice == "4":
+        check_fusion()
+        clean_columns()
+        validate_data()
+    else:
+        print("Option invalide.")
 
-# 🔗 Fusion latérale resources (réduite)
-if "resources" in dataframes:
-    df_resources = dataframes["resources"]
-    df_resources = df_resources.loc[:, ~df_resources.columns.duplicated()]
-    df_resources_reduced = df_resources.groupby("ADM0_NAME").mean(numeric_only=True).reset_index()
-    dd_resources = dd.from_pandas(df_resources_reduced, npartitions=1)
-    dd_climat_prod = dd_climat_prod.merge(dd_resources, on="ADM0_NAME", how="left")
-    print("🔗 Fusion resources réussie")
-
-# 💾 Export compressé avec suivi
-print(f"📦 Export compressé en cours vers : {output_path}")
-dd_climat_prod.to_csv(output_path, single_file=True, index=False, compression="gzip")
-print(f"✅ Export terminé : {output_path}")
+if __name__ == "__main__":
+    main()
