@@ -1,51 +1,38 @@
 import pandas as pd
 
-# Chemin vers le fichier fusionné nettoyé
-file_path = r"C:\plateforme-agricole-complete-v2\SmartSènè\fusion_finale_clean.csv"
+file_in = r"C:\plateforme-agricole-complete-v2\SmartSènè\fusion_finale_clean.csv"
+file_out = r"C:\plateforme-agricole-complete-v2\SmartSènè\fusion_finale_clean_dedup.csv"
 
-print("📥 Chargement du fichier fusionné nettoyé...")
-df = pd.read_csv(file_path)
+print("📥 Chargement du fichier fusionné...")
+df = pd.read_csv(file_in)
 
-print(f"📊 Dimensions du dataset : {df.shape}")
+print(f"Shape initial : {df.shape}")
 
-# 1. Vérifier doublons sur la clé (country, year)
-print("\n🔎 Vérification des doublons sur (country, year)...")
-duplicates = df.duplicated(subset=["country", "year"])
-print(f"Nombre de doublons détectés : {duplicates.sum()}")
-if duplicates.sum() > 0:
-    print("Exemple de doublons :")
-    print(df[duplicates].head())
+# 1. Supprimer doublons exacts sur toutes colonnes (exclut les doublons ligne à ligne)
+df = df.drop_duplicates()
+print(f"Après suppression doublons exacts : {df.shape}")
 
-# 2. Vérifier années aberrantes (exemple ici 1000)
-print("\n🔎 Vérification des années aberrantes (valeurs < 1900 ou > 2100)...")
-aberrant_years = df[(df["year"] < 1900) | (df["year"] > 2100)]
-print(f"Nombre de lignes avec années aberrantes : {len(aberrant_years)}")
-if len(aberrant_years) > 0:
-    print(aberrant_years[["country", "year"]].drop_duplicates())
+# 2. Supprimer doublons sur la clé (country, year) en gardant la première occurrence
+dups = df.duplicated(subset=["country", "year"])
+print(f"Doublons sur (country, year) : {dups.sum()}")
+if dups.sum() > 0:
+    df = df.drop_duplicates(subset=["country", "year"], keep='first')
+    print(f"Après suppression doublons (country, year) : {df.shape}")
 
-# 3. Statistiques descriptives avant/après fusion pour variables clés
-# Si tu as un fichier source original, il faut charger ici pour comparer,
-# sinon on compare simplement la cohérence interne.
+# 3. Filtrer années aberrantes hors [1900, 2100]
+mask_years = (df["year"] >= 1900) & (df["year"] <= 2100)
+print(f"Lignes années aberrantes (hors [1900,2100]) : {(~mask_years).sum()}")
+df = df.loc[mask_years]
+print(f"Après filtrage années aberrantes : {df.shape}")
 
-print("\n📊 Statistiques descriptives des variables clés (ex: rainfall, soil_moisture)...")
-for col in ["rainfall", "soil_moisture"]:
-    if col in df.columns:
-        print(f"\nVariable : {col}")
-        print(df[col].describe())
-
-# 4. Contrôle de valeurs négatives (exemple rainfall)
+# 4. Vérifier valeurs négatives rainfall (à supprimer ou traiter si besoin)
 if "rainfall" in df.columns:
-    negatives = df[df["rainfall"] < 0]
-    print(f"\n🔎 Nombre de valeurs négatives dans rainfall : {len(negatives)}")
+    neg_rainfall = df[df["rainfall"] < 0]
+    print(f"Valeurs négatives rainfall : {len(neg_rainfall)}")
+    # Par exemple on peut supprimer ces lignes :
+    df = df[df["rainfall"] >= 0]
+    print(f"Après suppression rainfall négatif : {df.shape}")
 
-# 5. Intégrité géographique - si colonnes lat/lon présentes (optionnel)
-if "lat" in df.columns and "lon" in df.columns:
-    print("\n🌍 Vérification de la validité des coordonnées lat/lon...")
-    invalid_coords = df[(df["lat"] < -90) | (df["lat"] > 90) | (df["lon"] < -180) | (df["lon"] > 180)]
-    print(f"Nombre de coordonnées invalides : {len(invalid_coords)}")
-
-# 6. Statistiques générales (valeurs manquantes par colonne)
-print("\n🔍 Nombre de valeurs manquantes par colonne :")
-print(df.isna().sum())
-
-print("\n✅ Vérifications terminées.")
+# 5. Sauvegarder le dataset nettoyé
+df.to_csv(file_out, index=False)
+print(f"✅ Nettoyage terminé. Fichier sauvegardé : {file_out}")
