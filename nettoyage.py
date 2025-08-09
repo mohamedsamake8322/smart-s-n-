@@ -168,6 +168,7 @@ def fusion_gedi(df_final, dataframes, fusion_log):
         fusion_key = "ADM0_NAME"
 
     gedi_vars = [col for col in gedi.columns if col not in {"ADM0_NAME", "ADM1_NAME"}]
+    print(f"🧬 Colonnes GEDI ajoutées : {gedi_vars}")
 
     fusion_log.append({
         "source": "gedi",
@@ -268,33 +269,43 @@ def fusion_finale(dataframes):
                        'production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance']
     source_names = {k: k for k in thematic_blocks if k in dataframes}
 
+    # 🔗 Fusion climat
     df_climate = fusion_progressive(
         [dataframes[k] for k in ['chirps', 'smap', 'land_cover', 'land_use'] if k in dataframes],
         "climat",
         source_names=source_names
     )
 
+    # 🔗 Fusion production
     df_production = fusion_progressive(
         [dataframes[k] for k in ['production', 'manure', 'fert_nutrient', 'fert_product', 'nutrient_balance'] if k in dataframes],
         "production",
         source_names=source_names
     )
 
+    # ❌ Vérification des blocs
     if df_climate is None or df_production is None:
         print("❌ Fusion finale impossible : blocs climat ou production manquants")
         return None
 
+    # 🔗 Fusion thématique
     df_final = df_climate.merge(df_production, on=["ADM0_NAME", "Year"], how="left")
     print("🔗 Fusion thématique climat + production réussie")
 
+    # 🔗 Fusions latérales
     df_final = fusion_gedi(df_final, dataframes, fusion_log)
     df_final = fusion_resources(df_final, dataframes, fusion_log)
 
+    # 📝 Log de fusion
     export_fusion_log(fusion_log)
+
+    # 📐 Log des dimensions
+    try:
+        print(f"📐 Dimensions du DataFrame final (Dask) : {df_final.shape}")
+    except Exception as e:
+        print(f"⚠️ Impossible d’afficher les dimensions Dask : {e}")
+
     return df_final
-# 🧬 Lancement de la fusion
-
-
 def audit_final(df: pd.DataFrame,
                 output_path: str = None,
                 verbose: bool = True,
@@ -337,11 +348,8 @@ def audit_final(df: pd.DataFrame,
 
     # 🕒 Générer horodatage
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%Hh%M")
-
-    # 💾 Définir le nom du fichier si non fourni
     if output_path is None:
         output_path = f"dataset_rendement_{timestamp}.csv.gz"
-
     full_path = os.path.join(data_dir, output_path)
 
     # 💾 Sauvegarde du dataset
@@ -357,18 +365,3 @@ def audit_final(df: pd.DataFrame,
     except Exception as e:
         print(f"❌ Erreur lors de la sauvegarde : {type(e).__name__} - {e}")
         return None
-df_final = fusion_finale(dataframes)
-if df_final is not None:
-    print("\n🧮 Conversion en pandas pour entraînement...")
-    try:
-        df_final_pd = df_final.persist().compute()
-        export_path = audit_final(df_final_pd, drop_constants=True)
-        if export_path:
-            print(f"\n📁 Fichier final disponible ici : {export_path}")
-        else:
-            print("⚠️ Export échoué malgré la conversion.")
-    except Exception as e:
-        print(f"❌ Erreur lors de la conversion en pandas : {type(e).__name__} - {e}")
-else:
-    print("❌ Fusion finale échouée — aucun DataFrame à convertir.")
-
