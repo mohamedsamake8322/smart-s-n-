@@ -25,10 +25,9 @@ def convert_tif_to_csv_gz(tif_path, output_path):
         df.to_csv(f, index=False)
     print(f"✅ Saved: {output_path}")
 
-# 📁 Dossiers
+# 📁 Dossier contenant les fichiers
 input_dir = "C:/plateforme-agricole-complete-v2/WCres"
-output_dir = "C:/plateforme-agricole-complete-v2/Bouadata"
-os.makedirs(output_dir, exist_ok=True)  # crée le dossier si nécessaire
+output_dir = input_dir  # ou un autre dossier si tu veux séparer
 
 # 📄 Liste des fichiers à traiter
 tif_files = [
