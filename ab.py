@@ -4,6 +4,7 @@ import gzip
 import os
 
 def convert_tif_to_csv_gz_stream_progress(tif_path, output_path, window_size=1024, print_every_percent=5):
+    print(f"Démarrage conversion : {tif_path}")
     with rasterio.open(tif_path) as src, gzip.open(output_path, 'wt', encoding='utf-8') as f_out:
         writer = csv.writer(f_out)
         writer.writerow(["longitude", "latitude", "value"])  # header
@@ -40,25 +41,25 @@ def convert_tif_to_csv_gz_stream_progress(tif_path, output_path, window_size=102
                     print(f"Progression : {progress:.0f} %")
                     next_print += print_every_percent
 
-        print("✅ Conversion terminée et sauvegardée :", output_path)
+        print(f"✅ Conversion terminée et sauvegardée : {output_path}")
 
 
-# Exemple d'utilisation
+# Partie principale
+if __name__ == "__main__":
+    input_dir = "C:/plateforme-agricole-complete-v2/WCres"
+    output_dir = input_dir
 
-input_dir = "C:/plateforme-agricole-complete-v2/WCres"
-output_dir = input_dir
+    tif_files = [
+        "WCres_0-5cm_M_250m.tif",
+        "WCres_5-15cm_M_250m.tif",
+        "WCres_15-30cm_M_250m.tif",
+        "WCres_30-60cm_M_250m.tif",
+        "WCres_60-100cm_M_250m.tif",
+        "WCres_100-200cm_M_250m.tif"
+    ]
 
-tif_files = [
-    "WCres_0-5cm_M_250m.tif",
-    "WCres_5-15cm_M_250m.tif",
-    "WCres_15-30cm_M_250m.tif",
-    "WCres_30-60cm_M_250m.tif",
-    "WCres_60-100cm_M_250m.tif",
-    "WCres_100-200cm_M_250m.tif"
-]
-
-for tif_file in tif_files:
-    tif_path = os.path.join(input_dir, tif_file)
-    output_name = tif_file.replace(".tif", ".csv.gz")
-    output_path = os.path.join(output_dir, output_name)
-    convert_tif_to_csv_gz_stream_progress(tif_path, output_path)
+    for tif_file in tif_files:
+        tif_path = os.path.join(input_dir, tif_file)
+        output_name = tif_file.replace(".tif", ".csv.gz")
+        output_path = os.path.join(output_dir, output_name)
+        convert_tif_to_csv_gz_stream_progress(tif_path, output_path)
