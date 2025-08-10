@@ -1,7 +1,7 @@
 import os
 import gzip
 import csv
-import rasterio
+import rasterio # pyright: ignore[reportMissingImports]
 import numpy as np
 from tqdm import tqdm  # barre de progression
 

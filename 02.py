@@ -1,54 +1,26 @@
+import geopandas as gpd
 import pandas as pd
-import os
+from shapely.geometry import Point
 
-# Dossier contenant les fichiers
-base_dir = r"C:\plateforme-agricole-complete-v2\SmartSènè\Fichier pour l'entrainement de xgboost"
+# 📥 1. Charger les données de sol
+soil_csv_path = "C:/plateforme-agricole-complete-v2/open-soil-data/data/iSDA_soil_data.csv"
+df_soil = pd.read_csv(soil_csv_path)
 
-# Liste des fichiers à traiter
-files_info = {
-    "FAOSTAT_CHIRPS_SMAP_merged.csv.gz": ['country', 'year'],  # clés typiques FAO
-    "X_enriched_plus_GEDI_spatial.csv.gz": ['lon', 'lat'],     # clés spatiales
-    "fusion_finale.csv.gz": ['country', 'year'],               # similaire FAOSTAT
-    "Fusion_agronomique_intelligente_final.csv.gz": ['Area', 'Year']  # clé possible à vérifier
-}
+# 🌍 2. Charger les frontières des pays (shapefile)
+countries_shp_path = "C:/plateforme-agricole-complete-v2/data/Natural Earth 110m Cultural Vectors/ne_110m_admin_0_countries.shp"
+gdf_countries = gpd.read_file(countries_shp_path)
 
-for filename, key_cols in files_info.items():
-    print(f"\n\n=== Traitement du fichier : {filename} ===")
-    path = os.path.join(base_dir, filename)
+# 🧭 3. Convertir les données de sol en GeoDataFrame
+df_soil['geometry'] = df_soil.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
+gdf_soil = gpd.GeoDataFrame(df_soil, geometry='geometry', crs="EPSG:4326")
 
-    # Chargement
-    df = pd.read_csv(path, compression='gzip')
-    print(f"📥 Chargé {len(df)} lignes et {len(df.columns)} colonnes.")
+# 🔗 4. Spatial join : associer chaque point à un pays
+gdf_joined = gpd.sjoin(gdf_soil, gdf_countries[['geometry', 'ADMIN']], how='left', predicate='within')
 
-    # Analyse doublons
-    dups = df[df.duplicated(subset=key_cols, keep=False)]
-    if dups.empty:
-        print("✅ Aucun doublon détecté sur les colonnes clés :", key_cols)
-        continue
-    print(f"⚠ {len(dups)} lignes en doublon détectées sur les clés {key_cols}.")
+# 🏷️ 5. Renommer la colonne du pays
+gdf_joined.rename(columns={'ADMIN': 'country'}, inplace=True)
 
-    grouped = dups.groupby(key_cols)
-    for name, group in grouped:
-        print(f"\n🔎 Doublons pour la clé {name} :")
-        diff_cols = []
-        for col in df.columns:
-            if col in key_cols:
-                continue
-            if group[col].nunique(dropna=False) > 1:
-                diff_cols.append(col)
-        if diff_cols:
-            print(f"Colonnes avec différences : {diff_cols}")
-            print(group[key_cols + diff_cols])
-        else:
-            print("Pas de différences dans les autres colonnes.")
+# 🧹 6. Nettoyer et exporter en CSV
+gdf_joined.drop(columns='geometry').to_csv("C:/plateforme-agricole-complete-v2/soil_data_with_country.csv", index=False)
 
-    # Nettoyage : garder la première occurrence
-    before = len(df)
-    df_clean = df.drop_duplicates(subset=key_cols, keep='first')
-    after = len(df_clean)
-    print(f"\n🧹 Nettoyage : {before - after} doublons supprimés, {after} lignes restantes.")
-
-    # Sauvegarde fichier nettoyé
-    out_path = os.path.join(base_dir, filename.replace(".csv.gz", "_cleaned.csv.gz"))
-    df_clean.to_csv(out_path, index=False, compression='gzip')
-    print(f"💾 Fichier nettoyé sauvegardé : {out_path}")
+print("✅ Fichier exporté avec les pays : soil_data_with_country.csv")
