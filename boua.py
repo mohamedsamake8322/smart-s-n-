@@ -1,50 +1,57 @@
+import rasterio
+import numpy as np
+import gzip
+import csv
 import os
-import requests
-import geopandas as gpd
 
-GADM_ROOT = "C:/plateforme-agricole-complete-v2/gadm"
-GADM_GITHUB = "https://raw.githubusercontent.com/ozgrozer/gadm-country-json/master"
+# 📂 Chemin du dossier contenant les fichiers
+input_dir = r"C:\plateforme-agricole-complete-v2\WCres"
+output_file = os.path.join(input_dir, "wcres_data.csv.gz")
 
-AFRICAN_COUNTRIES = [
-    "AGO", "BEN", "BFA", "BDI", "CMR", "CAF", "TCD", "COM", "COG", "CIV", "DJI", "EGY", "GNQ", "ERI", "ETH",
-    "GAB", "GMB", "GHA", "GIN", "GNB", "KEN", "LSO", "LBR", "LBY", "MDG", "MWI", "MLI", "MRT", "MUS", "MAR",
-    "MOZ", "NAM", "NER", "NGA", "RWA", "STP", "SEN", "SYC", "SLE", "SOM", "ZAF", "SSD", "SDN", "SWZ", "TZA",
-    "TGO", "TUN", "UGA", "ZMB", "ZWE"
+# 📄 Liste des fichiers TIF
+tif_files = [
+    "WCres_0-5cm_M_250m.tif",
+    "WCres_5-15cm_M_250m.tif",
+    "WCres_15-30cm_M_250m.tif",
+    "WCres_30-60cm_M_250m.tif",
+    "WCres_60-100cm_M_250m.tif",
+    "WCres_100-200cm_M_250m.tif"
 ]
+tif_paths = [os.path.join(input_dir, f) for f in tif_files]
 
-LEVELS = ["0", "1", "2"]
+# 📥 Ouvre les rasters en mode lecture
+datasets = [rasterio.open(path) for path in tif_paths]
 
-def download_gadm(country_code, level):
-    url = f"{GADM_GITHUB}/{country_code}/{country_code}_adm{level}.geojson"
-    dest_dir = os.path.join(GADM_ROOT, country_code)
-    os.makedirs(dest_dir, exist_ok=True)
-    dest_path = os.path.join(dest_dir, f"level{level}.geojson")
+# ✅ Vérification que toutes les tailles correspondent
+width, height = datasets[0].width, datasets[0].height
+if not all(ds.width == width and ds.height == height for ds in datasets):
+    raise ValueError("Tous les rasters doivent avoir les mêmes dimensions.")
 
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        with open(dest_path, "w", encoding="utf-8") as f:
-            f.write(response.text)
-        print(f"✅ Downloaded {country_code} level {level}")
-    except Exception as e:
-        print(f"❌ Failed to download {country_code} level {level}: {e}")
+print(f"📏 Dimensions : {width} x {height} pixels")
+print(f"📦 Nombre de fichiers : {len(datasets)}")
 
-def validate_geojson(path):
-    try:
-        gdf = gpd.read_file(path)
-        return not gdf.empty and gdf.is_valid.all()
-    except:
-        return False
+# ✍️ Écriture en flux compressé
+with gzip.open(output_file, "wt", newline='') as gzfile:
+    writer = csv.writer(gzfile)
 
-def ensure_gadm(country_code):
-    for level in LEVELS:
-        path = os.path.join(GADM_ROOT, country_code, f"level{level}.geojson")
-        if not os.path.exists(path) or not validate_geojson(path):
-            download_gadm(country_code, level)
+    # Écrire l'entête
+    header = ["x", "y"] + [os.path.splitext(f)[0] for f in tif_files]
+    writer.writerow(header)
 
-def run_gadm_check():
-    for country_code in AFRICAN_COUNTRIES:
-        ensure_gadm(country_code)
+    # Lecture ligne par ligne avec progression
+    for row in range(height):
+        # Lire la bande 1 de chaque fichier pour cette ligne
+        bands_row = [ds.read(1, window=((row, row+1), (0, width)))[0] for ds in datasets]
 
-if __name__ == "__main__":
-    run_gadm_check()
+        # Coordonnées géographiques pour chaque pixel de la ligne
+        for col in range(width):
+            x, y = datasets[0].transform * (col, row)
+            values = [bands_row[i][col] for i in range(len(datasets))]
+            writer.writerow([x, y] + values)
+
+        # 🔄 Affichage de la progression
+        if (row + 1) % 100 == 0 or row == height - 1:
+            percent = ((row + 1) / height) * 100
+            print(f"Progression : {percent:.2f} % ({row+1}/{height} lignes)")
+
+print(f"✅ Données exportées dans {output_file}")
