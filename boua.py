@@ -31,7 +31,7 @@ print(f"📏 Dimensions : {width} x {height} pixels")
 print(f"📦 Nombre de fichiers : {len(datasets)}")
 print(f"💻 CPU utilisés : {cpu_count()}")
 
-# ⚡ Paramètre : taille du bloc
+# ⚡ Paramètre : taille du bloc (lignes à la fois)
 block_size = 256
 
 # Fonction pour traiter un bloc de lignes
@@ -49,16 +49,20 @@ def process_block(start_row):
 
     return pd.DataFrame(rows_data, columns=["x", "y"] + [os.path.splitext(f)[0] for f in tif_files])
 
-# 📊 Lecture + écriture par parallélisation
-with pd.ExcelWriter(output_file, engine="pyarrow", mode="overwrite") as writer:
-    pass  # on s'assure que le fichier est créé
-
+# 📊 Lecture + écriture Parquet par blocs
 blocks = list(range(0, height, block_size))
 total_blocks = len(blocks)
 
-with Pool(cpu_count()) as pool:
-    for idx, df in enumerate(pool.imap(process_block, blocks), start=1):
-        df.to_parquet(output_file, engine="pyarrow", compression="snappy", append=True)
-        print(f"Progression : {idx}/{total_blocks} blocs ({(idx/total_blocks)*100:.2f}%)")
+first_chunk = True
+for idx, df in enumerate(Pool(cpu_count()).imap(process_block, blocks), start=1):
+    df.to_parquet(
+        output_file,
+        engine="pyarrow",
+        compression="snappy",
+        index=False,
+        append=not first_chunk
+    )
+    first_chunk = False
+    print(f"Progression : {idx}/{total_blocks} blocs ({(idx/total_blocks)*100:.2f}%)")
 
 print(f"✅ Données exportées dans {output_file}")
