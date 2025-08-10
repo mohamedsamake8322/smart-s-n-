@@ -1,4 +1,4 @@
-import rasterio
+import rasterio # pyright: ignore[reportMissingImports]
 import numpy as np
 import gzip
 import csv
