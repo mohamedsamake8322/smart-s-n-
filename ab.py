@@ -1,65 +1,57 @@
-import rasterio
-import csv
-import gzip
 import os
+import gzip
+import csv
+import rasterio # pyright: ignore[reportMissingImports]
+import numpy as np
 
-def convert_tif_to_csv_gz_stream_progress(tif_path, output_path, window_size=1024, print_every_percent=5):
-    print(f"Démarrage conversion : {tif_path}")
-    with rasterio.open(tif_path) as src, gzip.open(output_path, 'wt', encoding='utf-8') as f_out:
-        writer = csv.writer(f_out)
-        writer.writerow(["longitude", "latitude", "value"])  # header
+input_dir = "C:/plateforme-agricole-complete-v2/WCres"
+output_dir = input_dir
 
-        transform = src.transform
-        nodata = src.nodata
-        width = src.width
-        height = src.height
+tif_files = [
+    "WCres_0-5cm_M_250m.tif",
+    "WCres_5-15cm_M_250m.tif",
+    "WCres_15-30cm_M_250m.tif",
+    "WCres_30-60cm_M_250m.tif",
+    "WCres_60-100cm_M_250m.tif",
+    "WCres_100-200cm_M_250m.tif"
+]
 
-        total_pixels = width * height
+for tif_file in tif_files:
+    input_path = os.path.join(input_dir, tif_file)
+    output_path = os.path.join(output_dir, tif_file.replace(".tif", ".csv.gz"))
+
+    print(f"\n🔄 Traitement de {tif_file}...")
+
+    with rasterio.open(input_path) as src, gzip.open(output_path, 'wt', newline='') as gz_file:
+        writer = csv.writer(gz_file)
+        writer.writerow(["x", "y", "value"])  # En-tête CSV
+
+        total_rows = src.height
+        total_cols = src.width
+        total_pixels = total_rows * total_cols
+
+        block_size = 1000
         processed_pixels = 0
-        next_print = print_every_percent  # prochaine étape à afficher en %
 
-        for top in range(0, height, window_size):
-            for left in range(0, width, window_size):
-                win_width = min(window_size, width - left)
-                win_height = min(window_size, height - top)
-                window = rasterio.windows.Window(left, top, win_width, win_height)
-                band = src.read(1, window=window)
+        for row_start in range(0, total_rows, block_size):
+            row_end = min(row_start + block_size, total_rows)
+            window = rasterio.windows.Window(0, row_start, total_cols, row_end - row_start)
+            data = src.read(1, window=window)
 
-                for row in range(band.shape[0]):
-                    for col in range(band.shape[1]):
-                        value = band[row, col]
-                        processed_pixels += 1
-                        if nodata is not None and value == nodata:
-                            continue
-                        global_col = left + col
-                        global_row = top + row
-                        lon, lat = transform * (global_col, global_row)
-                        writer.writerow([lon, lat, value])
+            for i in range(data.shape[0]):
+                for j in range(data.shape[1]):
+                    val = data[i, j]
+                    x, y = src.xy(row_start + i, j)
+                    writer.writerow([x, y, val])
+                    processed_pixels += 1
 
-                progress = processed_pixels / total_pixels * 100
-                if progress >= next_print:
-                    print(f"Progression : {progress:.0f} %")
-                    next_print += print_every_percent
+            percent = (processed_pixels / total_pixels) * 100
+            print(f"✅ Progression: {percent:.2f}%")
 
-        print(f"✅ Conversion terminée et sauvegardée : {output_path}")
+        print(f"📊 Pixels écrits: {processed_pixels} / {total_pixels}")
+        if processed_pixels == total_pixels:
+            print("✅ Intégrité confirmée : toutes les données ont été exportées.")
+        else:
+            print("⚠️ Attention : perte de données détectée !")
 
-
-# Partie principale
-if __name__ == "__main__":
-    input_dir = "C:/plateforme-agricole-complete-v2/WCres"
-    output_dir = input_dir
-
-    tif_files = [
-        "WCres_0-5cm_M_250m.tif",
-        "WCres_5-15cm_M_250m.tif",
-        "WCres_15-30cm_M_250m.tif",
-        "WCres_30-60cm_M_250m.tif",
-        "WCres_60-100cm_M_250m.tif",
-        "WCres_100-200cm_M_250m.tif"
-    ]
-
-    for tif_file in tif_files:
-        tif_path = os.path.join(input_dir, tif_file)
-        output_name = tif_file.replace(".tif", ".csv.gz")
-        output_path = os.path.join(output_dir, output_name)
-        convert_tif_to_csv_gz_stream_progress(tif_path, output_path)
+    print(f"✅ Fichier compressé écrit: {output_path}")
