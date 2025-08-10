@@ -79,7 +79,8 @@ try:
         }
         for i, name in enumerate([os.path.splitext(f)[0] for f in tif_files]):
             # convertir en float32 pour gagner de la place (adapter si besoin)
-            data[name] = flat_bands[i].astype(np.float32)
+            data[name] = flat_bands[i].astype(bands[i].dtype)
+
 
         # filtrage nodata (optionnel) : garder lignes où AU MOINS une bande est valide
         if FILTER_ROWS_WITH_ALL_NODATA:
