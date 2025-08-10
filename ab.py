@@ -3,7 +3,7 @@ import gzip
 import csv
 import rasterio
 import numpy as np
-from tqdm import tqdm  # pour la barre de progression
+from tqdm import tqdm  # barre de progression
 
 input_dir = "C:/plateforme-agricole-complete-v2/WCres"
 output_dir = input_dir
@@ -17,7 +17,7 @@ tif_files = [
     "WCres_100-200cm_M_250m.tif"
 ]
 
-block_size = 512  # taille du bloc pour lecture par fenêtre
+block_size = 512  # taille du bloc pour lecture
 
 for tif_file in tif_files:
     input_path = os.path.join(input_dir, tif_file)
@@ -31,25 +31,40 @@ for tif_file in tif_files:
             writer.writerow(["x", "y", "value"])
 
             total_rows, total_cols = src.height, src.width
-            total_blocks = ((total_rows + block_size - 1) // block_size)
+            total_blocks = (total_rows + block_size - 1) // block_size
 
-            # Barre de progression
-            with tqdm(total=total_blocks, desc="📥 Lecture", unit="bloc") as pbar:
+            with tqdm(total=total_rows, desc="📥 Lecture (lignes)", unit="ligne") as pbar:
                 for row_start in range(0, total_rows, block_size):
                     row_end = min(row_start + block_size, total_rows)
-                    window = rasterio.windows.Window(0, row_start, total_cols, row_end - row_start)
+                    window_height = row_end - row_start
+
+                    window = rasterio.windows.Window(0, row_start, total_cols, window_height)
                     data = src.read(1, window=window)
 
-                    rows_to_write = []
-                    for i in range(data.shape[0]):
-                        for j in range(data.shape[1]):
-                            val = data[i, j]
-                            if np.isnan(val):  # ignorer les NaN
-                                continue
-                            x, y = src.xy(row_start + i, j)
-                            rows_to_write.append([x, y, val])
+                    nodata = src.nodata
+                    if nodata is None:
+                        mask_valid = ~np.isnan(data)
+                    else:
+                        mask_valid = data != nodata
 
+                    # Indices valides
+                    valid_indices = np.where(mask_valid)
+                    if valid_indices[0].size == 0:
+                        pbar.update(window_height)
+                        continue
+
+                    rows_idx = valid_indices[0]
+                    cols_idx = valid_indices[1]
+
+                    # Calculer coordonnées x,y pour tous les pixels valides
+                    xs, ys = src.xy(row_start + rows_idx, cols_idx)
+
+                    # Préparer lignes à écrire
+                    rows_to_write = zip(xs, ys, data[rows_idx, cols_idx])
+
+                    # Écrire dans le csv
                     writer.writerows(rows_to_write)
-                    pbar.update(1)
+
+                    pbar.update(window_height)
 
     print(f"✅ Fichier terminé : {output_path}")
