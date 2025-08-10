@@ -1,18 +1,22 @@
 import rasterio
-import pandas as pd
+import csv
 import gzip
 import os
 
-def convert_tif_to_csv_gz(tif_path, output_path, window_size=1024):
-    with rasterio.open(tif_path) as src:
+def convert_tif_to_csv_gz_stream_progress(tif_path, output_path, window_size=1024, print_every_percent=5):
+    with rasterio.open(tif_path) as src, gzip.open(output_path, 'wt', encoding='utf-8') as f_out:
+        writer = csv.writer(f_out)
+        writer.writerow(["longitude", "latitude", "value"])  # header
+
         transform = src.transform
         nodata = src.nodata
         width = src.width
         height = src.height
 
-        data = []
+        total_pixels = width * height
+        processed_pixels = 0
+        next_print = print_every_percent  # prochaine étape à afficher en %
 
-        # Lire par fenêtres de taille window_size x window_size
         for top in range(0, height, window_size):
             for left in range(0, width, window_size):
                 win_width = min(window_size, width - left)
@@ -23,23 +27,26 @@ def convert_tif_to_csv_gz(tif_path, output_path, window_size=1024):
                 for row in range(band.shape[0]):
                     for col in range(band.shape[1]):
                         value = band[row, col]
+                        processed_pixels += 1
                         if nodata is not None and value == nodata:
                             continue
-                        # coordonnée dans l'image globale
                         global_col = left + col
                         global_row = top + row
                         lon, lat = transform * (global_col, global_row)
-                        data.append((lon, lat, value))
+                        writer.writerow([lon, lat, value])
 
-        # Convertir en DataFrame et sauver compressé
-        df = pd.DataFrame(data, columns=["longitude", "latitude", "value"])
-        with gzip.open(output_path, 'wt', encoding='utf-8') as f:
-            df.to_csv(f, index=False)
-        print(f"✅ Saved: {output_path}")
+                progress = processed_pixels / total_pixels * 100
+                if progress >= next_print:
+                    print(f"Progression : {progress:.0f} %")
+                    next_print += print_every_percent
 
-# Dossier d'entrée/sortie
+        print("✅ Conversion terminée et sauvegardée :", output_path)
+
+
+# Exemple d'utilisation
+
 input_dir = "C:/plateforme-agricole-complete-v2/WCres"
-output_dir = input_dir  # tu peux changer si besoin
+output_dir = input_dir
 
 tif_files = [
     "WCres_0-5cm_M_250m.tif",
@@ -54,4 +61,4 @@ for tif_file in tif_files:
     tif_path = os.path.join(input_dir, tif_file)
     output_name = tif_file.replace(".tif", ".csv.gz")
     output_path = os.path.join(output_dir, output_name)
-    convert_tif_to_csv_gz(tif_path, output_path)
+    convert_tif_to_csv_gz_stream_progress(tif_path, output_path)
