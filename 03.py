@@ -8,13 +8,12 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 # ---------- paramètres ----------
-input_dir = r"C:\Users\moham\Dropbox\WCavail"
+input_dir = r"C:\plateforme-agricole-complete-v2\WCsat"
 tif_files = [
-    "WCavail_0-5cm_M_250m.tif",
-
+    "WCsat_0-5cm_M_250m.tif"
 ]
 tif_paths = [os.path.join(input_dir, f) for f in tif_files]
-output_file = os.path.join(input_dir, "wcavail_0-5cm_data.parquet")
+output_file = os.path.join(input_dir, "wcsat_0-5com_data.parquet")
 
 # objectif de taille de chunk en nombre de pixels (ajuste si besoin)
 TARGET_PIXELS_PER_CHUNK = 2_000_000
