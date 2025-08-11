@@ -8,17 +8,13 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 # ---------- paramètres ----------
-input_dir = r"C:\plateforme-agricole-complete-v2\WCres"
+input_dir = r"C:\Users\moham\Dropbox\WCavail"
 tif_files = [
-    "WCres_0-5cm_M_250m.tif",
-    "WCres_5-15cm_M_250m.tif",
-    "WCres_15-30cm_M_250m.tif",
-    "WCres_30-60cm_M_250m.tif",
-    "WCres_60-100cm_M_250m.tif",
-    "WCres_100-200cm_M_250m.tif"
+    "WCavail_0-5cm_M_250m.tif",
+
 ]
 tif_paths = [os.path.join(input_dir, f) for f in tif_files]
-output_file = os.path.join(input_dir, "wcres_data.parquet")
+output_file = os.path.join(input_dir, "wcavail_0-5cm_data.parquet")
 
 # objectif de taille de chunk en nombre de pixels (ajuste si besoin)
 TARGET_PIXELS_PER_CHUNK = 2_000_000
