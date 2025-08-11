@@ -1,9 +1,9 @@
 import os
-import glob
 import time
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point
+import pyarrow as pa
 import pyarrow.parquet as pq
 
 # --- Paramètres ---
@@ -16,14 +16,21 @@ crs = "EPSG:4326"  # coord système latitude/longitude WGS84
 
 # --- 1. Charger et fusionner les frontières pays africains (niveau 0) ---
 print("🔍 Recherche fichiers GADM africains niveau 0...")
+
 geojson_files = []
 for country_dir in os.listdir(gadm_root):
     dir_path = os.path.join(gadm_root, country_dir)
     if os.path.isdir(dir_path):
-        files = glob.glob(os.path.join(dir_path, "*_0.geojson"))
-        geojson_files.extend(files)
+        file_path = os.path.join(dir_path, "level0.geojson")  # <-- correction ici
+        if os.path.exists(file_path):
+            geojson_files.append(file_path)
+        else:
+            print(f"⚠️ Pas trouvé : {file_path}")
 
 print(f"⚙️ {len(geojson_files)} fichiers trouvés.")
+
+if not geojson_files:
+    raise RuntimeError("Aucun fichier GADM level0.geojson trouvé. Vérifie la structure et les noms.")
 
 gadm_list = []
 for f in geojson_files:
@@ -48,8 +55,9 @@ chunks_processed = 0
 start_time = time.time()
 
 for chunk in reader:
+    # Nettoyage des lignes sans coordonnées
+    chunk = chunk.dropna(subset=["x", "y"])
     # Conversion en GeoDataFrame
-    chunk = chunk.dropna(subset=["x", "y"])  # enlever points sans coord
     gdf_chunk = gpd.GeoDataFrame(
         chunk,
         geometry=gpd.points_from_xy(chunk.x, chunk.y),
@@ -59,12 +67,13 @@ for chunk in reader:
     # Spatial join pour trouver le pays
     joined = gpd.sjoin(gdf_chunk, gadm_africa, how="inner", predicate="within")
 
-    # On garde uniquement les colonnes d'origine + COUNTRY et GID_0
+    # Garder colonnes originales + infos pays
     cols_to_keep = list(chunk.columns) + ["COUNTRY", "GID_0"]
     joined = joined[cols_to_keep]
 
-    # Écrire en mode append dans le fichier parquet
+    # Conversion en table PyArrow pour écrire parquet
     table = pa.Table.from_pandas(joined, preserve_index=False)
+
     if chunks_processed == 0:
         pq.write_table(table, output_parquet, compression="snappy")
     else:
