@@ -28,7 +28,7 @@ for f in geojson_files:
     gdf = gpd.read_file(f)
     gadm_list.append(gdf[["COUNTRY", "GID_0", "geometry"]])
 gadm_africa = gpd.GeoDataFrame(pd.concat(gadm_list, ignore_index=True), crs=crs)
-gadm_africa.sindex
+gadm_africa.sindex  # construction index spatial
 print(f"🌍 {len(gadm_africa)} frontières chargées.")
 
 # Calcul bbox étendue
@@ -49,46 +49,59 @@ total_lines = 0
 chunks_processed = 0
 start_time = time.time()
 
-for i, partition in enumerate(ddf.to_delayed()):
-    df = partition.compute()
-    df = df.dropna(subset=["x", "y"])
+writer = None
 
-    # Filtrage bbox
-    df_filtered = df[
-        (df.x >= bbox[0]) & (df.x <= bbox[2]) &
-        (df.y >= bbox[1]) & (df.y <= bbox[3])
-    ]
-    if df_filtered.empty:
-        print(f"Partition {i+1}/{total_partitions} : Aucun point en bbox, sautée.")
+for i, partition in enumerate(ddf.to_delayed()):
+    try:
+        df = partition.compute()
+        df = df.dropna(subset=["x", "y"])
+
+        # Filtre simple Afrique (longitude -20 à 60, latitude -40 à 40)
+        df = df[(df.x >= -20) & (df.x <= 60) & (df.y >= -40) & (df.y <= 40)]
+        if df.empty:
+            print(f"Partition {i+1}/{total_partitions} : Aucun point dans la zone Afrique approximative, sautée.")
+            continue
+
+        # Conversion en GeoDataFrame
+        gdf_chunk = gpd.GeoDataFrame(
+            df,
+            geometry=gpd.points_from_xy(df.x, df.y),
+            crs=crs
+        )
+
+        # Jointure spatiale avec polygones Afrique
+        joined = gpd.sjoin(gdf_chunk, gadm_africa, how="inner", predicate="within")
+        if joined.empty:
+            print(f"Partition {i+1}/{total_partitions} : Aucun point après jointure spatiale, sautée.")
+            continue
+
+        # Colonnes à garder
+        cols_to_keep = list(df.columns) + ["COUNTRY", "GID_0"]
+        joined = joined[cols_to_keep]
+
+        # Écriture dans fichier parquet en append
+        table = pa.Table.from_pandas(joined, preserve_index=False)
+        if writer is None:
+            writer = pq.ParquetWriter(output_parquet, compression="snappy", use_dictionary=True, write_statistics=True)
+        writer.write_table(table)
+
+        total_lines += len(joined)
+        chunks_processed += 1
+        elapsed = time.time() - start_time
+        pct = (i + 1) / total_partitions * 100
+        speed = total_lines / elapsed if elapsed > 0 else 0
+
+        print(f"Partition {i+1}/{total_partitions} traité - "
+              f"Lignes écrites : {len(joined)} - Total lignes : {total_lines} - "
+              f"Progression : {pct:.2f}% - Temps écoulé : {elapsed:.1f}s - "
+              f"Vitesse : {speed:.2f} lignes/s")
+
+    except Exception as e:
+        print(f"⚠️ Erreur sur partition {i+1} : {e}")
         continue
 
-    gdf_chunk = gpd.GeoDataFrame(
-        df_filtered,
-        geometry=gpd.points_from_xy(df_filtered.x, df_filtered.y),
-        crs=crs
-    )
+if writer is not None:
+    writer.close()
 
-    joined = gpd.sjoin(gdf_chunk, gadm_africa, how="inner", predicate="within")
-    cols_to_keep = list(df_filtered.columns) + ["COUNTRY", "GID_0"]
-    joined = joined[cols_to_keep]
-
-    table = pa.Table.from_pandas(joined, preserve_index=False)
-    if chunks_processed == 0:
-        pq.write_table(table, output_parquet, compression="snappy")
-    else:
-        with pq.ParquetWriter(output_parquet, compression="snappy", use_dictionary=True, write_statistics=True, append=True) as writer:
-            writer.write_table(table)
-
-    total_lines += len(joined)
-    chunks_processed += 1
-    elapsed = time.time() - start_time
-    pct = (i + 1) / total_partitions * 100
-    speed = total_lines / elapsed if elapsed > 0 else 0
-
-    print(f"Partition {i+1}/{total_partitions} traité - "
-          f"Lignes écrites : {len(joined)} - Total lignes : {total_lines} - "
-          f"Progression : {pct:.2f}% - Temps écoulé : {elapsed:.1f}s - "
-          f"Vitesse : {speed:.2f} lignes/s")
-
-print(f"✅ Terminé. Fichier sauvegardé : {output_parquet}")
-print(f"Total points africains : {total_lines}")
+print(f"✅ Traitement terminé. Fichier sauvegardé : {output_parquet}")
+print(f"Nombre total de points africains : {total_lines}")
