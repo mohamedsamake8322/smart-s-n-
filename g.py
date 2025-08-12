@@ -1,7 +1,7 @@
 import os
-import geopandas as gpd
+import geopandas as gpd # type: ignore
 import pandas as pd
-from sentinelhub import (
+from sentinelhub import ( # pyright: ignore[reportMissingImports]
     SHConfig, Geometry, CRS, SentinelHubStatistical, StatisticalRequest, DataCollection
 )
 
