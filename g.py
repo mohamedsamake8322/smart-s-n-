@@ -1,7 +1,7 @@
 import requests
 import json
-import geopandas as gpd
-from shapely.geometry import mapping
+import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
+from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
 
 # ────────────────────── 🔐 CREDENTIALS ──────────────────────
 CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
