@@ -87,7 +87,7 @@ payload = {
             "to": "2023-12-31T23:59:59Z"
         },
         "aggregationInterval": {
-            "of": "P1Y"  # agrégation annuelle
+            "of": "P1Y"
         },
         "resolution": {
             "width": 512,
@@ -95,14 +95,12 @@ payload = {
         }
     },
     "calculations": {
-    "default": {
-        "script": evalscript,
-        "statistics": {
-            "ndvi": {"stats": ["mean", "stDev"]},
-            "ndmi": {"stats": ["mean", "stDev"]}
+        "default": {
+            "script": evalscript
         }
     }
 }
+
 
 }
 
