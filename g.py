@@ -21,6 +21,9 @@ def get_token(client_id, client_secret):
         "client_id": client_id,
         "client_secret": client_secret
     }
+    print("Payload envoyé : ", json.dumps(payload, indent=2))
+    print("Headers : ", headers)
+
     response = requests.post(url, data=payload)
     print("🔍 Réponse brute:", response.text)
     response.raise_for_status()
@@ -91,8 +94,17 @@ payload = {
         "resx": 10,
         "resy": 10
     },
-    "evalscript": evalscript
+    "calculations": {
+        "default": {
+            "script": evalscript,
+            "statistics": {
+                "ndvi": ["mean", "stDev"],
+                "ndmi": ["mean", "stDev"]
+            }
+        }
+    }
 }
+
 
 # ────────────────────── 📥 SEND REQUEST ──────────────────────
 response = requests.post(url, headers=headers, json=payload)
