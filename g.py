@@ -31,27 +31,27 @@ print("✅ Token récupéré:", token)
 
 # ────────────────────── 🧠 EVALSCRIPT ──────────────────────
 # Cet evalscript calcule NDVI et NDMI
-evalscript = """
-//VERSION=3
-function setup() {
-  return {
-    input: ["B08", "B04", "B11"],
-    output: [
-      { id: "ndvi", bands: 1, sampleType: "FLOAT32" },
-      { id: "ndmi", bands: 1, sampleType: "FLOAT32" }
-    ]
-  };
-}
+evalscript = (
+    "//VERSION=3\n"
+    "function setup() {\n"
+    "  return {\n"
+    "    input: [\"B08\", \"B04\", \"B11\"],\n"
+    "    output: [\n"
+    "      { id: \"ndvi\", bands: 1, sampleType: \"FLOAT32\" },\n"
+    "      { id: \"ndmi\", bands: 1, sampleType: \"FLOAT32\" }\n"
+    "    ]\n"
+    "  };\n"
+    "}\n"
+    "function evaluatePixel(sample) {\n"
+    "  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);\n"
+    "  let ndmi = (sample.B08 - sample.B11) / (sample.B08 + sample.B11);\n"
+    "  return {\n"
+    "    ndvi: [ndvi],\n"
+    "    ndmi: [ndmi]\n"
+    "  };\n"
+    "}\n"
+)
 
-function evaluatePixel(sample) {
-  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
-  let ndmi = (sample.B08 - sample.B11) / (sample.B08 + sample.B11);
-  return {
-    ndvi: [ndvi],
-    ndmi: [ndmi]
-  };
-}
-"""
 
 
 # ────────────────────── 📤 STATISTICS REQUEST ──────────────────────
