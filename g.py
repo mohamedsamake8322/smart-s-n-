@@ -1,7 +1,7 @@
 import requests
 import json
-import geopandas as gpd
-from shapely.geometry import mapping
+import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
+from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
 
 # ────────────────────── 🔐 CREDENTIALS ──────────────────────
 CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
@@ -67,7 +67,7 @@ payload = {
         "bounds": {
             "geometry": geom_json,
             "properties": {
-                "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+                "crs": "EPSG:4326"
             }
         },
         "data": [{
@@ -76,8 +76,7 @@ payload = {
                 "timeRange": {
                     "from": "2023-01-01T00:00:00Z",
                     "to": "2023-12-31T23:59:59Z"
-                },
-                "mosaickingOrder": "mostRecent"
+                }
             }
         }]
     },
@@ -86,13 +85,8 @@ payload = {
             "from": "2023-01-01T00:00:00Z",
             "to": "2023-12-31T23:59:59Z"
         },
-        "aggregationInterval": {
-            "of": "P1Y"
-        },
-        "resolution": {
-            "width": 512,
-            "height": 512
-        }
+        "resx": 10,
+        "resy": 10
     },
     "calculations": {
         "default": {
@@ -103,6 +97,10 @@ payload = {
 
 # ────────────────────── 📥 SEND REQUEST ──────────────────────
 response = requests.post(url, headers=headers, json=payload)
-response.raise_for_status()
-result = response.json()
-print(json.dumps(result, indent=2))
+
+try:
+    response.raise_for_status()
+    result = response.json()
+    print(json.dumps(result, indent=2))
+except requests.exceptions.HTTPError:
+    print(f"Erreur HTTP {response.status_code} : {response.text}")
