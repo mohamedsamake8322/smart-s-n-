@@ -1,15 +1,14 @@
 import requests
 import json
-import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
-from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
+import geopandas as gpd
+from shapely.geometry import mapping
 
 # ────────────────────── 🔐 CREDENTIALS ──────────────────────
 CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
 CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
-
+  # <-- à vérifier
 
 # ────────────────────── 📍 LOAD GEOMETRY ──────────────────────
-# Exemple avec GADM level1 pour le Burkina Faso
 gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
 geom_json = mapping(gdf.geometry[0])  # premier polygone
 
@@ -22,7 +21,6 @@ def get_token(client_id, client_secret):
         "client_secret": client_secret
     }
     print("Payload envoyé : ", json.dumps(payload, indent=2))
-    print("Headers : ", headers)
 
     response = requests.post(url, data=payload)
     print("🔍 Réponse brute:", response.text)
@@ -33,7 +31,6 @@ token = get_token(CLIENT_ID, CLIENT_SECRET)
 print("✅ Token récupéré:", token)
 
 # ────────────────────── 🧠 EVALSCRIPT ──────────────────────
-# Cet evalscript calcule NDVI et NDMI
 evalscript = (
     "//VERSION=3\n"
     "function setup() {\n"
@@ -54,8 +51,6 @@ evalscript = (
     "  };\n"
     "}\n"
 )
-
-
 
 # ────────────────────── 📤 STATISTICS REQUEST ──────────────────────
 url = "https://services.sentinel-hub.com/api/v1/statistics"
@@ -94,18 +89,12 @@ payload = {
         "resx": 10,
         "resy": 10
     },
-    "calculations": {
-        "default": {
-            "script": evalscript,
-            "statistics": {
-                "ndvi": ["mean", "stDev"],
-                "ndmi": ["mean", "stDev"]
-            }
-        }
+    "evalscript": evalscript,
+    "statistics": {
+        "ndvi": ["mean", "stDev"],
+        "ndmi": ["mean", "stDev"]
     }
 }
-
-
 
 # ────────────────────── 📥 SEND REQUEST ──────────────────────
 response = requests.post(url, headers=headers, json=payload)
