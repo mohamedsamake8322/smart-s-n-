@@ -1,51 +1,58 @@
 import requests
 import json
-import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
-from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
+import geopandas as gpd
+from shapely.geometry import mapping
 
-# 🔐 Credentials
+# ────────────────────── 🔐 CREDENTIALS ──────────────────────
 CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
 CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
 
-# 📍 GADM level1
-gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
-geom_json = mapping(gdf.geometry[0])
 
-# 🔑 Token retrieval
+# ────────────────────── 📍 LOAD GEOMETRY ──────────────────────
+# Exemple avec GADM level1 pour le Burkina Faso
+gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
+geom_json = mapping(gdf.geometry[0])  # premier polygone
+
+# ────────────────────── 🔑 TOKEN RETRIEVAL ──────────────────────
 def get_token(client_id, client_secret):
     url = "https://services.sentinel-hub.com/oauth/token"
     payload = {
         "grant_type": "client_credentials",
-        "client_id": "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f",
-        "client_secret": "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
+        "client_id": client_id,
+        "client_secret": client_secret
     }
     response = requests.post(url, data=payload)
     print("🔍 Réponse brute:", response.text)
+    response.raise_for_status()
     return response.json()["access_token"]
 
 token = get_token(CLIENT_ID, CLIENT_SECRET)
 print("✅ Token récupéré:", token)
 
-# 🧠 Evalscript
+# ────────────────────── 🧠 EVALSCRIPT ──────────────────────
+# Cet evalscript calcule NDVI et NDMI
 evalscript = """
 //VERSION=3
 function setup() {
   return {
     input: ["B08", "B04", "B11"],
     output: [
-      { id: "ndvi", bands: 1 },
-      { id: "ndmi", bands: 1 }
+      { id: "ndvi", bands: 1, sampleType: "FLOAT32" },
+      { id: "ndmi", bands: 1, sampleType: "FLOAT32" }
     ]
   };
 }
 function evaluatePixel(sample) {
   let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
   let ndmi = (sample.B08 - sample.B11) / (sample.B08 + sample.B11);
-  return [ndvi, ndmi];
+  return {
+    ndvi: [ndvi],
+    ndmi: [ndmi]
+  };
 }
 """
 
-# 📤 Statistical request
+# ────────────────────── 📤 STATISTICS REQUEST ──────────────────────
 url = "https://services.sentinel-hub.com/api/v1/statistics"
 
 headers = {
@@ -67,7 +74,8 @@ payload = {
                 "timeRange": {
                     "from": "2023-01-01T00:00:00Z",
                     "to": "2023-12-31T23:59:59Z"
-                }
+                },
+                "mosaickingOrder": "mostRecent"
             }
         }]
     },
@@ -77,7 +85,7 @@ payload = {
             "to": "2023-12-31T23:59:59Z"
         },
         "aggregationInterval": {
-            "of": "P1Y"
+            "of": "P1Y"  # agrégation annuelle
         },
         "resolution": {
             "width": 512,
@@ -95,7 +103,8 @@ payload = {
     }
 }
 
+# ────────────────────── 📥 SEND REQUEST ──────────────────────
 response = requests.post(url, headers=headers, json=payload)
+response.raise_for_status()
 result = response.json()
 print(json.dumps(result, indent=2))
-
