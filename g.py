@@ -10,9 +10,8 @@ CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
 
 # ────────────────────── 📍 LOAD GEOMETRY ──────────────────────
 gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
-geom_json = mapping(gdf.geometry[0])  # premier polygone
+geom_json = mapping(gdf.geometry[0])
 
-# ────────────────────── 🔑 TOKEN RETRIEVAL ──────────────────────
 def get_token(client_id, client_secret):
     url = "https://services.sentinel-hub.com/oauth/token"
     payload = {
@@ -20,17 +19,13 @@ def get_token(client_id, client_secret):
         "client_id": client_id,
         "client_secret": client_secret
     }
-    print("Payload envoyé : ", json.dumps(payload, indent=2))
-
     response = requests.post(url, data=payload)
-    print("🔍 Réponse brute:", response.text)
     response.raise_for_status()
     return response.json()["access_token"]
 
 token = get_token(CLIENT_ID, CLIENT_SECRET)
-print("✅ Token récupéré:", token)
+print("Token OK")
 
-# ────────────────────── 🧠 EVALSCRIPT ──────────────────────
 evalscript = (
     "//VERSION=3\n"
     "function setup() {\n"
@@ -52,7 +47,6 @@ evalscript = (
     "}\n"
 )
 
-# ────────────────────── 📤 STATISTICS REQUEST ──────────────────────
 url = "https://services.sentinel-hub.com/api/v1/statistics"
 
 headers = {
@@ -64,9 +58,7 @@ payload = {
     "input": {
         "bounds": {
             "geometry": geom_json,
-            "properties": {
-                "crs": "EPSG:4326"
-            }
+            "properties": {"crs": "EPSG:4326"}
         },
         "data": [{
             "type": "sentinel-2-l2a",
@@ -83,9 +75,7 @@ payload = {
             "from": "2023-01-01T00:00:00Z",
             "to": "2023-12-31T23:59:59Z"
         },
-        "aggregationInterval": {
-            "of": "P1Y"
-        },
+        "aggregationInterval": {"of": "P1Y"},
         "resx": 10,
         "resy": 10
     },
@@ -96,12 +86,11 @@ payload = {
     }
 }
 
-# ────────────────────── 📥 SEND REQUEST ──────────────────────
 response = requests.post(url, headers=headers, json=payload)
 
 try:
     response.raise_for_status()
     result = response.json()
     print(json.dumps(result, indent=2))
-except requests.exceptions.HTTPError:
+except requests.exceptions.HTTPError as e:
     print(f"Erreur HTTP {response.status_code} : {response.text}")
