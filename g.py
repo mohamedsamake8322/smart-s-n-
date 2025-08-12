@@ -101,9 +101,6 @@ payload = {
     }
 }
 
-
-}
-
 # ────────────────────── 📥 SEND REQUEST ──────────────────────
 response = requests.post(url, headers=headers, json=payload)
 response.raise_for_status()
