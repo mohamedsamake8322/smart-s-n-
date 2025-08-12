@@ -1,7 +1,7 @@
 import os
 
 # 📂 Chemin du dossier à analyser
-base_path = r"C:\plateforme-agricole-complete-v2"
+base_path = r"C:\plateforme-agricole-complete-v2\gadm"
 
 # Parcours du dossier
 for root, dirs, files in os.walk(base_path):
