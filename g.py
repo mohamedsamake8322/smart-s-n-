@@ -1,21 +1,21 @@
 import requests
 import json
-import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
+import geopandas as gpd
+from shapely.geometry import mapping
 
 # 🔐 Credentials
-CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bkdjhd54f"
-CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5Oo3G784piu"
-INSTANCE_ID = "722f5a09-a6fe-49fc-a5c4-3b465d8c3c23"
+CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
+CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
 
 # 📍 GADM level1
 gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
-geom = gdf.geometry[0]
-from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
 geom_json = mapping(gdf.geometry[0])
+
+# 🔑 Token retrieval
 def get_token(client_id, client_secret):
     url = "https://services.sentinel-hub.com/oauth/token"
     payload = {
-        "grant_type": "client_credentials",  # ✅ CORRECT
+        "grant_type": "client_credentials",
         "client_id": "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f",
         "client_secret": "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
     }
@@ -23,21 +23,15 @@ def get_token(client_id, client_secret):
     print("🔍 Réponse brute:", response.text)
     return response.json()["access_token"]
 
-# Tes vraies valeurs ici
-CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
-CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5OrreE8sv1j"
 token = get_token(CLIENT_ID, CLIENT_SECRET)
 print("✅ Token récupéré:", token)
-
-# 📤 Statistical request
-url = "https://services.sentinel-hub.com/api/v1/statistics"
 
 # 🧠 Evalscript
 evalscript = """
 //VERSION=3
 function setup() {
   return {
-    input: ["B08", "B04", "B11", "B02"],
+    input: ["B08", "B04", "B11"],
     output: [
       { id: "ndvi", bands: 1 },
       { id: "ndmi", bands: 1 }
@@ -50,6 +44,9 @@ function evaluatePixel(sample) {
   return [ndvi, ndmi];
 }
 """
+
+# 📤 Statistical request
+url = "https://services.sentinel-hub.com/api/v1/statistics"
 headers = {
     "Authorization": f"Bearer {token}",
     "Content-Type": "application/json"
@@ -81,7 +78,7 @@ payload = {
             "to": "2023-12-31T23:59:59Z"
         },
         "aggregationInterval": {
-            "of": "P1Y"  # P1Y = agrégation annuelle
+            "of": "P1Y"
         },
         "resolution": {
             "width": 512,
@@ -97,8 +94,6 @@ payload = {
         }
     }
 }
-
-url = "https://services.sentinel-hub.com/api/v1/statistics"
 
 response = requests.post(url, headers=headers, json=payload)
 result = response.json()
