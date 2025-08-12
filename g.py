@@ -10,7 +10,7 @@ INSTANCE_ID = "722f5a09-a6fe-49fc-a5c4-3b465d8c3c23"
 # 📍 GADM level1
 gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
 geom = gdf.geometry[0]
-from shapely.geometry import mapping
+from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
 geom_json = mapping(gdf.geometry[0])
 
 
@@ -19,24 +19,19 @@ evalscript = """
 //VERSION=3
 function setup() {
   return {
-    input: ["B04", "B08", "B11", "CLM"],
+    input: ["B08", "B04", "B11", "B02"],
     output: [
-      { id: "ndvi", bands: 1, sampleType: "FLOAT32" },
-      { id: "ndmi", bands: 1, sampleType: "FLOAT32" }
+      { id: "ndvi", bands: 1 },
+      { id: "ndmi", bands: 1 }
     ]
   };
 }
 function evaluatePixel(sample) {
-  if (sample.CLM == 1) {
-    return { ndvi: [NaN], ndmi: [NaN] };
-  }
   let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
   let ndmi = (sample.B08 - sample.B11) / (sample.B08 + sample.B11);
-  return { ndvi: [ndvi], ndmi: [ndmi] };
+  return [ndvi, ndmi];
 }
 """
-
-
 def get_token(client_id, client_secret):
     url = "https://services.sentinel-hub.com/oauth/token"
     payload = {
@@ -51,10 +46,8 @@ def get_token(client_id, client_secret):
 # Tes vraies valeurs ici
 CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
 CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5OrreE8sv1j"
-
 token = get_token(CLIENT_ID, CLIENT_SECRET)
 print("✅ Token récupéré:", token)
-
 
 # 📤 Statistical request
 url = "https://services.sentinel-hub.com/api/v1/statistics"
@@ -62,7 +55,6 @@ headers = {
     "Authorization": f"Bearer {token}",
     "Content-Type": "application/json"
 }
-
 payload = {
     "input": {
         "bounds": {
