@@ -26,26 +26,27 @@ def get_token(client_id, client_secret):
 token = get_token(CLIENT_ID, CLIENT_SECRET)
 print("Token OK")
 
-evalscript = (
-    "//VERSION=3\n"
-    "function setup() {\n"
-    "  return {\n"
-    "    input: [\"B08\", \"B04\", \"B11\"],\n"
-    "    output: [\n"
-    "      { id: \"ndvi\", bands: 1, sampleType: \"FLOAT32\" },\n"
-    "      { id: \"ndmi\", bands: 1, sampleType: \"FLOAT32\" }\n"
-    "    ]\n"
-    "  };\n"
-    "}\n"
-    "function evaluatePixel(sample) {\n"
-    "  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);\n"
-    "  let ndmi = (sample.B08 - sample.B11) / (sample.B08 + sample.B11);\n"
-    "  return {\n"
-    "    ndvi: [ndvi],\n"
-    "    ndmi: [ndmi]\n"
-    "  };\n"
-    "}\n"
-)
+token = "TON_TOKEN_ICI"
+
+evalscript = """//VERSION=3
+function setup() {
+  return {
+    input: ["B08", "B04", "B11"],
+    output: [
+      { id: "ndvi", bands: 1, sampleType: "FLOAT32" },
+      { id: "ndmi", bands: 1, sampleType: "FLOAT32" }
+    ]
+  };
+}
+function evaluatePixel(sample) {
+  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
+  let ndmi = (sample.B08 - sample.B11) / (sample.B08 + sample.B11);
+  return {
+    ndvi: [ndvi],
+    ndmi: [ndmi]
+  };
+}
+"""
 
 url = "https://services.sentinel-hub.com/api/v1/statistics"
 
@@ -57,7 +58,10 @@ headers = {
 payload = {
     "input": {
         "bounds": {
-            "geometry": geom_json,
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[[5, 10], [5, 11], [6, 11], [6, 10], [5, 10]]]
+            },
             "properties": {"crs": "EPSG:4326"}
         },
         "data": [{
@@ -88,9 +92,5 @@ payload = {
 
 response = requests.post(url, headers=headers, json=payload)
 
-try:
-    response.raise_for_status()
-    result = response.json()
-    print(json.dumps(result, indent=2))
-except requests.exceptions.HTTPError as e:
-    print(f"Erreur HTTP {response.status_code} : {response.text}")
+print(response.status_code)
+print(response.text)
