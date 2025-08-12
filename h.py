@@ -12,10 +12,6 @@ for root, dirs, files in os.walk(base_path):
 
     print(f"\n📁 Dossier : {relative_path}")
 
-    if dirs:
-        print("   ├── Sous-dossiers :", ", ".join(dirs))
-    else:
-        print("   ├── Aucun sous-dossier")
 
     if files:
         print("   ├── Fichiers :", ", ".join(files))
