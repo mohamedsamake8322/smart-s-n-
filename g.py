@@ -81,9 +81,9 @@ payload = {
         },
         "aggregationInterval": {"of": "P1Y"},
         "resx": 10,
-        "resy": 10
+        "resy": 10,
+        "evalscript": evalscript  # ✅ Corrigé : doit être ici
     },
-    "evalscript": evalscript,
     "statistics": {
         "ndvi": ["mean", "stDev"],
         "ndmi": ["mean", "stDev"]
