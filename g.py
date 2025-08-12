@@ -62,7 +62,7 @@ payload = {
                 "type": "Polygon",
                 "coordinates": [[[5, 10], [5, 11], [6, 11], [6, 10], [5, 10]]]
             },
-            "properties": {"crs": "EPSG:4326"}
+            "properties": {"crs": "http://www.opengis.net/def/crs/EPSG/0/4326"}
         },
         "data": [{
             "type": "sentinel-2-l2a",
