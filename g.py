@@ -36,8 +36,6 @@ function evaluatePixel(sample) {
 }
 """
 
-# 🔐 Get access token
-import requests
 
 def get_token(client_id, client_secret):
     url = "https://services.sentinel-hub.com/oauth/token"
@@ -69,7 +67,9 @@ payload = {
     "input": {
         "bounds": {
             "geometry": geom_json,
-            "properties": {"crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"}
+            "properties": {
+                "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+            }
         },
         "data": [{
             "type": "sentinel-2-l2a",
@@ -85,12 +85,17 @@ payload = {
         }]
     },
     "aggregation": {
-        "timeAggregation": "yearly",
-        "aggregationInterval": {
-            "from": "2023-01-01",
-            "to": "2023-12-31"
+        "timeRange": {
+            "from": "2023-01-01T00:00:00Z",
+            "to": "2023-12-31T23:59:59Z"
         },
-        "resolution": {"width": 512, "height": 512}
+        "aggregationInterval": {
+            "of": "P1Y"  # P1Y = agrégation annuelle
+        },
+        "resolution": {
+            "width": 512,
+            "height": 512
+        }
     },
     "calculations": {
         "default": {
@@ -101,6 +106,8 @@ payload = {
         }
     }
 }
+
+url = "https://services.sentinel-hub.com/api/v1/statistics"
 
 response = requests.post(url, headers=headers, json=payload)
 result = response.json()
