@@ -47,10 +47,12 @@ function evaluatePixel(sample) {
 
 # 📤 Statistical request
 url = "https://services.sentinel-hub.com/api/v1/statistics"
+
 headers = {
     "Authorization": f"Bearer {token}",
     "Content-Type": "application/json"
 }
+
 payload = {
     "input": {
         "bounds": {
@@ -66,9 +68,6 @@ payload = {
                     "from": "2023-01-01T00:00:00Z",
                     "to": "2023-12-31T23:59:59Z"
                 }
-            },
-            "processing": {
-                "evalscript": evalscript
             }
         }]
     },
@@ -87,6 +86,7 @@ payload = {
     },
     "calculations": {
         "default": {
+            "script": evalscript,
             "statistics": {
                 "ndvi": {"stats": ["mean", "stDev"]},
                 "ndmi": {"stats": ["mean", "stDev"]}
