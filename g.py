@@ -1,7 +1,7 @@
 import requests
 import json
-import geopandas as gpd
-from shapely.geometry import mapping
+import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
+from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
 
 # 🔐 Credentials
 CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
@@ -98,3 +98,4 @@ payload = {
 response = requests.post(url, headers=headers, json=payload)
 result = response.json()
 print(json.dumps(result, indent=2))
+
