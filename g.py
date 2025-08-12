@@ -10,7 +10,9 @@ INSTANCE_ID = "722f5a09-a6fe-49fc-a5c4-3b465d8c3c23"
 # 📍 GADM level1
 gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
 geom = gdf.geometry[0]
-geom_json = json.loads(gdf.geometry[0].to_json())
+from shapely.geometry import mapping
+geom_json = mapping(gdf.geometry[0])
+
 
 # 🧠 Evalscript
 evalscript = """
