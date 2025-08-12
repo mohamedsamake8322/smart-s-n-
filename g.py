@@ -12,26 +12,6 @@ gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson
 geom = gdf.geometry[0]
 from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
 geom_json = mapping(gdf.geometry[0])
-
-
-# 🧠 Evalscript
-evalscript = """
-//VERSION=3
-function setup() {
-  return {
-    input: ["B08", "B04", "B11", "B02"],
-    output: [
-      { id: "ndvi", bands: 1 },
-      { id: "ndmi", bands: 1 }
-    ]
-  };
-}
-function evaluatePixel(sample) {
-  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
-  let ndmi = (sample.B08 - sample.B11) / (sample.B08 + sample.B11);
-  return [ndvi, ndmi];
-}
-"""
 def get_token(client_id, client_secret):
     url = "https://services.sentinel-hub.com/oauth/token"
     payload = {
@@ -51,6 +31,25 @@ print("✅ Token récupéré:", token)
 
 # 📤 Statistical request
 url = "https://services.sentinel-hub.com/api/v1/statistics"
+
+# 🧠 Evalscript
+evalscript = """
+//VERSION=3
+function setup() {
+  return {
+    input: ["B08", "B04", "B11", "B02"],
+    output: [
+      { id: "ndvi", bands: 1 },
+      { id: "ndmi", bands: 1 }
+    ]
+  };
+}
+function evaluatePixel(sample) {
+  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
+  let ndmi = (sample.B08 - sample.B11) / (sample.B08 + sample.B11);
+  return [ndvi, ndmi];
+}
+"""
 headers = {
     "Authorization": f"Bearer {token}",
     "Content-Type": "application/json"
