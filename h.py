@@ -8,7 +8,6 @@ import time
 CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
 CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
 
-# 📍 GADM level1
 def get_token(client_id, client_secret):
     url = "https://services.sentinel-hub.com/oauth/token"
     payload = {
@@ -70,25 +69,33 @@ for geojson_file in geo_dir.glob("geoBoundaries-*-ADM0.geojson"):
                         "type": "sentinel-2-l2a",
                         "dataFilter": {
                             "timeRange": {
-                                "from": "2023-01-01T00:00:00Z",
-                                "to": "2023-12-31T23:59:59Z"
+                                "from": "2021-01-01T00:00:00Z",
+                                "to": "2021-12-31T23:59:59Z"
                             }
                         }
                     }]
                 },
                 "aggregation": {
                     "timeRange": {
-                        "from": "2023-01-01T00:00:00Z",
-                        "to": "2023-12-31T23:59:59Z"
+                        "from": "2021-01-01T00:00:00Z",
+                        "to": "2021-12-31T23:59:59Z"
                     },
                     "aggregationInterval": {"of": "P1Y"},
                     "resx": 10,
                     "resy": 10,
                     "evalscript": evalscript
                 },
-                "statistics": {
-                    "ndvi": ["mean", "stDev"],
-                    "ndmi": ["mean", "stDev"]
+                "calculations": {
+                    "default": {
+                        "statistics": {
+                            "ndvi": {
+                                "statistics": ["mean", "min", "max", "stDev", "percentile(25)", "percentile(75)"]
+                            },
+                            "ndmi": {
+                                "statistics": ["mean", "min", "max", "stDev"]
+                            }
+                        }
+                    }
                 }
             }
 
@@ -100,12 +107,12 @@ for geojson_file in geo_dir.glob("geoBoundaries-*-ADM0.geojson"):
             response.raise_for_status()
             result = response.json()
 
-            out_path = output_dir / f"{iso3}_{adm_level}_{idx}_2023.json"
+            out_path = output_dir / f"{iso3}_{adm_level}_{idx}_2021.json"
             with open(out_path, "w", encoding="utf-8") as f:
                 json.dump(result, f, indent=2)
 
             print(f"✅ {iso3} zone {idx} OK")
-            time.sleep(1)  # Pause pour éviter surcharge API
+            time.sleep(1)
 
     except Exception as e:
         print(f"❌ Erreur {iso3}: {e}")
