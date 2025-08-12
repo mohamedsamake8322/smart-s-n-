@@ -1,8 +1,8 @@
 from pathlib import Path
-import geopandas as gpd
+import geopandas as gpd # type: ignore
 import requests
 import json
-from shapely.geometry import mapping
+from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
 import time
 # 🔐 Credentials
 CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
