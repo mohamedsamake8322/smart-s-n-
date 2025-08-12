@@ -2,10 +2,10 @@ import geopandas as gpd
 from pathlib import Path
 
 # Chemin d'entrée
-input_path = Path(r"C:\Users\moham\Music\Album 4\geoBoundariesCGAZ_ADM0.geojson")
+input_path = Path(r"C:\Users\moham\Music\Album 4\geoBoundariesCGAZ_ADM1.geojson")
 
 # Chemin de sortie
-output_dir = Path(r"C:\plateforme-agricole-complete-v2\geoboundaries\ADM0")
+output_dir = Path(r"C:\plateforme-agricole-complete-v2\geoboundaries\ADM1")
 output_dir.mkdir(parents=True, exist_ok=True)
 
 # Charger le fichier GeoJSON
