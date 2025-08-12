@@ -2,7 +2,8 @@ import os
 import geopandas as gpd  # type: ignore
 import pandas as pd
 from sentinelhub import SHConfig, Geometry, CRS, DataCollection
-from sentinelhub.api import StatisticalRequest, SentinelHubStatistical
+from sentinelhub.statistical import StatisticalRequest, SentinelHubStatistical
+
 
 # 📍 Dossiers
 GADM_ROOT = r"C:\plateforme-agricole-complete-v2\gadm"
