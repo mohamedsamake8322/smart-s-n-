@@ -1,9 +1,8 @@
 import os
-import geopandas as gpd # type: ignore
+import geopandas as gpd  # type: ignore
 import pandas as pd
-from sentinelhub import ( # pyright: ignore[reportMissingImports]
-    SHConfig, Geometry, CRS, SentinelHubStatistical, StatisticalRequest, DataCollection
-)
+from sentinelhub import SHConfig, Geometry, CRS, DataCollection
+from sentinelhub.api import StatisticalRequest, SentinelHubStatistical
 
 # 📍 Dossiers
 GADM_ROOT = r"C:\plateforme-agricole-complete-v2\gadm"
@@ -37,11 +36,11 @@ function evaluatePixel(sample) {
 }
 """
 
-def process_country(country_code):
+def process_country(country_code: str):
     country_path = os.path.join(GADM_ROOT, country_code)
     level1_path = os.path.join(country_path, "level1.geojson")
     if not os.path.exists(level1_path):
-        print(f"❌ Aucun level1 pour {country_code}")
+        print(f"❌ Aucun level1.geojson pour {country_code}")
         return
 
     gadm1 = gpd.read_file(level1_path)
@@ -50,9 +49,14 @@ def process_country(country_code):
 
     for year in range(2021, 2026):
         records = []
+        print(f"📅 {country_code} - Année {year} - {len(gadm1)} régions")
         for i, row in gadm1.iterrows():
             name = row.get("NAME_1", f"region_{i}")
             gid = row.get("GID_1", f"GID_{i}")
+            if row.geometry is None or row.geometry.is_empty:
+                print(f"⚠️ Géométrie vide pour {name}, ignorée")
+                continue
+
             geom = Geometry(row.geometry.to_wkt(), CRS.WGS84)
 
             request = StatisticalRequest(
@@ -99,11 +103,13 @@ def process_country(country_code):
             except Exception as e:
                 print(f"⚠️ Erreur pour {name} ({year}) → {e}")
 
-        # Sauvegarde
-        df = pd.DataFrame(records)
-        output_file = os.path.join(output_dir, f"{country_code}_{year}_stats.csv.gz")
-        df.to_csv(output_file, index=False, compression="gzip")
-        print(f"✅ {country_code} {year} exporté → {output_file}")
+        if records:
+            df = pd.DataFrame(records)
+            output_file = os.path.join(output_dir, f"{country_code}_{year}_stats.csv.gz")
+            df.to_csv(output_file, index=False, compression="gzip")
+            print(f"✅ Exporté : {output_file}")
+        else:
+            print(f"⚠️ Aucun résultat pour {country_code} {year}")
 
 def run_statistical_pipeline():
     for country_code in os.listdir(GADM_ROOT):
