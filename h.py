@@ -4,8 +4,8 @@ import geopandas as gpd
 from shapely.geometry import mapping
 
 # 🔐 Credentials
-CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd874lf"
-CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ54reE8sv1j"
+CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
+CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
 
 # 📍 GADM level1
 gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
