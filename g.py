@@ -1,21 +1,18 @@
-import os
-import geopandas as gpd  # type: ignore
-import pandas as pd
-from sentinelhub import SHConfig, Geometry, CRS, DataCollection
-from sentinelhub.statistical import StatisticalRequest, SentinelHubStatistical
-
-
-# 📍 Dossiers
-GADM_ROOT = r"C:\plateforme-agricole-complete-v2\gadm"
-OUTPUT_ROOT = r"C:\plateforme-agricole-complete-v2\ndvi_statistical"
+import requests
+import json
+import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
 
 # 🔐 Credentials
-config = SHConfig()
-config.instance_id = "722f5a09-a6fe-49fc-a5c4-3b465d8c3c23"
-config.sh_client_id = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
-config.sh_client_secret = "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
+CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bkdjhd54f"
+CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5Oo3G784piu"
+INSTANCE_ID = "722f5a09-a6fe-49fc-a5c4-3b465d8c3c23"
 
-# 🧠 Evalscript NDVI + NDMI avec masque nuage
+# 📍 GADM level1
+gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
+geom = gdf.geometry[0]
+geom_json = json.loads(gdf.geometry[0].to_json())
+
+# 🧠 Evalscript
 evalscript = """
 //VERSION=3
 function setup() {
@@ -37,87 +34,63 @@ function evaluatePixel(sample) {
 }
 """
 
-def process_country(country_code: str):
-    country_path = os.path.join(GADM_ROOT, country_code)
-    level1_path = os.path.join(country_path, "level1.geojson")
-    if not os.path.exists(level1_path):
-        print(f"❌ Aucun level1.geojson pour {country_code}")
-        return
+# 🔐 Get access token
+def get_token(client_id, client_secret):
+    url = "https://services.sentinel-hub.com/oauth/token"
+    payload = {
+        "grant_type": "client_credentials",
+        "client_id": client_id,
+        "client_secret": client_secret
+    }
+    response = requests.post(url, data=payload)
+    return response.json()["access_token"]
 
-    gadm1 = gpd.read_file(level1_path)
-    output_dir = os.path.join(OUTPUT_ROOT, country_code)
-    os.makedirs(output_dir, exist_ok=True)
+token = get_token(CLIENT_ID, CLIENT_SECRET)
 
-    for year in range(2021, 2026):
-        records = []
-        print(f"📅 {country_code} - Année {year} - {len(gadm1)} régions")
-        for i, row in gadm1.iterrows():
-            name = row.get("NAME_1", f"region_{i}")
-            gid = row.get("GID_1", f"GID_{i}")
-            if row.geometry is None or row.geometry.is_empty:
-                print(f"⚠️ Géométrie vide pour {name}, ignorée")
-                continue
+# 📤 Statistical request
+url = "https://services.sentinel-hub.com/api/v1/statistics"
+headers = {
+    "Authorization": f"Bearer {token}",
+    "Content-Type": "application/json"
+}
 
-            geom = Geometry(row.geometry.to_wkt(), CRS.WGS84)
+payload = {
+    "input": {
+        "bounds": {
+            "geometry": geom_json,
+            "properties": {"crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"}
+        },
+        "data": [{
+            "type": "sentinel-2-l2a",
+            "dataFilter": {
+                "timeRange": {
+                    "from": "2023-01-01T00:00:00Z",
+                    "to": "2023-12-31T23:59:59Z"
+                }
+            },
+            "processing": {
+                "evalscript": evalscript
+            }
+        }]
+    },
+    "aggregation": {
+        "timeAggregation": "yearly",
+        "aggregationInterval": {
+            "from": "2023-01-01",
+            "to": "2023-12-31"
+        },
+        "resolution": {"width": 512, "height": 512}
+    },
+    "calculations": {
+        "default": {
+            "statistics": {
+                "ndvi": {"stats": ["mean", "stDev"]},
+                "ndmi": {"stats": ["mean", "stDev"]}
+            }
+        }
+    }
+}
 
-            request = StatisticalRequest(
-                input_data=[{
-                    "dataCollection": DataCollection.SENTINEL2_L2A,
-                    "timeRange": {
-                        "from": f"{year}-01-01T00:00:00Z",
-                        "to": f"{year}-12-31T23:59:59Z"
-                    },
-                    "processing": {"evalscript": evalscript}
-                }],
-                aggregation={
-                    "timeAggregation": "YEAR",
-                    "aggregationInterval": {
-                        "from": f"{year}-01-01",
-                        "to": f"{year}-12-31"
-                    },
-                    "resolution": {"width": 512, "height": 512}
-                },
-                geometry=geom,
-                calculations={
-                    "default": {
-                        "statistics": {
-                            "ndvi": {"stats": ["mean", "stDev"]},
-                            "ndmi": {"stats": ["mean", "stDev"]}
-                        }
-                    }
-                },
-                config=config
-            )
-
-            try:
-                response = request.get_data()
-                stats = response['data'][0]['outputs']['default']['bands']
-                records.append({
-                    "year": year,
-                    "GID_1": gid,
-                    "NAME_1": name,
-                    "NDVI_mean": stats['ndvi']['stats']['mean'],
-                    "NDVI_std": stats['ndvi']['stats']['stDev'],
-                    "NDMI_mean": stats['ndmi']['stats']['mean'],
-                    "NDMI_std": stats['ndmi']['stats']['stDev']
-                })
-            except Exception as e:
-                print(f"⚠️ Erreur pour {name} ({year}) → {e}")
-
-        if records:
-            df = pd.DataFrame(records)
-            output_file = os.path.join(output_dir, f"{country_code}_{year}_stats.csv.gz")
-            df.to_csv(output_file, index=False, compression="gzip")
-            print(f"✅ Exporté : {output_file}")
-        else:
-            print(f"⚠️ Aucun résultat pour {country_code} {year}")
-
-def run_statistical_pipeline():
-    for country_code in os.listdir(GADM_ROOT):
-        country_path = os.path.join(GADM_ROOT, country_code)
-        if os.path.isdir(country_path):
-            print(f"\n🌍 Traitement de {country_code}")
-            process_country(country_code)
-
-if __name__ == "__main__":
-    run_statistical_pipeline()
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
+print(json.dumps(result, indent=2))
