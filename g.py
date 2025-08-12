@@ -42,6 +42,7 @@ function setup() {
     ]
   };
 }
+
 function evaluatePixel(sample) {
   let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
   let ndmi = (sample.B08 - sample.B11) / (sample.B08 + sample.B11);
@@ -51,6 +52,7 @@ function evaluatePixel(sample) {
   };
 }
 """
+
 
 # ────────────────────── 📤 STATISTICS REQUEST ──────────────────────
 url = "https://services.sentinel-hub.com/api/v1/statistics"
@@ -93,14 +95,15 @@ payload = {
         }
     },
     "calculations": {
-        "default": {
-            "script": evalscript,
-            "statistics": {
-                "ndvi": {"stats": ["mean", "stDev"]},
-                "ndmi": {"stats": ["mean", "stDev"]}
-            }
+    "default": {
+        "script": evalscript,
+        "statistics": {
+            "ndvi": {"stats": ["mean", "stDev"]},
+            "ndmi": {"stats": ["mean", "stDev"]}
         }
     }
+}
+
 }
 
 # ────────────────────── 📥 SEND REQUEST ──────────────────────
