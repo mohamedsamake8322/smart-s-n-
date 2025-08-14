@@ -1,12 +1,11 @@
+import os
 import requests
 import json
-import geopandas as gpd # pyright: ignore[reportMissingModuleSource]
-from shapely.geometry import mapping # pyright: ignore[reportMissingModuleSource]
-
+import geopandas as gpd
+from shapely.geometry import mapping
 # ────────────────────── 🔐 CREDENTIALS ──────────────────────
-CLIENT_ID = "e4e33c23-cc62-40c4-b6e1-ef4a0bd9638f"
-CLIENT_SECRET = "1VMH5xdZ6tjv06K1ayhCJ5Oo3GE8sv1j"
-  # <-- à vérifier
+CLIENT_ID = "7e9fed76-ac65-4c22-af08-1cca357dd856"
+CLIENT_SECRET = "1t2H088gQGi7AUqJc2mcpL3gS9xhW17V"
 
 # ────────────────────── 📍 LOAD GEOMETRY ──────────────────────
 gdf = gpd.read_file(r"C:\plateforme-agricole-complete-v2\gadm\BFA\level1.geojson")
@@ -26,7 +25,9 @@ def get_token(client_id, client_secret):
 token = get_token(CLIENT_ID, CLIENT_SECRET)
 print("Token OK")
 
-token =""
+print("✅ Token OK")
+
+# ────────────────────── 📜 EVALSCRIPT ──────────────────────
 evalscript = """//VERSION=3
 function setup() {
   return {
@@ -47,49 +48,71 @@ function evaluatePixel(sample) {
 }
 """
 
-url = "https://services.sentinel-hub.com/api/v1/statistics"
+# ────────────────────── 📦 LOOP OVER FILES ──────────────────────
+from pathlib import Path
 
-headers = {
-    "Authorization": f"Bearer {token}",
-    "Content-Type": "application/json"
-}
+GEO_ROOT = Path(r"C:\plateforme-agricole-complete-v2\geoboundaries")
 
-payload = {
-    "input": {
-        "bounds": {
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[5, 10], [5, 11], [6, 11], [6, 10], [5, 10]]]
-            },
-            "properties": {"crs": "http://www.opengis.net/def/crs/EPSG/0/4326"}
-        },
-        "data": [{
-            "type": "sentinel-2-l2a",
-            "dataFilter": {
-                "timeRange": {
-                    "from": "2023-01-01T00:00:00Z",
-                    "to": "2023-12-31T23:59:59Z"
+for level in ["ADM0", "ADM1", "ADM2"]:
+    level_path = GEO_ROOT / level
+    for geojson_file in level_path.glob(f"geoBoundaries-*-{level}.geojson"):
+        iso3 = geojson_file.stem.split("-")[1]  # Extrait "BFA" depuis "geoBoundaries-BFA-ADM0.geojson"
+        gdf = gpd.read_file(geojson_file)
+        print(f"📍 {geojson_file.name} contient {len(gdf)} zones")
+
+        for i, row in gdf.iterrows():
+            geom_json = mapping(row.geometry)
+            print(f"→ Traitement {iso3}-{level} zone {i}")
+
+            payload = {
+                "input": {
+                    "bounds": {
+                        "geometry": geom_json,
+                        "properties": {
+                            "crs": "http://www.opengis.net/def/crs/EPSG/0/4326"
+                        }
+                    },
+                    "data": [{
+                        "type": "sentinel-2-l2a",
+                        "dataFilter": {
+                            "timeRange": {
+                                "from": "2021-01-01T00:00:00Z",
+                                "to": "2025-08-13T23:59:59Z"
+                            }
+                        }
+                    }]
+                },
+                "aggregation": {
+                    "timeRange": {
+                        "from": "2021-01-01T00:00:00Z",
+                        "to": "2025-08-13T23:59:59Z"
+                    },
+                    "aggregationInterval": {"of": "P1Y"},
+                    "resx": 100,
+                    "resy": 100,
+                    "evalscript": evalscript
+                },
+                "statistics": {
+                    "ndvi": ["mean", "stDev"],
+                    "ndmi": ["mean", "stDev"]
                 }
             }
-        }]
-    },
-    "aggregation": {
-        "timeRange": {
-            "from": "2023-01-01T00:00:00Z",
-            "to": "2023-12-31T23:59:59Z"
-        },
-        "aggregationInterval": {"of": "P1Y"},
-        "resx": 10,
-        "resy": 10,
-        "evalscript": evalscript  # ✅ Corrigé : doit être ici
-    },
-    "statistics": {
-        "ndvi": ["mean", "stDev"],
-        "ndmi": ["mean", "stDev"]
-    }
-}
 
-response = requests.post(url, headers=headers, json=payload)
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
 
-print(response.status_code)
-print(response.text)
+            response = requests.post(
+                "https://services.sentinel-hub.com/api/v1/statistics",
+                headers=headers,
+                json=payload
+            )
+
+            if response.ok:
+                stats = response.json()
+                print(f"✅ {level} {iso3} zone {i} → OK")
+                print(json.dumps(stats, indent=2))
+            else:
+                print(f"❌ {level} {iso3} zone {i} → Error")
+                print(response.text)
