@@ -40,7 +40,7 @@ FRACTIONNEMENTS = {
 }
 
 # ----- CHARGEMENT DU MODELE XGBOOST -----
-MODEL_PATH = "C:\plateforme-agricole-complete-v2\models\xgb_mali_model.pkl"
+MODEL_PATH = "C:\\plateforme-agricole-complete-v2\\models\\xgb_mali_model.pkl"
 model = joblib.load(MODEL_PATH)
 
 # ----- UI STREAMLIT -----
