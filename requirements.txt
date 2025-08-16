@@ -12,3 +12,4 @@ odc==0.1.2
 plotly==5.22.0
 SpeechRecognition==3.10.0
 fpdf2
+qrcode[pil]
