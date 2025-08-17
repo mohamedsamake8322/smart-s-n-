@@ -815,3 +815,146 @@ def fuse_all():
     print(f"📊 Dimensions : {df.shape[0]} lignes × {df.shape[1]} colonnes")
 
 fuse_all()
+
+
+
+
+
+VériFication
+import pandas as pd
+
+# --- Charger le dataset satellite ---
+file_path = r"C:\Users\moham\Music\faostat\agro_dataset_mali.csv"
+df = pd.read_csv(file_path)
+
+print("📥 Dimensions :", df.shape)
+print("\n🔎 Aperçu des colonnes :")
+print(df.columns.tolist())
+
+# --- Vérification de base ---
+print("\n🔁 Doublons :", df.duplicated().sum())
+print("❌ Valeurs manquantes par colonne :\n", df.isna().sum())
+print("📅 Années uniques :", df['year'].unique() if 'year' in df.columns else "⚠️ Pas de colonne 'year'")
+print("🌍 Pays uniques :", df['country'].unique() if 'country' in df.columns else "⚠️ Pas de colonne 'country'")
+
+# --- Nettoyage ---
+# Supprimer doublons
+df = df.drop_duplicates()
+
+# Supprimer années aberrantes si 'year' existe
+if 'year' in df.columns:
+    df = df[(df['year'] >= 1980) & (df['year'] <= 2100)]
+
+# Vérifier colonnes numériques
+num_cols = df.select_dtypes(include=['float64','int64']).columns
+print("\n📊 Colonnes numériques :", num_cols.tolist())
+
+# Sauvegarder dataset nettoyé
+output_file = r"C:\Users\moham\Music\faostat\agro_dataset_mali_clean.csv"
+df.to_csv(output_file, index=False, encoding="utf-8-sig")
+
+print(f"\n✅ Dataset nettoyé sauvegardé : {output_file}")
+print("📊 Dimensions finales :", df.shape)
+
+
+
+
+Fusion FOASTAT ET NDVI ET AUTRES
+import pandas as pd
+
+# 📥 Chargement des datasets
+agro_path = r"C:\Users\moham\Music\faostat\agro_dataset_mali_clean.csv"
+faostat_path = r"C:\Users\moham\Music\faostat\faostat_fusion_clean.csv"
+
+agro_df = pd.read_csv(agro_path)
+fao_df = pd.read_csv(faostat_path)
+
+# 🏷 Normalisation des colonnes FAOSTAT
+fao_df = fao_df.rename(columns={"Area": "country", "Year": "year", "Value": "value"})
+
+# ⚠ Filtrer uniquement Mali et années présentes dans agro_df
+years_in_agro = agro_df["year"].unique()
+fao_df = fao_df[(fao_df["country"] == "Mali") & (fao_df["year"].isin(years_in_agro))]
+
+# 🔄 Créer colonne combinée Element + Item pour pivot
+fao_df["element_item"] = fao_df["Element"] + "_" + fao_df["Item"]
+
+# 🔀 Pivot pour transformer lignes en colonnes
+fao_pivot = fao_df.pivot_table(
+    index=["country", "year"],
+    columns="element_item",
+    values="value",
+    aggfunc="first"
+).reset_index()
+
+# 🧩 Fusion avec le dataset agro
+merged_df = pd.merge(
+    agro_df,
+    fao_pivot,
+    how="left",
+    left_on=["year"],
+    right_on=["year"]
+)
+
+# 💾 Sauvegarde
+output_path = r"C:\Users\moham\Music\faostat\agro_dataset_mali_faostat.csv"
+merged_df.to_csv(output_path, index=False)
+print(f"✅ Fusion réussie, fichier sauvegardé : {output_path}")
+print(f"📊 Dimensions finales : {merged_df.shape}")
+
+
+Fusionnnn
+import pandas as pd
+
+# ⚙️ Paths
+agro_path = r"C:\Users\moham\Music\faostat\agro_dataset_mali_clean.csv"
+faostat_path = r"C:\Users\moham\Music\faostat\faostat_fusion_clean.csv"
+output_path = r"C:\Users\moham\Music\faostat\agro_dataset_mali_faostat.csv"
+
+print("📥 Chargement des fichiers...")
+agro_df = pd.read_csv(agro_path)
+fao_df = pd.read_csv(faostat_path, low_memory=False)  # évite DtypeWarning
+
+print(f"Agro-environnemental : {agro_df.shape}")
+print(f"FAOSTAT : {fao_df.shape}")
+
+# 🧹 Nettoyage dataset agro
+agro_df = agro_df.dropna(subset=['year'])
+agro_df['year'] = agro_df['year'].astype(int)
+print(f"✅ Dataset agro nettoyé : {agro_df.shape}")
+
+# 🧹 Pivot FAOSTAT : Item x Element
+fao_pivot = fao_df.pivot_table(
+    index=['Area','Year'],
+    columns=['Item','Element'],
+    values='Value',
+    aggfunc='sum'
+).reset_index()
+
+# 🧹 Aplatir les colonnes multi-index
+fao_pivot.columns = [
+    '_'.join(map(str, col)).strip() if isinstance(col, tuple) else col
+    for col in fao_pivot.columns.values
+]
+
+# Renommer les colonnes pour le merge
+if 'Area_' in fao_pivot.columns: fao_pivot = fao_pivot.rename(columns={'Area_':'Area'})
+if 'Year_' in fao_pivot.columns: fao_pivot = fao_pivot.rename(columns={'Year_':'Year'})
+
+print(f"✅ FAOSTAT pivoté : {fao_pivot.shape}")
+
+# 🔗 Fusion des datasets
+final_df = agro_df.merge(
+    fao_pivot,
+    left_on=['adm_id','year'],
+    right_on=['Area','Year'],
+    how='left'
+)
+
+# Supprimer les colonnes redondantes après merge
+final_df = final_df.drop(columns=['Area','Year'], errors='ignore')
+
+# 💾 Sauvegarde
+final_df.to_csv(output_path, index=False)
+print(f"✅ Fusion réussie, fichier sauvegardé : {output_path}")
+print(f"📊 Dimensions finales : {final_df.shape}")
