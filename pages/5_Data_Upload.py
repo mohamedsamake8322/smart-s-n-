@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import io
 from datetime import datetime
-from utils.data_processing import validate_agricultural_data, clean_agricultural_data
+from utils.data_processing1 import validate_agricultural_data, clean_agricultural_data
 
 
 st.set_page_config(page_title="Data Upload", page_icon="📁", layout="wide")

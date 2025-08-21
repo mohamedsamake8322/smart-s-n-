@@ -26,7 +26,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from utils.ml_models import YieldPredictor
 from utils.weather_api import WeatherAPI
-from utils.data_processing import validate_agricultural_data
+from utils.data_processing1 import validate_agricultural_data
 
 # Configuration FastAPI
 app = FastAPI(

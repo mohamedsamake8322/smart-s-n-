@@ -7,7 +7,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, r2_score
 from utils.ml_models import YieldPredictor, prepare_prediction_data
-from utils.data_processing import get_sample_agricultural_data
+from utils.data_processing1 import get_sample_agricultural_data
 
 
 st.set_page_config(page_title="Yield Prediction", page_icon="🔮", layout="wide")

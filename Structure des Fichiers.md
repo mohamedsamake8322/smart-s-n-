@@ -1,16 +1,16 @@
-SMAP_SoilMoisture_Mali.csv (['system:index', 'ADM0_CODE', 'ADM0_NAME', 'ADM1_CODE', 'ADM1_NAME',
- 'DISP_AREA', 'EXP1_YEAR', 'STATUS', 'STR1_YEAR',
- 'Shape_Area', 'Shape_Leng', 'mean', '.geo']
-)
+script pour connaitre les noms des Fichiers d'un dossier
+import os
 
-WorldClim BIO MLI Variables V1.csv (🔹 Colonnes du fichier :
-['system:index', 'ADM0_CODE', 'ADM0_NAME', 'ADM1_CODE', 'ADM1_NAME', 'DISP_AREA', 'EXP1_YEAR', 'STATUS', 'STR1_YEAR', 'Shape_Area', 'Shape_Leng', 'bio01', 'bio02', 'bio03', 'bio04', 'bio05', 'bio06', 'bio07', 'bio08', 'bio09', 'bio10', 'bio11', 'bio12', 'bio13', 'bio14', 'bio15', 'bio16', 'bio17', 'bio18', 'bio19', '.geo'])
-WorldClim Mali Monthly V1.csv(🔹 Colonnes du fichier :
-['system:index', 'ADM0_CODE', 'ADM0_NAME', 'ADM1_CODE', 'ADM1_NAME', 'DISP_AREA', 'EXP1_YEAR', 'STATUS', 'STR1_YEAR', 'Shape_Area', 'Shape_Leng', 'prec', 'tavg', 'tmax', 'tmin', '.geo'])
-CHIRPS_SMAP_DAILY_PENTMli.csv(🔹 Colonnes du fichier :
-['system:index', 'ADM0_CODE', 'ADM0_NAME', 'ADM1_CODE', 'ADM1_NAME', 'CHIRPS_Daily', 'CHIRPS_Pentad', 'DISP_AREA', 'EXP1_YEAR', 'SMAP_SoilMoisture', 'STATUS', 'STR1_YEAR', 'Shape_Area', 'Shape_Leng', '.geo'] )
-GEDI_Mangrove_CSV_Mali_Single.csv(🔹 Colonnes du fichier :
-['system:index', 'ADM0_NAME', 'ADM1_NAME', 'GEDI_CanopyHeight', 'Mangrove2000', 'TidalWetlands2019', '.geo'])
+# Chemin du dossier
+folder_path = r"C:\plateforme-agricole-complete-v2\pages"
+
+# Vérifier si le dossier existe
+if os.path.exists(folder_path):
+    print(f"📂 Contenu du dossier : {folder_path}\n")
+    for item in os.listdir(folder_path):
+        print(item)
+else:
+    print(f"⚠️ Le dossier {folder_path} n'existe pas.")
 
 
 
