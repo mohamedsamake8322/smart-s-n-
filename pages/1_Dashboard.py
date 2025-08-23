@@ -5,7 +5,8 @@ import plotly.express as px
 import io
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
-
+from utils.earth_engine_loader import get_agro_indicators
+import ee
 # ---------------------------
 # Page config FIRST
 # ---------------------------
@@ -59,10 +60,15 @@ except ImportError:
             "region": rng.choice(["Mali", "Senegal", "Côte d’Ivoire"], size=n_days),
         })
         return df
-
-    def load_and_merge_indicators(*args, **kwargs):  # noqa: F401
-        st.info("Using placeholder for load_and_merge_indicators(). Provide real implementation in utils.data_processing.")
-        return get_sample_agricultural_data()
+def load_and_merge_indicators(base_path=None):
+    # Exemple : rectangle autour de Manisa
+    geometry = ee.Geometry.Rectangle([27.3, 38.5, 27.7, 38.7])
+    df = get_agro_indicators(geometry, n_days=30)
+    df["crop_type"] = "Maize"  # Placeholder
+    df["area"] = 4.0
+    df["yield"] = df["ndvi"] * 3.2  # Simple proxy
+    df["profit"] = df["yield"] * df["area"] * 150 - df["area"] * 40
+    return df
 
 # ---------------------------
 # Helpers

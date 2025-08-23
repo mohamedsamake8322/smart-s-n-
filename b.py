@@ -1,49 +1,34 @@
-import os
 import pandas as pd
+import os
 
-# 📁 Dossier contenant les fichiers CSV
-folder_path = r"C:\Users\moham\Music\Moh"
+data_path = "C:/plateforme-agricole-complete-v2/data"
+spei_file = os.path.join(data_path, "SPEI_Mali_ADM2_20250821_1546.csv")
+modis_file = os.path.join(data_path, "MODIS_VI_Mali_2020_2025_mali_20250821_1503.csv")
 
-# 📊 Dictionnaire pour stocker les colonnes par fichier
-schema_dict = {}
+spei = pd.read_csv(spei_file)
+modis = pd.read_csv(modis_file)
 
-# 🔍 Parcours des fichiers
-for filename in os.listdir(folder_path):
-    if filename.endswith(".csv"):
-        file_path = os.path.join(folder_path, filename)
-        try:
-            df = pd.read_csv(file_path, nrows=5)  # Lecture rapide
-            schema_dict[filename] = list(df.columns)
-        except Exception as e:
-            schema_dict[filename] = [f"Erreur de lecture: {e}"]
+# Normaliser les colonnes
+spei.columns = spei.columns.str.lower()
+modis.columns = modis.columns.str.lower()
 
-# 📋 Analyse des colonnes
-all_columns = set()
-for cols in schema_dict.values():
-    if isinstance(cols, list):
-        all_columns.update(cols)
+# Id uniques
+spei_ids = spei['adm2_id'].unique()
+modis_ids = modis['adm2_id'].unique()
 
-# 🧠 Rapport fusion
-report_lines = []
-report_lines.append("🧾 Rapport de colonnes pour fusion\n")
-report_lines.append(f"📁 Dossier analysé : {folder_path}\n")
-report_lines.append("📦 Colonnes par fichier :\n")
+# Créer un dataframe pour le mapping
+mapping_df = pd.DataFrame({'spei_id': spei_ids})
 
-for file, cols in schema_dict.items():
-    report_lines.append(f"\n➡️ {file} :")
-    if isinstance(cols, list):
-        for col in cols:
-            report_lines.append(f"   - {col}")
-    else:
-        report_lines.append(f"   ⚠️ {cols}")
+# Tenter un mapping via les noms si disponible
+if 'adm2_name' in modis.columns:
+    modis_map = modis[['adm2_id', 'adm2_name']].drop_duplicates().set_index('adm2_id')['adm2_name']
+    mapping_df['modis_name'] = mapping_df['spei_id'].map(modis_map)
 
-report_lines.append("\n🧮 Colonnes totales détectées :")
-for col in sorted(all_columns):
-    report_lines.append(f" - {col}")
+# Pour les ids non trouvés, garder l'id comme fallback
+mapping_df['modis_id'] = mapping_df['spei_id']
+mapping_df['modis_name'] = mapping_df['modis_name'].fillna(mapping_df['spei_id'])
 
-# 📝 Sauvegarde du rapport
-report_path = os.path.join(folder_path, "fusion_schema_report.txt")
-with open(report_path, "w", encoding="utf-8") as f:
-    f.write("\n".join(report_lines))
-
-print(f"✅ Rapport généré : {report_path}")
+# Sauvegarde
+out_file = os.path.join(data_path, "spei_to_modis_mapping.csv")
+mapping_df.to_csv(out_file, index=False)
+print(f"[SAVED] {out_file} ({len(mapping_df)} lignes)")

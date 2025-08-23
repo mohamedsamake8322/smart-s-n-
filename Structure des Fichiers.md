@@ -4,7 +4,7 @@ script pour connaitre les noms des Fichiers d'un dossier
 import os
 
 # Chemin du dossier
-folder_path = r"C:\Users\moham\Music\Moh"
+folder_path = r"C:\plateforme-agricole-complete-v2\pages"
 
 # Vérifier si le dossier existe
 if os.path.exists(folder_path):
