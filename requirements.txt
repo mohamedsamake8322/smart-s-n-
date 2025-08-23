@@ -14,3 +14,4 @@ SpeechRecognition==3.10.0
 fpdf2
 qrcode[pil]
 xgboost==1.7.5
+earthengine-api
