@@ -69,15 +69,29 @@ except ImportError:
             "region": rng.choice(["Mali", "Senegal", "Côte d’Ivoire"], size=n_days),
         })
         return df
-def load_and_merge_indicators(base_path=None):
+def load_and_merge_indicators(base_path=None, n_days: int = 30):
+    """
+    Charge les indicateurs agricoles depuis Google Earth Engine pour une zone prédéfinie
+    et calcule des colonnes supplémentaires comme rendement et profit.
+
+    Args:
+        base_path: Chemin de base pour d'éventuelles données locales (non utilisé ici)
+        n_days: Nombre de jours à considérer pour récupérer les indicateurs
+    Returns:
+        pd.DataFrame avec les indicateurs et colonnes calculées
+    """
     # Exemple : rectangle autour de Manisa
-    geometry = ee.Geometry.Rectangle([27.3, 38.5, 27.7, 38.7])
-    df = get_agro_indicators(geometry, n_days=30)
-    df["crop_type"] = "Maize"  # Placeholder
-    df["area"] = 4.0
-    df["yield"] = df["ndvi"] * 3.2  # Simple proxy
+    # Remarque : geometry est défini globalement dans get_agro_indicators
+    df = get_agro_indicators(n_days=n_days)
+
+    # Ajout de colonnes calculées
+    df["crop_type"] = "Maize"       # Placeholder
+    df["area"] = 4.0                 # hectares, placeholder
+    df["yield"] = df["NDVI"] * 3.2   # Simple proxy pour rendement
     df["profit"] = df["yield"] * df["area"] * 150 - df["area"] * 40
+
     return df
+
 
 # ---------------------------
 # Helpers
