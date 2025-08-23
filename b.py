@@ -1,57 +1,49 @@
+import os
 import pandas as pd
 
-def charger_csv(path):
-    try:
-        return pd.read_csv(path)
-    except UnicodeDecodeError:
-        return pd.read_csv(path, encoding="latin1")
+# 📁 Dossier contenant les fichiers CSV
+folder_path = r"C:\Users\moham\Music\Moh"
 
-def fusionner_csv(file1, file2, output_file, keys=None):
-    # Charger
-    df1 = charger_csv(file1)
-    df2 = charger_csv(file2)
+# 📊 Dictionnaire pour stocker les colonnes par fichier
+schema_dict = {}
 
-    # Renommer pour compatibilité
-    rename_map = {"adm2_id": "ADM2_ID", "Year": "year", "VALUE": "value"}
-    df1.rename(columns=rename_map, inplace=True)
-    df2.rename(columns=rename_map, inplace=True)
+# 🔍 Parcours des fichiers
+for filename in os.listdir(folder_path):
+    if filename.endswith(".csv"):
+        file_path = os.path.join(folder_path, filename)
+        try:
+            df = pd.read_csv(file_path, nrows=5)  # Lecture rapide
+            schema_dict[filename] = list(df.columns)
+        except Exception as e:
+            schema_dict[filename] = [f"Erreur de lecture: {e}"]
 
-    # Si les clés ne sont pas précisées, essayer ADM2_ID + year
-    if keys is None:
-        possibles = ["ADM2_ID", "year"]
-        keys = [k for k in possibles if k in df1.columns and k in df2.columns]
+# 📋 Analyse des colonnes
+all_columns = set()
+for cols in schema_dict.values():
+    if isinstance(cols, list):
+        all_columns.update(cols)
 
-    if not keys:
-        print(f"⚠️ Pas de clés communes entre {file1} et {file2}")
-        return None
+# 🧠 Rapport fusion
+report_lines = []
+report_lines.append("🧾 Rapport de colonnes pour fusion\n")
+report_lines.append(f"📁 Dossier analysé : {folder_path}\n")
+report_lines.append("📦 Colonnes par fichier :\n")
 
-    print(f"🔑 Fusion sur : {keys}")
+for file, cols in schema_dict.items():
+    report_lines.append(f"\n➡️ {file} :")
+    if isinstance(cols, list):
+        for col in cols:
+            report_lines.append(f"   - {col}")
+    else:
+        report_lines.append(f"   ⚠️ {cols}")
 
-    # Forcer les types en str pour éviter les erreurs
-    for k in keys:
-        df1[k] = df1[k].astype(str)
-        df2[k] = df2[k].astype(str)
+report_lines.append("\n🧮 Colonnes totales détectées :")
+for col in sorted(all_columns):
+    report_lines.append(f" - {col}")
 
-    # Fusion
-    merged = pd.merge(df1, df2, on=keys, how="inner")
+# 📝 Sauvegarde du rapport
+report_path = os.path.join(folder_path, "fusion_schema_report.txt")
+with open(report_path, "w", encoding="utf-8") as f:
+    f.write("\n".join(report_lines))
 
-    # Sauvegarde
-    merged.to_csv(output_file, index=False)
-    print(f"✅ Fusion terminée : {output_file} ({len(merged)} lignes)")
-
-    return merged
-
-
-# Exemple Soil + MODIS
-fusionner_csv(
-    r"C:\Users\moham\Music\Moh\fusion_completesoil.csv",
-    r"C:\Users\moham\Music\Moh\MODIS_VI_Mali_2020_2025_mali_20250821_1503.csv",
-    r"C:\Users\moham\Music\Moh\fusion_soil_modis.csv"
-)
-
-# Exemple SPEI + WAPOR
-fusionner_csv(
-    r"C:\Users\moham\Music\Moh\SPEI_Mali_ADM2_20250821_1546.csv",
-    r"C:\Users\moham\Music\Moh\WAPOR_fusion_long_clean_clean.csv",
-    r"C:\Users\moham\Music\Moh\fusion_spei_wapor.csv"
-)
+print(f"✅ Rapport généré : {report_path}")
