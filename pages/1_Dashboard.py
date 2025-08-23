@@ -7,6 +7,15 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from utils.earth_engine_loader import get_agro_indicators
 import ee
+
+SERVICE_ACCOUNT = "323629817646-compute@developer.gserviceaccount.com"  # ton email de service account
+KEY_FILE = "utils/keys/gee-key.json"  # chemin vers le JSON téléchargé
+
+credentials = ee.ServiceAccountCredentials(SERVICE_ACCOUNT, KEY_FILE)
+ee.Initialize(credentials)
+
+print("✅ Google Earth Engine initialisé avec Service Account")
+
 # ---------------------------
 # Page config FIRST
 # ---------------------------
