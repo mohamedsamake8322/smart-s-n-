@@ -1,8 +1,10 @@
+.\env311\Scripts\Activate.ps1
+
 script pour connaitre les noms des Fichiers d'un dossier
 import os
 
 # Chemin du dossier
-folder_path = r"C:\plateforme-agricole-complete-v2\pages"
+folder_path = r"C:\Users\moham\Music\Moh"
 
 # Vérifier si le dossier existe
 if os.path.exists(folder_path):
@@ -13,10 +15,95 @@ else:
     print(f"⚠️ Le dossier {folder_path} n'existe pas.")
 
 
+Pour vérier NaNimport pandas as pd
+import os
+
+# 📂 Dossier contenant les fichiers
+folder = r"C:\Users\moham\Music\faostat"
+
+# Liste des fichiers à vérifier
+files = [
+    "FAOSTAT_data_en_8-21-2025 (1).csv",
+    "FAOSTAT_data_en_8-21-2025 (2).csv",
+    "FAOSTAT_data_en_8-21-2025 (3).csv",
+    "FAOSTAT_data_en_8-21-2025 (4).csv",
+    "FAOSTAT_data_en_8-21-2025.csv"
+]
+
+print(f"[INFO] Vérification des NaN dans {len(files)} fichiers...")
+
+for f in files:
+    path = os.path.join(folder, f)
+    try:
+        df = pd.read_csv(path, encoding="utf-8-sig", dtype=str)
+        total_rows = len(df)
+        missing = df.replace({"": pd.NA}).isna().sum()
+        total_missing = missing.sum()
+        print(f"\n=== {f} ===")
+        print(f"Lignes totales : {total_rows}")
+        print(f"Valeurs manquantes totales : {total_missing}")
+        print("Colonnes avec NaN :")
+        print(missing[missing>0].sort_values(ascending=False))
+    except Exception as e:
+        print(f"[ERREUR] Impossible de lire {f} : {e}")
 
 
 
-Pour recoonaitre la structre
+# Pour recoonaitre la structre
+import os
+import pandas as pd
+
+# 📁 Dossier contenant les fichiers CSV
+folder_path = r"C:\Users\moham\Music\Moh"
+
+# 📊 Dictionnaire pour stocker les colonnes par fichier
+schema_dict = {}
+
+# 🔍 Parcours des fichiers
+for filename in os.listdir(folder_path):
+    if filename.endswith(".csv"):
+        file_path = os.path.join(folder_path, filename)
+        try:
+            df = pd.read_csv(file_path, nrows=5)  # Lecture rapide
+            schema_dict[filename] = list(df.columns)
+        except Exception as e:
+            schema_dict[filename] = [f"Erreur de lecture: {e}"]
+
+# 📋 Analyse des colonnes
+all_columns = set()
+for cols in schema_dict.values():
+    if isinstance(cols, list):
+        all_columns.update(cols)
+
+# 🧠 Rapport fusion
+report_lines = []
+report_lines.append("🧾 Rapport de colonnes pour fusion\n")
+report_lines.append(f"📁 Dossier analysé : {folder_path}\n")
+report_lines.append("📦 Colonnes par fichier :\n")
+
+for file, cols in schema_dict.items():
+    report_lines.append(f"\n➡️ {file} :")
+    if isinstance(cols, list):
+        for col in cols:
+            report_lines.append(f"   - {col}")
+    else:
+        report_lines.append(f"   ⚠️ {cols}")
+
+report_lines.append("\n🧮 Colonnes totales détectées :")
+for col in sorted(all_columns):
+    report_lines.append(f" - {col}")
+
+# 📝 Sauvegarde du rapport
+report_path = os.path.join(folder_path, "fusion_schema_report.txt")
+with open(report_path, "w", encoding="utf-8") as f:
+    f.write("\n".join(report_lines))
+
+print(f"✅ Rapport généré : {report_path}")
+
+
+
+
+
 import pandas as pd
 
 # Charger le fichier CSV
@@ -958,3 +1045,44 @@ final_df = final_df.drop(columns=['Area','Year'], errors='ignore')
 final_df.to_csv(output_path, index=False)
 print(f"✅ Fusion réussie, fichier sauvegardé : {output_path}")
 print(f"📊 Dimensions finales : {final_df.shape}")
+
+
+# Pour VériFier si il n'ya pas de données manquyante
+import os
+import pandas as pd
+
+# 📁 Dossier contenant les fichiers CSV
+folder_path = r"C:\Users\moham\Music\Moh"
+missing_threshold = 0.3  # Seuil de 30% pour alerter sur les colonnes très incomplètes
+
+def analyze_missing_data(file_path):
+    print(f"\n📄 Analyse du fichier : {os.path.basename(file_path)}")
+    try:
+        df = pd.read_csv(file_path)
+    except Exception as e:
+        print(f"❌ Erreur de lecture : {e}")
+        return
+
+    total_cells = df.size
+    total_missing = df.isnull().sum().sum()
+    missing_ratio = total_missing / total_cells
+
+    print(f"🔢 Dimensions : {df.shape[0]} lignes × {df.shape[1]} colonnes")
+    print(f"❌ Valeurs manquantes totales : {total_missing} ({missing_ratio:.2%})")
+
+    if missing_ratio > missing_threshold:
+        print("⚠️ Beaucoup de données manquantes dans ce fichier")
+    else:
+        print("✅ Données globalement complètes")
+
+    print("\n📊 Détail par colonne :")
+    missing_per_column = df.isnull().mean().sort_values(ascending=False)
+    for col, ratio in missing_per_column.items():
+        status = "⚠️" if ratio > missing_threshold else "✅"
+        print(f"  {status} {col}: {ratio:.2%} manquantes")
+
+# 🔍 Analyse de tous les fichiers CSV dans le dossier
+for filename in os.listdir(folder_path):
+    if filename.lower().endswith(".csv"):
+        file_path = os.path.join(folder_path, filename)
+        analyze_missing_data(file_path)
