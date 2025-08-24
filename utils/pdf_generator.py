@@ -1,7 +1,7 @@
 import os
-from fpdf import FPDF
+from fpdf import FPDF # pyright: ignore[reportMissingModuleSource]
 from datetime import datetime
-import qrcode
+import qrcode # pyright: ignore[reportMissingModuleSource]
 from io import BytesIO
 import textwrap
 import pandas as pd
