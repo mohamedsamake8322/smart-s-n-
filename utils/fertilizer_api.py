@@ -45,7 +45,9 @@ def predict_fertilizer(user_inputs: dict) -> str:
         pred = model.predict(X_input)
         pred_label = int(np.ravel(pred)[0])
 
-        return label_map.get(pred_label, "Fertilizer inconnu")
-
+        if 0 <= pred_label < len(label_map):
+            return label_map[pred_label]
+        else:
+            return "Fertilizer inconnu"
     except Exception as e:
         return f"❌ Erreur lors de la prédiction : {str(e)}"
