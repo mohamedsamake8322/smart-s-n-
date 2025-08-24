@@ -7,7 +7,7 @@ import qrcode # type: ignore
 from io import BytesIO
 import xgboost as xgb # type: ignore
 import json
-
+import textwrap
 # -----------------------------
 # Paths
 # -----------------------------
@@ -121,10 +121,11 @@ def build_pdf(culture, surface, pred_rendement, df_plan):
     pdf.cell(0,9,"• Détails du plan :", ln=True)
     for _, row in df_plan.iterrows():
         ligne = f"{row['Élément']} : {row['Dose kg']} kg → {row['Engrais']} ({row['Dose engrais (kg)']} kg)"
+        wrapped_ligne = "\n".join(textwrap.wrap(ligne, width=80))  # ajuste la largeur si nécessaire
         pdf.set_font("DejaVu" if os.path.exists(DEJAVU_REGULAR) else "Arial", "", 11)
         pdf.set_text_color(0,0,0)
-        pdf.multi_cell(0,8, ligne)
-    pdf.ln(2)
+        pdf.multi_cell(0, 8, wrapped_ligne, align="L")
+        pdf.ln(2)
 
 
     # QR code
