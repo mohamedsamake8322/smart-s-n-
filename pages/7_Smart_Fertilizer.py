@@ -140,7 +140,7 @@ def build_pdf(culture, surface, pred_rendement, df_plan):
     pdf.cell(0,10,url, ln=True)
 
     out = BytesIO()
-    out_bytes = pdf.output(dest="S").encode("utf-8")
+    out_bytes = pdf.output(dest="S")
     out.write(out_bytes)
     out.seek(0)
     return out
