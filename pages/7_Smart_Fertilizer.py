@@ -7,7 +7,7 @@ import os
 from io import BytesIO
 
 # 🔌 Modules personnalisés
-from services.fertilizer_api import predict_fertilizer
+from utils.fertilizer_api import predict_fertilizer
 from utils.pdf_generator import build_pdf, build_excel
 from utils.logger import log_prediction
 
