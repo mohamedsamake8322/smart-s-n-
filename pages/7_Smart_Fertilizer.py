@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
 import os
-from fpdf import FPDF
+from fpdf import FPDF # type: ignore
 from datetime import datetime
-import qrcode
+import qrcode # type: ignore
 from io import BytesIO
-import xgboost as xgb
+import xgboost as xgb # type: ignore
 import json
 
 # -----------------------------
@@ -139,7 +139,7 @@ def build_pdf(culture, surface, pred_rendement, df_plan):
     pdf.cell(0,10,url, ln=True)
 
     out = BytesIO()
-    out_bytes = pdf.output(dest='S').encode('latin-1')
+    out_bytes = pdf.output(dest="S").encode("latin1", "replace")
     out.write(out_bytes)
     out.seek(0)
     return out
@@ -173,3 +173,50 @@ if st.button("🔍 Prédire rendement & Générer plan"):
         "SMAP_SoilMoisture": float(sm),
         "prec": float(prec),
         "tavg": float(tavg)
+}
+
+    try:
+        pred_rendement = predict_yield(user_inputs)
+    except Exception as e:
+        st.error(f"Erreur lors de la prédiction : {e}")
+        st.stop()
+
+    st.success(f"🎯 Rendement prédit : {round(pred_rendement, 2)} t/ha")
+
+    # Générer le plan de fertilisation
+    fractionnement = generate_fractionnement(culture)
+    phase_list = []
+    for phase, nutriments in fractionnement.items():
+        for elmt, ratio in nutriments.items():
+            dose = pred_rendement * surface * ratio / EFFICIENCES.get(elmt, 1)
+            engrais = next((n for n, comp in ENGRAIS_DB.items() if elmt in comp), None)
+            dose_engrais = round(dose / ENGRAIS_DB[engrais][elmt], 2) if engrais else None
+            phase_list.append({
+                "Phase": phase,
+                "Élément": elmt,
+                "Dose kg": round(dose, 2),
+                "Engrais": engrais,
+                "Dose engrais (kg)": dose_engrais
+            })
+    df_plan = pd.DataFrame(phase_list)
+
+    st.markdown("### 📋 Plan de fertilisation par phase")
+    st.dataframe(df_plan)
+
+    # PDF
+    pdf_bytes = build_pdf(culture, surface, pred_rendement, df_plan)
+    st.download_button("📄 Télécharger le plan PDF", pdf_bytes, file_name=f"{culture}_fertilisation_plan.pdf", mime="application/pdf")
+
+    # Excel
+    excel_bytes = BytesIO()
+    with pd.ExcelWriter(excel_bytes, engine="openpyxl") as writer:
+        df_plan.to_excel(writer, index=False, sheet_name="Fertilisation")
+    excel_bytes.seek(0)
+    st.download_button("📥 Télécharger Excel", excel_bytes, file_name=f"{culture}_fertilisation_plan.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+    # Explication
+    st.markdown("### ℹ️ Explication rapide")
+    st.write(f"- Le rendement estimé ({round(pred_rendement,2)} t/ha) est basé sur les données environnementales et le modèle XGBoost.")
+    st.write("- Le plan répartit les besoins en N, P₂O₅ et K₂O selon les phases de croissance.")
+    st.write("- Les doses d'engrais sont ajustées selon les efficacités et converties en produits réels.")
+    st.success("✅ Plan généré — téléchargez le PDF ou Excel ci-dessous.")
