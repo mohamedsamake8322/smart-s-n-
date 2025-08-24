@@ -1,34 +1,38 @@
 import pandas as pd
+import xgboost as xgb
+import json
 import os
 
-data_path = "C:/plateforme-agricole-complete-v2/data"
-spei_file = os.path.join(data_path, "SPEI_Mali_ADM2_20250821_1546.csv")
-modis_file = os.path.join(data_path, "MODIS_VI_Mali_2020_2025_mali_20250821_1503.csv")
+# 📁 Charger les données
+df = pd.read_csv(r"C:\Downloads\Crop-Fertilizer-Analysis\Crop_recommendation.csv")
 
-spei = pd.read_csv(spei_file)
-modis = pd.read_csv(modis_file)
+# 🧪 Features à utiliser
+features = ['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall']
+target = 'label'
 
-# Normaliser les colonnes
-spei.columns = spei.columns.str.lower()
-modis.columns = modis.columns.str.lower()
+# 🔢 Encodage du label
+df[target] = df[target].astype('category').cat.codes
 
-# Id uniques
-spei_ids = spei['adm2_id'].unique()
-modis_ids = modis['adm2_id'].unique()
+# 🧠 Entraînement XGBoost
+X = df[features]
+y = df[target]
+dtrain = xgb.DMatrix(X, label=y, feature_names=features)
 
-# Créer un dataframe pour le mapping
-mapping_df = pd.DataFrame({'spei_id': spei_ids})
+params = {
+    'objective': 'reg:squarederror',
+    'max_depth': 6,
+    'eta': 0.1,
+    'nthread': 4,
+    'seed': 42
+}
+booster = xgb.train(params, dtrain, num_boost_round=100)
 
-# Tenter un mapping via les noms si disponible
-if 'adm2_name' in modis.columns:
-    modis_map = modis[['adm2_id', 'adm2_name']].drop_duplicates().set_index('adm2_id')['adm2_name']
-    mapping_df['modis_name'] = mapping_df['spei_id'].map(modis_map)
+# 💾 Sauvegarde du modèle
+os.makedirs("models", exist_ok=True)
+booster.save_model("models/xgb_mali_model.bin")
 
-# Pour les ids non trouvés, garder l'id comme fallback
-mapping_df['modis_id'] = mapping_df['spei_id']
-mapping_df['modis_name'] = mapping_df['modis_name'].fillna(mapping_df['spei_id'])
+# 💾 Sauvegarde des colonnes
+with open("models/model_columns.json", "w", encoding="utf-8") as f:
+    json.dump(features, f, indent=2)
 
-# Sauvegarde
-out_file = os.path.join(data_path, "spei_to_modis_mapping.csv")
-mapping_df.to_csv(out_file, index=False)
-print(f"[SAVED] {out_file} ({len(mapping_df)} lignes)")
+print("✅ Modèle et colonnes sauvegardés.")
