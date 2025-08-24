@@ -116,16 +116,16 @@ def build_pdf(culture, surface, pred_rendement, df_plan):
     pdf.cell(0,10,f"🌿 Culture : {culture}", ln=True)
     pdf.cell(0,10,f"📐 Surface : {surface} ha    🎯 Rendement prédit : {round(pred_rendement,2)} t/ha", ln=True)
     pdf.ln(5)
-    for phase in df_plan["Phase"].unique():
-        pdf.set_font("DejaVu" if os.path.exists(DEJAVU_REGULAR) else "Arial", "B", 12)
-        pdf.set_text_color(0,51,102)
-        pdf.cell(0,9,f"• Phase : {phase}", ln=True)
-        for _, row in df_plan[df_plan["Phase"]==phase].iterrows():
-            ligne = f"{row['Élément']} : {row['Dose kg']} kg → {row['Engrais']} ({row['Dose engrais (kg)']} kg)"
-            pdf.set_font("DejaVu" if os.path.exists(DEJAVU_REGULAR) else "Arial", "", 11)
-            pdf.set_text_color(0,0,0)
-            pdf.multi_cell(0,8, ligne)
-        pdf.ln(2)
+    pdf.set_font("DejaVu" if os.path.exists(DEJAVU_REGULAR) else "Arial", "B", 12)
+    pdf.set_text_color(0,51,102)
+    pdf.cell(0,9,"• Détails du plan :", ln=True)
+    for _, row in df_plan.iterrows():
+        ligne = f"{row['Élément']} : {row['Dose kg']} kg → {row['Engrais']} ({row['Dose engrais (kg)']} kg)"
+        pdf.set_font("DejaVu" if os.path.exists(DEJAVU_REGULAR) else "Arial", "", 11)
+        pdf.set_text_color(0,0,0)
+        pdf.multi_cell(0,8, ligne)
+    pdf.ln(2)
+
 
     # QR code
     url = f"https://sama-agrolink.com/fertiplan/{culture}"
@@ -183,25 +183,24 @@ if st.button("🔍 Prédire rendement & Générer plan"):
 
     st.success(f"🎯 Rendement prédit : {round(pred_rendement, 2)} t/ha")
 
-    # Générer le plan de fertilisation
-    fractionnement = generate_fractionnement(culture)
-    phase_list = []
-    for phase, nutriments in fractionnement.items():
-        for elmt, ratio in nutriments.items():
-            dose = pred_rendement * surface * ratio / EFFICIENCES.get(elmt, 1)
-            engrais = next((n for n, comp in ENGRAIS_DB.items() if elmt in comp), None)
-            dose_engrais = round(dose / ENGRAIS_DB[engrais][elmt], 2) if engrais else None
-            phase_list.append({
-                "Phase": phase,
-                "Élément": elmt,
-                "Dose kg": round(dose, 2),
-                "Engrais": engrais,
-                "Dose engrais (kg)": dose_engrais
-            })
-    df_plan = pd.DataFrame(phase_list)
+    # Générer le plan de fertilisation sans phases
+    total_npk = {"N": 0.4, "P2O5": 0.3, "K2O": 0.3}  # ratios arbitraires à ajuster selon culture
+    plan_list = []
+    for elmt, ratio in total_npk.items():
+        dose = pred_rendement * surface * ratio / EFFICIENCES.get(elmt, 1)
+        engrais = next((n for n, comp in ENGRAIS_DB.items() if elmt in comp), None)
+        dose_engrais = round(dose / ENGRAIS_DB[engrais][elmt], 2) if engrais else None
+        plan_list.append({
+            "Élément": elmt,
+            "Dose kg": round(dose, 2),
+            "Engrais": engrais,
+            "Dose engrais (kg)": dose_engrais
+        })
+    df_plan = pd.DataFrame(plan_list)
 
-    st.markdown("### 📋 Plan de fertilisation par phase")
+    st.markdown("### 📋 Plan de fertilisation")
     st.dataframe(df_plan)
+
 
     # PDF
     pdf_bytes = build_pdf(culture, surface, pred_rendement, df_plan)
@@ -217,6 +216,6 @@ if st.button("🔍 Prédire rendement & Générer plan"):
     # Explication
     st.markdown("### ℹ️ Explication rapide")
     st.write(f"- Le rendement estimé ({round(pred_rendement,2)} t/ha) est basé sur les données environnementales et le modèle XGBoost.")
-    st.write("- Le plan répartit les besoins en N, P₂O₅ et K₂O selon les phases de croissance.")
+    st.write("- Le plan calcule les besoins totaux en N, P₂O₅ et K₂O selon le rendement estimé.")
     st.write("- Les doses d'engrais sont ajustées selon les efficacités et converties en produits réels.")
     st.success("✅ Plan généré — téléchargez le PDF ou Excel ci-dessous.")
