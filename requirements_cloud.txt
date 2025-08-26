@@ -25,3 +25,4 @@ openai
 torchaudio
 torch
 openai-whisper
+sentence-transformers
