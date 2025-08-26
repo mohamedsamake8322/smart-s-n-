@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 import pyttsx3  # pyright: ignore[reportMissingImports]
 import whisper  # openai-whisper
-import torch
+import torch  # pyright: ignore[reportMissingImports]
 from sentence_transformers import SentenceTransformer  # pyright: ignore[reportMissingImports]
 
 
@@ -14,14 +14,17 @@ class VoiceAssistant:
         self.embedding_model = embedding_model
         self.whisper_model = whisper_model
 
-        # Forcer CPU si pas de GPU
+        # Détection du device (CPU forcé si pas de GPU dispo)
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         # Charger FAISS + métadonnées
         self.index, self.texts, self.metadata = self._load_vector_store()
 
-        # Charger modèles
-        self.embedding_model_instance = SentenceTransformer(self.embedding_model, device=self.device)
+        # Charger SentenceTransformer sans .to() puis forcer _target_device (évite bug meta tensor)
+        self.embedding_model_instance = SentenceTransformer(self.embedding_model)
+        self.embedding_model_instance._target_device = torch.device(self.device)
+
+        # Charger Whisper directement sur le bon device
         self.whisper_model_instance = whisper.load_model(self.whisper_model, device=self.device)
 
     def _load_vector_store(self):
