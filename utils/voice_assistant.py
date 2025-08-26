@@ -1,11 +1,11 @@
 import os
-import faiss  # pyright: ignore[reportMissingImports]
+import faiss
 import pickle
 import numpy as np
-import pyttsx3  # pyright: ignore[reportMissingImports]
-import whisper  # pyright: ignore[reportMissingImports] # openai-whisper
-import torch  # pyright: ignore[reportMissingImports]
-from sentence_transformers import SentenceTransformer  # pyright: ignore[reportMissingImports]
+import pyttsx3
+import whisper
+import torch
+from sentence_transformers import SentenceTransformer
 
 
 class VoiceAssistant:
@@ -13,29 +13,21 @@ class VoiceAssistant:
         self.vector_store_dir = vector_store_dir
         self.embedding_model = embedding_model
         self.whisper_model = whisper_model
-
-        # Détection du device (CPU forcé si pas de GPU dispo)
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        # Charger FAISS + métadonnées
         self.index, self.texts, self.metadata = self._load_vector_store()
-
-        # Charger SentenceTransformer sans .to() puis forcer _target_device (évite bug meta tensor)
         self.embedding_model_instance = SentenceTransformer(self.embedding_model)
         self.embedding_model_instance._target_device = torch.device(self.device)
-
-        # Charger Whisper directement sur le bon device
         self.whisper_model_instance = whisper.load_model(self.whisper_model, device=self.device)
 
     def _load_vector_store(self):
-        """Charge FAISS + textes sauvegardés. Retourne des valeurs vides si absent."""
         try:
             index_path = os.path.join(self.vector_store_dir, "faiss_index.bin")
             texts_path = os.path.join(self.vector_store_dir, "texts.pkl")
             metadata_path = os.path.join(self.vector_store_dir, "metadata.pkl")
 
             if not (os.path.exists(index_path) and os.path.exists(texts_path) and os.path.exists(metadata_path)):
-                print("[INFO] Aucun index FAISS trouvé, retour à un index vide.")
+                print("[INFO] Aucun index FAISS trouvé.")
                 return None, [], []
 
             index = faiss.read_index(index_path)
@@ -47,25 +39,32 @@ class VoiceAssistant:
             return index, texts, metadata
 
         except Exception as e:
-            print(f"[ERREUR] Impossible de charger le vector store : {e}")
+            print(f"[ERREUR] Chargement vector store : {e}")
             return None, [], []
 
-    def search(self, query, top_k=3):
-        """Recherche les passages les plus proches du query."""
+    def search(self, query, top_k=3, min_score=0.3):
         if self.index is None:
-            return ["[Aucun index disponible]"]
+            return [{"text": "[Aucun index disponible]", "score": 0.0, "source": "N/A"}]
 
         query_embedding = self.embedding_model_instance.encode([query], convert_to_numpy=True)
         D, I = self.index.search(query_embedding, top_k)
-        return [self.texts[i] for i in I[0]]
+        results = []
+        for dist, idx in zip(D[0], I[0]):
+            score = 1 / (1 + dist)
+            if score >= min_score:
+                results.append({
+                    "text": self.texts[idx],
+                    "score": round(score, 3),
+                    "source": self.metadata[idx].get("source", "unknown")
+                })
+        return results or [{"text": "[Aucune réponse pertinente trouvée]", "score": 0.0, "source": "N/A"}]
 
-    def speak(self, text):
-        """Prononce un texte en utilisant pyttsx3."""
+    def speak(self, text, lang="fr"):
         engine = pyttsx3.init()
+        engine.setProperty("voice", "com.apple.speech.synthesis.voice.thomas" if lang == "fr" else "")
         engine.say(text)
         engine.runAndWait()
 
     def transcribe(self, audio_path):
-        """Transcrit un fichier audio en texte via Whisper."""
-        result = self.whisper_model_instance.transcribe(audio_path)
+        result = self.whisper_model_instance.transcribe(audio_path, language="fr")
         return result["text"]

@@ -1,45 +1,68 @@
 import streamlit as st
 from utils.voice_assistant import VoiceAssistant
 from utils.micro_input import get_voice_input
+import tempfile
 import os
 
-# Configuration
-os.environ["STREAMLIT_WATCH_USE_POLLING"] = "true"
 st.set_page_config(page_title="🧠 Smart Voice Assistant", layout="centered")
-st.title("🧠 Smart Voice Assistant for Farmers")
+st.title("🧠 Assistant Vocal Agricole Intelligent")
 
-# Initialisation de l'assistant
 voice_assistant = VoiceAssistant()
 
 # 💬 Saisie manuelle
 user_message = st.text_input("Posez votre question ici (en texte)")
 
 if user_message:
-    response_text = voice_assistant.search(user_message)[0]
-    st.markdown("### 🤖 Réponse de l'assistant :")
-    st.write(response_text)
-    voice_assistant.speak(response_text)
+    results = voice_assistant.search(user_message, top_k=3)
+    st.markdown("### 🤖 Réponse principale :")
+    st.write(results[0]["text"])
+    voice_assistant.speak(results[0]["text"])
+
+    # 🔧 Bloc de correction
+    if st.button("✏️ Corriger cette réponse"):
+        correction = st.text_area("Proposez une meilleure réponse ou reformulez celle-ci :")
+        if st.button("📥 Soumettre la correction"):
+            with open("corrections_log.txt", "a", encoding="utf-8") as f:
+                f.write(f"Question : {user_message}\n")
+                f.write(f"Réponse initiale : {results[0]['text']}\n")
+                f.write(f"Correction proposée : {correction}\n")
+                f.write(f"---\n")
+            st.success("✅ Correction enregistrée. Merci pour votre contribution !")
+
+    with st.expander("🔍 Voir les autres suggestions"):
+        for r in results[1:]:
+            st.markdown(f"**Source** : `{r['source']}` | **Score** : `{r['score']}`")
+            st.write(r["text"])
+            st.markdown("---")
+
 
 # 🎙️ Saisie vocale
 st.markdown("---")
-st.subheader("🎙️ Ou parlez directement au micro")
+st.subheader("🎙️ Parlez au micro")
 
-if st.button("🎙️ Parler maintenant"):
-    try:
-        user_message = get_voice_input()
-        st.write(f"🗣️ Vous avez dit : {user_message}")
+audio_file = st.file_uploader("Téléversez un fichier audio (.wav, .mp3)", type=["wav", "mp3"])
 
-        if user_message:
-            response_text = voice_assistant.search(user_message)[0]
-            st.markdown("### 🤖 Réponse de l'assistant :")
-            st.write(response_text)
-            voice_assistant.speak(response_text)
-        else:
-            st.warning("🎤 Aucun message vocal détecté.")
+if audio_file:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_audio:
+        tmp_audio.write(audio_file.read())
+        tmp_audio_path = tmp_audio.name
 
-    except Exception as e:
-        st.error("🎙️ Erreur lors de la capture vocale :")
-        st.exception(e)
+    transcription = voice_assistant.transcribe(tmp_audio_path)
+    st.markdown(f"📝 Transcription : `{transcription}`")
+
+    if transcription:
+        results = voice_assistant.search(transcription, top_k=3)
+        st.markdown("### 🤖 Réponse principale :")
+        st.write(results[0]["text"])
+        voice_assistant.speak(results[0]["text"])
+
+        with st.expander("🔍 Voir les autres suggestions"):
+            for r in results[1:]:
+                st.markdown(f"**Source** : `{r['source']}` | **Score** : `{r['score']}`")
+                st.write(r["text"])
+                st.markdown("---")
+
+    os.remove(tmp_audio_path)
 
 # Footer
 st.markdown("---")
