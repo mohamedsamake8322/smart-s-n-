@@ -1,43 +1,54 @@
 import streamlit as st
-from utils.voice_assistant import load_vector_store, search_query, speak, transcribe_audio
-import tempfile
+from utils.voice_assistant import VoiceAssistant
+from utils.micro_input import get_voice_input
 import os
 
-st.set_page_config(page_title="Assistant Vocal Agricole", layout="centered")
-st.title("🎙️ Assistant Vocal Agricole")
+# Configuration
+os.environ["STREAMLIT_WATCH_USE_POLLING"] = "true"
+st.set_page_config(page_title="🧠 Smart Voice Assistant", layout="centered")
+st.title("🧠 Smart Voice Assistant for Farmers")
 
-# -----------------------
-# CHARGEMENT DE LA BASE
-# -----------------------
-index, texts, metadata = load_vector_store()
+# Initialisation de l'assistant
+voice_assistant = VoiceAssistant()
 
-# -----------------------
-# INTERFACE UTILISATEUR
-# -----------------------
-st.markdown("Posez une question en texte ou en audio sur l'agronomie 👇")
+# 💬 Saisie manuelle
+user_message = st.text_input("Posez votre question ici (en texte)")
 
-# Option 1 : Texte
-query_text = st.text_input("Votre question (texte)")
+if user_message:
+    response_text = voice_assistant.search(user_message)[0]
+    st.markdown("### 🤖 Réponse de l'assistant :")
+    st.write(response_text)
+    voice_assistant.speak(response_text)
 
-# Option 2 : Audio
-audio_file = st.file_uploader("Ou téléversez un fichier audio (.wav, .mp3)", type=["wav", "mp3"])
+# 🎙️ Saisie vocale
+st.markdown("---")
+st.subheader("🎙️ Ou parlez directement au micro")
 
-if st.button("🔍 Interroger"):
-    if query_text:
-        results = search_query(query_text, index, texts)
-        st.subheader("📚 Réponse probable :")
-        st.write(results[0])
-        speak(results[0])
-    elif audio_file:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_audio:
-            tmp_audio.write(audio_file.read())
-            tmp_audio_path = tmp_audio.name
-        transcribed = transcribe_audio(tmp_audio_path)
-        st.markdown(f"📝 Transcription : `{transcribed}`")
-        results = search_query(transcribed, index, texts)
-        st.subheader("📚 Réponse probable :")
-        st.write(results[0])
-        speak(results[0])
-        os.remove(tmp_audio_path)
-    else:
-        st.warning("Veuillez entrer une question ou téléverser un fichier audio.")
+if st.button("🎙️ Parler maintenant"):
+    try:
+        user_message = get_voice_input()
+        st.write(f"🗣️ Vous avez dit : {user_message}")
+
+        if user_message:
+            response_text = voice_assistant.search(user_message)[0]
+            st.markdown("### 🤖 Réponse de l'assistant :")
+            st.write(response_text)
+            voice_assistant.speak(response_text)
+        else:
+            st.warning("🎤 Aucun message vocal détecté.")
+
+    except Exception as e:
+        st.error("🎙️ Erreur lors de la capture vocale :")
+        st.exception(e)
+
+# Footer
+st.markdown("---")
+st.markdown(
+    """
+    <div style='text-align: center; color: #666666; padding: 20px;'>
+    🌾 SmartSènè Voice Assistant - Empowering African farmers with AI-driven insights
+    🚀 Developed by <strong>SAMAKE</strong> | Precision farming for a better future
+    </div>
+    """,
+    unsafe_allow_html=True
+)

@@ -2,21 +2,19 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import time
-import plotly.express as px # type: ignore
-import plotly.graph_objects as go # type: ignore
+import plotly.express as px  # type: ignore
+import plotly.graph_objects as go  # type: ignore
 import streamlit.components.v1 as components
 from utils.weather_api import WeatherAPI
 from utils.visualization import create_overview_charts
 from datetime import datetime
-from utils.voice_assistant import VoiceAssistant
 from utils.micro_input import get_voice_input
 from utils.animations import typewriting_effect, pulsing_title
 import os
-from utils.voice_assistant import VoiceAssistant
-voice_assistant = VoiceAssistant()
+
 os.environ["STREAMLIT_WATCH_USE_POLLING"] = "true"
 
-# ✅ Configuration de la page (doit être la première commande Streamlit)
+# ✅ Configuration de la page
 st.set_page_config(
     page_title="SmartSènè Yield Predictor",
     page_icon="🌾",
@@ -24,15 +22,17 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ✅ Effet d’apparition progressif sur le titre
+# ✅ Effets visuels
 title_placeholder = st.empty()
 typewriting_effect(title_placeholder, "🌾 SmartSènè Yield Predictor")
 
-
-# ✅ Effet de "typewriting" sur le sous-titre
 subtitle_placeholder = st.empty()
-typewriting_effect(subtitle_placeholder, "### 🚀 SmartSènè Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SmartSènè Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈.")
+typewriting_effect(
+    subtitle_placeholder,
+    "### 🚀 SmartSènè Yield Predictor: Cultivating the Future with AI!🌾🌍 🌱Optimize your crops, predict your harvests, and boost productivity with the power of artificial intelligence. With SmartSènè Yield Predictor, transform agricultural data into smart decisions and maximize your yields 📈."
+)
 pulsing_title(components)
+
 # 🔹 Sidebar
 st.sidebar.title("Navigation")
 st.sidebar.markdown("Use the pages in the sidebar to navigate through different features:")
@@ -44,39 +44,22 @@ st.sidebar.markdown("- **Data Upload**: Import your agricultural datasets")
 
 st.write("🚀 SmartSènè Yield Predictor is running!")
 
- # 🔧 Forcer Streamlit Cloud à utiliser le bon port
-# Main dashboard overview
+# 🔧 Dashboard metrics
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric(
-        label="Active Farms",
-        value="--",
-        help="Number of farms being monitored"
-    )
+    st.metric(label="Active Farms", value="--", help="Number of farms being monitored")
 
 with col2:
-    st.metric(
-        label="Current Season",
-        value=datetime.now().strftime("%B %Y"),
-        help="Current agricultural season"
-    )
+    st.metric(label="Current Season", value=datetime.now().strftime("%B %Y"), help="Current agricultural season")
 
 with col3:
-    st.metric(
-        label="Weather Status",
-        value="--",
-        help="Current weather conditions"
-    )
+    st.metric(label="Weather Status", value="--", help="Current weather conditions")
 
 with col4:
-    st.metric(
-        label="Predictions Made",
-        value="--",
-        help="Total number of yield predictions generated"
-    )
+    st.metric(label="Predictions Made", value="--", help="Total number of yield predictions generated")
 
-# Quick overview section
+# 🔍 Overview section
 st.markdown("---")
 st.subheader("Platform Overview")
 
@@ -131,7 +114,7 @@ with tab2:
 with tab3:
     st.info("No recent activity to display. Start by uploading data or making predictions.")
 
-# Quick actions
+# 🚀 Quick actions
 st.markdown("---")
 st.subheader("Quick Actions")
 
@@ -148,47 +131,7 @@ with col2:
 with col3:
     if st.button("📁 Upload Data", use_container_width=True):
         st.switch_page("pages/5_Data_Upload.py")
-st.title("🧠 Smart Voice Assistant for Farmers")
 
-# 💬 Saisie manuelle
-user_message = st.text_input("Ask your question here (in text)")
-
-if user_message:
-    response = voice_assistant.get_response(user_message)
-    st.markdown("### 🤖 Assistant's Response:")
-    st.write(response.get("text", "🤖 No response text available."))
-
-    if response.get("action") == "open_weather_dashboard":
-        st.info("📡 Opening the weather module… (to be implemented)")
-    elif response.get("action") == "analyze_image":
-        st.warning("🖼️ Image analysis awaiting your photo…")
-
-# 🎙️ Saisie vocale
-if st.button("🎙️ Speak now"):
-    try:
-        user_message = get_voice_input()
-        st.write(f"🗣️ You said: {user_message}")
-
-        if user_message:
-            response = voice_assistant.get_response(user_message)
-
-            if response and "text" in response:
-                st.write(response["text"])
-            else:
-                st.warning("🤖 No response generated.")
-
-            # Handle actions
-            if response.get("action") == "open_weather_dashboard":
-                st.info("📡 Opening the weather module… (to be implemented)")
-            elif response.get("action") == "analyze_image":
-                st.warning("🖼️ Image analysis awaiting your photo…")
-
-        else:
-            st.warning("🎤 No voice input detected.")
-
-    except Exception as e:
-        st.error("🎙️ Error while capturing voice:")
-        st.exception(e)
 # Footer
 st.markdown("---")
 st.markdown(
