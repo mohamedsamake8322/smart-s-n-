@@ -1,10 +1,10 @@
 import os
-import faiss
+import faiss # pyright: ignore[reportMissingImports]
 import pickle
 import numpy as np
-import pyttsx3
-import whisper
-from sentence_transformers import SentenceTransformer
+import pyttsx3 # pyright: ignore[reportMissingImports]
+import whisper # pyright: ignore[reportMissingImports]
+from sentence_transformers import SentenceTransformer # pyright: ignore[reportMissingImports]
 
 # -----------------------
 # CONFIGURATION

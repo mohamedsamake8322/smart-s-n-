@@ -22,3 +22,6 @@ transformers
 accelerate
 safetensors
 openai
+torchaudio
+torch
+openai-whisper
