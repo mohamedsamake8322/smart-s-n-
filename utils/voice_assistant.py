@@ -3,7 +3,7 @@ import faiss  # pyright: ignore[reportMissingImports]
 import pickle
 import numpy as np
 import pyttsx3  # pyright: ignore[reportMissingImports]
-import whisper  # openai-whisper
+import whisper  # pyright: ignore[reportMissingImports] # openai-whisper
 import torch  # pyright: ignore[reportMissingImports]
 from sentence_transformers import SentenceTransformer  # pyright: ignore[reportMissingImports]
 
