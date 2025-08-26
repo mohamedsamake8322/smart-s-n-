@@ -26,7 +26,7 @@ class VoiceAssistant:
             texts_path = os.path.join(self.vector_store_dir, "texts.pkl")
             metadata_path = os.path.join(self.vector_store_dir, "metadata.pkl")
 
-            if not (os.path.exists(index_path) and os.path.exists(texts_path) and os.path.exists(metadata_path)):
+            if not all(os.path.exists(p) for p in [index_path, texts_path, metadata_path]):
                 print("[INFO] Aucun index FAISS trouvé.")
                 return None, [], []
 
@@ -36,6 +36,8 @@ class VoiceAssistant:
             with open(metadata_path, "rb") as f:
                 metadata = pickle.load(f)
 
+            if len(texts) != len(metadata):
+                print("[WARN] Mismatch entre textes et métadonnées.")
             return index, texts, metadata
 
         except Exception as e:
@@ -43,7 +45,7 @@ class VoiceAssistant:
             return None, [], []
 
     def search(self, query, top_k=3, min_score=0.3):
-        if self.index is None:
+        if self.index is None or not self.texts:
             return [{"text": "[Aucun index disponible]", "score": 0.0, "source": "N/A"}]
 
         query_embedding = self.embedding_model_instance.encode([query], convert_to_numpy=True)
@@ -51,7 +53,7 @@ class VoiceAssistant:
         results = []
         for dist, idx in zip(D[0], I[0]):
             score = 1 / (1 + dist)
-            if score >= min_score:
+            if score >= min_score and idx < len(self.texts):
                 results.append({
                     "text": self.texts[idx],
                     "score": round(score, 3),
@@ -60,11 +62,30 @@ class VoiceAssistant:
         return results or [{"text": "[Aucune réponse pertinente trouvée]", "score": 0.0, "source": "N/A"}]
 
     def speak(self, text, lang="fr"):
-        engine = pyttsx3.init()
-        engine.setProperty("voice", "com.apple.speech.synthesis.voice.thomas" if lang == "fr" else "")
-        engine.say(text)
-        engine.runAndWait()
+        try:
+            engine = pyttsx3.init()
+            voices = engine.getProperty("voices")
+            if lang == "fr":
+                fr_voices = [v for v in voices if "fr" in v.id or "French" in v.name]
+                if fr_voices:
+                    engine.setProperty("voice", fr_voices[0].id)
+            engine.say(text)
+            engine.runAndWait()
+        except Exception as e:
+            print(f"[ERREUR] Synthèse vocale : {e}")
 
     def transcribe(self, audio_path):
-        result = self.whisper_model_instance.transcribe(audio_path, language="fr")
-        return result["text"]
+        try:
+            result = self.whisper_model_instance.transcribe(audio_path, language="fr")
+            return result.get("text", "").strip()
+        except Exception as e:
+            print(f"[ERREUR] Transcription audio : {e}")
+            return ""
+
+    def audit_query(self, query, top_k=3):
+        """Affiche les chunks retournés pour une requête donnée (debug ou test)."""
+        results = self.search(query, top_k=top_k)
+        for i, r in enumerate(results):
+            print(f"\n--- Résultat {i+1} ---")
+            print(f"Score : {r['score']} | Source : {r['source']}")
+            print(r["text"][:500] + "...\n")
