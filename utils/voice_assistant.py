@@ -1,383 +1,298 @@
+# utils/voice_assistant.py
+"""
+Voice assistant util for Streamlit app.
 
-import json
-import re
-from typing import Dict, List, Any
-from datetime import datetime
-import random
+Features:
+- Load FAISS vector store (faiss_index.bin, texts.pkl, metadata.pkl)
+- STT: Whisper (if installed) for audio -> text
+- Embeddings: sentence-transformers (already used to index)
+- Retrieval: FAISS
+- Generation: local transformers LLM (optional) OR OpenAI
+- TTS: pyttsx3 (offline) if installed
 
+Configure constants below.
+"""
+
+import os
+import tempfile
+import pickle
+import faiss
+import traceback
+from typing import List, Tuple
+
+# Optional heavy imports wrapped in try/except
+try:
+    from sentence_transformers import SentenceTransformer
+except Exception:
+    SentenceTransformer = None
+
+try:
+    import whisper
+except Exception:
+    whisper = None
+
+try:
+    import pyttsx3
+except Exception:
+    pyttsx3 = None
+
+# transformers optional for local LLM
+try:
+    from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+    import torch
+except Exception:
+    AutoTokenizer = None
+    AutoModelForCausalLM = None
+    pipeline = None
+    torch = None
+
+# OpenAI fallback (optional)
+try:
+    import openai
+except Exception:
+    openai = None
+
+# -----------------------
+# CONFIGURATION
+# -----------------------
+VECTOR_STORE_DIR = "vector_store"               # where faiss_index.bin, texts.pkl, metadata.pkl are
+EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"      # must match the model used to build the index
+TOP_K = 3                                      # number of chunks to retrieve
+LLM_MODE = "local"   # "local" or "openai" or "none"  (set "none" to disable generation: returns context)
+LOCAL_LLM_MODEL = "NousResearch/Llama-2-7b-hf"  # change to a small model if low RAM (or to MPT/Dolly)
+USE_TTS = True                                 # use pyttsx3 to speak replies (if installed)
+WHISPER_MODEL = "small"                         # "tiny","base","small","medium","large" - choose according to resources
+
+# Generation parameters (local)
+GEN_MAX_NEW_TOKENS = 150
+GEN_TEMPERATURE = 0.2
+
+# -----------------------
+# VoiceAssistant class
+# -----------------------
 class VoiceAssistant:
-    def __init__(self):
-        self.responses = {
-            'greeting': [
-                "Hello! I'm your agricultural AI assistant. How can I help you today?",
-                "Good day! I'm here to help with your farming questions.",
-                "Welcome! I'm your smart farming companion. What would you like to know?"
-            ],
-            'weather': [
-                "Based on current conditions, here's what I recommend for your crops...",
-                "The weather forecast suggests the following actions...",
-                "Current weather conditions indicate..."
-            ],
-            'disease': [
-                "I've analyzed your crop symptoms. Here's my diagnosis...",
-                "Based on the image analysis, your crops show signs of...",
-                "The disease detection system identifies..."
-            ],
-            'irrigation': [
-                "Your irrigation schedule should be adjusted as follows...",
-                "Based on soil moisture and weather data...",
-                "I recommend the following irrigation plan..."
-            ],
-            'fertilizer': [
-                "Your soil analysis shows the following nutrient needs...",
-                "Based on your crop type and growth stage...",
-                "I recommend this fertilizer application plan..."
-            ]
-        }
+    def __init__(self,
+                 vector_store_dir: str = VECTOR_STORE_DIR,
+                 embedding_model_name: str = EMBEDDING_MODEL_NAME,
+                 top_k: int = TOP_K,
+                 llm_mode: str = LLM_MODE,
+                 local_llm_model: str = LOCAL_LLM_MODEL):
+        self.vector_store_dir = vector_store_dir
+        self.embedding_model_name = embedding_model_name
+        self.top_k = top_k
+        self.llm_mode = llm_mode
+        self.local_llm_model = local_llm_model
 
-        self.knowledge_base = {
-            'crops': {
-                'wheat': {
-                    'planting_season': 'Fall/Winter',
-                    'harvest_time': '90-120 days',
-                    'water_needs': 'Moderate',
-                    'common_diseases': ['rust', 'blight', 'smut'],
-                    'optimal_temp': '15-25°C'
-                },
-                'corn': {
-                    'planting_season': 'Spring',
-                    'harvest_time': '100-130 days',
-                    'water_needs': 'High',
-                    'common_diseases': ['corn borer', 'rust', 'blight'],
-                    'optimal_temp': '20-30°C'
-                },
-                'rice': {
-                    'planting_season': 'Spring/Summer',
-                    'harvest_time': '120-150 days',
-                    'water_needs': 'Very High',
-                    'common_diseases': ['blast', 'blight', 'sheath rot'],
-                    'optimal_temp': '25-35°C'
-                }
-            },
-            'diseases': {
-                'rust': {
-                    'symptoms': 'Orange/brown spots on leaves',
-                    'treatment': 'Fungicide application, crop rotation',
-                    'prevention': 'Resistant varieties, proper spacing'
-                },
-                'blight': {
-                    'symptoms': 'Dark spots, wilting leaves',
-                    'treatment': 'Remove affected plants, fungicide',
-                    'prevention': 'Good air circulation, avoid overhead watering'
-                }
-            }
-        }
+        # Load FAISS & chunks
+        self.index = None
+        self.chunks = []
+        self.metadata = []
+        self._load_vector_store()
 
-    def process_voice_command(self, text: str) -> Dict[str, Any]:
-        """Process voice command and return appropriate response"""
-        text = text.lower().strip()
+        # Load embedding model (for queries)
+        self.embedding_model = None
+        if SentenceTransformer is not None:
+            try:
+                print(f"[VA] Loading embedding model: {self.embedding_model_name}")
+                self.embedding_model = SentenceTransformer(self.embedding_model_name)
+            except Exception as e:
+                print("[VA] Error loading embedding model:", e)
+                self.embedding_model = None
 
-        # Intent recognition (simple keyword-based)
-        intent = self._classify_intent(text)
+        # Load Whisper if available (STT)
+        self.stt_model = None
+        if whisper is not None:
+            try:
+                print(f"[VA] Loading Whisper STT model: {WHISPER_MODEL}")
+                self.stt_model = whisper.load_model(WHISPER_MODEL)
+            except Exception as e:
+                print("[VA] Whisper load error:", e)
+                self.stt_model = None
 
-        response_data = {
-            'intent': intent,
-            'text_response': '',
-            'voice_response': '',
-            'actions': [],
-            'data': {}
-        }
-
-        if intent == 'greeting':
-            response_data['text_response'] = random.choice(self.responses['greeting'])
-
-        elif intent == 'weather_inquiry':
-            response_data.update(self._handle_weather_inquiry(text))
-
-        elif intent == 'disease_diagnosis':
-            response_data.update(self._handle_disease_inquiry(text))
-
-        elif intent == 'irrigation_advice':
-            response_data.update(self._handle_irrigation_inquiry(text))
-
-        elif intent == 'fertilizer_advice':
-            response_data.update(self._handle_fertilizer_inquiry(text))
-
-        elif intent == 'crop_information':
-            response_data.update(self._handle_crop_inquiry(text))
-
+        # Prepare generator depending on mode
+        self.generator = None
+        self.tokenizer = None
+        self.model = None
+        if self.llm_mode == "local" and AutoTokenizer is not None:
+            try:
+                print(f"[VA] Loading local LLM: {self.local_llm_model} (this can be heavy)")
+                self.tokenizer = AutoTokenizer.from_pretrained(self.local_llm_model)
+                # CPU-friendly default; user can adjust device_map manually if they have GPU/accelerate
+                self.model = AutoModelForCausalLM.from_pretrained(self.local_llm_model, device_map={"": "cpu"})
+                self.generator = pipeline("text-generation", model=self.model, tokenizer=self.tokenizer,
+                                          max_new_tokens=GEN_MAX_NEW_TOKENS)
+            except Exception as e:
+                print("[VA] Error loading local LLM:", e)
+                traceback.print_exc()
+                self.generator = None
+        elif self.llm_mode == "openai" and openai is not None:
+            # user must set OPENAI_API_KEY in env externally
+            print("[VA] OpenAI mode selected (ensure OPENAI_API_KEY is set in environment).")
         else:
-            response_data['text_response'] = "I'm not sure I understand. Could you please rephrase your question about farming?"
+            if self.llm_mode == "local":
+                print("[VA] Local LLM requested but transformers or model not available. Falling back to 'none' mode.")
+            elif self.llm_mode == "openai":
+                print("[VA] OpenAI package not found; set llm_mode='none' or install openai.")
+            self.llm_mode = "none"
 
-        response_data['voice_response'] = self._generate_voice_response(response_data['text_response'])
+        # TTS engine
+        self.tts_engine = None
+        if USE_TTS and pyttsx3 is not None:
+            try:
+                self.tts_engine = pyttsx3.init()
+            except Exception as e:
+                print("[VA] TTS init error:", e)
+                self.tts_engine = None
 
-        return response_data
+        print("[VA] VoiceAssistant initialised. LLM mode:", self.llm_mode)
 
-    def _classify_intent(self, text: str) -> str:
-        """Classify user intent based on keywords"""
-        keywords = {
-            'greeting': ['hello', 'hi', 'hey', 'good morning', 'good afternoon'],
-            'weather_inquiry': ['weather', 'rain', 'temperature', 'forecast', 'climate'],
-            'disease_diagnosis': ['disease', 'sick', 'spots', 'dying', 'problem', 'issue'],
-            'irrigation_advice': ['water', 'irrigation', 'watering', 'moisture', 'dry'],
-            'fertilizer_advice': ['fertilizer', 'nutrient', 'feeding', 'soil', 'growth'],
-            'crop_information': ['plant', 'crop', 'grow', 'cultivation', 'farming', 'harvest']
-        }
+    # -------- vector store utilities --------
+    def _load_vector_store(self):
+        faiss_path = os.path.join(self.vector_store_dir, "faiss_index.bin")
+        texts_path = os.path.join(self.vector_store_dir, "texts.pkl")
+        meta_path = os.path.join(self.vector_store_dir, "metadata.pkl")
 
-        for intent, words in keywords.items():
-            if any(word in text for word in words):
-                return intent
+        if not os.path.exists(faiss_path) or not os.path.exists(texts_path):
+            raise FileNotFoundError(f"Vector store files missing in {self.vector_store_dir}. Expected faiss_index.bin and texts.pkl")
 
-        return 'unknown'
-    def get_response(self, user_message: str) -> str:
+        print(f"[VA] Loading FAISS index from {faiss_path} ...")
+        self.index = faiss.read_index(faiss_path)
+        with open(texts_path, "rb") as f:
+            self.chunks = pickle.load(f)
+        try:
+            with open(meta_path, "rb") as f:
+                self.metadata = pickle.load(f)
+        except Exception:
+            self.metadata = []
+        print(f"[VA] Loaded {len(self.chunks)} chunks from vector store.")
+
+    # -------- STT --------
+    def transcribe_audio_file(self, audio_path: str) -> str:
         """
-        Simplified wrapper to integrate with app.py:
-        It extracts and returns the text response only.
+        If whisper is available, transcribe audio file to text.
+        Otherwise raise an informative error.
         """
-        result = self.process_voice_command(user_message)
-        return result.get('text_response', "Je n'ai pas compris votre demande.")
+        if self.stt_model is None:
+            raise RuntimeError("Whisper STT model not available. Install 'whisper' and weights or set up external STT.")
+        # whisper expects path
+        print(f"[VA] Transcribing audio: {audio_path}")
+        result = self.stt_model.transcribe(audio_path)
+        text = result.get("text", "").strip()
+        print("[VA] Transcription result:", text[:200], "...")
+        return text
 
-    def _handle_weather_inquiry(self, text: str) -> Dict[str, Any]:
-        """Handle weather-related inquiries"""
-        return {
-            'text_response': "Based on current weather conditions, I recommend checking soil moisture levels and adjusting irrigation accordingly. Would you like me to show you the detailed weather forecast?",
-            'actions': ['show_weather_dashboard'],
-            'data': {'suggestion': 'check_weather_page'}
-        }
+    # Alternately accept bytes (Streamlit uploader)
+    def transcribe_audio_bytes(self, audio_bytes: bytes, suffix=".wav") -> str:
+        fd, tmp = tempfile.mkstemp(suffix=suffix)
+        os.close(fd)
+        with open(tmp, "wb") as f:
+            f.write(audio_bytes)
+        try:
+            txt = self.transcribe_audio_file(tmp)
+        finally:
+            try:
+                os.remove(tmp)
+            except Exception:
+                pass
+        return txt
 
-    def _handle_disease_inquiry(self, text: str) -> Dict[str, Any]:
-        """Handle disease diagnosis inquiries"""
-        # Extract crop type if mentioned
-        crop_mentioned = None
-        for crop in self.knowledge_base['crops'].keys():
-            if crop in text:
-                crop_mentioned = crop
-                break
+    # -------- Retrieval --------
+    def retrieve(self, query: str, top_k: int = None) -> List[Tuple[str, dict]]:
+        if top_k is None:
+            top_k = self.top_k
+        if self.embedding_model is None:
+            raise RuntimeError("Embedding model not loaded.")
+        print(f"[VA] Encoding query for retrieval: {query[:80]}...")
+        q_emb = self.embedding_model.encode([query], convert_to_numpy=True)
+        distances, indices = self.index.search(q_emb, top_k)
+        results = []
+        for idx in indices[0]:
+            if idx < 0 or idx >= len(self.chunks):
+                continue
+            meta = self.metadata[idx] if idx < len(self.metadata) else {}
+            results.append((self.chunks[idx], meta))
+        return results
 
-        response = "I can help diagnose crop diseases. "
-        if crop_mentioned:
-            diseases = self.knowledge_base['crops'][crop_mentioned]['common_diseases']
-            response += f"For {crop_mentioned}, common diseases include {', '.join(diseases)}. "
+    # -------- Generation (RAG) --------
+    def _build_prompt(self, question: str, contexts: List[str]) -> str:
+        header = (
+            "Tu es un assistant agricole expert. Utilise uniquement les informations fournies "
+            "dans le contexte ci-dessous pour répondre.\n\nContexte (extraits) :\n"
+        )
+        ctx_text = "\n\n---\n\n".join(contexts)
+        prompt = f"{header}{ctx_text}\n\nQuestion : {question}\nRéponse concise (français ou langue détectée) :"
+        return prompt
 
-        response += "Please upload an image of your affected crops for detailed analysis."
+    def generate_answer(self, question: str, top_k: int = None) -> dict:
+        """
+        Returns a dict: { 'answer': str, 'sources': [metadatas] }
+        """
+        if top_k is None:
+            top_k = self.top_k
 
-        return {
-            'text_response': response,
-            'actions': ['open_disease_detection'],
-            'data': {'crop_type': crop_mentioned}
-        }
+        # 1) retrieve context
+        retrieved = self.retrieve(question, top_k=top_k)
+        contexts = [r[0] for r in retrieved]
+        sources = [r[1] for r in retrieved]
 
-    def _handle_irrigation_inquiry(self, text: str) -> Dict[str, Any]:
-        """Handle irrigation advice inquiries"""
-        return {
-            'text_response': "For optimal irrigation, consider soil moisture, weather forecast, and crop growth stage. I can create a personalized irrigation schedule for you.",
-            'actions': ['show_irrigation_calculator'],
-            'data': {'suggestion': 'smart_irrigation'}
-        }
+        # 2) build prompt
+        prompt = self._build_prompt(question, contexts)
 
-    def _handle_fertilizer_inquiry(self, text: str) -> Dict[str, Any]:
-        """Handle fertilizer advice inquiries"""
-        return {
-            'text_response': "Fertilizer recommendations depend on soil analysis, crop type, and growth stage. Let me help you create a fertilization plan.",
-            'actions': ['show_soil_monitoring'],
-            'data': {'suggestion': 'fertilizer_calculator'}
-        }
-
-    def _handle_crop_inquiry(self, text: str) -> Dict[str, Any]:
-        """Handle crop information inquiries"""
-        # Extract crop type
-        crop_mentioned = None
-        for crop in self.knowledge_base['crops'].keys():
-            if crop in text:
-                crop_mentioned = crop
-                break
-
-        if crop_mentioned:
-            crop_info = self.knowledge_base['crops'][crop_mentioned]
-            response = f"For {crop_mentioned}: Planting season is {crop_info['planting_season']}, harvest time is {crop_info['harvest_time']}, water needs are {crop_info['water_needs']}, and optimal temperature is {crop_info['optimal_temp']}."
+        # 3) generate according to selected LLM mode
+        if self.llm_mode == "local" and self.generator is not None:
+            try:
+                print("[VA] Generating with local LLM...")
+                out = self.generator(prompt, max_new_tokens=GEN_MAX_NEW_TOKENS, do_sample=False, temperature=GEN_TEMPERATURE)
+                text = out[0]["generated_text"]
+                # split out prompt in case generator echoes it
+                if "Réponse concise" in text:
+                    answer = text.split("Réponse concise")[-1].strip(": \n")
+                else:
+                    # try to remove repeated prompt
+                    answer = text.replace(prompt, "").strip()
+            except Exception as e:
+                print("[VA] Local generation error:", e)
+                traceback.print_exc()
+                answer = "Désolé, erreur lors de la génération locale."
+        elif self.llm_mode == "openai" and openai is not None:
+            try:
+                print("[VA] Generating with OpenAI API...")
+                # Expect OPENAI_API_KEY env var set
+                resp = openai.ChatCompletion.create(
+                    model="gpt-4o",
+                    messages=[
+                        {"role": "system", "content": "Tu es un assistant agricole."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=GEN_TEMPERATURE,
+                    max_tokens=300
+                )
+                answer = resp["choices"][0]["message"]["content"].strip()
+            except Exception as e:
+                print("[VA] OpenAI generation error:", e)
+                answer = "Désolé, erreur lors de la génération via OpenAI."
         else:
-            response = "I have information about wheat, corn, rice, and many other crops. Which crop would you like to know about?"
+            # llm_mode == "none" => fallback: return concatenated contexts
+            print("[VA] LLM disabled - returning concatenated context as answer.")
+            answer = "Voici les informations trouvées :\n\n" + "\n\n---\n\n".join(contexts)
 
-        return {
-            'text_response': response,
-            'actions': ['show_crop_database'],
-            'data': {'crop_type': crop_mentioned}
-        }
+        return {"answer": answer, "sources": sources}
 
-    def _generate_voice_response(self, text: str) -> str:
-        """Generate voice-friendly response text"""
-        # Simplify technical terms for voice synthesis
-        voice_text = text.replace('°C', ' degrees Celsius')
-        voice_text = voice_text.replace('%', ' percent')
-        voice_text = voice_text.replace('&', ' and ')
+    # -------- TTS --------
+    def speak(self, text: str):
+        if self.tts_engine is None:
+            print("[VA] TTS engine not available; skipping speak.")
+            return
+        try:
+            print("[VA] Speaking reply...")
+            self.tts_engine.say(text)
+            self.tts_engine.runAndWait()
+        except Exception as e:
+            print("[VA] TTS error:", e)
 
-        return voice_text
-
-    def get_daily_report(self, farm_data: Dict[str, Any]) -> str:
-        """Generate daily voice report"""
-        report_parts = [
-            f"Good morning! Here's your daily farm report for {datetime.now().strftime('%B %d, %Y')}."
-        ]
-
-        if 'weather' in farm_data:
-            weather = farm_data['weather']
-            report_parts.append(f"Today's weather: {weather.get('condition', 'partly cloudy')} with a high of {weather.get('temperature', 25)} degrees and {weather.get('humidity', 65)} percent humidity.")
-
-        if 'soil_moisture' in farm_data:
-            moisture = farm_data['soil_moisture']
-            if moisture < 30:
-                report_parts.append("Soil moisture is low. Consider irrigating today.")
-            elif moisture > 80:
-                report_parts.append("Soil moisture is high. Monitor for potential drainage issues.")
-
-        if 'alerts' in farm_data:
-            alerts = farm_data['alerts']
-            if alerts:
-                report_parts.append(f"You have {len(alerts)} alerts requiring attention.")
-
-        report_parts.append("Have a productive day in the field!")
-
-        return " ".join(report_parts)
-
-    def get_crop_recommendations(self, conditions: Dict[str, Any]) -> List[str]:
-        """Get intelligent crop recommendations based on conditions"""
-        recommendations = []
-
-        # Temperature-based recommendations
-        temp = conditions.get('temperature', 20)
-        if temp < 15:
-            recommendations.append("Consider cold-hardy crops like winter wheat or barley")
-        elif temp > 30:
-            recommendations.append("Hot weather crops like sorghum or millet would thrive")
-        else:
-            recommendations.append("Moderate temperatures are ideal for corn, soybeans, or wheat")
-
-        # Rainfall-based recommendations
-        rainfall = conditions.get('rainfall', 500)
-        if rainfall < 300:
-            recommendations.append("Low rainfall suggests drought-resistant crops")
-        elif rainfall > 1000:
-            recommendations.append("High rainfall areas are perfect for rice cultivation")
-
-        # Soil-based recommendations
-        soil_ph = conditions.get('soil_ph', 6.5)
-        if soil_ph < 6.0:
-            recommendations.append("Acidic soil: consider blueberries or potatoes")
-        elif soil_ph > 7.5:
-            recommendations.append("Alkaline soil: good for barley or sugar beets")
-
-        return recommendations
-
-class ExpertChatbot:
-    def __init__(self):
-        self.conversation_history = []
-        self.context = {}
-
-    def chat(self, user_message: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Process chat message and return expert response"""
-        if context:
-            self.context.update(context)
-
-        # Add to conversation history
-        self.conversation_history.append({
-            'timestamp': datetime.now().isoformat(),
-            'user': user_message,
-            'context': self.context.copy()
-        })
-
-        # Generate response based on expertise areas
-        response = self._generate_expert_response(user_message)
-
-        # Add response to history
-        self.conversation_history.append({
-            'timestamp': datetime.now().isoformat(),
-            'assistant': response['message'],
-            'confidence': response['confidence']
-        })
-
-        return response
-
-    def _generate_expert_response(self, message: str) -> Dict[str, Any]:
-        """Generate expert agricultural response"""
-        message_lower = message.lower()
-
-        # Expertise areas and responses
-        if any(word in message_lower for word in ['disease', 'pest', 'infection', 'sick']):
-            return self._disease_expert_response(message)
-        elif any(word in message_lower for word in ['soil', 'fertilizer', 'nutrient', 'ph']):
-            return self._soil_expert_response(message)
-        elif any(word in message_lower for word in ['weather', 'rain', 'drought', 'climate']):
-            return self._weather_expert_response(message)
-        elif any(word in message_lower for word in ['yield', 'harvest', 'production']):
-            return self._yield_expert_response(message)
-        else:
-            return self._general_expert_response(message)
-
-    def _disease_expert_response(self, message: str) -> Dict[str, Any]:
-        return {
-            'message': "As a plant pathology expert, I can help diagnose and treat crop diseases. Could you describe the symptoms you're seeing, or better yet, upload a photo? Key things to note: leaf color changes, spots, wilting patterns, and affected plant parts.",
-            'confidence': 90,
-            'expertise_area': 'Plant Pathology',
-            'follow_up_questions': [
-                "What crop are you growing?",
-                "When did you first notice the symptoms?",
-                "Are the symptoms spreading?",
-                "What's the weather been like recently?"
-            ]
-        }
-
-    def _soil_expert_response(self, message: str) -> Dict[str, Any]:
-        return {
-            'message': "As a soil scientist, I recommend starting with a comprehensive soil test. Healthy soil is the foundation of successful farming. Key parameters include pH (6.0-7.0 optimal for most crops), nutrient levels (N-P-K), organic matter content, and soil structure.",
-            'confidence': 95,
-            'expertise_area': 'Soil Science',
-            'follow_up_questions': [
-                "When was your last soil test?",
-                "What crops are you planning to grow?",
-                "Have you noticed any soil compaction issues?",
-                "What's your current fertilization program?"
-            ]
-        }
-
-    def _weather_expert_response(self, message: str) -> Dict[str, Any]:
-        return {
-            'message': "Weather management is crucial for crop success. I recommend monitoring not just current conditions, but 7-14 day forecasts for planning. Key factors: temperature extremes, precipitation timing, humidity for disease pressure, and wind for spray applications.",
-            'confidence': 85,
-            'expertise_area': 'Agricultural Meteorology',
-            'follow_up_questions': [
-                "What region are you farming in?",
-                "What's your biggest weather concern?",
-                "Do you have weather monitoring equipment?",
-                "How do you currently get weather information?"
-            ]
-        }
-
-    def _yield_expert_response(self, message: str) -> Dict[str, Any]:
-        return {
-            'message': "Maximizing yield requires optimizing multiple factors: genetics (seed variety), environment (weather, soil), and management (nutrition, pest control, timing). The key is identifying your limiting factors and addressing them systematically.",
-            'confidence': 88,
-            'expertise_area': 'Crop Production',
-            'follow_up_questions': [
-                "What yields are you currently achieving?",
-                "What's your target yield?",
-                "What varieties are you growing?",
-                "What do you think limits your yields?"
-            ]
-        }
-
-    def _general_expert_response(self, message: str) -> Dict[str, Any]:
-        return {
-            'message': "I'm here to help with all aspects of modern agriculture. Whether it's crop production, soil management, pest control, or farm business decisions, I can provide expert guidance. What specific challenge are you facing?",
-            'confidence': 75,
-            'expertise_area': 'General Agriculture',
-            'follow_up_questions': [
-                "What type of farming operation do you have?",
-                "What's your main crop or focus?",
-                "What's your biggest current challenge?",
-                "How can I best help you today?"
-            ]
-        }
-
-# Global instances
-voice_assistant = VoiceAssistant()
-expert_chatbot = ExpertChatbot()
+# Simple helper/utility
+def quick_demo_question(assistant: VoiceAssistant, question: str):
+    print(f"\n[DEMO] Question: {question}")
+    res = assistant.generate_answer(question)
+    print("\n[DEMO] Answer:\n", res["answer"][:1000])
+    print("\n[DEMO] Sources:", res["sources"])

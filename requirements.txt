@@ -15,3 +15,12 @@ fpdf2
 qrcode[pil]
 xgboost==1.7.5
 earthengine-api
+faiss-cpu
+sentence-transformers
+PyPDF2
+whisper
+pyttsx3
+transformers
+accelerate
+safetensors
+openai
