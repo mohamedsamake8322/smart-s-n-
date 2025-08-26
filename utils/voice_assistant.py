@@ -36,15 +36,13 @@ class VoiceAssistant:
             with open(metadata_path, "rb") as f:
                 metadata = pickle.load(f)
 
-            if len(texts) != len(metadata):
-                print("[WARN] Mismatch entre textes et métadonnées.")
             return index, texts, metadata
 
         except Exception as e:
             print(f"[ERREUR] Chargement vector store : {e}")
             return None, [], []
 
-    def search(self, query, top_k=3, min_score=0.3):
+    def search(self, query, top_k=5, min_score=0.3):
         if self.index is None or not self.texts:
             return [{"text": "[Aucun index disponible]", "score": 0.0, "source": "N/A"}]
 
@@ -82,10 +80,41 @@ class VoiceAssistant:
             print(f"[ERREUR] Transcription audio : {e}")
             return ""
 
-    def audit_query(self, query, top_k=3):
-        """Affiche les chunks retournés pour une requête donnée (debug ou test)."""
-        results = self.search(query, top_k=top_k)
-        for i, r in enumerate(results):
-            print(f"\n--- Résultat {i+1} ---")
-            print(f"Score : {r['score']} | Source : {r['source']}")
-            print(r["text"][:500] + "...\n")
+    # -----------------------
+    # 🔍 Moteur de réponse intelligent
+    # -----------------------
+    def answer(self, query, top_k=5):
+        intent = self.detect_intent(query)
+        keywords = self.extract_keywords(query)
+        chunks = self.search(" ".join(keywords), top_k=top_k)
+        filtered = self.filter_by_intent(chunks, intent)
+        return self.synthesize(filtered, query)
+
+    def detect_intent(self, query):
+        q = query.lower()
+        if q.startswith("qu'est-ce que") or "définis" in q or "c'est quoi" in q:
+            return "definition"
+        elif "comment" in q or "pourquoi" in q:
+            return "explanation"
+        elif "quel engrais" in q or "que dois-je utiliser" in q or "fertiliser" in q:
+            return "recommendation"
+        else:
+            return "generic"
+
+    def extract_keywords(self, query):
+        stopwords = {"le", "la", "de", "du", "des", "et", "en", "un", "une", "pour", "avec", "sur", "dans"}
+        return [word for word in query.lower().split() if word not in stopwords and len(word) > 2]
+
+    def filter_by_intent(self, chunks, intent):
+        if intent == "definition":
+            return [c for c in chunks if "est" in c["text"] or "se définit" in c["text"]] or chunks
+        elif intent == "recommendation":
+            return [c for c in chunks if "engrais" in c["text"] or "fertilisation" in c["text"]] or chunks
+        elif intent == "explanation":
+            return [c for c in chunks if "parce que" in c["text"] or "cela permet" in c["text"]] or chunks
+        return chunks
+
+    def synthesize(self, chunks, query):
+        intro = f"🧠 Voici ce que j’ai trouvé concernant : **{query}**\n\n"
+        body = "\n\n".join([f"- {c['text'][:300].strip()}..." for c in chunks[:3]])
+        return intro + body

@@ -4,7 +4,7 @@ from utils.micro_input import get_voice_input
 import tempfile
 import os
 
-st.set_page_config(page_title="🧠 Smart Voice Assistant", layout="centered")
+st.set_page_config(page_title="🧠 Assistant Vocal Agricole", layout="centered")
 st.title("🧠 Assistant Vocal Agricole Intelligent")
 
 voice_assistant = VoiceAssistant()
@@ -17,16 +17,10 @@ st.subheader("💬 Posez votre question en texte")
 user_message = st.text_input("Votre question ici (ex : Quels sont les besoins en azote du maïs ?)")
 
 if user_message:
-    results = voice_assistant.search(user_message, top_k=3)
+    response_text = voice_assistant.answer(user_message)
     st.markdown("### 🤖 Réponse principale :")
-    st.write(results[0]["text"])
-    voice_assistant.speak(results[0]["text"])
-
-    with st.expander("🔍 Voir les autres suggestions"):
-        for r in results[1:]:
-            st.markdown(f"**Source** : `{r['source']}` | **Score** : `{r['score']}`")
-            st.write(r["text"])
-            st.markdown("---")
+    st.write(response_text)
+    voice_assistant.speak(response_text, lang="fr")
 
     # 🔧 Bloc de correction
     st.markdown("---")
@@ -36,7 +30,7 @@ if user_message:
     if st.button("📥 Soumettre la correction"):
         with open("corrections_log.txt", "a", encoding="utf-8") as f:
             f.write(f"Question : {user_message}\n")
-            f.write(f"Réponse initiale : {results[0]['text']}\n")
+            f.write(f"Réponse initiale : {response_text}\n")
             f.write(f"Correction proposée : {correction}\n")
             f.write(f"---\n")
         st.success("✅ Correction enregistrée. Merci pour votre contribution !")
@@ -45,7 +39,7 @@ if user_message:
 # 🎙️ Saisie vocale
 # -----------------------
 st.markdown("---")
-st.subheader("🎙️ Parlez au micro")
+st.subheader("🎙️ Posez votre question à l'oral")
 
 audio_file = st.file_uploader("🎧 Téléversez un fichier audio (.wav, .mp3)", type=["wav", "mp3"])
 
@@ -55,20 +49,15 @@ if audio_file:
         tmp_audio_path = tmp_audio.name
 
     transcription = voice_assistant.transcribe(tmp_audio_path)
-    st.markdown(f"📝 Transcription détectée : `{transcription}`")
     os.remove(tmp_audio_path)
 
-    if st.button("🧠 Répondre à cette question transcrite"):
-        results = voice_assistant.search(transcription, top_k=3)
-        st.markdown("### 🤖 Réponse principale :")
-        st.write(results[0]["text"])
-        voice_assistant.speak(results[0]["text"])
+    st.markdown(f"📝 Transcription détectée : `{transcription}`")
 
-        with st.expander("🔍 Voir les autres suggestions"):
-            for r in results[1:]:
-                st.markdown(f"**Source** : `{r['source']}` | **Score** : `{r['score']}`")
-                st.write(r["text"])
-                st.markdown("---")
+    if st.button("🧠 Répondre à cette question transcrite"):
+        response_text = voice_assistant.answer(transcription)
+        st.markdown("### 🤖 Réponse principale :")
+        st.write(response_text)
+        voice_assistant.speak(response_text, lang="fr")
 
         # 🔧 Correction vocale
         st.markdown("---")
@@ -78,7 +67,7 @@ if audio_file:
         if st.button("📥 Soumettre la correction vocale"):
             with open("corrections_log.txt", "a", encoding="utf-8") as f:
                 f.write(f"Question (audio) : {transcription}\n")
-                f.write(f"Réponse initiale : {results[0]['text']}\n")
+                f.write(f"Réponse initiale : {response_text}\n")
                 f.write(f"Correction proposée : {correction}\n")
                 f.write(f"---\n")
             st.success("✅ Correction enregistrée. Merci pour votre contribution !")
