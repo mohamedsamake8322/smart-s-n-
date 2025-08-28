@@ -1,25 +1,36 @@
 import os
-import faiss
 import pickle
+import faiss
 import numpy as np
 import pyttsx3
 import whisper
 import torch
 from sentence_transformers import SentenceTransformer
 
-
 class VoiceAssistant:
+    """
+    VoiceAssistant v2
+    - Comprend les JSONs préparés en chunks
+    - Répond précisément aux questions
+    - Supporte texte + audio
+    """
     def __init__(self, vector_store_dir="vector_store", embedding_model="all-MiniLM-L6-v2", whisper_model="base"):
         self.vector_store_dir = vector_store_dir
         self.embedding_model = embedding_model
         self.whisper_model = whisper_model
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
+        # 🔹 Chargement du vector store
         self.index, self.texts, self.metadata = self._load_vector_store()
         self.embedding_model_instance = SentenceTransformer(self.embedding_model)
         self.embedding_model_instance._target_device = torch.device(self.device)
+
+        # 🔹 Chargement Whisper pour transcription audio
         self.whisper_model_instance = whisper.load_model(self.whisper_model, device=self.device)
 
+    # -----------------------
+    # 🔹 Chargement vector store
+    # -----------------------
     def _load_vector_store(self):
         try:
             index_path = os.path.join(self.vector_store_dir, "faiss_index.bin")
@@ -36,12 +47,16 @@ class VoiceAssistant:
             with open(metadata_path, "rb") as f:
                 metadata = pickle.load(f)
 
+            print(f"[INFO] {len(texts)} chunks chargés depuis {self.vector_store_dir}")
             return index, texts, metadata
 
         except Exception as e:
             print(f"[ERREUR] Chargement vector store : {e}")
             return None, [], []
 
+    # -----------------------
+    # 🔹 Recherche dans les chunks
+    # -----------------------
     def search(self, query, top_k=5, min_score=0.3):
         if self.index is None or not self.texts:
             return [{"text": "[Aucun index disponible]", "score": 0.0, "source": "N/A"}]
@@ -59,6 +74,9 @@ class VoiceAssistant:
                 })
         return results or [{"text": "[Aucune réponse pertinente trouvée]", "score": 0.0, "source": "N/A"}]
 
+    # -----------------------
+    # 🔹 Synthèse vocale
+    # -----------------------
     def speak(self, text, lang="fr"):
         try:
             engine = pyttsx3.init()
@@ -72,6 +90,9 @@ class VoiceAssistant:
         except Exception as e:
             print(f"[ERREUR] Synthèse vocale : {e}")
 
+    # -----------------------
+    # 🔹 Transcription audio
+    # -----------------------
     def transcribe(self, audio_path):
         try:
             result = self.whisper_model_instance.transcribe(audio_path, language="fr")
@@ -81,40 +102,27 @@ class VoiceAssistant:
             return ""
 
     # -----------------------
-    # 🔍 Moteur de réponse intelligent
+    # 🔍 Réponse intelligente
     # -----------------------
     def answer(self, query, top_k=5):
-        intent = self.detect_intent(query)
-        keywords = self.extract_keywords(query)
-        chunks = self.search(" ".join(keywords), top_k=top_k)
-        filtered = self.filter_by_intent(chunks, intent)
-        return self.synthesize(filtered, query)
+        """
+        Répond à la question en utilisant les chunks indexés.
+        """
+        # 🔹 Recherche par embedding
+        chunks = self.search(query, top_k=top_k)
 
-    def detect_intent(self, query):
-        q = query.lower()
-        if q.startswith("qu'est-ce que") or "définis" in q or "c'est quoi" in q:
-            return "definition"
-        elif "comment" in q or "pourquoi" in q:
-            return "explanation"
-        elif "quel engrais" in q or "que dois-je utiliser" in q or "fertiliser" in q:
-            return "recommendation"
-        else:
-            return "generic"
+        # 🔹 Construction de la réponse
+        return self._compose_answer(query, chunks)
 
-    def extract_keywords(self, query):
-        stopwords = {"le", "la", "de", "du", "des", "et", "en", "un", "une", "pour", "avec", "sur", "dans"}
-        return [word for word in query.lower().split() if word not in stopwords and len(word) > 2]
+    # -----------------------
+    # 🔹 Composer la réponse
+    # -----------------------
+    def _compose_answer(self, query, chunks):
+        if not chunks:
+            return "Désolé, je n'ai pas trouvé de réponse précise à votre question."
 
-    def filter_by_intent(self, chunks, intent):
-        if intent == "definition":
-            return [c for c in chunks if "est" in c["text"] or "se définit" in c["text"]] or chunks
-        elif intent == "recommendation":
-            return [c for c in chunks if "engrais" in c["text"] or "fertilisation" in c["text"]] or chunks
-        elif intent == "explanation":
-            return [c for c in chunks if "parce que" in c["text"] or "cela permet" in c["text"]] or chunks
-        return chunks
-
-    def synthesize(self, chunks, query):
         intro = f"🧠 Voici ce que j’ai trouvé concernant : **{query}**\n\n"
-        body = "\n\n".join([f"- {c['text'][:300].strip()}..." for c in chunks[:3]])
+        body = ""
+        for c in chunks[:5]:  # limiter à 5 passages
+            body += f"- {c['text'].strip()} (source: {c['source']})\n\n"
         return intro + body

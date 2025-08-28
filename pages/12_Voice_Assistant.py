@@ -7,7 +7,10 @@ import os
 st.set_page_config(page_title="🧠 Assistant Vocal Agricole", layout="centered")
 st.title("🧠 Assistant Vocal Agricole Intelligent")
 
-voice_assistant = VoiceAssistant()
+# -----------------------
+# 🔹 Initialisation de l'assistant
+# -----------------------
+voice_assistant = VoiceAssistant()  # futur VoiceAssistant v2
 
 # -----------------------
 # 💬 Saisie manuelle
@@ -18,6 +21,7 @@ user_message = st.text_input("Votre question ici (ex : Quels sont les besoins en
 
 if user_message:
     response_text = voice_assistant.answer(user_message)
+
     st.markdown("### 🤖 Réponse principale :")
     st.write(response_text)
     voice_assistant.speak(response_text, lang="fr")
