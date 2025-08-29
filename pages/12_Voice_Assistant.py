@@ -1,6 +1,5 @@
 import streamlit as st
 from utils.voice_assistant import VoiceAssistant
-from utils.micro_input import get_voice_input
 import tempfile
 import os
 
@@ -10,7 +9,10 @@ st.title("🧠 Assistant Vocal Agricole Intelligent")
 # -----------------------
 # 🔹 Initialisation de l'assistant
 # -----------------------
-voice_assistant = VoiceAssistant()  # futur VoiceAssistant v2
+voice_assistant = VoiceAssistant(
+    vector_db_path="vector_db.pkl",      # ✅ ton modèle déjà créé
+    vector_store_dir="vector_store"      # fallback si FAISS existe
+)
 
 # -----------------------
 # 💬 Saisie manuelle
@@ -83,7 +85,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666666; padding: 20px;'>
-    🌾 SmartSènè Voice Assistant - Empowering African farmers with AI-driven insights
+    🌾 SmartSènè Voice Assistant - Empowering African farmers with AI-driven insights<br>
     🚀 Developed by <strong>SAMAKE</strong> | Precision farming for a better future
     </div>
     """,
