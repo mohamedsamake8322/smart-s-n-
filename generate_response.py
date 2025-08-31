@@ -1,5 +1,5 @@
 from vector_store import VectorStore
-import openai  # ou autre API GPT que tu utilises
+import openai  # pyright: ignore[reportMissingImports] # ou autre API GPT que tu utilises
 
 store = VectorStore()
 store.load_store("vector_store.pkl")
