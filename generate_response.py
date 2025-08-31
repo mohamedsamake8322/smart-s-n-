@@ -24,24 +24,31 @@ if not results:
 context = "\n\n".join([f"- {r['content'].strip()}" for r in results])
 
 # 🧾 Prompt structuré
-prompt = f"""
-Tu es un assistant agronomique expert. Voici des extraits de documents techniques :
+messages = [
+    {
+        "role": "system",
+        "content": "Tu es un assistant agronomique expert. Réponds de façon claire, pédagogique et synthétique en te basant uniquement sur les extraits fournis."
+    },
+    {
+        "role": "user",
+        "content": f"""
+Voici des extraits de documents techniques :
 
 {context}
-
-En te basant uniquement sur ces extraits, réponds à la question suivante de façon claire, pédagogique et synthétique :
 
 Question : {query}
 Réponse :
 """
+    }
+]
 
-# 🧠 Appel à GPT
-response = openai.ChatCompletion.create(
+# 🧠 Appel à GPT (nouvelle syntaxe)
+response = openai.chat.completions.create(
     model="gpt-4",
-    messages=[{"role": "user", "content": prompt}],
+    messages=messages,
     temperature=0.3
 )
 
 # 📊 Affichage de la réponse
 print("\n🧠 Réponse générée :\n")
-print(response['choices'][0]['message']['content'].strip())
+print(response.choices[0].message.content.strip())
