@@ -1,5 +1,5 @@
 import os
-from PyPDF2 import PdfReader
+from PyPDF2 import PdfReader # pyright: ignore[reportMissingImports]
 from vector_store import VectorStore
 import logging
 

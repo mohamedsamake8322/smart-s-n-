@@ -2,11 +2,8 @@ import logging
 import numpy as np
 from typing import List, Dict, Optional
 import re
-import nltk
 from collections import defaultdict
-from sentence_transformers import SentenceTransformer
-
-nltk.download('punkt')
+from sentence_transformers import SentenceTransformer # pyright: ignore[reportMissingImports]
 from nltk.tokenize import sent_tokenize
 
 logger = logging.getLogger(__name__)
@@ -111,21 +108,26 @@ class VectorStore:
         return model.encode(text, normalize_embeddings=True)
 
     def _chunk_by_sentences(self, text: str, max_words: int = 100) -> List[str]:
-        """Chunk text into complete sentence blocks"""
-        sentences = sent_tokenize(text)
-        chunks = []
-        current_chunk = []
+        try:
+            sentences = sent_tokenize(text)  # Utilise le modèle anglais par défaut
+            chunks = []
+            current_chunk = []
 
-        for sentence in sentences:
-            current_chunk.append(sentence)
-            if sum(len(s.split()) for s in current_chunk) >= max_words:
+            for sentence in sentences:
+                current_chunk.append(sentence)
+                if sum(len(s.split()) for s in current_chunk) >= max_words:
+                    chunks.append(" ".join(current_chunk))
+                    current_chunk = []
+
+            if current_chunk:
                 chunks.append(" ".join(current_chunk))
-                current_chunk = []
 
-        if current_chunk:
-            chunks.append(" ".join(current_chunk))
+            return [chunk.strip() for chunk in chunks if len(chunk.strip()) > 30]
 
-        return [chunk.strip() for chunk in chunks if len(chunk.strip()) > 30]
+        except Exception as e:
+            logger.error(f"Erreur lors du chunking : {str(e)}")
+        return [text]  # Fallback : retourne le texte brut si le chunking échoue
+
 
     def _cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
         """Cosine similarity between vectors"""

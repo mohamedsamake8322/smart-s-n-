@@ -4,7 +4,7 @@ from typing import List, Dict, Optional
 import re
 import nltk
 from collections import defaultdict
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer # pyright: ignore[reportMissingImports]
 
 nltk.download('punkt')
 from nltk.tokenize import sent_tokenize
