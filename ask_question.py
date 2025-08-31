@@ -17,3 +17,4 @@ else:
         print(f"\n📄 Fichier : {r['filename']} (score: {r['similarity']:.2f})")
         print(f"🧠 Contenu : {r['content']}")
         print(f"🏷️ Métadonnées : {r['metadata']}")
+        print(f"🧠 Nombre de chunks en mémoire : {len(store.documents)}")
