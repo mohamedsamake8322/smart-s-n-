@@ -2,6 +2,8 @@ from vector_store import VectorStore
 
 # Initialiser la base vectorielle
 store = VectorStore()
+store.load_store("vector_store.pkl")
+
 
 # 🔍 Question à poser
 query = "Quelle est l’origine du palmier à huile et où est-il cultivé ?"

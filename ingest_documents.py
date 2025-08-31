@@ -84,3 +84,4 @@ def process_pdf_folder(folder_path: str):
 # 📂 Dossier contenant les PDF agronomiques
 pdf_folder = "C:\\Downloads\\Agriculture"
 process_pdf_folder(pdf_folder)
+store.save_store("vector_store.pkl")

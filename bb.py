@@ -1,28 +1,27 @@
 import os
-import re
-import logging
-from PyPDF2 import PdfReader
+from PyPDF2 import PdfReader # pyright: ignore[reportMissingImports]
 from vector_store import VectorStore
+import logging
 
 logging.basicConfig(level=logging.INFO)
 store = VectorStore()
 
-# 🔍 Détection automatique des métadonnées enrichies
+# 🔍 Détection automatique des métadonnées
 def auto_tag_chunk(chunk: str) -> dict:
     tags = {}
 
     # Cultures
-    crops = ["maïs", "sorgho", "riz", "arachide", "mil", "fonio", "niébé", "manioc"]
+    crops = ["maïs", "sorgho", "riz", "arachide", "mil", "fonio"]
     for crop in crops:
-        if re.search(rf"\b{crop}\b", chunk.lower()):
+        if crop in chunk.lower():
             tags["crop"] = crop
             break
 
     # Stades
     stages = {
-        "végétatif": ["croissance végétative", "développement foliaire", "phase végétative"],
-        "floraison": ["floraison", "apparition des fleurs", "début floraison"],
-        "maturation": ["maturation", "remplissage des grains", "phase finale", "maturité"]
+        "végétatif": ["croissance végétative", "développement foliaire"],
+        "floraison": ["floraison", "apparition des fleurs"],
+        "maturation": ["maturation", "remplissage des grains", "phase finale"]
     }
     for stage, keywords in stages.items():
         if any(k in chunk.lower() for k in keywords):
@@ -30,24 +29,23 @@ def auto_tag_chunk(chunk: str) -> dict:
             break
 
     # Régions
-    regions = ["Mali", "Burkina Faso", "zone sahélienne", "Afrique de l’Ouest", "Niger", "Sénégal"]
+    regions = ["Mali", "Burkina Faso", "zone sahélienne", "Afrique de l’Ouest"]
     for region in regions:
         if region.lower() in chunk.lower():
             tags["region"] = region
             break
 
     # Thèmes
-    themes = {
-        "fertilisation": ["engrais", "fertilisation", "apport nutritif"],
-        "irrigation": ["irrigation", "eau", "arrosage"],
-        "protection phytosanitaire": ["maladie", "ravageur", "traitement", "fongicide", "insecticide"],
-        "semis": ["semis", "plantation", "mise en terre"],
-        "récolte": ["récolte", "moisson", "cueillette"]
-    }
-    for theme, keywords in themes.items():
-        if any(k in chunk.lower() for k in keywords):
-            tags["theme"] = theme
-            break
+    if "engrais" in chunk.lower() or "fertilisation" in chunk.lower():
+        tags["theme"] = "fertilisation"
+    elif "irrigation" in chunk.lower():
+        tags["theme"] = "irrigation"
+    elif "maladie" in chunk.lower() or "ravageur" in chunk.lower():
+        tags["theme"] = "protection phytosanitaire"
+    elif "semis" in chunk.lower():
+        tags["theme"] = "semis"
+    elif "récolte" in chunk.lower():
+        tags["theme"] = "récolte"
 
     return tags
 
@@ -74,25 +72,16 @@ def process_pdf_folder(folder_path: str):
             content = extract_text_from_pdf(full_path)
 
             if not content:
-                logging.warning(f"⚠️ Aucun contenu extrait de {filename}")
                 continue
-
-            # Nettoyage basique
-            content = re.sub(r'\s+', ' ', content)
 
             # Chunking par phrases (via VectorStore)
             chunks = store._chunk_by_sentences(content)
 
-            for i, chunk in enumerate(chunks):
-                if len(chunk.split()) < 30:
-                    logging.debug(f"⏭️ Chunk trop court ignoré ({len(chunk.split())} mots)")
-                    continue
-
+            for chunk in chunks:
                 metadata = auto_tag_chunk(chunk)
                 store.add_document(filename=filename, content=chunk, metadata=metadata)
-
-            logging.info(f"✅ {len(chunks)} chunks traités pour {filename}")
 
 # 📂 Dossier contenant les PDF agronomiques
 pdf_folder = "C:\\Downloads\\Agriculture"
 process_pdf_folder(pdf_folder)
+store.save_store("vector_store.pkl")
