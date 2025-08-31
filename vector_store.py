@@ -3,8 +3,7 @@ import numpy as np
 from typing import List, Dict, Optional
 import re
 from collections import defaultdict
-from sentence_transformers import SentenceTransformer # pyright: ignore[reportMissingImports]
-from nltk.tokenize import sent_tokenize
+from sentence_transformers import SentenceTransformer  # pyright: ignore[reportMissingImports]
 
 logger = logging.getLogger(__name__)
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -17,7 +16,7 @@ class VectorStore:
         self.vectors = {}    # doc_id -> embedding
         self.next_id = 1
 
-    def add_document(self, filename: str, content: str, language: str = 'en', metadata: Optional[Dict] = None) -> List[int]:
+    def add_document(self, filename: str, content: str, language: str = 'fr', metadata: Optional[Dict] = None) -> List[int]:
         """Chunk and add document with metadata"""
         try:
             doc_ids = []
@@ -108,8 +107,10 @@ class VectorStore:
         return model.encode(text, normalize_embeddings=True)
 
     def _chunk_by_sentences(self, text: str, max_words: int = 100) -> List[str]:
+        """Chunk text into complete sentence blocks using punctuation"""
         try:
-            sentences = sent_tokenize(text)  # Utilise le modèle anglais par défaut
+            # Découpe naïve par fin de phrase
+            sentences = re.split(r'(?<=[.!?])\s+', text)
             chunks = []
             current_chunk = []
 
@@ -126,8 +127,7 @@ class VectorStore:
 
         except Exception as e:
             logger.error(f"Erreur lors du chunking : {str(e)}")
-        return [text]  # Fallback : retourne le texte brut si le chunking échoue
-
+            return [text]  # Fallback : retourne le texte brut si le chunking échoue
 
     def _cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
         """Cosine similarity between vectors"""
